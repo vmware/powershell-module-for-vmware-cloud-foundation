@@ -16,7 +16,7 @@
           "name": "Cluster1",  
           "hostSpecs": [ {  
               "id": "d0693b58-4012-4387-92ed-721cfa709e44",
-              "license":"1N0L4-F2H50-L83W9-0LA00-9HUQ6",
+              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
               "hostNetworkSpec": {  
                  "vmNics": [ {  
                      "id": "vmnic0",  
@@ -34,7 +34,7 @@
                }  
             }, {  
               "id": "7006bec4-fccb-49a0-bff6-fd56c807d26a",
-              "license":"1N0L4-F2H50-L83W9-0LA00-9HUQ6",
+              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
               "hostNetworkSpec": {  
                  "vmNics": [ {  
                      "id": "vmnic0",  
@@ -52,7 +52,7 @@
                }  
             }, {  
               "id": "cc257a80-e179-4297-bf7e-179a0944bbab",
-              "license":"1N0L4-F2H50-L83W9-0LA00-9HUQ6",
+              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
               "hostNetworkSpec": {  
                  "vmNics": [ {  
                      "id": "vmnic0",  
@@ -72,7 +72,7 @@
     "datastoreSpec": {  
         "vsanDatastoreSpec": {  
             "failuresToTolerate": 1,  
-            "licenseKey": "JH4J7-AGHEK-58U39-01326-2JZ6P",
+            "licenseKey": "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB",
             "datastoreName": "vSanDatastore" 
          }  
      },  
@@ -122,7 +122,7 @@
       "nsxControllerGateway" : "172.16.225.1",
       "nsxControllerSubnetMask" : "255.255.255.0"
     },
-    "licenseKey" : "R44LM-DW35M-N83D1-0U9K2-38THL",
+    "licenseKey" : "CCCCC-CCCCC-CCCCC-CCCCC-CCCCC",
     "nsxManagerAdminPassword" : "VMw@re1!",
     "nsxManagerEnablePassword" : "VMw@re1!"
   }
