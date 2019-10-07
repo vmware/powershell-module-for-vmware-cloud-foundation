@@ -1,0 +1,23 @@
+{
+  "clusterExpansionSpec" : {
+    "hostSpecs" : [ {
+      "id" : "1d539f62-d85a-48a3-b5db-a165e06ae6ba",
+      "license": "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+      "hostNetworkSpec" : {
+        "vmNics" : [ {
+          "id" : "vmnic0",
+          "vdsName" : "SDDC2-Dswitch-Private1" 
+        }, {
+          "id" : "vmnic1",
+          "vdsName" : "SDDC2-Dswitch-Private1" 
+        }, {
+          "id" : "vmnic2",
+          "vdsName" : "SDDC2-Dswitch-Private2" 
+        }, {
+          "id" : "vmnic3",
+          "vdsName" : "SDDC2-Dswitch-Private2" 
+        } ] 
+      } 
+    } ] 
+  }
+}
