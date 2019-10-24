@@ -8,8 +8,8 @@ This is not an officially supported VMware PowerShell Module. It is developed an
 
 ## Installing the module
 Tested in Windows PowerShell 5.x & PowerShell Core 6.x
-To install the module download PowerVCF.psm1 and run the following in PowerShell
-Import-Module .\PowerVCF.psm1
+To install the module download the zip and run the following in PowerShell
+Import-Module .\PowerVCF
 
 ## Getting Started
 All API operations must currently be authenticated using the SDDC Manager admin account. 
