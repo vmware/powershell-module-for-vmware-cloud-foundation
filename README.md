@@ -43,10 +43,11 @@ status         : ASSIGNED
 
 Responses can be filtered like this:
 
-Get-VCFHost -id 3fc04947-64c9-4402-8970-be93169140c6 | Select esxiVersion
-
 esxiVersion
 -----------
+
+Get-VCFHost -id 3fc04947-64c9-4402-8970-be93169140c6 | Select esxiVersion
+
 6.7.0-13981272
 
 Or like this:
