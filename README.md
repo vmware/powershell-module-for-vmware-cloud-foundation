@@ -52,7 +52,9 @@ esxiVersion
 Or like this:
 
 $hostDetail = Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+
 $hostDetail.esxiVersion
+
 6.7.0-13981272
 
 ## Get Help
