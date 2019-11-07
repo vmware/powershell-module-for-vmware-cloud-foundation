@@ -8,7 +8,7 @@ This is not an officially supported VMware PowerShell Module. It is developed an
 
 ## Installing the module
 Tested in Windows PowerShell 5.x & PowerShell Core 6.x
-To install the module download the full module and run the following in PowerShell
+To install the module download the full module zip, extract and run the following in PowerShell
 
 `Import-Module .\PowerVCF`
 
@@ -16,7 +16,7 @@ To install the module download the full module and run the following in PowerShe
 All API operations must currently be authenticated using the SDDC Manager admin account. 
 To create a base64 credential to authenticate each cmdlet you must first run:
 
-`Connect-SDDCManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMware1!`
+`Connect-VCFSDDCManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMware1!`
  
 Note: -username & -password are optional. If not passed a credential window will be presented.
 
