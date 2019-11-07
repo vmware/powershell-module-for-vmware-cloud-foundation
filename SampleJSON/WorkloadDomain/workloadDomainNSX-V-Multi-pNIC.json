@@ -1,0 +1,129 @@
+{
+  "domainName": "PowerVCF",  
+  "vcenterSpec": {  
+    "name": "sfo01w01vc01",  
+    "networkDetailsSpec": {  
+       "ipAddress": "172.16.225.64",  
+       "dnsName": "sfo01w01vc01.sfo01.rainpole.local",  
+       "gateway": "172.16.225.1",  
+       "subnetMask": "255.255.255.0"
+     },  
+     "rootPassword": "VMw@re1!",  
+     "datacenterName": "PowerVCF-DC"  
+   },  
+   "computeSpec": {  
+      "clusterSpecs": [ {  
+          "name": "Cluster1",  
+          "hostSpecs": [ {  
+              "id": "d0693b58-4012-4387-92ed-721cfa709e44",
+              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+              "hostNetworkSpec": {  
+                 "vmNics": [ {  
+                     "id": "vmnic0",  
+                     "vdsName": "SDDC-Dswitch-Private1"  
+                  }, {  
+                     "id": "vmnic1",  
+                     "vdsName": "SDDC-Dswitch-Private1"  
+                  }, { 
+                     "id": "vmnic2",  
+                     "vdsName": "SDDC-Dswitch-Private2" 
+                  }, {  
+                     "id": "vmnic3",  
+                     "vdsName": "SDDC-Dswitch-Private2"  
+                  } ]  
+               }  
+            }, {  
+              "id": "7006bec4-fccb-49a0-bff6-fd56c807d26a",
+              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+              "hostNetworkSpec": {  
+                 "vmNics": [ {  
+                     "id": "vmnic0",  
+                     "vdsName": "SDDC-Dswitch-Private1"  
+                  }, {  
+                     "id": "vmnic1",  
+                     "vdsName": "SDDC-Dswitch-Private1"  
+                  }, { 
+                     "id": "vmnic2",  
+                     "vdsName": "SDDC-Dswitch-Private2" 
+                  }, {  
+                     "id": "vmnic3",  
+                     "vdsName": "SDDC-Dswitch-Private2"  
+                  } ]  
+               }  
+            }, {  
+              "id": "cc257a80-e179-4297-bf7e-179a0944bbab",
+              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+              "hostNetworkSpec": {  
+                 "vmNics": [ {  
+                     "id": "vmnic0",  
+                     "vdsName": "SDDC-Dswitch-Private1"  
+                  }, {  
+                     "id": "vmnic1",  
+                     "vdsName": "SDDC-Dswitch-Private1"  
+                  }, { 
+                     "id": "vmnic2",  
+                     "vdsName": "SDDC-Dswitch-Private2" 
+                  }, {  
+                     "id": "vmnic3",  
+                     "vdsName": "SDDC-Dswitch-Private2"  
+                  } ] 
+               } 
+           } ],     
+    "datastoreSpec": {  
+        "vsanDatastoreSpec": {  
+            "failuresToTolerate": 1,  
+            "licenseKey": "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB",
+            "datastoreName": "vSanDatastore" 
+         }  
+     },  
+     "networkSpec": { 
+         "vdsSpecs": [ { 
+             "name": "SDDC-Dswitch-Private1", 
+             "portGroupSpecs": [ {  
+                 "name": "SDDC-DPortGroup-Mgmt", 
+                 "transportType": "MANAGEMENT" 
+             }, { 
+                 "name": "SDDC-DPortGroup-VSAN",  
+                 "transportType": "VSAN" 
+             }, {  
+                 "name": "SDDC-DPortGroup-vMotion", 
+                 "transportType": "VMOTION" 
+             } ] 
+          },  
+          {  
+             "name": "SDDC-Dswitch-Private2", 
+             "portGroupSpecs": [ { 
+                "name": "SDDC-DPortGroup-Public", 
+                "transportType": "PUBLIC"  } ] 
+           } 
+        ],  
+        "nsxClusterSpec": { 
+           "nsxVClusterSpec": {  
+              "vlanId": 2237,  
+              "vdsNameForVxlanConfig": "SDDC-Dswitch-Private1"  
+            }  
+          }  
+        }  
+      } ] 
+   }, 
+  "nsxVSpec" : {
+    "nsxManagerSpec" : {
+      "name" : "sfo01w01nsx01",
+      "networkDetailsSpec" : {
+        "ipAddress" : "172.16.225.66",
+        "dnsName" : "sfo01w01nsx01.sfo01.rainpole.local",
+        "gateway" : "172.16.225.1",
+        "subnetMask" : "255.255.255.0"
+      }
+    },
+    "nsxVControllerSpec" : {
+      "nsxControllerIps" : [ "172.16.225.121", "172.16.225.122", "172.16.225.123" ],
+      "nsxControllerPassword" : "VMw@re123456!",
+      "nsxControllerGateway" : "172.16.225.1",
+      "nsxControllerSubnetMask" : "255.255.255.0"
+    },
+    "licenseKey" : "CCCCC-CCCCC-CCCCC-CCCCC-CCCCC",
+    "nsxManagerAdminPassword" : "VMw@re1!",
+    "nsxManagerEnablePassword" : "VMw@re1!"
+  }
+}
