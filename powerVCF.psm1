@@ -50,7 +50,6 @@ add-type @"
 "@
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
-																																																														 
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
@@ -92,8 +91,8 @@ if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParamete
 $creds = Get-Credential
 $username = $creds.UserName.ToString()
 $password = $creds.GetNetworkCredential().password
-$Global:sddcManager = $fqdn
 }
+$Global:sddcManager = $fqdn
 # Create Basic Auth Encoded Credentials
 $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))				
 				} 	
@@ -128,15 +127,23 @@ Function Get-VCFHost {
 	
 	
 	.EXAMPLE
-	PS C:\> This example shows how to get a host by Id
+	PS C:\> This example shows how to get a host by id
 	
 	PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+	
+	.EXAMPLE
+	PS C:\> This example shows how to get a host by fqdn
+	
+	PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
 
 
     #>
 	
 	param (
         [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$fqdn,
+		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$Status,
         [Parameter (Mandatory=$false)]
@@ -159,15 +166,30 @@ if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameter
 {
 $uri = "https://$sddcManager/v1/hosts"
 }
+if ($PsBoundParameters.ContainsKey("fqdn")) 
+{
+$uri = "https://$sddcManager/v1/hosts"
+}
 
 try { 
+			if ($PsBoundParameters.ContainsKey("fqdn"))
+			{
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements | Where-Object {$_.fqdn -eq $fqdn}
+			}
 			if ($PsBoundParameters.ContainsKey("id")) 
 			{
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response
 			}
-			else
+			if ($PsBoundParameters.ContainsKey("status")) 
 			{
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements
+			}
+			if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn")))
+			{
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 			}
     }
@@ -298,10 +320,11 @@ try {
         
         #Get response from the exception
         $response = $_.exception.response
-        if ($response) {  
+         if ($response) {  
             $responseStream = $_.exception.response.GetResponseStream()
             $reader = New-Object system.io.streamreader($responseStream)
             $responseBody = $reader.readtoend()
+			$responseBody
             $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
             throw $ErrorString
         }
@@ -346,9 +369,14 @@ Function Get-VCFWorkloadDomain {
 	PS C:\> Get-VCFWorkloadDomain
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get a Workload Domain by Id
+    PS C:\> This example shows how to get a Workload Domain by name
 	
-	PS C:\> Get-VCFWorkloadDomain -Id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+	PS C:\> Get-VCFWorkloadDomain -name WLD01
+	
+	.EXAMPLE
+    PS C:\> This example shows how to get a Workload Domain by id
+	
+	PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
 
 
     #>
@@ -356,23 +384,46 @@ Function Get-VCFWorkloadDomain {
 	param (
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$Id
+            [string]$name,
+		[Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
     )
 
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-if ($PsBoundParameters.ContainsKey("Id"))
+if ($PsBoundParameters.ContainsKey("id"))
 {
 $uri = "https://$sddcManager/v1/domains/$id"
 }
-else
+if ($PsBoundParameters.ContainsKey("name"))
+{
+$uri = "https://$sddcManager/v1/domains"
+}
+if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id")))
 {
 $uri = "https://$sddcManager/v1/domains"
 }
 try { 
+			
+			<# $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response #>
+			if ($PsBoundParameters.ContainsKey("name"))
+			{
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements | Where-Object {$_.name -eq $name}
+			}
+			if ($PsBoundParameters.ContainsKey("id")) 
+			{
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response
+			}
+			if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id")))
+			{
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements
+			}
 			
        
     }
@@ -437,7 +488,7 @@ try {
 			$response = Validate-WorkloadDomainSpec -json $ConfigJson
 			# Submit the request once spec is valid
 			$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-			$response.elements
+			$response
     }
     catch {
         
@@ -495,8 +546,7 @@ $body = '{
 }'
 try { 
 			$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
-			#TODO: Parse the response
-			#$response.elements
+			# This API does not return a response
     }
     catch {
         
@@ -596,9 +646,14 @@ Function Get-VCFCluster {
 	PS C:\> Get-VCFCluster
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get a cluster by Id
+    PS C:\> This example shows how to get a cluster by name
 	
-	PS C:\> Get-VCFCluster -Id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+	PS C:\> Get-VCFCluster -name wld01-cl01
+	
+	.EXAMPLE
+    PS C:\> This example shows how to get a cluster by id
+	
+	PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
 
 
     #>
@@ -606,13 +661,16 @@ Function Get-VCFCluster {
 	param (
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$Id
+            [string]$name,
+		[Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
     )
 
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-if ($PsBoundParameters.ContainsKey("Id"))
+if ($PsBoundParameters.ContainsKey("id"))
 {
 $uri = "https://$sddcManager/v1/clusters/$id"
 }
@@ -621,10 +679,23 @@ else
 $uri = "https://$sddcManager/v1/clusters"
 }
 try { 
+			if ($PsBoundParameters.ContainsKey("name"))
+			{
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements | Where-Object {$_.name -eq $name}
+			}
+			if ($PsBoundParameters.ContainsKey("id"))
+			{
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements | Where-Object {$_.id -eq $id}
+			}
+            if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id")))
+			{
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
        
     }
+	}
     catch {
         
         #Get response from the exception
@@ -724,19 +795,19 @@ Function Update-VCFCluster {
     .EXAMPLE
 	PS C:\> This example shows how to expand a cluster by adding a host(s)
 	
-	PS C:\> Update-VCFCluster -clusterId a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterExpansionSpec.json
 	
 	.EXAMPLE
 	PS C:\> This example shows how to compact a cluster by removing a host(s)
 	
-	PS C:\> Update-VCFCluster -clusterId a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterCompactionSpec.json
 	
 	.EXAMPLE
 	PS C:\> This example shows how to mark a cluster for deletion
 	
-	PS C:\> Update-VCFCluster -clusterId a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-markForDeletion $true
 
 
@@ -745,7 +816,7 @@ Function Update-VCFCluster {
 	param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$clusterId,
+            [string]$clusterid,
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$json,
@@ -765,7 +836,7 @@ $ConfigJson = (Get-Content $json)
 } }
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/clusters/$clusterId/"
+$uri = "https://$sddcManager/v1/clusters/$clusterid/"
 try { 
 			if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion")))
 			{
@@ -774,7 +845,7 @@ try {
 			if ($PsBoundParameters.ContainsKey("json"))
 			{
 			# Validate the json spec
-			$response = Validate-VCFUpdateClusterSpec -clusterId $clusterId -json $ConfigJson
+			$response = Validate-VCFUpdateClusterSpec -clusterid $clusterid -json $ConfigJson
 			}
 			if ($PsBoundParameters.ContainsKey("markForDeletion"))
 			{
@@ -890,9 +961,9 @@ Function Get-VCFNetworkPool {
 	PS C:\> Get-VCFNetworkPool -name sfo01-networkpool
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get a Network Pool by Id
+    PS C:\> This example shows how to get a Network Pool by id
 	
-	PS C:\> Get-VCFNetworkPool -Id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
+	PS C:\> Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
 	
 	
 
@@ -1371,11 +1442,11 @@ Function Retry-VCFTask {
 
     .DESCRIPTION
     The Retry-VCFTask cmdlet connects to the specified SDDC Manager 
-	& retries a previously failed task using the task Id.
+	& retries a previously failed task using the task id.
 	
 
     .EXAMPLE
-	Retry-VCFTask -taskId 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+	Retry-VCFTask -taskid 7e1c2eee-3177-4e3b-84db-bfebc83f386a
 
 
     #>
@@ -1398,8 +1469,9 @@ try {
     catch {
         
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
+        $response = $_.exception.response | Format-List -Force
+		$response
+        <# if ($response) {  
             $responseStream = $_.exception.response.GetResponseStream()
             $reader = New-Object system.io.streamreader($responseStream)
             $responseBody = $reader.readtoend()
@@ -1408,7 +1480,7 @@ try {
         }
         else { 
             throw $_ 
-        } 
+        }  #>
         
 
     }
@@ -1573,17 +1645,15 @@ Function Validate-CommissionHostSpec {
 
 	Param (
         [Parameter (Mandatory=$true)]
-        [object]$json
+        [string]$json
     )
 	
-	#if ($_ -is [json] ) {
-$ConfigJson = (Get-Content -Raw $json)
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/hosts/validations/commissions"
 
 try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 			
         
     }
@@ -1613,14 +1683,13 @@ Function Validate-WorkloadDomainSpec {
         [object]$json
     )
 	
-	#if ($_ -is [json] ) {
-$ConfigJson = (Get-Content -Raw $json)
+
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/domains/validations/creations"
 
 try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 			
         
     }
@@ -1650,13 +1719,12 @@ Function Validate-VCFClusterSpec {
         [object]$json
     )
 	
-$ConfigJson = (Get-Content -Raw $json)
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/clusters/validations/creations"
 
 try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 			
         
     }
@@ -1683,18 +1751,17 @@ Function Validate-VCFUpdateClusterSpec {
 
 	Param (
         [Parameter (Mandatory=$true)]
-        [object]$clusterId,
+        [object]$clusterid,
 		[Parameter (Mandatory=$true)]
         [object]$json
     )
 	
-$ConfigJson = (Get-Content -Raw $json)
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/clusters/$clusterId/validations/updates"
+$uri = "https://$sddcManager/v1/clusters/$clusterid/validations/updates"
 
 try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 			
         
     }
