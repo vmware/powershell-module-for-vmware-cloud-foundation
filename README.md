@@ -1,9 +1,10 @@
 # PowerVCF
 PowerVCF is a PowerShell Module for interacting the VMware Cloud Foundation (SDDC Manager) public API.
-More info on the API can be found here https://code.vmware.com/apis/723/vmware-cloud-foundation
+VMware Cloud Foundation Product Documentation: https://docs.vmware.com/en/VMware-Cloud-Foundation/
+VMware Cloud Foundation API Documentation: https://code.vmware.com/apis/723/vmware-cloud-foundation
 
 # Disclaimer
-This is not an officially supported VMware PowerShell Module. It is developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU). The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VCF API & VCF in general. It is provided without warranty and should not be used in a production environment without thouroughly testing first. It has been developed against VMware Cloud Foundation 3.8 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
+This is not an officially supported VMware PowerShell Module. It is developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU). The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VCF API & VCF in general. It is provided without warranty and should not be used in a production environment without thouroughly testing first. It has been developed against VMware Cloud Foundation 3.8.1 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
 
 
 ## Installing the module
@@ -21,6 +22,8 @@ To create a base64 credential to authenticate each cmdlet you must first run:
 Note: -username & -password are optional. If not passed a credential window will be presented.
 
 Once the authentication is complete it will be valid for the duration of the PowerShell session only.
+
+Managing Credentials (password retrieval/update/rotation) requires dual authentication using a privileged username & password. See here for setup instructions: https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.admin.doc_39/GUID-FAB78718-E626-4924-85DC-97536C3DA337.html
 
 ## Examples
 ### Get a list of VCF Hosts
