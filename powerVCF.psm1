@@ -1532,6 +1532,8 @@ Function Get-VCFCredential {
 
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
+$headers.Add("privileged-username", "$privilegedUsername")
+$headers.Add("privileged-password", "$privilegedPassword")
 
 if ($PsBoundParameters.ContainsKey("resourceName"))
 {
