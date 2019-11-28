@@ -62,10 +62,8 @@ add-type @"
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
-
 Function Connect-VCFSDDCManager {
-
-<#
+    <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & stores the credentials in a base64 string
 	
@@ -126,10 +124,8 @@ Export-ModuleMember -function Connect-VCFSDDCManager
 
 ######### Start Host Operations ##########
 
-
 Function Get-VCFHost {
-
-<#
+    <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of hosts.
 
@@ -161,66 +157,57 @@ Function Get-VCFHost {
 	PS C:\> This example shows how to get a host by fqdn
 	
 	PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
-
-
     #>
 	
 	param (
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$fqdn,
+
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$Status,
+
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$id
     )
-	
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
+    
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    # Check parameters passed
+    switch ($PsBoundParameters.Keys) {
 
-if ($PsBoundParameters.ContainsKey("status")) 
-{
-$uri = "https://$sddcManager/v1/hosts?status=$status"
-}
-if ($PsBoundParameters.ContainsKey("id")) 
-{
-$uri = "https://$sddcManager/v1/hosts/$id"
-}
-if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")))
-{
-$uri = "https://$sddcManager/v1/hosts"
-}
-if ($PsBoundParameters.ContainsKey("fqdn")) 
-{
-$uri = "https://$sddcManager/v1/hosts"
-}
+        "status" {
+            $uri = "https://$sddcManager/v1/hosts?status=$status"
+        }
 
-try { 
-			if ($PsBoundParameters.ContainsKey("fqdn"))
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements | Where-Object {$_.fqdn -eq $fqdn}
-			}
-			if ($PsBoundParameters.ContainsKey("id")) 
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response
-			}
-			if ($PsBoundParameters.ContainsKey("status")) 
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements
-			}
-			if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn")))
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements
-			}
+        "id"{
+            $uri = "https://$sddcManager/v1/hosts/$id"
+        }
+
+        default {
+            $uri = "https://$sddcManager/v1/hosts"
+        }
+
     }
-    catch {
-        
+    Try {
+        switch ($PSBoundParameters.Keys) {
+            
+            "fqdn" {
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response.elements | Where-Object {$_.fqdn -eq $FQDN}
+
+            }
+            
+            default {
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			    $response.elements
+            }
+        }
+    }
+
+    Catch {
         #Get response from the exception
         $response = $_.exception.response
         if ($response) {  
