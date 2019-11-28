@@ -83,13 +83,13 @@ Function Connect-VCFSDDCManager {
 	param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$FQDN,
-
-		[Parameter (Mandatory=$false)]
+            [string]$fqdn,
+        
+        [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$Username,
-
-		[Parameter (Mandatory=$false)]
+        
+        [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [String]$Password
     )
@@ -165,10 +165,10 @@ Function Get-VCFHost {
             [ValidateNotNullOrEmpty()]
             [string]$fqdn,
 
-		[Parameter (Mandatory=$false)]
+        [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$Status,
-
+            [string]$status,
+        
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$id
