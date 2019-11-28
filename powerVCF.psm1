@@ -75,27 +75,44 @@ Function Connect-VCFSDDCManager {
 	param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$fqdn,
+            [string]$FQDN,
+
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$username,
+            [string]$Username,
+
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$password
+            [String]$Password
     )
 	
-if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) 
-{
+    if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
 
-# Request Credentials
-$creds = Get-Credential
-$username = $creds.UserName.ToString()
-$password = $creds.GetNetworkCredential().password
-}
-$Global:sddcManager = $fqdn
-# Create Basic Auth Encoded Credentials
-$Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))				
-				} 	
+        # Request Credentials
+        $creds = Get-Credential
+        $Username = $creds.UserName.ToString()
+        $Password = $creds.GetNetworkCredential().password
+    }
+
+    $Global:sddcManager = $FQDN
+    # Create Basic Auth Encoded Credentials
+    $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $Username,$Password)))
+    # validate credentials by executing an API call
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    # checking again the network pools API which will always exist
+    $uri = "https://$sddcManager/v1/network-pools"
+    Try { 
+        $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+        if ($response.StatusCode -eq 200) {
+            Write-Host "Successully connected to SDDC Manager:" $sddcManager
+        }
+    }
+    Catch {
+        Write-Host $_.Exception.Message
+        Write-Host "Credentials provided did not return a valid API response (expected 200).Re-run the connect cmdlet"
+    }		
+} 	
 Export-ModuleMember -function Connect-VCFSDDCManager
 
 ######### Start Host Operations ##########
