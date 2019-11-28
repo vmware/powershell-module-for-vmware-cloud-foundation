@@ -1,20 +1,21 @@
-# PowerShell module for VMware Cloud Foundation
+#   PowerShell module for VMware Cloud Foundation
+#
 #   Author: Brian O'Connnell
 #   VMware HCIBU Staff Architect
 #   broconnell@vmware.com
 #   @lifeOfBrianOC
 #
-# Version 1.0
+#   Version 1.0
 #
-# Contributions, Improvements &/or Complete Re-writes Welcome!
-
-# List of contributors:
+#   Contributions, Improvements &/or Complete Re-writes Welcome!
+#
+#   List of contributors:
+#
 #   Giuliano Bertello
 #   Dell EMC Sr. Principal Engineer
-#   giuliano.bertello@gmail.com
-#   @GiulianoBerteo https://blog.bertello.org
+#   giuliano.bertello@gmail.com / @GiulianoBerteo / https://blog.bertello.org
 #
-# https://github.com/PowerVCF/PowerVCF
+#   https://github.com/PowerVCF/PowerVCF
 
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
 #IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
