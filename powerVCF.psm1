@@ -102,7 +102,7 @@ Function Connect-VCFSDDCManager {
         $Password = $creds.GetNetworkCredential().password
     }
 
-    $Global:sddcManager = $FQDN
+    $Global:sddcManager = $fqdn
     # Create Basic Auth Encoded Credentials
     $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $Username,$Password)))
     # validate credentials by executing an API call
@@ -176,38 +176,24 @@ Function Get-VCFHost {
     
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    # Check parameters passed
-    switch ($PsBoundParameters.Keys) {
-
-        "status" {
-            $uri = "https://$sddcManager/v1/hosts?status=$status"
-        }
-
-        "id"{
-            $uri = "https://$sddcManager/v1/hosts/$id"
-        }
-
-        default {
-            $uri = "https://$sddcManager/v1/hosts"
-        }
-
+    
+    # checking parameters passed
+    if ($PsBoundParameters.ContainsKey("status")) {
+        $uri = "https://$sddcManager/v1/hosts?status=$status"
     }
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/hosts/$id"
+    }
+    if (-not $PsBoundParameters.ContainsKey("status") -and (-not $PsBoundParameters.ContainsKey("id"))) {
+        $uri = "https://$sddcManager/v1/hosts"
+    }
+    if ($PsBoundParameters.ContainsKey("fqdn")) {
+        $uri = "https://$sddcManager/v1/hosts"
+    }
+    
     Try {
-        switch ($PSBoundParameters.Keys) {
-            
-            "fqdn" {
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-                $response.elements | Where-Object {$_.fqdn -eq $FQDN}
-
-            }
-            
-            default {
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			    $response.elements
-            }
-        }
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     }
-
     Catch {
         #Get response from the exception
         $response = $_.exception.response
@@ -221,15 +207,23 @@ Function Get-VCFHost {
         else { 
             throw $_ 
         } 
-        
+    }
+    # depending on the parameter, output formatting is different
+    if ($PsBoundParameters.ContainsKey("fqdn")) { $response.elements | Where-Object {$_.fqdn -eq $fqdn}  }
+    
+    if ($PsBoundParameters.ContainsKey("id")) 	{ $response }
 
+    if ($PsBoundParameters.ContainsKey("status")) { $response.elements }
+    
+    if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
+        $response.elements
     }
 }
 Export-ModuleMember -Function Get-VCFHost
 
 Function Commission-VCFHost {
 
-<#
+    <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & commissions a list of hosts.
 	
@@ -242,53 +236,53 @@ Function Commission-VCFHost {
     .EXAMPLE
     PS C:\> This example shows how to commission a list of hosts
 	
-	PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-
+	PS C:\> Commission-VCFHost -hostsSpecs .\Host\commissionHosts\commissionHostSpec.json
 
     #>
 	
 	param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$json 
+            [string]$hostsSpecs
     )
 	
-if (!(Test-Path $json)) {
-throw "JSON File Not Found"
-}
-else {    # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-	$headers = @{"Accept" = "application/json"}
-	$headers.Add("Authorization", "Basic $base64AuthInfo")
-	$uri = "https://$sddcManager/v1/hosts/"
-try { 
-			# Validate the provided JSON spec
-			$response = Validate-CommissionHostSpec -json $ConfigJson
-			# Submit the request if the JSON soec is valid
-			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-			$response
-			       
+    if (!(Test-Path $hostsSpecs)) {
+
+        throw "JSON File Not Found"
+    
+    }
+
+    else {    
+        # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $hostsSpecs)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/hosts/"
+    try {
+        # Validate the provided JSON spec
+        $response = Validate-CommissionHostSpec -json $ConfigJson
+        # Submit the request if the JSON soec is valid
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        $response
+                    
     }
     catch {
-        
         #Get response from the exception
         $response = $_.exception.response
         if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
+                $responseStream = $_.exception.response.GetResponseStream()
+                $reader = New-Object system.io.streamreader($responseStream)
+                $responseBody = $reader.readtoend()
+                $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
+                throw $ErrorString
+            }
+            else { 
+                throw $_ 
+            }
 
-    }		
-	
+        }
+    }
 }
-	}
 Export-ModuleMember -Function Commission-VCFHost
 
 Function Decommission-VCFHost {

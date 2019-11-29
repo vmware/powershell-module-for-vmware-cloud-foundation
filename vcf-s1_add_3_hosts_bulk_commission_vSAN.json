@@ -1,0 +1,23 @@
+[
+    {
+        "hostfqdn": "esxi05-s1.vcf-s1.vlabs.local",
+        "username": "root",
+        "password": "VMware1!",
+        "storageType": "VSAN",
+        "networkPoolName": "NETPOOL-1"
+    },        
+	{
+        "hostfqdn": "esxi06-s1.vcf-s1.vlabs.local",
+        "username": "root",
+        "password": "VMware1!",
+        "storageType": "VSAN",
+        "networkPoolName": "NETPOOL-1"
+    },       
+	{
+        "hostfqdn": "esxi07-s1.vcf-s1.vlabs.local",
+        "username": "root",
+        "password": "VMware1!",
+        "storageType": "VSAN",
+        "networkPoolName": "NETPOOL-1"
+    }
+]
