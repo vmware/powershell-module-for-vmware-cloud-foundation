@@ -1809,19 +1809,19 @@ try {
 
 ######### Start CEIP Operations ##########
 
-Function Get-VCFSettingCEIP {
+Function Get-VCFCeip {
 
 <#
     .SYNOPSIS
     Retrieves the setting for CEIP of the connected SDDC Manager
 	
     .DESCRIPTION
-    The Get-VCFSettingCEIP cmdlet Retrieves the setting for CEIP of the connected SDDC Manager. 
+    The Get-VCFCeip cmdlet Retrieves the setting for CEIP of the connected SDDC Manager. 
 	
     .EXAMPLE
     PS C:\> This example shows how to get the current setting of CEIP
 	
-	PS C:\> Get-VCFSettingCEIPs
+	PS C:\> Get-VCFCeip
 	
 #>
 
@@ -1838,21 +1838,21 @@ Function Get-VCFSettingCEIP {
         }
 
 }
-Export-ModuleMember -Function Get-VCFSettingCEIP
+Export-ModuleMember -Function Get-VCFCeip
 
-Function Set-VCFSettingCEIP {
+Function Set-VCFCeip {
 
 <#
     .SYNOPSIS
     Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
 	
     .DESCRIPTION
-    The Set-VCFSettingCEIP cmdlet configures the setting for CEIP of the connected SDDC Manager. 
+    The Set-VCFCeip cmdlet configures the setting for CEIP of the connected SDDC Manager. 
 	
     .EXAMPLE
     PS C:\> This example shows how to disable CEIP of the connected SDDC Manager
 	
-    PS C:\> Set-VCFSettingCEIP ENABLE
+    PS C:\> Set-VCFCeip -ceipSetting ENABLE
 	
     #>
 
@@ -1883,7 +1883,7 @@ Function Set-VCFSettingCEIP {
         }
 
 }
-Export-ModuleMember -Function Set-VCFSettingCEIP
+Export-ModuleMember -Function Set-VCFCeip
 
 ######### End CEIP Operations ##########
 
