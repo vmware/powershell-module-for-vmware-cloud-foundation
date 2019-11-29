@@ -10,7 +10,9 @@ The purpose of this module is to make VMware Cloud Foundation API more accessibl
 
 ## Contributers
 If you would like to contribute please get in touch! Current contributors listed below.
+
 Gary Blake - VMware HCI BU Staff II Architect
+
 Giuliano Bertello - Dell EMC Senior Principal Solutions Architect
 
 
