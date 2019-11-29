@@ -53,22 +53,20 @@ add-type @"
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
-
-Function Connect-VCFSDDCManager {
+Function Connect-VCFManager {
 
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & stores the credentials in a base64 string
 	
     .DESCRIPTION
-    The Connect-VCFSDDCManager cmdlet connects to the specified SDDC Manager & stores the credentials 
-	in a base64 string.  
-	It is required once per session before running all other cmdlets
+    The Connect-VCFManager cmdlet connects to the specified SDDC Manager & stores the credentials 
+	in a base64 string. It is required once per session before running all other cmdlets
 
     .EXAMPLE
 	PS C:\> This example shows how to connect to SDDC Manager
 	
-	PS C:\> Connect-VCFSDDCManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMware1!
+	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo01.rainpole.local -username admin -password VMware1!
 
     #>
 	
@@ -84,19 +82,42 @@ Function Connect-VCFSDDCManager {
             [string]$password
     )
 	
-if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) 
-{
+    if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) 
+        {
+            # Request Credentials
+            $creds = Get-Credential
+            $username = $creds.UserName.ToString()
+            $password = $creds.GetNetworkCredential().password
+        }
 
-# Request Credentials
-$creds = Get-Credential
-$username = $creds.UserName.ToString()
-$password = $creds.GetNetworkCredential().password
-}
-$Global:sddcManager = $fqdn
-# Create Basic Auth Encoded Credentials
-$Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))				
+    $Global:sddcManager = $fqdn
+
+    # Create Basic Authentication Encoded Credentials
+    $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))
+
+    # validate credentials by executing an API call
+    $headers = @{“Accept” = “application/json”}
+    $headers.Add(“Authorization”, “Basic $base64AuthInfo”)
+
+    # Checking against the sddc-managers API
+    $uri = “https://$sddcManager/v1/sddc-managers”
+    Try {
+            $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+            if ($response.StatusCode -eq 200) {
+                Write-Host ""
+                Write-Host “ Successully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+                Write-Host ""
+            }
+        }
+    Catch {
+            Write-Host ""
+            Write-Host "" $_.Exception.Message -ForegroundColor Red
+            Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+            Write-Host
+        }		
 				} 	
-Export-ModuleMember -function Connect-VCFSDDCManager
+Export-ModuleMember -function Connect-VCFManager
+
 
 ######### Start Host Operations ##########
 
