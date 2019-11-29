@@ -1858,20 +1858,22 @@ Function Set-VCFSettingCEIP {
 
 	Param (
 		[Parameter (Mandatory=$true)]
-        [object]$json
+        [string]$ceipSetting
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Read the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
-    }
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/system/ceip"
-    try { 	
+    try {
+        if ( -not $PsBoundParameters.ContainsKey("ceipsetting")){
+			throw "You must define ENABEL or DISABLE as an input"
+		}
+        if ($ceipSetting -eq "ENABLE"){
+			$ConfigJson = '{"status": "ENABLE"}'
+        }
+        if ($ceipSetting -eq "DISABLE"){
+			$ConfigJson = '{"status": "DISABLE"}'
+        }
 		    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 		    $response      
         }
