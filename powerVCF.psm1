@@ -1806,3 +1806,102 @@ try {
 
     }	
 }
+
+######### Start CEIP Operations ##########
+
+Function Get-VCFSettingCEIP {
+
+<#
+    .SYNOPSIS
+    Retrieves the setting for CEIP of the connected SDDC Manager
+	
+    .DESCRIPTION
+    The Get-VCFSettingCEIP cmdlet Retrieves the setting for CEIP of the connected SDDC Manager. 
+	
+    .EXAMPLE
+    PS C:\> This example shows how to get the current setting of CEIP
+	
+	PS C:\> Get-VCFSettingCEIPs
+	
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/system/ceip"
+    try { 	
+		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response      
+        }
+        catch {
+            # Call the function ResponseExeception which handles execption messages
+            ResponseExeception
+        }
+
+}
+Export-ModuleMember -Function Get-VCFSettingCEIP
+
+Function Set-VCFSettingCEIP {
+
+<#
+    .SYNOPSIS
+    Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
+	
+    .DESCRIPTION
+    The Set-VCFSettingCEIP cmdlet configuers the setting for CEIP of the connected SDDC Manager. 
+	
+    .EXAMPLE
+    PS C:\> This example shows how to disable CEIP of the connected SDDC Manager
+	
+	PS C:\> Set-VCFSettingCEIPs
+	
+    #>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+        [object]$json
+    )
+
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+    }
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/system/ceip"
+    try { 	
+		    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+		    $response      
+        }
+        catch {
+            # Call the function ResponseExeception which handles execption messages
+            ResponseExeception
+        }
+
+}
+Export-ModuleMember -Function Set-VCFSettingCEIP
+
+######### End CEIP Operations ##########
+
+Function ResponseExeception {
+
+    #Get response from the exception
+    $response = $_.exception.response
+    if ($response) {
+        Write-Host "" 
+        Write-Host "Oops something went wrong, please check your API call" -ForegroundColor Red -BackgroundColor Black
+        Write-Host ""
+        $responseStream = $_.exception.response.GetResponseStream()
+        $reader = New-Object system.io.streamreader($responseStream)
+        $responseBody = $reader.readtoend()
+        $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
+        throw $ErrorString
+        Write-Host ""
+    }
+    else { 
+        throw $_ 
+    } 
+
+}
