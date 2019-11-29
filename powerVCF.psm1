@@ -1852,7 +1852,7 @@ Function Set-VCFSettingCEIP {
     .EXAMPLE
     PS C:\> This example shows how to disable CEIP of the connected SDDC Manager
 	
-	PS C:\> Set-VCFSettingCEIPs
+    PS C:\> Set-VCFSettingCEIP ENABLE
 	
     #>
 
@@ -1866,7 +1866,7 @@ Function Set-VCFSettingCEIP {
     $uri = "https://$sddcManager/v1/system/ceip"
     try {
         if ( -not $PsBoundParameters.ContainsKey("ceipsetting")){
-			throw "You must define ENABEL or DISABLE as an input"
+			throw "You must define ENABLE or DISABLE as an input"
 		}
         if ($ceipSetting -eq "ENABLE"){
 			$ConfigJson = '{"status": "ENABLE"}'
