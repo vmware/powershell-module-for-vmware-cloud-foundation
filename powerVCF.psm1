@@ -1847,7 +1847,7 @@ Function Set-VCFSettingCEIP {
     Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
 	
     .DESCRIPTION
-    The Set-VCFSettingCEIP cmdlet configuers the setting for CEIP of the connected SDDC Manager. 
+    The Set-VCFSettingCEIP cmdlet configures the setting for CEIP of the connected SDDC Manager. 
 	
     .EXAMPLE
     PS C:\> This example shows how to disable CEIP of the connected SDDC Manager
