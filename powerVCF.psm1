@@ -1887,6 +1887,292 @@ Export-ModuleMember -Function Set-VCFCeip
 
 ######### End CEIP Operations ##########
 
+######### Start Backup Configuration Operations ##########
+
+Function Get-VCFBackupConfiguration {
+<#
+    .SYNOPSIS
+    Gets the backup configuration of NSX Manager and SDDC Manager
+	
+    .DESCRIPTION
+     Retrieves the backup configuration details and the status
+	
+    .EXAMPLE
+    This example shows how to get the list of bundles
+	
+	PS C:\> Get-VCFBackupConfiguration
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/system/backup-configuration"
+
+    try { 	
+		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response
+        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFBackupConfiguration
+
+######### End Backup Configuration Operations ##########
+
+######### Start Bundle Operations ##########
+
+Function Get-VCFBundles {
+<#
+    .SYNOPSIS
+    Get all Bundles i.e uploaded bundles and also bundles available via depot access
+	
+    .DESCRIPTION
+    Get all Bundles i.e uploaded bundles and also bundles available via depot access. 
+	
+    .EXAMPLE
+    This example get the list of bundles and all details
+	
+	PS C:\> Get-VCFBundles
+
+    This example get the list of bundles and filters on the version download status and the id 
+	
+	PS C:\> Get-VCFBundles | Select version,downloadStatus,id 	
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/bundles"
+
+    try { 	
+		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response.elements      
+        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFBundles
+
+######### End Bundle Operations ##########
+
+######### Start Certificate Configuration Operations ##########
+
+Function Get-VCFCertificateAuthConfiguration {
+<#
+    .SYNOPSIS
+    Get certificate authorities information
+	
+    .DESCRIPTION
+     Retrieves the certificate authorities information for the connected SDDC Manager
+	
+    .EXAMPLE
+    This example shows how to get the certificate authority configuration from the SDDC Manager
+    you are connected to.
+	
+	PS C:\> Get-VCFCertificateAuthConfiguration
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/certificate-authorities"
+
+    try { 	
+		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response.elements
+        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
+
+######### End Certificate Configuration Operations ##########
+
+######### Start Certificate Configuration Operations ##########
+
+Function Get-VCFDepotCredentials {
+<#
+    .SYNOPSIS
+    Get Depot Settings
+	
+    .DESCRIPTION
+     Retrieves the configuration for the depot of the connected SDDC Manager
+	
+    .EXAMPLE
+    This example shows credentials that have been configured for the depot.
+	
+	PS C:\> Get-VCFDepotCredentials	
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/system/settings/depot"
+
+    try { 	
+		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response
+        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFDepotCredentials
+
+Function Set-VCFDepotCredentials {
+<#
+    .SYNOPSIS
+    Update the Depot Settings
+	
+    .DESCRIPTION
+     Update the configuration for the depot of the connected SDDC Manager
+	
+    .EXAMPLE
+    This example sets the credentials that have been configured for the depot.
+	
+	PS C:\> Set-VCFDepotCredentials -username "jbloggs@vmware.com" -password "VMware1!"
+#>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+        [string]$username,
+		[Parameter (Mandatory=$true)]
+        [string]$password
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/system/settings/depot"
+    try {
+
+        if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))){
+			throw "You must enter a username and password"
+		}
+        $ConfigJson = '{"vmwareAccount": {"username": "'+$username+'","password": "'+$password+'"}}'
+        $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $response      
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+
+}
+Export-ModuleMember -Function Set-VCFDepotCredentials
+
+######### End Certificate Configuration Operations ##########
+
+######### Start SDDC Manager Operations ##########
+
+Function Get-VCFManagers {
+<#
+    .SYNOPSIS
+    Get the Sddc Managers
+	
+    .DESCRIPTION
+     Retrieves the detials for SDDC Manager
+	
+    .EXAMPLE
+    This example shows how to get the list of SDDC Managers.
+	
+	PS C:\> Get-VCFManagers
+
+    This example shows how to return the details for a specic SDDC Manager based on the ID
+
+	PS C:\> Get-VCFManagers -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
+#>
+
+	Param (
+		[Parameter (Mandatory=$false)]
+        [string]$id
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/sddc-managers/$id"
+    }
+    else{
+        $uri = "https://$sddcManager/v1/sddc-managers"
+    }
+
+    try { 
+            if ($PsBoundParameters.ContainsKey("id")) {
+		        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		        $response
+            }
+            else{
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		        $response.elements
+            }
+        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFManagers
+
+######### End Certificate Configuration Operations ##########
+
+######### Start VCF Serices Operations ##########
+
+Function Get-VCFServices {
+<#
+    .SYNOPSIS
+    Get the VcfServices
+	
+    .DESCRIPTION
+     Retrieves a list of services running on SDDC Manager
+	
+    .EXAMPLE
+    This example shows how to get the list of services running on SDDC Manager..
+	
+	PS C:\> Get-VCFServices
+
+    This example shows how to return the details for a specic service on SDDC Manager based on the ID
+
+	PS C:\> Get-VCFServices -id 4e416419-fb82-409c-ae37-32a60ba2cf88
+#>
+
+	Param (
+		[Parameter (Mandatory=$false)]
+        [string]$id
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/vcf-services/$id"
+    }
+    else{
+        $uri = "https://$sddcManager/v1/vcf-services"
+    }
+
+    try { 
+            if ($PsBoundParameters.ContainsKey("id")) {
+		        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		        $response
+            }
+            else{
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		        $response.elements
+            }
+        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFServices
+
+######### End VCF Services Operations ##########
+
 Function ResponseExeception {
 
     #Get response from the exception
