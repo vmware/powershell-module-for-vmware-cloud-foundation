@@ -1898,7 +1898,7 @@ Function Get-VCFBackupConfiguration {
      Retrieves the backup configuration details and the status
 	
     .EXAMPLE
-    This example shows how to get the list of bundles
+    This example shows the backup configuration
 	
 	PS C:\> Get-VCFBackupConfiguration
 #>
