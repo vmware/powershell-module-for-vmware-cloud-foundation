@@ -1810,7 +1810,6 @@ try {
 ######### Start CEIP Operations ##########
 
 Function Get-VCFCeip {
-
 <#
     .SYNOPSIS
     Retrieves the setting for CEIP of the connected SDDC Manager
@@ -1819,10 +1818,9 @@ Function Get-VCFCeip {
     The Get-VCFCeip cmdlet Retrieves the setting for CEIP of the connected SDDC Manager. 
 	
     .EXAMPLE
-    PS C:\> This example shows how to get the current setting of CEIP
+    This example shows how to get the current setting of CEIP
 	
-	PS C:\> Get-VCFCeip
-	
+	PS C:\> Get-VCFCeip	
 #>
 
     $headers = @{"Accept" = "application/json"}
@@ -1832,10 +1830,10 @@ Function Get-VCFCeip {
 		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 		    $response      
         }
-        catch {
-            # Call the function ResponseExeception which handles execption messages
-            ResponseExeception
-        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
 
 }
 Export-ModuleMember -Function Get-VCFCeip
@@ -1850,11 +1848,10 @@ Function Set-VCFCeip {
     The Set-VCFCeip cmdlet configures the setting for CEIP of the connected SDDC Manager. 
 	
     .EXAMPLE
-    PS C:\> This example shows how to disable CEIP of the connected SDDC Manager
+    This example shows how to disable CEIP of the connected SDDC Manager
 	
-    PS C:\> Set-VCFCeip -ceipSetting ENABLE
-	
-    #>
+    PS C:\> Set-VCFCeip -ceipSetting ENABLE	
+#>
 
 	Param (
 		[Parameter (Mandatory=$true)]
@@ -1877,11 +1874,10 @@ Function Set-VCFCeip {
 		    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 		    $response      
         }
-        catch {
-            # Call the function ResponseExeception which handles execption messages
-            ResponseExeception
-        }
-
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
 }
 Export-ModuleMember -Function Set-VCFCeip
 
@@ -1931,11 +1927,11 @@ Function Get-VCFBundles {
     Get all Bundles i.e uploaded bundles and also bundles available via depot access. 
 	
     .EXAMPLE
-    This example get the list of bundles and all details
+    This example gets the list of bundles and all details
 	
 	PS C:\> Get-VCFBundles
 
-    This example get the list of bundles and filters on the version download status and the id 
+    This example gets the list of bundles and filters on the version, download status and the id only
 	
 	PS C:\> Get-VCFBundles | Select version,downloadStatus,id 	
 #>
