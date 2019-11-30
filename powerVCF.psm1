@@ -2029,7 +2029,7 @@ Function Set-VCFDepotCredentials {
     .EXAMPLE
     This example sets the credentials that have been configured for the depot.
 	
-	PS C:\> Set-VCFDepotCredentials -username "jbloggs@vmware.com" -password "VMware1!"
+	PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
 #>
 
 	Param (
