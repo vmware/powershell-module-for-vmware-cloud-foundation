@@ -2063,7 +2063,7 @@ Export-ModuleMember -Function Set-VCFDepotCredentials
 
 ######### Start SDDC Manager Operations ##########
 
-Function Get-VCFManagers {
+Function Get-VCFManager {
 <#
     .SYNOPSIS
     Get the Sddc Managers
@@ -2074,11 +2074,11 @@ Function Get-VCFManagers {
     .EXAMPLE
     This example shows how to get the list of SDDC Managers.
 	
-	PS C:\> Get-VCFManagers
+	PS C:\> Get-VCFManager
 
     This example shows how to return the details for a specic SDDC Manager based on the ID
 
-	PS C:\> Get-VCFManagers -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
+	PS C:\> Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
 #>
 
 	Param (
@@ -2111,16 +2111,16 @@ Function Get-VCFManagers {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Get-VCFManagers
+Export-ModuleMember -Function Get-VCFManager
 
 ######### End Certificate Configuration Operations ##########
 
-######### Start VCF Serices Operations ##########
+######### Start VCF Services Operations ##########
 
-Function Get-VCFServices {
+Function Get-VCFService {
 <#
     .SYNOPSIS
-    Get the VcfServices
+    Get the VcfService
 	
     .DESCRIPTION
      Retrieves a list of services running on SDDC Manager
@@ -2128,11 +2128,11 @@ Function Get-VCFServices {
     .EXAMPLE
     This example shows how to get the list of services running on SDDC Manager..
 	
-	PS C:\> Get-VCFServices
+	PS C:\> Get-VCFService
 
     This example shows how to return the details for a specic service on SDDC Manager based on the ID
 
-	PS C:\> Get-VCFServices -id 4e416419-fb82-409c-ae37-32a60ba2cf88
+	PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
 #>
 
 	Param (
@@ -2165,7 +2165,7 @@ Function Get-VCFServices {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Get-VCFServices
+Export-ModuleMember -Function Get-VCFService
 
 ######### End VCF Services Operations ##########
 
