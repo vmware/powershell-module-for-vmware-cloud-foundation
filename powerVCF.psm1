@@ -2113,7 +2113,7 @@ Function Get-VCFManager {
 }
 Export-ModuleMember -Function Get-VCFManager
 
-######### End Certificate Configuration Operations ##########
+######### End SDDC Manager Operations ##########
 
 ######### Start VCF Services Operations ##########
 
