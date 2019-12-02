@@ -1845,7 +1845,6 @@ Export-ModuleMember -Function Get-VCFService
 ######### End VCF Services Operations ##########
 
 Function ResponseExeception {
-
     #Get response from the exception
     $response = $_.exception.response
     if ($response) {
@@ -1861,6 +1860,15 @@ Function ResponseExeception {
     }
     else { 
         throw $_ 
-    } 
+    }
+}
 
+Function CheckVCFVersion {
+    [string]$getvcfVersion = Get-VCFManager | Select version
+    $vcfVersion = $getvcfVersion.substring(10,3)
+    if ($vcfVersion -ne "3.9") {
+        Write-Host ""
+        Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
+        Write-Host ""
+    }
 }
