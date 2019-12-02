@@ -214,22 +214,9 @@ try {
 			$response.elements
 			}
     }
-    catch {
-        
+    catch {    
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Get-VCFHost
@@ -276,22 +263,9 @@ try {
 			$response
 			       
     }
-    catch {
-        
+    catch {   
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }		
 	
 }
@@ -338,22 +312,8 @@ try {
 			$response
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-         if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-			$responseBody
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }	
 }
 	}
@@ -448,22 +408,9 @@ try {
 			
        
     }
-    catch {
-        
+    catch {    
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Get-VCFWorkloadDomain
@@ -512,21 +459,8 @@ try {
 			$response
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 }
@@ -570,21 +504,8 @@ try {
 			# This API does not return a response
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Update-VCFWorkloadDomain
@@ -626,21 +547,8 @@ try {
 			$response
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
@@ -718,21 +626,8 @@ try {
     }
 	}
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Get-VCFCluster
@@ -779,22 +674,9 @@ try {
 			$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 			$response.elements
     }
-    catch {
-        
+    catch {    
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 }
@@ -878,22 +760,9 @@ try {
 			#TODO: Parse the response
 			#$response.elements
     }
-    catch {
-        
+    catch { 
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Update-VCFCluster
@@ -935,22 +804,9 @@ try {
 			#TODO: Parse the response
 			#$response.elements
     }
-    catch {
-        
+    catch { 
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Remove-VCFCluster
@@ -1021,24 +877,11 @@ try {
 			}
         
     }
-    catch {
-        
+    catch { 
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
-	}
+}
 Export-ModuleMember -Function Get-VCFNetworkPool
 
 Function New-VCFNetworkPool {
@@ -1083,24 +926,11 @@ try {
 			$poolName = $validate.name
 			Get-VCFNetworkPool -name $poolName
     }
-    catch {
-        
+    catch { 
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
-	}
+}
 							}
 Export-ModuleMember -Function New-VCFNetworkPool
 
@@ -1141,21 +971,8 @@ try {
 			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 
 }
@@ -1243,24 +1060,11 @@ try {
 			}
         
     }
-    catch {
-        
+    catch { 
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
-	}
+}
 Export-ModuleMember -Function Get-VCFLicenseKey
 
 Function New-VCFLicenseKey {
@@ -1305,24 +1109,12 @@ try {
 			Get-VCFLicenseKey -key $licenseKey
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
+        ResponseExeception
 
     }
-	}
-							}
+    }
+}
 Export-ModuleMember -Function New-VCFLicenseKey
 
 Function Remove-VCFLicenseKey {
@@ -1361,21 +1153,8 @@ try {
 			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 
 }
@@ -1435,23 +1214,10 @@ try {
         
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
-	}
+}
 Export-ModuleMember -Function Get-VCFTask
 
 Function Retry-VCFTask {
@@ -1488,24 +1254,10 @@ try {
         
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response | Format-List -Force
-		$response
-        <# if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        }  #>
-        
-
+        ResponseExeception
     }
-	}
+}
 Export-ModuleMember -Function Retry-VCFTask
 	
 #### End Task Operations #####
@@ -1569,22 +1321,9 @@ try {
 			$response
        
     }
-    catch {
-        
+    catch {   
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Get-VCFCredential
@@ -1639,21 +1378,8 @@ try {
 			$response
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }
 }
 Export-ModuleMember -Function Update-VCFCredential	
@@ -1681,21 +1407,8 @@ try {
         
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }	
 }
 
@@ -1716,22 +1429,9 @@ try {
 			
         
     }
-    catch {
-        
+    catch { 
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }	
 }
 
@@ -1752,21 +1452,8 @@ try {
         
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }	
 }
 
@@ -1789,21 +1476,8 @@ try {
         
     }
     catch {
-        
         #Get response from the exception
-        $response = $_.exception.response
-        if ($response) {  
-            $responseStream = $_.exception.response.GetResponseStream()
-            $reader = New-Object system.io.streamreader($responseStream)
-            $responseBody = $reader.readtoend()
-            $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-            throw $ErrorString
-        }
-        else { 
-            throw $_ 
-        } 
-        
-
+        ResponseExeception
     }	
 }
 
@@ -1829,7 +1503,7 @@ Function Get-VCFCeip {
     try { 	
 		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 		    $response      
-        }
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
@@ -1871,9 +1545,9 @@ Function Set-VCFCeip {
         if ($ceipSetting -eq "DISABLE"){
 			$ConfigJson = '{"status": "DISABLE"}'
         }
-		    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-		    $response      
-        }
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $response      
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
@@ -1906,7 +1580,7 @@ Function Get-VCFBackupConfiguration {
     try { 	
 		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 		    $response
-        }
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
@@ -1943,7 +1617,7 @@ Function Get-VCFBundle {
     try { 	
 		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 		    $response.elements      
-        }
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
@@ -1977,7 +1651,7 @@ Function Get-VCFCertificateAuthConfiguration {
     try { 	
 		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 		    $response.elements
-        }
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
@@ -2008,9 +1682,9 @@ Function Get-VCFDepotCredentials {
     $uri = "https://$sddcManager/v1/system/settings/depot"
 
     try { 	
-		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response
-        }
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
@@ -2097,15 +1771,15 @@ Function Get-VCFManager {
     }
 
     try { 
-            if ($PsBoundParameters.ContainsKey("id")) {
-		        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		        $response
-            }
-            else{
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		        $response.elements
-            }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
         }
+        else{
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	        $response.elements
+        }
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
@@ -2152,15 +1826,15 @@ Function Get-VCFService {
     }
 
     try { 
-            if ($PsBoundParameters.ContainsKey("id")) {
-		        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		        $response
-            }
-            else{
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		        $response.elements
-            }
+        if ($PsBoundParameters.ContainsKey("id")) {
+	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	        $response
         }
+        else{
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response.elements
+        }
+    }
     catch {
         # Call the function ResponseExeception which handles execption messages
         ResponseExeception
