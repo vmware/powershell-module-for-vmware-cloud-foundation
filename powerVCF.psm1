@@ -1918,7 +1918,7 @@ Export-ModuleMember -Function Get-VCFBackupConfiguration
 
 ######### Start Bundle Operations ##########
 
-Function Get-VCFBundles {
+Function Get-VCFBundle {
 <#
     .SYNOPSIS
     Get all Bundles i.e uploaded bundles and also bundles available via depot access
@@ -1929,11 +1929,11 @@ Function Get-VCFBundles {
     .EXAMPLE
     This example gets the list of bundles and all details
 	
-	PS C:\> Get-VCFBundles
+	PS C:\> Get-VCFBundle
 
     This example gets the list of bundles and filters on the version, download status and the id only
 	
-	PS C:\> Get-VCFBundles | Select version,downloadStatus,id 	
+	PS C:\> Get-VCFBundle | Select version,downloadStatus,id 	
 #>
 
     $headers = @{"Accept" = "application/json"}
@@ -1949,7 +1949,7 @@ Function Get-VCFBundles {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Get-VCFBundles
+Export-ModuleMember -Function Get-VCFBundle
 
 ######### End Bundle Operations ##########
 
