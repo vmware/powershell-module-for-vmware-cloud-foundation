@@ -2120,7 +2120,7 @@ Export-ModuleMember -Function Get-VCFManager
 Function Get-VCFService {
 <#
     .SYNOPSIS
-    Get the VcfService
+    Get the a list of running VCF Services
 	
     .DESCRIPTION
      Retrieves a list of services running on SDDC Manager
@@ -2130,6 +2130,7 @@ Function Get-VCFService {
 	
 	PS C:\> Get-VCFService
 
+    .EXAMPLE
     This example shows how to return the details for a specic service on SDDC Manager based on the ID
 
 	PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
