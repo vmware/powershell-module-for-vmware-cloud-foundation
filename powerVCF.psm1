@@ -1638,19 +1638,20 @@ Function Get-VCFCertificateAuthConfiguration {
      Retrieves the certificate authorities information for the connected SDDC Manager
 	
     .EXAMPLE
-    This example shows how to get the certificate authority configuration from the SDDC Manager
-    you are connected to.
-	
-	PS C:\> Get-VCFCertificateAuthConfiguration
+    PS C:\> Get-VCFCertificateAuthConfiguration
+    This example shows how to get the certificate authority configuration from the connected SDDC Manager
 #>
+
+    # Check the version of SDDC Manager
+    CheckVCFVersion
 
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/certificate-authorities"
 
     try { 	
-		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response.elements
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
     }
     catch {
         # Call the function ResponseExeception which handles execption messages
@@ -1659,9 +1660,54 @@ Function Get-VCFCertificateAuthConfiguration {
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
 
+Function Set-VCFMicrosoftCA {
+<#
+    .SYNOPSIS
+    Configurs a Microsoft Certificate Authority
+	
+    .DESCRIPTION
+    Configures the Microsoft Certificate Authorty on the connected SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+    This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+#>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+        [string]$serverUrl,
+		[Parameter (Mandatory=$true)]
+        [string]$username,
+		[Parameter (Mandatory=$true)]
+        [string]$password,
+  		[Parameter (Mandatory=$true)]
+        [string]$templateName
+    )
+
+    # Check the version of SDDC Manager
+    CheckVCFVersion
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/certificate-authorities"
+
+    try { 
+        if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
+			throw "You must enter the mandatory values"
+		}
+        $ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
+        $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Set-VCFMicrosoftCA
+
 ######### End Certificate Configuration Operations ##########
 
-######### Start Certificate Configuration Operations ##########
+######### Start Depot Configuration Operations ##########
 
 Function Get-VCFDepotCredentials {
 <#
@@ -1733,7 +1779,7 @@ Function Set-VCFDepotCredentials {
 }
 Export-ModuleMember -Function Set-VCFDepotCredentials
 
-######### End Certificate Configuration Operations ##########
+######### End Depot Configuration Operations ##########
 
 ######### Start Foundation Component Operations ##########
 
