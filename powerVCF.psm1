@@ -96,16 +96,16 @@ Function Connect-VCFManager {
     $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))
 
     # validate credentials by executing an API call
-    $headers = @{“Accept” = “application/json”}
-    $headers.Add(“Authorization”, “Basic $base64AuthInfo”)
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
 
     # Checking against the sddc-managers API
-    $uri = “https://$sddcManager/v1/sddc-managers”
+    $uri = "https://$sddcManager/v1/sddc-managers"
     Try {
             $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
             if ($response.StatusCode -eq 200) {
                 Write-Host ""
-                Write-Host “ Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+                Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
                 Write-Host ""
             }
         }
