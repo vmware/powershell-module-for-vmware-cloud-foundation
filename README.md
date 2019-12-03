@@ -38,7 +38,7 @@ To install the module download the full module zip, extract and run the followin
 All API operations must currently be authenticated using the SDDC Manager admin account. 
 To create a base64 credential to authenticate each cmdlet you must first run:
 
-`Connect-VCFSDDCManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMware1!`
+`Connect-VCFManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMware1!`
  
 Note: -username & -password are optional. If not passed a credential window will be presented.
 
