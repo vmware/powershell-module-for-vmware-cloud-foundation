@@ -1870,5 +1870,6 @@ Function CheckVCFVersion {
         Write-Host ""
         Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
         Write-Host ""
+        break
     }
 }
