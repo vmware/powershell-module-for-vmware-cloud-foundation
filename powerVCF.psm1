@@ -54,7 +54,6 @@ add-type @"
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
 Function Connect-VCFManager {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & stores the credentials in a base64 string
@@ -64,11 +63,9 @@ Function Connect-VCFManager {
 	in a base64 string. It is required once per session before running all other cmdlets
 
     .EXAMPLE
-	PS C:\> This example shows how to connect to SDDC Manager
-	
 	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo01.rainpole.local -username admin -password VMware1!
-
-    #>
+    This example shows how to connect to SDDC Manager
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -102,28 +99,26 @@ Function Connect-VCFManager {
     # Checking against the sddc-managers API
     $uri = "https://$sddcManager/v1/sddc-managers"
     Try {
-            $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
-            if ($response.StatusCode -eq 200) {
-                Write-Host ""
-                Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
-                Write-Host ""
-            }
-        }
-    Catch {
+        $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+        if ($response.StatusCode -eq 200) {
             Write-Host ""
-            Write-Host "" $_.Exception.Message -ForegroundColor Red
-            Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
-            Write-Host
-        }		
-				} 	
+            Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+            Write-Host ""
+        }
+    }
+    Catch {
+        Write-Host ""
+        Write-Host "" $_.Exception.Message -ForegroundColor Red
+        Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+        Write-Host
+    }		
+} 	
 Export-ModuleMember -function Connect-VCFManager
 
 
 ######### Start Host Operations ##########
 
-
 Function Get-VCFHost {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of hosts.
@@ -131,34 +126,27 @@ Function Get-VCFHost {
     .DESCRIPTION
     The Get-VCFHost cmdlet connects to the specified SDDC Manager & retrieves a list of hosts.  
 	VCF Hosts are defined by status
-	ASSIGNED - Hosts that are assigned to a Workload domain
-	UNASSIGNED_USEABLE - Hosts that are availbale to be assigned to a Workload Domain
-	UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used 
+	- ASSIGNED - Hosts that are assigned to a Workload domain
+	- UNASSIGNED_USEABLE - Hosts that are availbale to be assigned to a Workload Domain
+	- UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used 
 	for other domain tasks after completion of cleanup operation
 
     .EXAMPLE
-	PS C:\> This example shows how to get all hosts regardless of status
-	
 	PS C:\> Get-VCFHost
+    This example shows how to get all hosts regardless of status
 	
 	.EXAMPLE
-	PS C:\> This example shows how to get all hosts with a specific status
-	
 	PS C:\> Get-VCFHost -Status ASSIGNED
-	
+    This example shows how to get all hosts with a specific status
 	
 	.EXAMPLE
-	PS C:\> This example shows how to get a host by id
-	
 	PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+    This example shows how to get a host by id
 	
 	.EXAMPLE
-	PS C:\> This example shows how to get a host by fqdn
-	
 	PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
-
-
-    #>
+    This example shows how to get a host by fqdn
+#>
 	
 	param (
         [Parameter (Mandatory=$false)]
@@ -172,47 +160,39 @@ Function Get-VCFHost {
             [string]$id
     )
 	
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-if ($PsBoundParameters.ContainsKey("status")) 
-{
-$uri = "https://$sddcManager/v1/hosts?status=$status"
-}
-if ($PsBoundParameters.ContainsKey("id")) 
-{
-$uri = "https://$sddcManager/v1/hosts/$id"
-}
-if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")))
-{
-$uri = "https://$sddcManager/v1/hosts"
-}
-if ($PsBoundParameters.ContainsKey("fqdn")) 
-{
-$uri = "https://$sddcManager/v1/hosts"
-}
+    if ($PsBoundParameters.ContainsKey("status")) {
+        $uri = "https://$sddcManager/v1/hosts?status=$status"
+    }
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/hosts/$id"
+    }
+    if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+        $uri = "https://$sddcManager/v1/hosts"
+    }
+    if ($PsBoundParameters.ContainsKey("fqdn")) {
+        $uri = "https://$sddcManager/v1/hosts"
+    }
 
-try { 
-			if ($PsBoundParameters.ContainsKey("fqdn"))
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements | Where-Object {$_.fqdn -eq $fqdn}
-			}
-			if ($PsBoundParameters.ContainsKey("id")) 
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response
-			}
-			if ($PsBoundParameters.ContainsKey("status")) 
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements
-			}
-			if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn")))
-			{
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements
-			}
+    try { 
+        if ($PsBoundParameters.ContainsKey("fqdn")) {
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements | Where-Object {$_.fqdn -eq $fqdn}
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("status")) {
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
     }
     catch {    
         #Get response from the exception
@@ -222,24 +202,18 @@ try {
 Export-ModuleMember -Function Get-VCFHost
 
 Function Commission-VCFHost {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & commissions a list of hosts.
 	
-
     .DESCRIPTION
     The Commission-VCFHost cmdlet connects to the specified SDDC Manager 
-	& commissions a list of hosts.
-	Host list spec is provided in a JSON file.	
+	& commissions a list of hosts. Host list spec is provided in a JSON file.	
 
     .EXAMPLE
-    PS C:\> This example shows how to commission a list of hosts
-	
-	PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-
-
-    #>
+    PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
+    This example shows how to commission a list of hosts
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -247,33 +221,31 @@ Function Commission-VCFHost {
             [string]$json 
     )
 	
-if (!(Test-Path $json)) {
-throw "JSON File Not Found"
-}
-else {    # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-	$headers = @{"Accept" = "application/json"}
-	$headers.Add("Authorization", "Basic $base64AuthInfo")
-	$uri = "https://$sddcManager/v1/hosts/"
-try { 
-			# Validate the provided JSON spec
-			$response = Validate-CommissionHostSpec -json $ConfigJson
-			# Submit the request if the JSON soec is valid
-			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-			$response
-			       
+    if (!(Test-Path $json)) {
+        throw "JSON File Not Found"
     }
-    catch {   
-        #Get response from the exception
-        ResponseExeception
-    }		
+    else {    # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/hosts/"
+        try { 
+            # Validate the provided JSON spec
+            $response = Validate-CommissionHostSpec -json $ConfigJson
+            # Submit the request if the JSON soec is valid
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        catch {   
+            #Get response from the exception
+            ResponseExeception
+        }		
 	
+    }
 }
-	}
 Export-ModuleMember -Function Commission-VCFHost
 
 Function Decommission-VCFHost {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & decommissions a list of hosts.
@@ -283,13 +255,10 @@ Function Decommission-VCFHost {
     The Decommission-VCFHost cmdlet connects to the specified SDDC Manager 
 	& decommissions a list of hosts.
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to decommission a set of hosts
-	
-	PS C:\> Decommission-VCFHost -json ".\Host\decommissionHostSpec.json"
-
-    #>
+    PS C:\> Decommission-VCFHost -json ".\Host\decommissionHostSpec.json"
+    This example shows how to decommission a set of hosts
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -297,26 +266,26 @@ Function Decommission-VCFHost {
             [string]$json 
     )
 
-if (!(Test-Path $json)) {
-throw "JSON File Not Found"
-}
-else {	
-    # Reads the json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-	$headers = @{"Accept" = "application/json"}
-	$headers.Add("Authorization", "Basic $base64AuthInfo")
-	$uri = "https://$sddcManager/v1/hosts"
+    if (!(Test-Path $json)) {
+        throw "JSON File Not Found"
+    }
+    else {	
+        # Reads the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+	    $headers = @{"Accept" = "application/json"}
+	    $headers.Add("Authorization", "Basic $base64AuthInfo")
+	    $uri = "https://$sddcManager/v1/hosts"
 	
-try { 
+        try { 
 			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			$response
+        }
+        catch {
+            #Get response from the exception
+            ResponseExeception
+        }	
     }
-    catch {
-        #Get response from the exception
-        ResponseExeception
-    }	
 }
-	}
 Export-ModuleMember -Function Decommission-VCFHost
 
 #TODO: Add Posh-SSH Support
@@ -330,37 +299,31 @@ Write-Output "Run /opt/vmware/sddc-support/sos --cleanup-host ALL"
 ######### End Host Operations ##########
 
 
+
 ######### Start Workload Domain Operations ##########
 
 Function Get-VCFWorkloadDomain {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of workload domains.
 	
-
     .DESCRIPTION
     The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& retrieves a list of workload domains.
 	
 
     .EXAMPLE
-    PS C:\> This example shows how to get a list of Workload Domains
-	
-	PS C:\> Get-VCFWorkloadDomain
-	
-	.EXAMPLE
-    PS C:\> This example shows how to get a Workload Domain by name
-	
-	PS C:\> Get-VCFWorkloadDomain -name WLD01
+    PS C:\> Get-VCFWorkloadDomain
+    This example shows how to get a list of Workload Domains
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get a Workload Domain by id
+    PS C:\> Get-VCFWorkloadDomain -name WLD01
+    This example shows how to get a Workload Domain by name
 	
-	PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-
-
-    #>
+	.EXAMPLE
+    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+    This example shows how to get a Workload Domain by id
+#>
 	
 	param (
         [Parameter (Mandatory=$false)]
@@ -371,43 +334,34 @@ Function Get-VCFWorkloadDomain {
             [string]$id
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-if ($PsBoundParameters.ContainsKey("id"))
-{
-$uri = "https://$sddcManager/v1/domains/$id"
-}
-if ($PsBoundParameters.ContainsKey("name"))
-{
-$uri = "https://$sddcManager/v1/domains"
-}
-if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id")))
-{
-$uri = "https://$sddcManager/v1/domains"
-}
-try { 
-			
-			<# $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response #>
-			if ($PsBoundParameters.ContainsKey("name"))
-			{
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/domains/$id"
+    }
+    if ($PsBoundParameters.ContainsKey("name")) {
+        $uri = "https://$sddcManager/v1/domains"
+    }
+    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+        $uri = "https://$sddcManager/v1/domains"
+    }
+    try { 
+        <# $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response #>
+        if ($PsBoundParameters.ContainsKey("name")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
-			}
-			if ($PsBoundParameters.ContainsKey("id")) 
-			{
+		}
+		if ($PsBoundParameters.ContainsKey("id")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response
-			}
-			if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id")))
-			{
+		}
+        if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
-			}
-			
-       
-    }
+		}
+	}
     catch {    
         #Get response from the exception
         ResponseExeception
@@ -416,24 +370,18 @@ try {
 Export-ModuleMember -Function Get-VCFWorkloadDomain
 
 Function New-VCFWorkloadDomain {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & creates a workload domain.
 	
-
     .DESCRIPTION
     The New-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& creates a workload domain. 
 	
-
     .EXAMPLE
-	PS C:\> This example shows how to create a Workload Domain from a json spec
-	
 	PS C:\> New-VCFWorkloadDomain -json .\WorkloadDomain\workloadDomainSpec.json
-
-
-    #>
+    This example shows how to create a Workload Domain from a json spec
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -441,51 +389,44 @@ Function New-VCFWorkloadDomain {
             [string]$json 
     )
 
-if (!(Test-Path $json)) {
-Throw "JSON File Not Found"
-}
-else {
-# Read the json file contents into the $ConfigJson variable
-$ConfigJson = (Get-Content $json)
-
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/domains"
-try { 
-			# Validate the provided spec
-			$response = Validate-WorkloadDomainSpec -json $ConfigJson
-			# Submit the request once spec is valid
-			$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-			$response
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
     }
-    catch {
-        #Get response from the exception
-        ResponseExeception
+    else {
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/domains"
+        try { 
+		    # Validate the provided spec
+	        $response = Validate-WorkloadDomainSpec -json $ConfigJson
+	        # Submit the request once spec is valid
+		    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+	        $response
+        }
+        catch {
+            #Get response from the exception
+            ResponseExeception
+        }
     }
-}
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
 
 Function Update-VCFWorkloadDomain {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & marks a workload domain for deletion.
 	
-
     .DESCRIPTION
     Before a workload domain can be deleted it must first be marked for deletion.
 	The Update-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& marks a workload domain for deletion. 
 	
-
     .EXAMPLE
-	PS C:\> This example shows how to mark a workload domain for deletion
-	
 	PS C:\> Update-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-
-
-    #>
+    This example shows how to mark a workload domain for deletion
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -493,15 +434,13 @@ Function Update-VCFWorkloadDomain {
             [string]$id 
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/domains/$id"
-$body = '{
-	"markForDeletion": true
-}'
-try { 
-			$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
-			# This API does not return a response
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/$id"
+    $body = '{"markForDeletion": true}'
+    try { 
+	    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
+	    # This API does not return a response
     }
     catch {
         #Get response from the exception
@@ -511,11 +450,9 @@ try {
 Export-ModuleMember -Function Update-VCFWorkloadDomain
 
 Function Remove-VCFWorkloadDomain {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & deletes a workload domain.
-	
 
     .DESCRIPTION
     Before a workload domain can be deleted it must first be marked for deletion.
@@ -523,14 +460,10 @@ Function Remove-VCFWorkloadDomain {
 	The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& deletes a workload domain. 
 	
-
     .EXAMPLE
-	PS C:\> This example shows how to delete a workload domain
-	
 	PS C:\> Remove-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-
-
-    #>
+    This example shows how to delete a workload domain
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -538,13 +471,13 @@ Function Remove-VCFWorkloadDomain {
             [string]$id 
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/domains/$id"
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/$id"
 
-try { 
-			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-			$response
+    try { 
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        $response
     }
     catch {
         #Get response from the exception
@@ -555,37 +488,30 @@ Export-ModuleMember -Function Remove-VCFWorkloadDomain
 
 ######### End Workload Domain Operations ##########
 
+
 ######### Start Cluster Operations ##########
 
 Function Get-VCFCluster {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of clusters.
 	
-
     .DESCRIPTION
     The Get-VCFCluster cmdlet connects to the specified SDDC Manager 
 	& retrieves a list of clusters.
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to get a list of all clusters
-	
-	PS C:\> Get-VCFCluster
-	
-	.EXAMPLE
-    PS C:\> This example shows how to get a cluster by name
-	
-	PS C:\> Get-VCFCluster -name wld01-cl01
+    PS C:\> Get-VCFCluster
+    This example shows how to get a list of all clusters
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get a cluster by id
+    PS C:\> Get-VCFCluster -name wld01-cl01
+    This example shows how to get a cluster by name
 	
-	PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-
-
-    #>
+	.EXAMPLE
+    PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+    This example shows how to get a cluster by id
+#>
 	
 	param (
         [Parameter (Mandatory=$false)]
@@ -596,34 +522,28 @@ Function Get-VCFCluster {
             [string]$id
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-if ($PsBoundParameters.ContainsKey("id"))
-{
-$uri = "https://$sddcManager/v1/clusters/$id"
-}
-else
-{
-$uri = "https://$sddcManager/v1/clusters"
-}
-try { 
-			if ($PsBoundParameters.ContainsKey("name"))
-			{
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/clusters/$id"
+    }
+    else {
+        $uri = "https://$sddcManager/v1/clusters"
+    }
+    try { 
+        if ($PsBoundParameters.ContainsKey("name")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
-			}
-			if ($PsBoundParameters.ContainsKey("id"))
-			{
+		}
+		if ($PsBoundParameters.ContainsKey("id")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.id -eq $id}
-			}
-            if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id")))
-			{
+		}
+        if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
-       
-    }
+        }
 	}
     catch {
         #Get response from the exception
@@ -633,24 +553,18 @@ try {
 Export-ModuleMember -Function Get-VCFCluster
 
 Function New-VCFCluster {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & creates cluster.
 	
-
     .DESCRIPTION
     The New-VCFCluster cmdlet connects to the specified SDDC Manager 
 	& creates a cluster in a specified workload domains. 
 	
-
     .EXAMPLE
-	PS C:\> This example shows how to create a cluster in a Workload Domain from a json spec
-	
 	PS C:\> New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
-
-
-    #>
+    This example shows how to create a cluster in a Workload Domain from a json spec
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -658,63 +572,55 @@ Function New-VCFCluster {
             [string]$json 
     )
 
-if (!(Test-Path $json)) {
-Throw "JSON File Not Found"
-}
-else {
-# Read the json file contents into the $ConfigJson variable
-$ConfigJson = (Get-Content $json)
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/clusters"
-try { 
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/clusters"
+        try { 
 			# Validate the provided spec
 			$response = Validate-VCFClusterSpec -json $ConfigJson
 			# Submit the request once spec is valid
 			$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 			$response.elements
+        }
+        catch {    
+            #Get response from the exception
+            ResponseExeception
+        }
     }
-    catch {    
-        #Get response from the exception
-        ResponseExeception
-    }
-}
 }
 Export-ModuleMember -Function New-VCFCluster
 
 Function Update-VCFCluster {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & expands or compacts a cluster.
 	
-
     .DESCRIPTION
 	The Update-VCFCluster cmdlet connects to the specified SDDC Manager 
 	& expands or compacts a cluster by adding or removing a host(s). A cluster
 	can also be marked for deletion
 	
-
     .EXAMPLE
-	PS C:\> This example shows how to expand a cluster by adding a host(s)
-	
 	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterExpansionSpec.json
+    This example shows how to expand a cluster by adding a host(s) 
 	
 	.EXAMPLE
-	PS C:\> This example shows how to compact a cluster by removing a host(s)
-	
 	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterCompactionSpec.json
+    This example shows how to compact a cluster by removing a host(s)
 	
 	.EXAMPLE
-	PS C:\> This example shows how to mark a cluster for deletion
-	
 	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-markForDeletion $true
-
-
-    #>
+    This example shows how to mark a cluster for deletion
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -728,34 +634,29 @@ Function Update-VCFCluster {
             [bool]$markForDeletion
     )
 
-if ($PsBoundParameters.ContainsKey("json"))
-			{
-if (!(Test-Path $json)) {
-Throw "JSON File Not Found"
-}
-else {
-# Read the json file contents into the $ConfigJson variable
-$ConfigJson = (Get-Content $json)
-} }
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/clusters/$clusterid/"
-try { 
-			if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion")))
-			{
+    if ($PsBoundParameters.ContainsKey("json")) {
+        if (!(Test-Path $json)) {
+            Throw "JSON File Not Found"
+        }
+        else {
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content $json)
+        } 
+    }
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/clusters/$clusterid/"
+    try { 
+        if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
 			throw "You must include either -json or -markForDeletion"
-			}
-			if ($PsBoundParameters.ContainsKey("json"))
-			{
+		}
+	    if ($PsBoundParameters.ContainsKey("json")) {
 			# Validate the json spec
 			$response = Validate-VCFUpdateClusterSpec -clusterid $clusterid -json $ConfigJson
-			}
-			if ($PsBoundParameters.ContainsKey("markForDeletion"))
-			{
-			$ConfigJson = '{
-	"markForDeletion": true
-}'
-			}
+		}
+	    if ($PsBoundParameters.ContainsKey("markForDeletion")) {
+			$ConfigJson = '{"markForDeletion": true}'
+		}
 			$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 			#TODO: Parse the response
 			#$response.elements
@@ -768,26 +669,18 @@ try {
 Export-ModuleMember -Function Update-VCFCluster
 
 Function Remove-VCFCluster {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & deletes a cluster.
 	
-
     .DESCRIPTION
-    Before a cluster can be deleted it must first be marked for deletion.
-	See Update-VCFCluster
-	The Remove-VCFCluster cmdlet connects to the specified SDDC Manager 
-	& deletes a cluster. 
+    Before a cluster can be deleted it must first be marked for deletion. See Update-VCFCluster
+	The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster. 
 	
-
     .EXAMPLE
-	PS C:\> This example shows how to delete a cluster
-	
 	PS C:\> Remove-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1
-
-
-    #>
+    This example shows how to delete a cluster
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -795,14 +688,14 @@ Function Remove-VCFCluster {
             [string]$id 
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/clusters/$id"
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/clusters/$id"
 
-try { 
-			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-			#TODO: Parse the response
-			#$response.elements
+    try { 
+	    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+	    #TODO: Parse the response
+	    #$response.elements
     }
     catch { 
         #Get response from the exception
@@ -813,39 +706,30 @@ Export-ModuleMember -Function Remove-VCFCluster
 
 ######### End Cluster Operations ##########
 
+
 ######### Start Network Pool Operations ##########
 
 Function Get-VCFNetworkPool {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of Network Poola.
-	
 
     .DESCRIPTION
     The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager 
 	& retrieves a list of Network Pools. 
-	
 
     .EXAMPLE
-    PS C:\> This example shows how to get a list of all Network Pools
-	
-	PS C:\> Get-VCFNetworkPool
-	
-	.EXAMPLE
-    PS C:\> This example shows how to get a Network Pool by name
-	
-	PS C:\> Get-VCFNetworkPool -name sfo01-networkpool
+    PS C:\> Get-VCFNetworkPool
+    This example shows how to get a list of all Network Pools
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get a Network Pool by id
+    PS C:\> Get-VCFNetworkPool -name sfo01-networkpool
+    This example shows how to get a Network Pool by name
 	
-	PS C:\> Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
-	
-	
-
-
-    #>
+	.EXAMPLE
+    PS C:\> Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
+    This example shows how to get a Network Pool by id
+#>
 	
 	param (
         [Parameter (Mandatory=$false)]
@@ -856,25 +740,22 @@ Function Get-VCFNetworkPool {
             [string]$id
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/network-pools"
-try { 
-            if ($PsBoundParameters.ContainsKey("name"))
-			{
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/network-pools"
+    try { 
+        if ($PsBoundParameters.ContainsKey("name")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
-			}
-			if ($PsBoundParameters.ContainsKey("id"))
-			{
+        }
+	    if ($PsBoundParameters.ContainsKey("id")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.id -eq $id}
-			}
-            if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id")))
-			{
+	    }
+        if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
-			}
+		}
         
     }
     catch { 
@@ -885,24 +766,18 @@ try {
 Export-ModuleMember -Function Get-VCFNetworkPool
 
 Function New-VCFNetworkPool {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & creates a new Network Pool.
 	
-
     .DESCRIPTION
-    The New-VCFNetworkPool cmdlet connects to the specified SDDC Manager 
-	& creates a new Network Pool. 
+    The New-VCFNetworkPool cmdlet connects to the specified SDDC Manager & creates a new Network Pool.
 	Network Pool spec is provided in a JSON file.
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to create a Network Pool
-	
-	PS C:\> New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
-
-    #>
+    PS C:\> New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
+    This example shows how to create a Network Pool
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -910,51 +785,42 @@ Function New-VCFNetworkPool {
             [string]$json 
     )
 	
-if (!(Test-Path $json)) {
-Throw "JSON File Not Found"
-}
-else {
-# Read the json file contents into the $ConfigJson variable
-$ConfigJson = (Get-Content $json)
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/network-pools"
-try { 
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/network-pools"
+        try { 
 			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			# This API does not return a response body. Sending GET to validate the Network Pool creation was successful
 			$validate = $ConfigJson | ConvertFrom-Json
 			$poolName = $validate.name
 			Get-VCFNetworkPool -name $poolName
-    }
-    catch { 
-        #Get response from the exception
-        ResponseExeception
+        }
+        catch { 
+            #Get response from the exception
+            ResponseExeception
+        }
     }
 }
-							}
 Export-ModuleMember -Function New-VCFNetworkPool
 
-
 Function Remove-VCFNetworkPool {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & deletes a Network Pool.
 	
-
     .DESCRIPTION
-    The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager 
-	& deletes a Network Pool. 
+    The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool. 
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to get a Network Pool by name
-	
-	PS C:\> Remove-VCFNetworkPool -id "7ee7c7d2-5251-4bc9-9f91-4ee8d911511f"
-	
-
-
-    #>
+    PS C:\> Remove-VCFNetworkPool -id "7ee7c7d2-5251-4bc9-9f91-4ee8d911511f"
+    This example shows how to get a Network Pool by name
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -962,62 +828,51 @@ Function Remove-VCFNetworkPool {
             [string]$id
     )
 	
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/network-pools/$id"
-
-try { 
-            # This API does not return a response
-			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/network-pools/$id"
+    try { 
+        # This API does not return a response
+	    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
     }
     catch {
         #Get response from the exception
         ResponseExeception
     }
-
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
 
 ######### End Network Pool Operations ##########
 
+
 ######### Start License Key Operations ##########
 
 Function Get-VCFLicenseKey {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of License keys.
 	
-
     .DESCRIPTION
-    The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager 
-	& retrieves a list of License keys. 
+    The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager & retrieves a list of License keys. 
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to get a list of all License keys
-	
-	PS C:\> Get-VCFLicenseKey
-	
-	.EXAMPLE
-    PS C:\> This example shows how to get a specified License key
-	
-	PS C:\> Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+    PS C:\> Get-VCFLicenseKey
+    This example shows how to get a list of all License keys
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get a License Key by product type
-	Supported Product Types: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT
-	
-	PS C:\> Get-VCFLicenseKey -productType "VCENTER,VSAN"
-	
-	.EXAMPLE
-    PS C:\> This example shows how to get a License by status
-	Supported Status Types: EXPIRED,ACTIVE,NEVER_EXPIRES
-	
-	PS C:\> Get-VCFLicenseKey -status EXPIRED
-	
+    PS C:\> Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+    This example shows how to get a specified License key
 
-    #>
+	.EXAMPLE
+    PS C:\> Get-VCFLicenseKey -productType "VCENTER,VSAN"
+    This example shows how to get a License Key by product type
+	Supported Product Types: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT
+
+	.EXAMPLE
+    PS C:\> Get-VCFLicenseKey -status EXPIRED
+    This example shows how to get a License by status
+	Supported Status Types: EXPIRED,ACTIVE,NEVER_EXPIRES
+#>
 	
 	param (
         [Parameter (Mandatory=$false)]
@@ -1031,33 +886,29 @@ Function Get-VCFLicenseKey {
             [string]$status
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-try { 
-            if ($PsBoundParameters.ContainsKey("key"))
-			{
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    try { 
+        if ($PsBoundParameters.ContainsKey("key")) {
 			$uri = "https://$sddcManager/v1/license-keys/$key"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response
-			}
-			if ($PsBoundParameters.ContainsKey("productType"))
-			{
+		}
+		if ($PsBoundParameters.ContainsKey("productType")) {
 			$uri = "https://$sddcManager/v1/license-keys?productType=$productType"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
-			}
-			if ($PsBoundParameters.ContainsKey("status"))
-			{
+		}
+		if ($PsBoundParameters.ContainsKey("status")) {
 			$uri = "https://$sddcManager/v1/license-keys?licenseKeyStatus=$status"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
-			}
-            if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status")))
-			{
+		}
+        if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status"))) {
 			$uri = "https://$sddcManager/v1/license-keys"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
-			}
+		}
         
     }
     catch { 
@@ -1068,23 +919,17 @@ try {
 Export-ModuleMember -Function Get-VCFLicenseKey
 
 Function New-VCFLicenseKey {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & adds a new License Key.
 	
-
     .DESCRIPTION
-    The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager 
-	& adds a new License Key. 
+    The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager & adds a new License Key. 
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to add a new License Key
-	
-	PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
-
-    #>
+    PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
+    This example shows how to add a new License Key
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -1092,51 +937,43 @@ Function New-VCFLicenseKey {
             [string]$json 
     )
 	
-if (!(Test-Path $json)) {
-Throw "JSON File Not Found"
-}
-else {
-# Read the createNetworkPool json file contents into the $ConfigJson variable
-$ConfigJson = (Get-Content $json)
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/license-keys"
-try { 
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Read the createNetworkPool json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/license-keys"
+        try { 
 			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson			
 			# This API does not return a response body. Sending GET to validate the License Key creation was successful
 			$license = $ConfigJson | ConvertFrom-Json
 			$licenseKey = $license.key
 			Get-VCFLicenseKey -key $licenseKey
-    }
-    catch {
-        #Get response from the exception
-        ResponseExeception
-
-    }
+        }
+        catch {
+            #Get response from the exception
+            ResponseExeception
+        }
     }
 }
 Export-ModuleMember -Function New-VCFLicenseKey
 
 Function Remove-VCFLicenseKey {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & deletes a license key.
-	
 
     .DESCRIPTION
     The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager 
 	& deletes a License Key. A license Key can only be removed if it is not in use.
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to delete a License Key
-	
-	PS C:\> Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-	
-
-
-    #>
+    PS C:\> Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+    This example shows how to delete a License Key
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -1144,11 +981,10 @@ Function Remove-VCFLicenseKey {
             [string]$key
     )
 	
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/license-keys/$key"
-
-try { 
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/license-keys/$key"
+    try { 
             # This API does not return a response
 			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
     }
@@ -1166,29 +1002,21 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 ######### Start Task Operations ##########
 
 Function Get-VCFTask {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of tasks.
-	
 
     .DESCRIPTION
-    The Get-VCFTask cmdlet connects to the specified SDDC Manager 
-	& retrieves a list of tasks. 
-	
+    The Get-VCFTask cmdlet connects to the specified SDDC Manager & retrieves a list of tasks. 
 
     .EXAMPLE
-	PS C:\> This example shows how to get all tasks
-	
 	PS C:\> Get-VCFTask
+    This example shows how to get all tasks 
 	
 	.EXAMPLE
-	PS C:\> This example shows how to get a task by id
-	
 	PS C:\> Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a 
-
-
-    #>
+    This example shows how to get a task by id
+#>
 	
 	param (
         [Parameter (Mandatory=$false)]
@@ -1196,21 +1024,20 @@ Function Get-VCFTask {
             [string]$id
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
 
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/tasks/$id"
+        $uri
+    }
+    if ( -not $PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/tasks/"
+    }
 
-if ($PsBoundParameters.ContainsKey("id")) {
-$uri = "https://$sddcManager/v1/tasks/$id"
-$uri
-}
-if ( -not $PsBoundParameters.ContainsKey("id")) {
-$uri = "https://$sddcManager/v1/tasks/"
-}
-
-try { 
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response
+    try { 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	    $response
         
     }
     catch {
@@ -1221,22 +1048,18 @@ try {
 Export-ModuleMember -Function Get-VCFTask
 
 Function Retry-VCFTask {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retries a previously failed task.
 	
-
     .DESCRIPTION
-    The Retry-VCFTask cmdlet connects to the specified SDDC Manager 
-	& retries a previously failed task using the task id.
+    The Retry-VCFTask cmdlet connects to the specified SDDC Manager & retries a previously
+    failed task using the task id.
 	
-
     .EXAMPLE
-	Retry-VCFTask -taskid 7e1c2eee-3177-4e3b-84db-bfebc83f386a
-
-
-    #>
+	PS C:\> Retry-VCFTask -taskid 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+    This example retries the task based on the task id
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -1244,14 +1067,11 @@ Function Retry-VCFTask {
             [string]$id
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/tasks/$id"
-
-try { 
-            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
-			
-        
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/tasks/$id"
+    try { 
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
     }
     catch {
         #Get response from the exception
@@ -1262,34 +1082,28 @@ Export-ModuleMember -Function Retry-VCFTask
 	
 #### End Task Operations #####
 
+
 ######### Start Credential Operations ##########
 
 Function Get-VCFCredential {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & retrieves a list of credentials.
 	
-
     .DESCRIPTION
-    The Get-VCFCredential cmdlet connects to the specified SDDC Manager 
-	& retrieves a list of credentials. A privileged user account is required.
+    The Get-VCFCredential cmdlet connects to the specified SDDC Manager & retrieves a list of 
+    credentials. A privileged user account is required.
 	
-
     .EXAMPLE
-    PS C:\> This example shows how to get a list of credentials
-	
-	PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local 
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local 
 	-privilegedPassword VMw@re1!
+    This example shows how to get a list of credentials
 	
 	.EXAMPLE
-    PS C:\> This example shows how to get the credential for a specific resourceName (FQDN)
-	
-	PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local 
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local 
 	-privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo01.rainpole.local
-
-
-    #>
+    This example shows how to get the credential for a specific resourceName (FQDN)
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -1303,23 +1117,20 @@ Function Get-VCFCredential {
             [string]$resourceName
     )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$headers.Add("privileged-username", "$privilegedUsername")
-$headers.Add("privileged-password", "$privilegedPassword")
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $headers.Add("privileged-username", "$privilegedUsername")
+    $headers.Add("privileged-password", "$privilegedPassword")
 
-if ($PsBoundParameters.ContainsKey("resourceName"))
-{
-$uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
-}
-else
-{
-$uri = "https://$sddcManager/v1/credentials"
-}
-try { 
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response
-       
+    if ($PsBoundParameters.ContainsKey("resourceName")) {
+        $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
+    }
+    else {
+        $uri = "https://$sddcManager/v1/credentials"
+    }
+    try { 
+	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	    $response   
     }
     catch {   
         #Get response from the exception
@@ -1329,25 +1140,18 @@ try {
 Export-ModuleMember -Function Get-VCFCredential
 
 Function Update-VCFCredential {
-
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & updates a credential.
-	
 
     .DESCRIPTION
-	The Update-VCFCredential cmdlet connects to the specified SDDC Manager 
-	& updates a credential. Credentials can be updated with a specified password(s)
-	or rotated using system generated password(s).
+	The Update-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential. 
+    Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 	
-
     .EXAMPLE
-	PS C:\> This example shows how to update a credential using a json spec
-	
 	PS C:\> Update-VCFCredential -json .\Credential\updateCredentialSpec.json
-
-
-    #>
+    This example shows how to update a credential using a json spec
+#>
 	
 	param (
         [Parameter (Mandatory=$true)]
@@ -1361,21 +1165,21 @@ Function Update-VCFCredential {
             [string]$json
     )
 
-if ($PsBoundParameters.ContainsKey("json"))
-			{
-if (!(Test-Path $json)) {
-Throw "JSON File Not Found"
-}
-else {
-# Read the json file contents into the $ConfigJson variable
-$ConfigJson = (Get-Content $json)
-} }
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/credentials"
-try { 
-			$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-			$response
+    if ($PsBoundParameters.ContainsKey("json")) {
+        if (!(Test-Path $json)) {
+            Throw "JSON File Not Found"
+        }
+        else {
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content $json)
+        }
+    }
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/credentials"
+    try { 
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    $response
     }
     catch {
         #Get response from the exception
@@ -1386,9 +1190,8 @@ Export-ModuleMember -Function Update-VCFCredential
 
 ######### End Credential Operations ##########
 
-########
-########
-# Validation Functions
+
+######## Start Validation Functions ########
 
 Function Validate-CommissionHostSpec {
 
@@ -1397,14 +1200,11 @@ Function Validate-CommissionHostSpec {
         [string]$json
     )
 	
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/hosts/validations/commissions"
-
-try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-			
-        
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/hosts/validations/commissions"
+    try { 
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     }
     catch {
         #Get response from the exception
@@ -1419,16 +1219,12 @@ Function Validate-WorkloadDomainSpec {
         [object]$json
     )
 	
-
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/domains/validations/creations"
-
-try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-			
-        
-    }
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/validations/creations"
+    try { 
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+	}
     catch { 
         #Get response from the exception
         ResponseExeception
@@ -1442,15 +1238,12 @@ Function Validate-VCFClusterSpec {
         [object]$json
     )
 	
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/clusters/validations/creations"
-
-try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-			
-        
-    }
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/clusters/validations/creations"
+    try { 
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+	}
     catch {
         #Get response from the exception
         ResponseExeception
@@ -1466,20 +1259,20 @@ Function Validate-VCFUpdateClusterSpec {
         [object]$json
     )
 	
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/clusters/$clusterid/validations/updates"
-
-try { 
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-			
-        
-    }
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/clusters/$clusterid/validations/updates"
+    try { 
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+	}
     catch {
         #Get response from the exception
         ResponseExeception
     }	
 }
+
+######## End Validation Functions ########
+
 
 ######### Start CEIP Operations ##########
 
@@ -1491,10 +1284,9 @@ Function Get-VCFCeip {
     .DESCRIPTION
     The Get-VCFCeip cmdlet Retrieves the setting for CEIP of the connected SDDC Manager. 
 	
-    .EXAMPLE
-    This example shows how to get the current setting of CEIP
-	
+    .EXAMPLE	
 	PS C:\> Get-VCFCeip	
+    This example shows how to get the current setting of CEIP
 #>
 
     $headers = @{"Accept" = "application/json"}
@@ -1513,7 +1305,6 @@ Function Get-VCFCeip {
 Export-ModuleMember -Function Get-VCFCeip
 
 Function Set-VCFCeip {
-
 <#
     .SYNOPSIS
     Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
@@ -1522,9 +1313,8 @@ Function Set-VCFCeip {
     The Set-VCFCeip cmdlet configures the setting for CEIP of the connected SDDC Manager. 
 	
     .EXAMPLE
-    This example shows how to disable CEIP of the connected SDDC Manager
-	
-    PS C:\> Set-VCFCeip -ceipSetting ENABLE	
+    PS C:\> Set-VCFCeip -ceipSetting ENABLE
+    This example shows how to disable CEIP of the connected SDDC Manager 	
 #>
 
 	Param (
@@ -1536,13 +1326,13 @@ Function Set-VCFCeip {
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/system/ceip"
     try {
-        if ( -not $PsBoundParameters.ContainsKey("ceipsetting")){
+        if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
 			throw "You must define ENABLE or DISABLE as an input"
 		}
-        if ($ceipSetting -eq "ENABLE"){
+        if ($ceipSetting -eq "ENABLE") {
 			$ConfigJson = '{"status": "ENABLE"}'
         }
-        if ($ceipSetting -eq "DISABLE"){
+        if ($ceipSetting -eq "DISABLE") {
 			$ConfigJson = '{"status": "DISABLE"}'
         }
         $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
@@ -1557,6 +1347,7 @@ Export-ModuleMember -Function Set-VCFCeip
 
 ######### End CEIP Operations ##########
 
+
 ######### Start Backup Configuration Operations ##########
 
 Function Get-VCFBackupConfiguration {
@@ -1568,15 +1359,13 @@ Function Get-VCFBackupConfiguration {
      Retrieves the backup configuration details and the status
 	
     .EXAMPLE
+    PS C:\> Get-VCFBackupConfiguration
     This example shows the backup configuration
-	
-	PS C:\> Get-VCFBackupConfiguration
 #>
 
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/system/backup-configuration"
-
     try { 	
 		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 		    $response
@@ -1590,6 +1379,7 @@ Export-ModuleMember -Function Get-VCFBackupConfiguration
 
 ######### End Backup Configuration Operations ##########
 
+
 ######### Start Bundle Operations ##########
 
 Function Get-VCFBundle {
@@ -1601,19 +1391,17 @@ Function Get-VCFBundle {
     Get all Bundles i.e uploaded bundles and also bundles available via depot access. 
 	
     .EXAMPLE
+    PS C:\> Get-VCFBundle
     This example gets the list of bundles and all details
 	
-	PS C:\> Get-VCFBundle
-
-    This example gets the list of bundles and filters on the version, download status and the id only
-	
-	PS C:\> Get-VCFBundle | Select version,downloadStatus,id 	
+	.EXAMPLE
+    PS C:\> Get-VCFBundle | Select version,downloadStatus,id
+    This example gets the list of bundles and filters on the version, download status and the id only 	
 #>
 
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/bundles"
-
     try { 	
 		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 		    $response.elements      
@@ -1626,6 +1414,7 @@ Function Get-VCFBundle {
 Export-ModuleMember -Function Get-VCFBundle
 
 ######### End Bundle Operations ##########
+
 
 ######### Start Certificate Configuration Operations ##########
 
@@ -1648,7 +1437,6 @@ Function Get-VCFCertificateAuthConfiguration {
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/certificate-authorities"
-
     try { 	
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
@@ -1690,7 +1478,6 @@ Function Set-VCFMicrosoftCA {
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/certificate-authorities"
-
     try { 
         if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
 			throw "You must enter the mandatory values"
@@ -1707,6 +1494,7 @@ Export-ModuleMember -Function Set-VCFMicrosoftCA
 
 ######### End Certificate Configuration Operations ##########
 
+
 ######### Start Depot Configuration Operations ##########
 
 Function Get-VCFDepotCredentials {
@@ -1718,15 +1506,15 @@ Function Get-VCFDepotCredentials {
      Retrieves the configuration for the depot of the connected SDDC Manager
 	
     .EXAMPLE
+    PS C:\> Get-VCFDepotCredentials
     This example shows credentials that have been configured for the depot.
 	
-	PS C:\> Get-VCFDepotCredentials	
+		
 #>
 
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/system/settings/depot"
-
     try { 	
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
@@ -1747,9 +1535,8 @@ Function Set-VCFDepotCredentials {
      Update the configuration for the depot of the connected SDDC Manager
 	
     .EXAMPLE
-    This example sets the credentials that have been configured for the depot.
-	
-	PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
+    PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
+    This example sets the credentials that have been configured for the depot.	
 #>
 
 	Param (
@@ -1780,6 +1567,7 @@ Function Set-VCFDepotCredentials {
 Export-ModuleMember -Function Set-VCFDepotCredentials
 
 ######### End Depot Configuration Operations ##########
+
 
 ######### Start Foundation Component Operations ##########
 
@@ -1814,7 +1602,6 @@ Function Get-VCFManager {
     else{
         $uri = "https://$sddcManager/v1/sddc-managers"
     }
-
     try { 
         if ($PsBoundParameters.ContainsKey("id")) {
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1863,7 +1650,6 @@ Function Get-VCFService {
     else{
         $uri = "https://$sddcManager/v1/vcf-services"
     }
-
     try { 
         if ($PsBoundParameters.ContainsKey("id")) {
 	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1919,7 +1705,6 @@ Function Get-VCFvCenter {
     else{
         $uri = "https://$sddcManager/v1/vcenters"
     }
-
     try { 
         if ($PsBoundParameters.ContainsKey("id")) {
 	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1975,7 +1760,6 @@ Function Get-VCFnsxvManager {
     else{
         $uri = "https://$sddcManager/v1/nsx-managers"
     }
-
     try { 
         if ($PsBoundParameters.ContainsKey("id")) {
 	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -2031,7 +1815,6 @@ Function Get-VCFnsxtCluster {
     else{
         $uri = "https://$sddcManager/v1/nsxt-clusters"
     }
-
     try { 
         if ($PsBoundParameters.ContainsKey("id")) {
 	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -2050,6 +1833,7 @@ Function Get-VCFnsxtCluster {
 Export-ModuleMember -Function Get-VCFnsxtCluster
 
 ######### End Foundation Component Operations ##########
+
 
 Function ResponseExeception {
     #Get response from the exception
