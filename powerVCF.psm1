@@ -1735,24 +1735,23 @@ Export-ModuleMember -Function Set-VCFDepotCredentials
 
 ######### End Certificate Configuration Operations ##########
 
-######### Start SDDC Manager Operations ##########
+######### Start Foundation Component Operations ##########
 
 Function Get-VCFManager {
 <#
     .SYNOPSIS
-    Get the Sddc Managers
+    Get a list of SDDC Managers
 	
     .DESCRIPTION
      Retrieves the detials for SDDC Manager
 	
     .EXAMPLE
-    This example shows how to get the list of SDDC Managers.
+    PS C:\> Get-VCFManager
+    This example shows how to get the list of SDDC Managers
 	
-	PS C:\> Get-VCFManager
-
-    This example shows how to return the details for a specic SDDC Manager based on the ID
-
-	PS C:\> Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
+    .EXAMPLE
+    PS C:\> Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
+    This example shows how to return the details for a specic SDDC Manager based on the ID	
 #>
 
 	Param (
@@ -1787,27 +1786,21 @@ Function Get-VCFManager {
 }
 Export-ModuleMember -Function Get-VCFManager
 
-######### End SDDC Manager Operations ##########
-
-######### Start VCF Services Operations ##########
-
 Function Get-VCFService {
 <#
     .SYNOPSIS
-    Get the a list of running VCF Services
+    Gets a list of running VCF Services
 	
     .DESCRIPTION
-     Retrieves a list of services running on SDDC Manager
-	
-    .EXAMPLE
-    This example shows how to get the list of services running on SDDC Manager..
-	
-	PS C:\> Get-VCFService
+     Retrieves the list of services running on the connected SDDC Manager
 
     .EXAMPLE
-    This example shows how to return the details for a specic service on SDDC Manager based on the ID
+    PS C:\> Get-VCFService
+    This example shows how to get the list of services running on the connected SDDC Manager 
 
-	PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
+    .EXAMPLE
+    PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
+    This example shows how to return the details for a specic service running on the connected SDDC Manager based on the ID
 #>
 
 	Param (
@@ -1842,7 +1835,175 @@ Function Get-VCFService {
 }
 Export-ModuleMember -Function Get-VCFService
 
-######### End VCF Services Operations ##########
+Function Get-VCFvCenter {
+<#
+    .SYNOPSIS
+    Gets a list of vCenter Servers
+	
+    .DESCRIPTION
+    Retrieves a list of vCenter Servers managed by the connected SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Get-VCFvCenter
+    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+    This example shows how to return the details for a specic vCenter Server managed by the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFvCenter | select fqdn
+    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn	
+#>
+
+	Param (
+		[Parameter (Mandatory=$false)]
+        [string]$id
+    )
+
+    # Check the version of SDDC Manager
+    CheckVCFVersion
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/vcenters/$id"
+    }
+    else{
+        $uri = "https://$sddcManager/v1/vcenters"
+    }
+
+    try { 
+        if ($PsBoundParameters.ContainsKey("id")) {
+	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	        $response
+        }
+        else{
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response.elements
+        }
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFvCenter
+
+Function Get-VCFnsxvManager {
+<#
+    .SYNOPSIS
+    Gets a list of NSX-v Managers
+	
+    .DESCRIPTION
+     Retrieves a list of NSX-v Managers managed by the connected SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Get-VCFnsxvManager
+    This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Get-VCFnsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+    This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFnsxvManager | select fqdn
+    This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager but only return the fqdn	
+#>
+
+	Param (
+		[Parameter (Mandatory=$false)]
+        [string]$id
+    )
+
+    # Check the version of SDDC Manager
+    CheckVCFVersion
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/nsx-managers/$id"
+    }
+    else{
+        $uri = "https://$sddcManager/v1/nsx-managers"
+    }
+
+    try { 
+        if ($PsBoundParameters.ContainsKey("id")) {
+	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	        $response
+        }
+        else{
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response.elements
+        }
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFnsxvManager
+
+Function Get-VCFnsxtCluster {
+<#
+    .SYNOPSIS
+    Gets a list of NSX-T Clusters
+	
+    .DESCRIPTION
+    Retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Get-VCFnsxtCluster
+    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Get-VCFnsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+    This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFnsxtCluster | select fqdn
+    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the fqdn	
+#>
+
+	Param (
+		[Parameter (Mandatory=$false)]
+        [string]$id
+    )
+
+    # Check the version of SDDC Manager
+    CheckVCFVersion
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
+    }
+    else{
+        $uri = "https://$sddcManager/v1/nsxt-clusters"
+    }
+
+    try { 
+        if ($PsBoundParameters.ContainsKey("id")) {
+	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	        $response
+        }
+        else{
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response.elements
+        }
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFnsxtCluster
+
+######### End Foundation Component Operations ##########
 
 Function ResponseExeception {
     #Get response from the exception
