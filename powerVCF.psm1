@@ -102,20 +102,26 @@ Function Connect-VCFManager {
     # Checking against the sddc-managers API
     $uri = "https://$sddcManager/v1/sddc-managers"
     Try {
-            $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
-            if ($response.StatusCode -eq 200) {
-                Write-Host ""
-                Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
-                Write-Host ""
+            # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+            if ($PSEdition -eq 'Core') { 
+                $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
             }
+            else {
+                $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+            }
+        if ($response.StatusCode -eq 200) {
+            Write-Host ""
+            Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+            Write-Host ""
         }
+    }
     Catch {
             Write-Host ""
             Write-Host "" $_.Exception.Message -ForegroundColor Red
             Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
             Write-Host
-        }		
-				} 	
+    }		
+}
 Export-ModuleMember -function Connect-VCFManager
 
 
