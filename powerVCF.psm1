@@ -99,7 +99,13 @@ Function Connect-VCFManager {
     # Checking against the sddc-managers API
     $uri = "https://$sddcManager/v1/sddc-managers"
     Try {
-        $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+            # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+            if ($PSEdition -eq 'Core') { 
+                $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
+            }
+            else {
+                $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+            }
         if ($response.StatusCode -eq 200) {
             Write-Host ""
             Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
@@ -107,12 +113,12 @@ Function Connect-VCFManager {
         }
     }
     Catch {
-        Write-Host ""
-        Write-Host "" $_.Exception.Message -ForegroundColor Red
-        Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
-        Write-Host
+            Write-Host ""
+            Write-Host "" $_.Exception.Message -ForegroundColor Red
+            Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+            Write-Host
     }		
-} 	
+}
 Export-ModuleMember -function Connect-VCFManager
 
 
@@ -1721,6 +1727,62 @@ Function Get-VCFvCenter {
     }
 }
 Export-ModuleMember -Function Get-VCFvCenter
+
+Function Get-VCFPSC {
+    <#
+        .SYNOPSIS
+        Gets a list of Platform Services Controller (PSC) Servers
+        
+        .DESCRIPTION
+        Retrieves a list of PSC managed by the connected SDDC Manager
+        
+        .EXAMPLE
+        PS C:\> Get-VCFPSC
+        This example shows how to get the list of the PSC servers managed by the connected SDDC Manager
+        
+        .EXAMPLE
+        PS C:\> Get-VCFPSC -id 23832dec-e156-4d2d-89bf-37fb0a47aab5
+        This example shows how to return the details for a specic PSC servers managed by the connected SDDC Manager
+    
+        .EXAMPLE
+        PS C:\> Get-VCFPSC | select fqdn
+        This example shows how to get the list of PSC Servers managed by the connected SDDC Manager but only return the fqdn	
+    #>
+    
+        Param (
+            [Parameter (Mandatory=$false)]
+            [string]$id
+        )
+    
+        # Check the version of SDDC Manager
+        CheckVCFVersion
+    
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+    
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/pscs/$id"
+        }
+        else{
+            $uri = "https://$sddcManager/v1/pscs"
+        }
+    
+        try { 
+            if ($PsBoundParameters.ContainsKey("id")) {
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response
+            }
+            else{
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response.elements
+            }
+        }
+        catch {
+            # Call the function ResponseExeception which handles execption messages
+            ResponseExeception
+        }
+    }
+Export-ModuleMember -Function Get-VCFPSC
 
 Function Get-VCFnsxvManager {
 <#
