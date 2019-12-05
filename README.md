@@ -13,7 +13,7 @@ If you would like to contribute please get in touch! Current contributors listed
 
 Gary Blake - VMware HCI BU Staff II Architect
 
-Giuliano Bertello - Dell EMC Senior Principal Solutions Architect
+Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture [@GiulianoBerteo](https://twitter.com/GiulianoBerteo) [Blog](https://blog.bertello.org)
 
 
 ## Supported Platforms
