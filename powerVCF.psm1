@@ -1052,6 +1052,41 @@ Function Get-VCFTask {
     }
 }
 Export-ModuleMember -Function Get-VCFTask
+Function Start-VCFBackup {
+<#
+    .SYNOPSIS
+    Start the SDDC Manager backup
+
+    .DESCRIPTION
+    The Start-VCFBackup cmdlet invoke the SDDC Manager backup task. 
+
+    .EXAMPLE
+	PS C:\> Start-VCFBackup
+    This example shows how to start the SDDC Manager backup
+	
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    # this body is fixed for SDDC Manager backups. not worth having it stored on file
+    $ConfigJson = '
+        {
+            "elements" : [{
+                "resourceType" : "SDDC_MANAGER"
+            }]
+        }
+    '
+    $uri = "https://$sddcManager/v1/backups/tasks"
+    try { 	
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Start-VCFBackup
 
 Function Retry-VCFTask {
 <#
@@ -1208,9 +1243,9 @@ Function Validate-CommissionHostSpec {
 	
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/hosts/validations/commissions"
+    $uri = "https://$sddcManager/v1/hosts/validations"
     try { 
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType "application/json" -headers $headers -body $json
     }
     catch {
         #Get response from the exception
