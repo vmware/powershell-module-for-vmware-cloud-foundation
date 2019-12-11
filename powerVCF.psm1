@@ -1,9 +1,4 @@
 #PowerShell module for VMware Cloud Foundation
-#Brian O'Connnell
-#VMware HCIBU Staff Architect
-#broconnell@vmware.com
-#@lifeOfBrianOC
-#Version 1.0
 #Contributions, Improvements &/or Complete Re-writes Welcome!
 #https://github.com/PowerVCF/PowerVCF
 
@@ -20,7 +15,6 @@
 #in development & not tested beyond lab scenarios.
 #It is recommended you dont use it for any production environment 
 #without testing extensively!
-#Tested against VMware Cloud Foundation 3.8
 
 
 # Enable communication with self signed certs when using Powershell Core
