@@ -1265,9 +1265,19 @@ Function Validate-WorkloadDomainSpec {
 	
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/domains/validations/creations"
+    $uri = "https://$sddcManager/v1/domains/validations"
+	$json = $json | ConvertFrom-json
+	# Construct the domainCreationSpec json format as required by the validation API
+	$body = @()
+	$body += [pscustomobject]@{
+            domainCreationSpec = $json
+        } | ConvertTo-Json
+	# Remove the redundant ETS-supplied .Count property if it exists
+	if (Get-TypeData System.Array) {
+		Remove-TypeData System.Array 
+		}
     try { 
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
 	}
     catch { 
         #Get response from the exception
@@ -1284,9 +1294,19 @@ Function Validate-VCFClusterSpec {
 	
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/clusters/validations/creations"
+    $uri = "https://$sddcManager/v1/clusters/validations"
+	$json = $json | ConvertFrom-json
+	# Construct the clusterCreationSpec json format as required by the validation API
+	$body = @()
+	$body += [pscustomobject]@{
+            clusterCreationSpec = $json
+        } | ConvertTo-Json
+	# Remove the redundant ETS-supplied .Count property if it exists
+	if (Get-TypeData System.Array) {
+		Remove-TypeData System.Array 
+		}
     try { 
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
 	}
     catch {
         #Get response from the exception
@@ -1305,9 +1325,19 @@ Function Validate-VCFUpdateClusterSpec {
 	
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/clusters/$clusterid/validations/updates"
+    $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
+	$json = $json | ConvertFrom-json
+	# Construct the clusterUpdateSpec json format as required by the validation API
+	$body = @()
+	$body += [pscustomobject]@{
+            clusterUpdateSpec = $json
+        } | ConvertTo-Json
+	# Remove the redundant ETS-supplied .Count property if it exists
+	if (Get-TypeData System.Array) {
+		Remove-TypeData System.Array 
+		}
     try { 
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
 	}
     catch {
         #Get response from the exception
