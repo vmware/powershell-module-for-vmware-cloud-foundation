@@ -1232,14 +1232,23 @@ Function Validate-CommissionHostSpec {
 
 	Param (
         [Parameter (Mandatory=$true)]
-        [string]$json
+        [object]$json
     )
-	
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/hosts/validations"
+	$json = $json | ConvertFrom-json
+	# Construct the hostCommissionSpecs json format as required by the validation API
+	$body = @()
+	$body += [pscustomobject]@{
+            hostCommissionSpecs = $json
+        } | ConvertTo-Json
+	# Remove the redundant ETS-supplied .Count property if it exists
+	if (Get-TypeData System.Array) {
+		Remove-TypeData System.Array 
+		}
     try { 
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType "application/json" -headers $headers -body $json
+	$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
     }
     catch {
         #Get response from the exception
