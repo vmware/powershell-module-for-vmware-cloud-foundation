@@ -224,23 +224,46 @@ Function Commission-VCFHost {
     if (!(Test-Path $json)) {
         throw "JSON File Not Found"
     }
-    else {    # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
+    else {    
+        # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
         $ConfigJson = (Get-Content -Raw $json)
         $headers = @{"Accept" = "application/json"}
         $headers.Add("Authorization", "Basic $base64AuthInfo")
         $uri = "https://$sddcManager/v1/hosts/"
-        try { 
-            # Validate the provided JSON spec
+        
+            # Validate the provided JSON input specification file
             $response = Validate-CommissionHostSpec -json $ConfigJson
-            # Submit the request if the JSON soec is valid
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            # debug only
             $response
-        }
-        catch {   
-            #Get response from the exception
-            ResponseExeception
-        }		
-	
+            # get the task id from the validation function
+            $taskId = $response.id
+            # keep checking until the validation task has an execution status not anymore IN_PROGRESS
+            do {
+                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+
+            } While ($response.executionStatus -eq "IN_PROGRESS")
+
+            # Submit the request if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Host "submitting host commissioning call"
+                Try {
+                    Write-Host "Posting host(s) commisioning task to SDDC Manager"
+                    #$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                    #$response
+                }
+                Catch {   
+                    #Get response from the exception
+                    ResponseExeception
+                }
+            }
+            else {
+                Write-Host "The validation task commpleted the run with the following problems:"
+                Write-Host ""
+                $response
+                Write-Host ""
+
+            }
     }
 }
 Export-ModuleMember -Function Commission-VCFHost
@@ -1248,7 +1271,8 @@ Function Validate-CommissionHostSpec {
 		Remove-TypeData System.Array 
 		}
     try { 
-	$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+    return $response
     }
     catch {
         #Get response from the exception
