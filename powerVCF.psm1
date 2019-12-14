@@ -229,28 +229,26 @@ Function Commission-VCFHost {
         $ConfigJson = (Get-Content -Raw $json)
         $headers = @{"Accept" = "application/json"}
         $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/hosts/"
         
             # Validate the provided JSON input specification file
             $response = Validate-CommissionHostSpec -json $ConfigJson
-            # debug only
-            $response
             # get the task id from the validation function
             $taskId = $response.id
-            # keep checking until the validation task has an execution status not anymore IN_PROGRESS
+            # keep checking until executionStatus is not IN_PROGRESS
             do {
                 $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
                 $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
 
             } While ($response.executionStatus -eq "IN_PROGRESS")
 
-            # Submit the request if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Write-Host "submitting host commissioning call"
                 Try {
-                    Write-Host "Posting host(s) commisioning task to SDDC Manager"
-                    #$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-                    #$response
+                    Write-Host ""
+                    Write-Host "Task validation completed successfully, invoking host(s) commissiong on SDDC Manager" -ForegroundColor Green
+                    $uri = "https://$sddcManager/v1/hosts/"
+                    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                    Write-Host ""
                 }
                 Catch {   
                     #Get response from the exception
@@ -258,11 +256,10 @@ Function Commission-VCFHost {
                 }
             }
             else {
-                Write-Host "The validation task commpleted the run with the following problems:"
                 Write-Host ""
-                $response
+                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
                 Write-Host ""
-
             }
     }
 }
