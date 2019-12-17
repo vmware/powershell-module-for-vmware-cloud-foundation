@@ -613,18 +613,30 @@ Function New-VCFCluster {
         $ConfigJson = (Get-Content $json)
         $headers = @{"Accept" = "application/json"}
         $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/clusters"
-        try { 
-			# Validate the provided spec
-			$response = Validate-VCFClusterSpec -json $ConfigJson
-			# Submit the request once spec is valid
-			$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-			$response.elements
-        }
-        catch {    
-            #Get response from the exception
-            ResponseExeception
-        }
+			# Validate the provided JSON input specification file
+            $response = Validate-VCFClusterSpec -json $ConfigJson
+            # the validation API does not currently support polling with a task ID
+            Sleep 5
+            # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Try {
+                    Write-Host ""
+                    Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+					$uri = "https://$sddcManager/v1/clusters"
+					$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+					$response.elements
+				}
+				catch {    
+					#Get response from the exception
+					ResponseExeception
+				}
+			}
+			else {
+                Write-Host ""
+                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+                Write-Host ""
+            }
     }
 }
 Export-ModuleMember -Function New-VCFCluster
@@ -678,26 +690,45 @@ Function Update-VCFCluster {
     }
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/clusters/$clusterid/"
-    try { 
-        if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
-			throw "You must include either -json or -markForDeletion"
+		try { 
+			if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
+				throw "You must include either -json or -markForDeletion"
+			}
+			if ($PsBoundParameters.ContainsKey("json")) {
+				# Validate the provided JSON input specification file
+				$response = Validate-VCFClusterSpec -json $ConfigJson
+				# the validation API does not currently support polling with a task ID
+				Sleep 5
+				# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+				if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+					Try {
+						Write-Host ""
+						Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+						$uri = "https://$sddcManager/v1/clusters/$clusterid/"
+						$response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+						Write-Host ""
+					}
+					Catch {   
+						#Get response from the exception
+						ResponseExeception
+					}
+				}
+				else {
+					Write-Host ""
+					Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+					Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+					Write-Host ""
+				}
 		}
-	    if ($PsBoundParameters.ContainsKey("json")) {
-			# Validate the json spec
-			$response = Validate-VCFUpdateClusterSpec -clusterid $clusterid -json $ConfigJson
+			if ($PsBoundParameters.ContainsKey("markForDeletion")) {
+				$ConfigJson = '{"markForDeletion": true}'
+				$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+			}
 		}
-	    if ($PsBoundParameters.ContainsKey("markForDeletion")) {
-			$ConfigJson = '{"markForDeletion": true}'
+		catch { 
+			#Get response from the exception
+			ResponseExeception
 		}
-			$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-			#TODO: Parse the response
-			#$response.elements
-    }
-    catch { 
-        #Get response from the exception
-        ResponseExeception
-    }
 }
 Export-ModuleMember -Function Update-VCFCluster
 
