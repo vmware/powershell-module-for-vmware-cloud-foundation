@@ -248,6 +248,7 @@ Function Commission-VCFHost {
                     Write-Host "Task validation completed successfully, invoking host(s) commissiong on SDDC Manager" -ForegroundColor Green
                     $uri = "https://$sddcManager/v1/hosts/"
                     $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+		    return $response
                     Write-Host ""
                 }
                 Catch {   
