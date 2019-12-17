@@ -6,7 +6,7 @@ VMware Cloud Foundation API Documentation: https://code.vmware.com/apis/723/vmwa
 # Disclaimer
 This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU). 
 
-The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VCF API & VCF in general. It is provided without warranty and should not be used in a production environment without thouroughly testing first. It has been developed against VMware Cloud Foundation 3.8.1 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
+The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VCF API & VCF in general. It is provided without warranty and should not be used in a production environment without thouroughly testing first. It has been developed against VMware Cloud Foundation 3.9 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
 
 ## Contributers
 If you would like to contribute please get in touch! Current contributors listed below.
