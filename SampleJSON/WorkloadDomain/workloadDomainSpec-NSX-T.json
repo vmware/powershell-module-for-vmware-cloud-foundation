@@ -1,0 +1,118 @@
+{
+  "domainName" : "PowerVCF",
+  "vcenterSpec" : {
+    "name" : "sfo01w01vc01",
+    "networkDetailsSpec" : {
+      "ipAddress" : "172.16.225.64",
+      "dnsName" : "sfo01w01vc01.sfo01.rainpole.local",
+      "gateway" : "172.16.225.1",
+      "subnetMask" : "255.255.255.0"
+    },
+    "rootPassword" : "VMw@re1!",
+    "datacenterName" : "PowerVCF-DC"
+  },
+  "computeSpec" : {
+    "clusterSpecs" : [ {
+      "name" : "Cluster1",
+      "hostSpecs" : [ {
+        "id" : "c9a3139e-f1e9-4291-a5b1-73339d8d9c46",
+        "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+        "hostNetworkSpec" : {
+          "vmNics" : [ {
+            "id" : "vmnic0",
+            "vdsName" : "sfo01w01vds01"
+          }, {
+            "id" : "vmnic1",
+            "vdsName" : "sfo01w01vds01"
+          }  ]
+        }
+      }, {
+        "id" : "6b3578c4-fab6-4502-95fd-2c872b1e9111",
+        "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+        "hostNetworkSpec" : {
+          "vmNics" : [ {
+            "id" : "vmnic0",
+            "vdsName" : "sfo01w01vds01"
+          }, {
+            "id" : "vmnic1",
+            "vdsName" : "sfo01w01vds01"
+          }  ]
+        }
+      }, {
+        "id" : "11bfe1e4-a6c0-47e0-a73d-1c0ab28c9c86",
+        "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+        "hostNetworkSpec" : {
+          "vmNics" : [ {
+            "id" : "vmnic0",
+            "vdsName" : "sfo01w01vds01"
+          }, {
+            "id" : "vmnic1",
+            "vdsName" : "sfo01w01vds01"
+          }  ]
+        }
+      } ],
+      "datastoreSpec" : {
+        "vsanDatastoreSpec" : {
+          "failuresToTolerate" : 1,
+          "licenseKey" : "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB",
+          "datastoreName" : "sfo01w01vsan01"
+        }
+      },
+      "networkSpec" : {
+        "vdsSpecs" : [ {
+          "name" : "sfo01w01vds01",
+          "portGroupSpecs" : [ {
+            "name" : "sfo01w01vds01-Mgmt",
+            "transportType" : "MANAGEMENT"
+          }, {
+            "name" : "sfo01w01vds01-VSAN",
+            "transportType" : "VSAN"
+          }, {
+            "name" : "sfo01w01vds01-vMotion",
+            "transportType" : "VMOTION"
+          } ]
+        } ],
+        "nsxClusterSpec" : {
+          "nsxTClusterSpec" : {
+            "geneveVlanId" : 2237
+          }
+        }
+      }
+    } ]
+  },
+  "nsxTSpec" : {
+	"nsxManagerSpecs": [
+		{
+			"name": "sfo01w01nsx01",
+			"networkDetailsSpec": {
+				"ipAddress": "172.16.225.66",
+				"dnsName": "sfo01w01nsx01.sfo01.rainpole.local",
+				"gateway": "172.16.225.1",
+				"subnetMask": "255.255.255.0"
+			}
+		},
+		{
+			"name": "sfo01w01nsx02",
+			"networkDetailsSpec": {
+				"ipAddress": "172.16.225.67",
+				"dnsName": "sfo01w01nsx02.sfo01.rainpole.local",
+				"gateway": "172.16.225.1",
+				"subnetMask": "255.255.255.0"
+			}
+		},
+		{
+			"name": "sfo01w01nsx03",
+			"networkDetailsSpec": {
+				"ipAddress": "172.16.225.68",
+				"dnsName": "sfo01w01nsx03.sfo01.rainpole.local",
+				"gateway": "172.16.225.1",
+				"subnetMask": "255.255.255.0"
+			}
+		}
+	],
+	"vip": "172.16.225.69",
+	"vipFqdn": "sfo01w01nsx.sfo01.rainpole.local",
+	"licenseKey": "CCCCC-CCCCC-CCCCC-CCCCC-CCCCC",
+	"nsxManagerAdminPassword": "VMw@re1!VMw@re1!"
+}
+}
