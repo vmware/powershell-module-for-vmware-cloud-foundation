@@ -1496,7 +1496,11 @@ Function Get-VCFBundle {
 
 	.EXAMPLE
     PS C:\> Get-VCFBundle -id 
-    This example gets the details of a specific bundle by its id 	 	
+    This example gets the details of a specific bundle by its id 
+    
+    .EXAMPLE
+    PS C:\> Get-VCFBundle | Where {$_.description -Match "vRealize"}
+    This example lists all bundles that have vRelaize in the description field	 	
 #>
 
 	Param (
@@ -1532,6 +1536,41 @@ Function Get-VCFBundle {
     }
 }
 Export-ModuleMember -Function Get-VCFBundle
+
+Function Update-VCFBundle {
+<#
+    .SYNOPSIS
+    Update a Bundle for downloading from depot
+	
+    .DESCRIPTION
+    Triggers an immediate download. Only one download can triggered for a Bundle. 
+	
+    .EXAMPLE
+    PS C:\> Update-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
+    This example gets the list of bundles and all details	 	
+#>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+        [string]$id
+    )
+
+    # Check the version of SDDC Manager
+    CheckVCFVersion
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/bundles/$id"
+    try {
+        $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Update-VCFBundle
 
 ######### End Bundle Operations ##########
 
