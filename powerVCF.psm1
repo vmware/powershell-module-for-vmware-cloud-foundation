@@ -418,18 +418,30 @@ Function New-VCFWorkloadDomain {
         $ConfigJson = (Get-Content $json)
         $headers = @{"Accept" = "application/json"}
         $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/domains"
-        try { 
-		    # Validate the provided spec
-	        $response = Validate-WorkloadDomainSpec -json $ConfigJson
-	        # Submit the request once spec is valid
-		    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-	        $response
-        }
-        catch {
-            #Get response from the exception
-            ResponseExeception
-        }
+			# Validate the provided JSON input specification file
+            $response = Validate-WorkloadDomainSpec -json $ConfigJson
+            # the validation API does not currently support polling with a task ID
+            Sleep 5
+            # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+				Try {
+                    Write-Host ""
+                    Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
+					$uri = "https://$sddcManager/v1/domains"
+					$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+					Write-Host ""
+					}
+				catch {
+					#Get response from the exception
+					ResponseExeception
+					}
+				}
+            else {
+                Write-Host ""
+                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+                Write-Host ""
+            }
     }
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
