@@ -1293,7 +1293,7 @@ Function Validate-WorkloadDomainSpec {
 	$body = @()
 	$body += [pscustomobject]@{
             domainCreationSpec = $json
-        } | ConvertTo-Json
+        } | ConvertTo-Json -Depth 10
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array 
@@ -1322,7 +1322,7 @@ Function Validate-VCFClusterSpec {
 	$body = @()
 	$body += [pscustomobject]@{
             clusterCreationSpec = $json
-        } | ConvertTo-Json
+        } | ConvertTo-Json -Depth 10
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array 
@@ -1353,7 +1353,7 @@ Function Validate-VCFUpdateClusterSpec {
 	$body = @()
 	$body += [pscustomobject]@{
             clusterUpdateSpec = $json
-        } | ConvertTo-Json
+        } | ConvertTo-Json -Depth 10
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array 
