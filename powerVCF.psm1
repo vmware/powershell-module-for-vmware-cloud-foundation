@@ -1472,6 +1472,42 @@ Function Get-VCFBackupConfiguration {
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
 
+Function Start-VCFBackup {
+<#
+    .SYNOPSIS
+    Start the SDDC Manager backup
+
+    .DESCRIPTION
+    The Start-VCFBackup cmdlet invoke the SDDC Manager backup task. 
+
+    .EXAMPLE
+	PS C:\> Start-VCFBackup
+    This example shows how to start the SDDC Manager backup
+	
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    # this body is fixed for SDDC Manager backups. not worth having it stored on file
+    $ConfigJson = '
+        {
+            "elements" : [{
+                "resourceType" : "SDDC_MANAGER"
+            }]
+        }
+    '
+    $uri = "https://$sddcManager/v1/backups/tasks"
+    try { 	
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Start-VCFBackup
+
 ######### End Backup Configuration Operations ##########
 
 
@@ -1491,15 +1527,39 @@ Function Get-VCFBundle {
 	
 	.EXAMPLE
     PS C:\> Get-VCFBundle | Select version,downloadStatus,id
-    This example gets the list of bundles and filters on the version, download status and the id only 	
+    This example gets the list of bundles and filters on the version, download status and the id only
+
+	.EXAMPLE
+    PS C:\> Get-VCFBundle -id 
+    This example gets the details of a specific bundle by its id 	 	
 #>
+
+	Param (
+		[Parameter (Mandatory=$false)]
+        [string]$id
+    )
+
+    # Check the version of SDDC Manager
+    CheckVCFVersion
 
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/bundles"
-    try { 	
-		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response.elements      
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/bundles/$id"
+    }
+    else{
+        $uri = "https://$sddcManager/v1/bundles"
+    }
+    try { 
+        if ($PsBoundParameters.ContainsKey("id")) {
+	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	        $response
+        }
+        else{
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+		    $response.elements
+        }	
     }
     catch {
         # Call the function ResponseExeception which handles execption messages
