@@ -1500,7 +1500,7 @@ Function Get-VCFBundle {
     
     .EXAMPLE
     PS C:\> Get-VCFBundle | Where {$_.description -Match "vRealize"}
-    This example lists all bundles that have vRelaize in the description field	 	
+    This example lists all bundles that have vRealize in the description field	 	
 #>
 
 	Param (
