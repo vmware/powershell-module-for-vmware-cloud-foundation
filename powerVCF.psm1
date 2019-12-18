@@ -1656,7 +1656,7 @@ Function Request-VCFCertificateCSRs {
 	
     .EXAMPLE
     PS C:\> Request-VCFCertificateCSRs -domainName MGMT -json .\requestCsrSpec.json
-    This example requests the generation of a CSRs based on the entries within the requestCsrSpec.json file for resources within
+    This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
     the domain called MGMT
 #>
 
