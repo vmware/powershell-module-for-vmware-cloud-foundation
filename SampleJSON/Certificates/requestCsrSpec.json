@@ -1,0 +1,12 @@
+{
+  "operationType" : "UPDATE",
+  "elements" : [ {
+    "resourceName" : "sfo01m01esx02.sfo01.rainpole.local",
+    "resourceType" : "ESXI",
+    "credentials" : [ {
+      "credentialType" : "SSH",
+      "username" : "root",
+      "password" : "VMwareInfra@1"
+    } ]
+  } ]
+}
