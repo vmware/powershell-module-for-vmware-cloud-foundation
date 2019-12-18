@@ -1537,26 +1537,23 @@ Function Get-VCFBundle {
 }
 Export-ModuleMember -Function Get-VCFBundle
 
-Function Update-VCFBundle {
+Function Request-VCFBundle {
 <#
     .SYNOPSIS
-    Update a Bundle for downloading from depot
+    Request a Bundle for downloading from depot
 	
     .DESCRIPTION
-    Triggers an immediate download. Only one download can triggered for a Bundle. 
+    Triggers an immediate download. Only one download can be triggered for a Bundle. 
 	
     .EXAMPLE
-    PS C:\> Update-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
-    This example gets the list of bundles and all details	 	
+    PS C:\> Request-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
+    This example requests the immediate download of a bundle based on its id	 	
 #>
 
 	Param (
 		[Parameter (Mandatory=$true)]
         [string]$id
     )
-
-    # Check the version of SDDC Manager
-    CheckVCFVersion
 
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
@@ -1570,7 +1567,7 @@ Function Update-VCFBundle {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Update-VCFBundle
+Export-ModuleMember -Function Request-VCFBundle
 
 ######### End Bundle Operations ##########
 
