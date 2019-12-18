@@ -641,6 +641,7 @@ Function New-VCFCluster {
 }
 Export-ModuleMember -Function New-VCFCluster
 
+
 Function Update-VCFCluster {
 <#
     .SYNOPSIS
@@ -696,7 +697,7 @@ Function Update-VCFCluster {
 			}
 			if ($PsBoundParameters.ContainsKey("json")) {
 				# Validate the provided JSON input specification file
-				$response = Validate-VCFClusterSpec -json $ConfigJson
+				$response = Validate-VCFUpdateClusterSpec -clusterid $clusterid -json $ConfigJson
 				# the validation API does not currently support polling with a task ID
 				Sleep 5
 				# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
@@ -706,6 +707,7 @@ Function Update-VCFCluster {
 						Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
 						$uri = "https://$sddcManager/v1/clusters/$clusterid/"
 						$response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+						return $response
 						Write-Host ""
 					}
 					Catch {   
