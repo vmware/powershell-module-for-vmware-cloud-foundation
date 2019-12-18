@@ -1651,10 +1651,13 @@ Function Request-VCFCertificateCSRs {
 	
     .DESCRIPTION
     Generate CSR(s) for the selected resource(s) in the domain
+    - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
+      VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
 	
     .EXAMPLE
-    PS C:\> 
-    This example requests the generation of a CSRs based on the entires within the requestCsrSpec.json file
+    PS C:\> Request-VCFCertificateCSRs -domainName MGMT -json .\requestCsrSpec.json
+    This example requests the generation of a CSRs based on the entries within the requestCsrSpec.json file for resources within
+    the domain called MGMT
 #>
 
 	Param (
