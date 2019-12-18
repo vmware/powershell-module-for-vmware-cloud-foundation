@@ -1694,6 +1694,83 @@ Function Set-VCFMicrosoftCA {
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
 
+Function Get-VCFCertificateCSRs {
+<#
+    .SYNOPSIS
+    Get available CSR(s)
+	
+    .DESCRIPTION
+    Gets available CSRs from SDDC Manager
+	
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
+    This example gets a list of CSRs and displays them in JSON format
+#>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+        [string]$domainName
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+    try { 	
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFCertificateCSRs
+
+Function Request-VCFCertificateCSRs {
+<#
+    .SYNOPSIS
+    Generate CSR(s)
+	
+    .DESCRIPTION
+    Generate CSR(s) for the selected resource(s) in the domain
+    - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
+      VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+	
+    .EXAMPLE
+    PS C:\> Request-VCFCertificateCSRs -domainName MGMT -json .\requestCsrSpec.json
+    This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
+    the domain called MGMT
+#>
+
+	Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+		[Parameter (Mandatory=$true)]
+            [string]$domainName
+    )
+
+    if (!(Test-Path $json)) {
+        throw "JSON File Not Found"
+    }
+    else {    
+        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+        try { 	
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        catch {
+            # Call the function ResponseExeception which handles execption messages
+            ResponseExeception
+        }
+    }
+}
+Export-ModuleMember -Function Request-VCFCertificateCSRs
+
 ######### End Certificate Configuration Operations ##########
 
 
