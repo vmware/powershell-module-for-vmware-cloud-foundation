@@ -1770,6 +1770,42 @@ Function Request-VCFCertificateCSRs {
 }
 Export-ModuleMember -Function Request-VCFCertificateCSRs
 
+Function Get-VCFCertificate {
+<#
+    .SYNOPSIS
+    Get latest generated certificate(s) in a domain
+	
+    .DESCRIPTION
+    Get latest generated certificate(s) in a domain
+
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate 
+    This example gets a list of certificates that have been generated
+	
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT | ConvertTo-Json
+    This example gets a list of certificates and displays them in JSON format
+#>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+        [string]$domainName
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+    try { 	
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFCertificate
+
 ######### End Certificate Configuration Operations ##########
 
 
