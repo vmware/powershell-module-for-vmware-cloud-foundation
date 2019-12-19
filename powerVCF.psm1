@@ -1851,6 +1851,49 @@ Function Request-VCFCertificate {
 }
 Export-ModuleMember -Function Request-VCFCertificate
 
+Function Update-VCFCertificate {
+<#
+    .SYNOPSIS
+    Replace certificate(s) for the selected resource(s) in a domain
+	
+    .DESCRIPTION
+    Replace certificate(s) for the selected resource(s) in a domain
+	
+    .EXAMPLE
+    PS C:\> Update-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+    This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
+    for resources within the domain called MGMT
+#>
+
+	Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+		[Parameter (Mandatory=$true)]
+            [string]$domainName
+    )
+
+    if (!(Test-Path $json)) {
+        throw "JSON File Not Found"
+    }
+    else {    
+        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+        try { 	
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        catch {
+            # Call the function ResponseExeception which handles execption messages
+            ResponseExeception
+        }
+    }
+}
+Export-ModuleMember -Function Update-VCFCertificate
+
 ######### End Certificate Configuration Operations ##########
 
 
