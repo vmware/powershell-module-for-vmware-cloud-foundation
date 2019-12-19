@@ -641,7 +641,6 @@ Function New-VCFCluster {
 }
 Export-ModuleMember -Function New-VCFCluster
 
-
 Function Update-VCFCluster {
 <#
     .SYNOPSIS
@@ -1786,9 +1785,7 @@ Function Get-VCFDepotCredentials {
 	
     .EXAMPLE
     PS C:\> Get-VCFDepotCredentials
-    This example shows credentials that have been configured for the depot.
-	
-		
+    This example shows credentials that have been configured for the depot.		
 #>
 
     $headers = @{"Accept" = "application/json"}
@@ -2166,6 +2163,37 @@ Function Get-VCFnsxtCluster {
     }
 }
 Export-ModuleMember -Function Get-VCFnsxtCluster
+
+Function Get-VCFvRLI {
+<#
+    .SYNOPSIS
+    Get the existing vRealize Log Insight Details
+	
+    .DESCRIPTION
+    Gets the complete information about the existing vRealize Log Insight deployment.
+	
+    .EXAMPLE
+    PS C:\> Get-VCFvRLI
+    This example list all details concerning the vRealize Log Insight Cluster
+
+    .EXAMPLE
+    PS C:\> Get-VCFvRLI | Select nodes | ConvertTo-Json
+    This example lists the node details of the cluster and outputs them in JSON format 
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/vrli"
+    try { 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFvRLI
 
 ######### End Foundation Component Operations ##########
 
