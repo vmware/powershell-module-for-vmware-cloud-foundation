@@ -641,7 +641,6 @@ Function New-VCFCluster {
 }
 Export-ModuleMember -Function New-VCFCluster
 
-
 Function Update-VCFCluster {
 <#
     .SYNOPSIS
@@ -1771,6 +1770,130 @@ Function Request-VCFCertificateCSRs {
 }
 Export-ModuleMember -Function Request-VCFCertificateCSRs
 
+Function Get-VCFCertificate {
+<#
+    .SYNOPSIS
+    Get latest generated certificate(s) in a domain
+	
+    .DESCRIPTION
+    Get latest generated certificate(s) in a domain
+
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate 
+    This example gets a list of certificates that have been generated
+	
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT | ConvertTo-Json
+    This example gets a list of certificates and displays them in JSON format
+#>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+        [string]$domainName
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+    try { 	
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFCertificate
+
+Function Request-VCFCertificate {
+<#
+    .SYNOPSIS
+    Generate certificate(s) for the selected resource(s) in a domain
+	
+    .DESCRIPTION
+    Generate certificate(s) for the selected resource(s) in a domain. CA must be configured and CSR must be generated beforehand
+    - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
+      VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+	
+    .EXAMPLE
+    PS C:\> Request-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+    This example requests the generation of the Certificates based on the entries within the requestCertificateSpec.json file
+    for resources within the domain called MGMT
+#>
+
+	Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+		[Parameter (Mandatory=$true)]
+            [string]$domainName
+    )
+
+    if (!(Test-Path $json)) {
+        throw "JSON File Not Found"
+    }
+    else {    
+        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+        try { 	
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        catch {
+            # Call the function ResponseExeception which handles execption messages
+            ResponseExeception
+        }
+    }
+}
+Export-ModuleMember -Function Request-VCFCertificate
+
+Function Update-VCFCertificate {
+<#
+    .SYNOPSIS
+    Replace certificate(s) for the selected resource(s) in a domain
+	
+    .DESCRIPTION
+    Replace certificate(s) for the selected resource(s) in a domain
+	
+    .EXAMPLE
+    PS C:\> Update-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+    This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
+    for resources within the domain called MGMT
+#>
+
+	Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+		[Parameter (Mandatory=$true)]
+            [string]$domainName
+    )
+
+    if (!(Test-Path $json)) {
+        throw "JSON File Not Found"
+    }
+    else {    
+        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+        try { 	
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        catch {
+            # Call the function ResponseExeception which handles execption messages
+            ResponseExeception
+        }
+    }
+}
+Export-ModuleMember -Function Update-VCFCertificate
+
 ######### End Certificate Configuration Operations ##########
 
 
@@ -1786,9 +1909,7 @@ Function Get-VCFDepotCredentials {
 	
     .EXAMPLE
     PS C:\> Get-VCFDepotCredentials
-    This example shows credentials that have been configured for the depot.
-	
-		
+    This example shows credentials that have been configured for the depot.		
 #>
 
     $headers = @{"Accept" = "application/json"}
@@ -2166,6 +2287,37 @@ Function Get-VCFnsxtCluster {
     }
 }
 Export-ModuleMember -Function Get-VCFnsxtCluster
+
+Function Get-VCFvRLI {
+<#
+    .SYNOPSIS
+    Get the existing vRealize Log Insight Details
+	
+    .DESCRIPTION
+    Gets the complete information about the existing vRealize Log Insight deployment.
+	
+    .EXAMPLE
+    PS C:\> Get-VCFvRLI
+    This example list all details concerning the vRealize Log Insight Cluster
+
+    .EXAMPLE
+    PS C:\> Get-VCFvRLI | Select nodes | ConvertTo-Json
+    This example lists the node details of the cluster and outputs them in JSON format 
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/vrli"
+    try { 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFvRLI
 
 ######### End Foundation Component Operations ##########
 
