@@ -777,7 +777,7 @@ Export-ModuleMember -Function Remove-VCFCluster
 Function Get-VCFNetworkPool {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of Network Poola.
+    Connects to the specified SDDC Manager & retrieves a list of Network Pools.
 
     .DESCRIPTION
     The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager 
