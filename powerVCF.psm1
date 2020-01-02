@@ -910,31 +910,48 @@ Export-ModuleMember -Function Remove-VCFNetworkPool
 Function Get-VCFNetwork {
 <#
     .SYNOPSIS
-    Get a Networks of a Network Pool
+    Get a Network of a Network Pool
 
     .DESCRIPTION
     The Get-VCFNetwork cmdlet connects to the specified SDDC Manager and retrives a list of the networks
 	configured for the provided network pool. 
 
     .EXAMPLE
-    PS C:\> Get-VCFNetwork -id 
-    This example shows how to get a list of all networks configured for the network pool
+    PS C:\> Get-VCFNetwork -id 917bcf8f-93e8-4b84-9627-471899c05f52
+    This example shows how to get a list of all networks associated to the network pool based on the id provided
+
+    .EXAMPLE
+    PS C:\> Get-VCFNetwork -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 
+    This example shows how to get a list of details for a specific network associated to the network pool using ids
 	
 #>
 	
 	param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$id
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$networkid
     )
 
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/network-pools/$id/networks"
-
-    try { 
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements    
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/network-pools/$id/networks"
+    }
+    if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("networkid"))) {
+        $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid"
+    }
+    try {
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("networkid"))) {
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
     }
     catch { 
         #Get response from the exception
