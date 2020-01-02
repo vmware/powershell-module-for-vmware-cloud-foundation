@@ -907,6 +907,42 @@ Function Remove-VCFNetworkPool {
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
 
+Function Get-VCFNetwork {
+<#
+    .SYNOPSIS
+    Get a Networks of a Network Pool
+
+    .DESCRIPTION
+    The Get-VCFNetwork cmdlet connects to the specified SDDC Manager and retrives a list of the networks
+	configured for the provided network pool. 
+
+    .EXAMPLE
+    PS C:\> Get-VCFNetwork -id 
+    This example shows how to get a list of all networks configured for the network pool
+	
+#>
+	
+	param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/network-pools/$id/networks"
+
+    try { 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements    
+    }
+    catch { 
+        #Get response from the exception
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFNetwork
+
 ######### End Network Pool Operations ##########
 
 
