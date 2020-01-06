@@ -907,21 +907,21 @@ Function Remove-VCFNetworkPool {
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
 
-Function Get-VCFNetwork {
+Function Get-VCFNetworkIPool {
 <#
     .SYNOPSIS
     Get a Network of a Network Pool
 
     .DESCRIPTION
-    The Get-VCFNetwork cmdlet connects to the specified SDDC Manager and retrives a list of the networks
+    The Get-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and retrives a list of the networks
 	configured for the provided network pool. 
 
     .EXAMPLE
-    PS C:\> Get-VCFNetwork -id 917bcf8f-93e8-4b84-9627-471899c05f52
+    PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52
     This example shows how to get a list of all networks associated to the network pool based on the id provided
 
     .EXAMPLE
-    PS C:\> Get-VCFNetwork -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 
+    PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 
     This example shows how to get a list of details for a specific network associated to the network pool using ids	
 #>
 	
@@ -957,7 +957,7 @@ Function Get-VCFNetwork {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Get-VCFNetwork
+Export-ModuleMember -Function Get-VCFNetworkIPool
 
 Function Add-VCFNetwork {
 <#
@@ -965,11 +965,11 @@ Function Add-VCFNetwork {
     Add an IP Pool to the Network of a Network Pool
 
     .DESCRIPTION
-    The Add-VCFNetwork cmdlet connects to the specified SDDC Manager and adds a new IP Pool to an existing Network within
+    The Add-VCFNetworkIPool cmdlet connects to the specified SDDC Manager and adds a new IP Pool to an existing Network within
 	a Network Pool. 
 
     .EXAMPLE
-    PS C:\> Add-VCFNetwork -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+    PS C:\> Add-VCFNetworkIPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
     This example shows how create a new IP Pool on the existing network for a given Network Pool
 #>
 	
@@ -1001,19 +1001,19 @@ Function Add-VCFNetwork {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Add-VCFNetwork
+Export-ModuleMember -Function Add-VCFNetworkIPoolIPool
 
-Function Remove-VCFNetwork {
+Function Remove-VCFNetworkIPool {
 <#
     .SYNOPSIS
     Remove an IP Pool from the Network of a Network Pool
 
     .DESCRIPTION
-    The Remove-VCFNetwork cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an existing Network within
+    The Remove-VCFNetworkIPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an existing Network within
 	a Network Pool. 
 
     .EXAMPLE
-    PS C:\> Remove-VCFNetwork -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+    PS C:\> Remove-VCFNetworkIPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
     This example shows how remove an IP Pool on the existing network for a given Network Pool
 #>
 	
@@ -1045,7 +1045,7 @@ Function Remove-VCFNetwork {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Remove-VCFNetwork
+Export-ModuleMember -Function Remove-VCFNetworkIPool
 
 ######### End Network Pool Operations ##########
 
