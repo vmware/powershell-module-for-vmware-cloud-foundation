@@ -959,7 +959,7 @@ Function Get-VCFNetworkIPool {
 }
 Export-ModuleMember -Function Get-VCFNetworkIPool
 
-Function Add-VCFNetwork {
+Function Add-VCFNetworkIPool {
 <#
     .SYNOPSIS
     Add an IP Pool to the Network of a Network Pool
@@ -1001,7 +1001,7 @@ Function Add-VCFNetwork {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Add-VCFNetworkIPoolIPool
+Export-ModuleMember -Function Add-VCFNetworkIPool
 
 Function Remove-VCFNetworkIPool {
 <#
