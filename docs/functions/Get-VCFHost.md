@@ -3,13 +3,6 @@
 ## SYNOPSIS
 Connects to the specified SDDC Manager & retrieves a list of hosts.
 
-## SYNTAX
-
-### Username & Password
-```
-Get-VCFHost
-```
-
 ## DESCRIPTION
 The Get-VCFHost cmdlet connects to the specified SDDC Manager & retrieves a list of hosts.  
 	VCF Hosts are defined by status
