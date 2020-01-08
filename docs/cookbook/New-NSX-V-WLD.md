@@ -1,12 +1,9 @@
-### PowerShell Cookbook for the VMware Cloud Foundation API using PowerVRA
+# PowerShell Cookbook for the VMware Cloud Foundation API using PowerVRA
 
-So now that we have a PowerShell module for the VMware Cloud Foundation API, just what can we do with it? Well in this example we will create an NSX-V backed VCF workload domain, all using PowerVCF to interract with the API. Now all of this could obviously be wrapped up in a single script but I'm going to show you each step, hopefully with some tips along the way.
+## DESCRIPTION
+In this example we will create an NSX-V backed VCF workload domain with the API.
 
-I will be making the assumption that you are familiar with VMware Cloud Foundation Concepts. If not please review the documentation here.
-
-So once we have the initial VCF bringup completed we need to add a workload domain(s) to service our workloads. In my example below I have a management domain only.
-
-And i have only the 4 hosts that are part of the management domain in my inventory. So i need to add new hosts to my inventory before i can create a new workload domain.
+Once the initial VCF bringup is completed we need to add a workload domain(s) to service our workloads. In the example below we have a management domain only.
 
 The sequence of events is as follows:
 
@@ -24,11 +21,11 @@ Import-Module .\PowerVCF
 Connect to SDDC Manager
 To establish a session with SDDC Manager run the following
 
-Connect-VCFSDDCManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMw@re1!
+Connect-VCFManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMw@re1!
 
 Create a network pool
 
-The first thing i need before i can commission new hosts is to create a new network pool, which will include the vSAN & vMotion network details for this workload domain cluster.
+The first thing you need before you can commission new hosts is to create a new network pool, which will include the vSAN & vMotion network details for this workload domain cluster.
 
 To create a new network pool do the following:
 
@@ -38,7 +35,7 @@ TIP: The PowerVCF Module includes a folder of sample json files to get you start
 
 Here is the json format required for creating a vSAN network pool (Please use the same json with the module rather than copying from here as formatting is probably messed up!)
 
-[code language="Powershell"]
+```json
 
 {
 "name": "sfo01w01-cl01",
@@ -74,7 +71,7 @@ Here is the json format required for creating a vSAN network pool (Please use th
 ]
 }
 
-[/code]
+```
 
 So first off lets get a list of current Network Pools. To do this run the following cmdlet:
 
@@ -82,21 +79,23 @@ Get-VCFNetworkPool
 
 As expected this returns a single network pool.
 
-TIP: You can manipulate the return data in several ways. See this post for more
+### TIP
+You can manipulate the return data in several ways. See this post for more
 
-So to create a new network pool using the json we created earlier run the following:
+To create a new network pool using the json we created earlier run the following:
 
 New-VCFNetworkPool -json .\SampleJSON\NetworkPool\addNetworkPoolSpec.json
 
 Now running Get-VCFNetworkPool should display 2 Network Pools
 
-Commission Hosts
+### Commission Hosts
 
-Now that we have a network pool we can commission hosts and associate them with the network pool. For this we need the following json
+Now that you have a network pool you can commission hosts and associate them with the network pool. For this you need the following json
 
-TIP: For this json you need the network pool name & ID. These were returned when the pool was created and also by Get-VCFNetworkPool
+### TIP 
+For this json you need the network pool name & ID. These were returned when the pool was created and also by Get-VCFNetworkPool
 
-[code language="Powershell"]
+```json
 
 [
 {
@@ -134,27 +133,29 @@ TIP: For this json you need the network pool name & ID. These were returned when
 }
 ]
 
-[/code]
+```
 
-So to commission the 4 new hosts into my VCF inventory i simply run
+So to commission the 4 new hosts into my VCF inventory you run:
 
 Commission-VCFHost -json .\SampleJSON\Host\commissionHosts.json
 
-TIP: This returns a task id, which you can monitor by running the following until status=Successful:
+### TIP 
+This returns a task id, which you can monitor by running the following until status=Successful:
 
 Get-VCFTask -id b93e2bc7-627b-4f7c-980b-c12b3497c4ea
 
-Create a Workload Domain
+## Create a Workload Domain
 
 Once the commission hosts task is complete you can then create a workload domain using those hosts. Creating a workload domain also requires a json file. For this you need the id's of the hosts that you want to use. In VCF hosts that are available to be used in a workload domain have a status of UNASSIGNED_USEABLE so to find the id's of the hosts you want to add run the following
 
-TIP: Filter the results by adding | select fqdn,id
+### TIP 
+Filter the results by adding | select fqdn,id
 
 Get-VCFHost -Status UNASSIGNED_USEABLE | select fqdn,id
 
 This returns the ids we need for creating the workload domain. Here is the Workload domain json. (Replace ESXi licence (AAAAA), vSAN licence (BBBBB) & NSX-V licence (CCCCC) with your keys)
 
-[code language="Powershell"]
+```json
 
 {
 "domainName" : "PowerVCF",
@@ -261,7 +262,7 @@ This returns the ids we need for creating the workload domain. Here is the Workl
 }
 }
 
-[/code]
+```
 
 To create the workload domain run the following:
 
