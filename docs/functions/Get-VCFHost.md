@@ -24,21 +24,25 @@ The Get-VCFHost cmdlet connects to the specified SDDC Manager & retrieves a list
 ```
 Get-VCFHost
     This example shows how to get all hosts regardless of status
-	
+```
+
 ### EXAMPLE 2
 ```
 Get-VCFHost -Status ASSIGNED
     This example shows how to get all hosts with a specific status
-	
+```
+
 ### EXAMPLE 3
 ```
 Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
     This example shows how to get a host by id
-	
+```
+
 ### EXAMPLE 4
 ```
 Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
     This example shows how to get a host by fqdn
+```
 
 
 ## PARAMETERS
