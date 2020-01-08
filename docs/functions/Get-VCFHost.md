@@ -41,7 +41,7 @@ Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
 ## PARAMETERS
 
 ### -Status
-VCF Hosts are defined by status
+- VCF Hosts are defined by status
 	- ASSIGNED - Hosts that are assigned to a Workload domain
 	- UNASSIGNED_USEABLE - Hosts that are availbale to be assigned to a Workload Domain
 	- UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used 
