@@ -739,7 +739,7 @@ Function Remove-VCFCluster {
     Connects to the specified SDDC Manager & deletes a cluster.
 	
     .DESCRIPTION
-    Before a cluster can be deleted it must first be marked for deletion. See Update-VCFCluster
+    Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
 	The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster. 
 	
     .EXAMPLE
