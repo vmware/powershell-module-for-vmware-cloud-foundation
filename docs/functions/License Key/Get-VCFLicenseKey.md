@@ -5,7 +5,7 @@
 
 ## Syntax
 ```
-Get-VCFLicenseKey -id <string>
+Get-VCFLicenseKey -key <string> -productType <string> -status <string>
 ```
 
 ## DESCRIPTION
