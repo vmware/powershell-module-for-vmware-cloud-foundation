@@ -1,4 +1,4 @@
-# Get-VCFHost
+# Get-VCFWorkloadDomain
 
 ## SYNOPSIS
 Connects to the specified SDDC Manager & retrieves a list of workload domains.
