@@ -446,18 +446,18 @@ Function New-VCFWorkloadDomain {
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
 
-Function Update-VCFWorkloadDomain {
+Function Set-VCFWorkloadDomain {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & marks a workload domain for deletion.
 	
     .DESCRIPTION
     Before a workload domain can be deleted it must first be marked for deletion.
-	The Update-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
+	The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& marks a workload domain for deletion. 
 	
     .EXAMPLE
-	PS C:\> Update-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
+	PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
     This example shows how to mark a workload domain for deletion
 #>
 	
@@ -480,7 +480,7 @@ Function Update-VCFWorkloadDomain {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Update-VCFWorkloadDomain
+Export-ModuleMember -Function Set-VCFWorkloadDomain
 
 Function Remove-VCFWorkloadDomain {
 <#
@@ -489,7 +489,7 @@ Function Remove-VCFWorkloadDomain {
 
     .DESCRIPTION
     Before a workload domain can be deleted it must first be marked for deletion.
-	See Update-VCFWorkloadDomain
+	See Set-VCFWorkloadDomain
 	The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& deletes a workload domain. 
 	
@@ -641,28 +641,28 @@ Function New-VCFCluster {
 }
 Export-ModuleMember -Function New-VCFCluster
 
-Function Update-VCFCluster {
+Function Set-VCFCluster {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & expands or compacts a cluster.
 	
     .DESCRIPTION
-	The Update-VCFCluster cmdlet connects to the specified SDDC Manager 
+	The Set-VCFCluster cmdlet connects to the specified SDDC Manager 
 	& expands or compacts a cluster by adding or removing a host(s). A cluster
 	can also be marked for deletion
 	
     .EXAMPLE
-	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterExpansionSpec.json
     This example shows how to expand a cluster by adding a host(s) 
 	
 	.EXAMPLE
-	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterCompactionSpec.json
     This example shows how to compact a cluster by removing a host(s)
 	
 	.EXAMPLE
-	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-markForDeletion $true
     This example shows how to mark a cluster for deletion
 #>
@@ -670,7 +670,7 @@ Function Update-VCFCluster {
 	param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$clusterid,
+            [string]$id,
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$json,
@@ -731,7 +731,7 @@ Function Update-VCFCluster {
 			ResponseExeception
 		}
 }
-Export-ModuleMember -Function Update-VCFCluster
+Export-ModuleMember -Function Set-VCFCluster
 
 Function Remove-VCFCluster {
 <#
