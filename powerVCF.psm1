@@ -1262,7 +1262,7 @@ Function Retry-VCFTask {
     failed task using the task id.
 	
     .EXAMPLE
-	PS C:\> Retry-VCFTask -taskid 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+	PS C:\> Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
     This example retries the task based on the task id
 #>
 	
