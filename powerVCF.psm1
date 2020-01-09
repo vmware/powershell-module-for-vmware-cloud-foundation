@@ -2000,7 +2000,7 @@ Function Update-VCFCertificate {
     Replace certificate(s) for the selected resource(s) in a domain
 	
     .EXAMPLE
-    PS C:\> Update-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+    PS C:\> Update-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
     This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
     for resources within the domain called MGMT
 #>

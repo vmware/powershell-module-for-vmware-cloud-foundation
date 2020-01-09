@@ -1,14 +1,5 @@
 {
-    "csrGenerationSpec": {
-        "country": "US",
-        "email": "",
-        "keyAlgorithm": "RSA",
-        "keySize": "2048",
-        "locality": "San Francisco",
-        "organization": "VMware",
-        "organizationUnit": "Rainpole",
-        "state": "CA"
-    },
+    "operationType": "INSTALL",
     "resources": [
 		{
 			"fqdn": "sfo01mgr01.sfo01.rainpole.local",
