@@ -277,7 +277,7 @@ Function Decommission-VCFHost {
 	& decommissions a list of hosts.
 	
     .EXAMPLE
-    PS C:\> Decommission-VCFHost -json ".\Host\decommissionHostSpec.json"
+    PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
     This example shows how to decommission a set of hosts
 #>
 	
