@@ -2471,8 +2471,8 @@ Function Get-VCFvRSLCM {
     Gets the complete information about the existing vRealize Suite Lifecycle Manager.
 	
     .EXAMPLE
-    PS C:\> Get-VCFvRLI
-    This example list all details concerning the vRealize Log Insight Cluster
+    PS C:\> Get-VCFvRSLCM
+    This example list all details concerning the vRealize Suite Lifecycle Manager
 
 #>
 
@@ -2490,45 +2490,35 @@ Function Get-VCFvRSLCM {
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
 
-Function New-VCFvRSLCM {
+Function Get-VCFvROPs {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & deploys vRealize Suite Lifecycle Manager.
+    Get the existing vRealize Operations Manager
 	
     .DESCRIPTION
-    The New-VCFvRSLCM cmdlet connects to the specified SDDC Manager & deploys vRealize Suite Lifecycle Manager.
-	vRealize Suite Lifecycle Manager spec is provided in a JSON file.
+    Gets the complete information about the existing vRealize Operations Manager.
 	
     .EXAMPLE
-    PS C:\> New-VCFvRSLCM -json .\vRealizeSuite\deployvRSLCMSpec.json
-    This example shows how to deploy vRealize Suite Lifecycle Manager
+    PS C:\> Get-VCFvROPs
+    This example list all details concerning the vRealize Operations Manager
+
 #>
-	
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json 
-    )
-	
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/vropses"
+    try { 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
     }
-    else {
-        # Read the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/vrslcms"
-        try { 
-			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-        }
-        catch { 
-            #Get response from the exception
-            ResponseExeception
-        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
     }
 }
-Export-ModuleMember -Function New-VCFvRSLCM
+Export-ModuleMember -Function Get-VCFvROPs
+
+
 ######### End vRealize Suite Operations ##########
 
 Function ResponseExeception {
