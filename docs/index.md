@@ -1,9 +1,9 @@
 # PowerVCF
 PowerVCF is a PowerShell Module for interacting the VMware Cloud Foundation (SDDC Manager) public API.
 
-\[[VMware Cloud Foundation Product Documentation](https://docs.vmware.com/en/VMware-Cloud-Foundation)\]
+<a href="https://docs.vmware.com/en/VMware-Cloud-Foundation" target="_blank">VMware Cloud Foundation Product Documentation</a>
 
-\[[VMware Cloud Foundation API Documentation](https://code.vmware.com/apis/723/vmware-cloud-foundation)\]
+<a href="https://code.vmware.com/apis/723/vmware-cloud-foundation" target="_blank">VVMware Cloud Foundation API Documentation</a>
 
 # Disclaimer
 This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU).
@@ -112,11 +112,11 @@ Get-Command -Module powerVCF
 All cmdlets support the following
 
 ```powershell
-get-help cmdlet-name
+Get-help cmdlet-name
 
-get-help cmdlet-name -examples
+Get-help cmdlet-name -examples
 
-get-help cmdlet-name -detailed
+Get-help cmdlet-name -detailed
 
-get-help cmdlet-name -full
+Get-help cmdlet-name -full
 ```
