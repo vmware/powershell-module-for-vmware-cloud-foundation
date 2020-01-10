@@ -2461,6 +2461,75 @@ Export-ModuleMember -Function Get-VCFvRLI
 
 ######### End Foundation Component Operations ##########
 
+######### Start vRealize Suite Operations ##########
+Function Get-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Get the existing vRealize Suite Lifecycle Manager
+	
+    .DESCRIPTION
+    Gets the complete information about the existing vRealize Suite Lifecycle Manager.
+	
+    .EXAMPLE
+    PS C:\> Get-VCFvRLI
+    This example list all details concerning the vRealize Log Insight Cluster
+
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/vrslcm"
+    try { 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFvRSLCM
+
+Function New-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager & deploys vRealize Suite Lifecycle Manager.
+	
+    .DESCRIPTION
+    The New-VCFvRSLCM cmdlet connects to the specified SDDC Manager & deploys vRealize Suite Lifecycle Manager.
+	vRealize Suite Lifecycle Manager spec is provided in a JSON file.
+	
+    .EXAMPLE
+    PS C:\> New-VCFvRSLCM -json .\vRealizeSuite\deployvRSLCMSpec.json
+    This example shows how to deploy vRealize Suite Lifecycle Manager
+#>
+	
+	param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json 
+    )
+	
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+        $uri = "https://$sddcManager/v1/vrslcms"
+        try { 
+			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        }
+        catch { 
+            #Get response from the exception
+            ResponseExeception
+        }
+    }
+}
+Export-ModuleMember -Function New-VCFvRSLCM
+######### End vRealize Suite Operations ##########
 
 Function ResponseExeception {
     #Get response from the exception
