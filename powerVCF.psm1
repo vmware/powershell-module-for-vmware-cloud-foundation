@@ -277,7 +277,7 @@ Function Decommission-VCFHost {
 	& decommissions a list of hosts.
 	
     .EXAMPLE
-    PS C:\> Decommission-VCFHost -json ".\Host\decommissionHostSpec.json"
+    PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
     This example shows how to decommission a set of hosts
 #>
 	
@@ -446,18 +446,18 @@ Function New-VCFWorkloadDomain {
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
 
-Function Update-VCFWorkloadDomain {
+Function Set-VCFWorkloadDomain {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & marks a workload domain for deletion.
 	
     .DESCRIPTION
     Before a workload domain can be deleted it must first be marked for deletion.
-	The Update-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
+	The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& marks a workload domain for deletion. 
 	
     .EXAMPLE
-	PS C:\> Update-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
+	PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
     This example shows how to mark a workload domain for deletion
 #>
 	
@@ -480,7 +480,7 @@ Function Update-VCFWorkloadDomain {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Update-VCFWorkloadDomain
+Export-ModuleMember -Function Set-VCFWorkloadDomain
 
 Function Remove-VCFWorkloadDomain {
 <#
@@ -489,7 +489,7 @@ Function Remove-VCFWorkloadDomain {
 
     .DESCRIPTION
     Before a workload domain can be deleted it must first be marked for deletion.
-	See Update-VCFWorkloadDomain
+	See Set-VCFWorkloadDomain
 	The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
 	& deletes a workload domain. 
 	
@@ -641,28 +641,28 @@ Function New-VCFCluster {
 }
 Export-ModuleMember -Function New-VCFCluster
 
-Function Update-VCFCluster {
+Function Set-VCFCluster {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & expands or compacts a cluster.
 	
     .DESCRIPTION
-	The Update-VCFCluster cmdlet connects to the specified SDDC Manager 
+	The Set-VCFCluster cmdlet connects to the specified SDDC Manager 
 	& expands or compacts a cluster by adding or removing a host(s). A cluster
 	can also be marked for deletion
 	
     .EXAMPLE
-	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterExpansionSpec.json
     This example shows how to expand a cluster by adding a host(s) 
 	
 	.EXAMPLE
-	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-json .\Cluster\clusterCompactionSpec.json
     This example shows how to compact a cluster by removing a host(s)
 	
 	.EXAMPLE
-	PS C:\> Update-VCFCluster -clusterid a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
+	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
 	-markForDeletion $true
     This example shows how to mark a cluster for deletion
 #>
@@ -670,7 +670,7 @@ Function Update-VCFCluster {
 	param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$clusterid,
+            [string]$id,
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$json,
@@ -731,7 +731,7 @@ Function Update-VCFCluster {
 			ResponseExeception
 		}
 }
-Export-ModuleMember -Function Update-VCFCluster
+Export-ModuleMember -Function Set-VCFCluster
 
 Function Remove-VCFCluster {
 <#
@@ -739,7 +739,7 @@ Function Remove-VCFCluster {
     Connects to the specified SDDC Manager & deletes a cluster.
 	
     .DESCRIPTION
-    Before a cluster can be deleted it must first be marked for deletion. See Update-VCFCluster
+    Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
 	The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster. 
 	
     .EXAMPLE
@@ -883,8 +883,8 @@ Function Remove-VCFNetworkPool {
     The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool. 
 	
     .EXAMPLE
-    PS C:\> Remove-VCFNetworkPool -id "7ee7c7d2-5251-4bc9-9f91-4ee8d911511f"
-    This example shows how to get a Network Pool by name
+    PS C:\> Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
+    This example shows how to get a Network Pool by id
 #>
 	
 	param (
@@ -907,7 +907,7 @@ Function Remove-VCFNetworkPool {
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
 
-Function Get-VCFNetworkIPool {
+Function Get-VCFNetworkIPPool {
 <#
     .SYNOPSIS
     Get a Network of a Network Pool
@@ -957,19 +957,19 @@ Function Get-VCFNetworkIPool {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Get-VCFNetworkIPool
+Export-ModuleMember -Function Get-VCFNetworkIPPool
 
-Function Add-VCFNetworkIPool {
+Function Add-VCFNetworkIPPool {
 <#
     .SYNOPSIS
     Add an IP Pool to the Network of a Network Pool
 
     .DESCRIPTION
-    The Add-VCFNetworkIPool cmdlet connects to the specified SDDC Manager and adds a new IP Pool to an existing Network within
+    The Add-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and adds a new IP Pool to an existing Network within
 	a Network Pool. 
 
     .EXAMPLE
-    PS C:\> Add-VCFNetworkIPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+    PS C:\> Add-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
     This example shows how create a new IP Pool on the existing network for a given Network Pool
 #>
 	
@@ -1001,19 +1001,19 @@ Function Add-VCFNetworkIPool {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Add-VCFNetworkIPool
+Export-ModuleMember -Function Add-VCFNetworkIPPool
 
-Function Remove-VCFNetworkIPool {
+Function Remove-VCFNetworkIPPool {
 <#
     .SYNOPSIS
     Remove an IP Pool from the Network of a Network Pool
 
     .DESCRIPTION
-    The Remove-VCFNetworkIPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an existing Network within
+    The Remove-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an existing Network within
 	a Network Pool. 
 
     .EXAMPLE
-    PS C:\> Remove-VCFNetworkIPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+    PS C:\> Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
     This example shows how remove an IP Pool on the existing network for a given Network Pool
 #>
 	
@@ -1045,7 +1045,7 @@ Function Remove-VCFNetworkIPool {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Remove-VCFNetworkIPool
+Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
 ######### End Network Pool Operations ##########
 
@@ -1262,7 +1262,7 @@ Function Retry-VCFTask {
     failed task using the task id.
 	
     .EXAMPLE
-	PS C:\> Retry-VCFTask -taskid 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+	PS C:\> Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
     This example retries the task based on the task id
 #>
 	
@@ -1344,17 +1344,17 @@ Function Get-VCFCredential {
 }
 Export-ModuleMember -Function Get-VCFCredential
 
-Function Update-VCFCredential {
+Function Set-VCFCredential {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & updates a credential.
 
     .DESCRIPTION
-	The Update-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential. 
+	The Set-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential. 
     Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 	
     .EXAMPLE
-	PS C:\> Update-VCFCredential -json .\Credential\updateCredentialSpec.json
+	PS C:\> Set-VCFCredential -json .\Credential\updateCredentialSpec.json
     This example shows how to update a credential using a json spec
 #>
 	
@@ -1391,7 +1391,7 @@ Function Update-VCFCredential {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Update-VCFCredential	
+Export-ModuleMember -Function Set-VCFCredential	
 
 ######### End Credential Operations ##########
 
@@ -1680,7 +1680,7 @@ Function Get-VCFBundle {
     This example gets the list of bundles and filters on the version, download status and the id only
 
 	.EXAMPLE
-    PS C:\> Get-VCFBundle -id 
+    PS C:\> Get-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
     This example gets the details of a specific bundle by its id 
     
     .EXAMPLE
@@ -1792,7 +1792,7 @@ Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
 Function Set-VCFMicrosoftCA {
 <#
     .SYNOPSIS
-    Configurs a Microsoft Certificate Authority
+    Configures a Microsoft Certificate Authority
 	
     .DESCRIPTION
     Configures the Microsoft Certificate Authorty on the connected SDDC Manager
@@ -1919,7 +1919,7 @@ Function Get-VCFCertificate {
     Get latest generated certificate(s) in a domain
 
     .EXAMPLE
-    PS C:\> Get-VCFCertificate 
+    PS C:\> Get-VCFCertificate -domainName MGMT
     This example gets a list of certificates that have been generated
 	
     .EXAMPLE
@@ -1991,7 +1991,7 @@ Function Request-VCFCertificate {
 }
 Export-ModuleMember -Function Request-VCFCertificate
 
-Function Update-VCFCertificate {
+Function Set-VCFCertificate {
 <#
     .SYNOPSIS
     Replace certificate(s) for the selected resource(s) in a domain
@@ -2000,7 +2000,8 @@ Function Update-VCFCertificate {
     Replace certificate(s) for the selected resource(s) in a domain
 	
     .EXAMPLE
-    PS C:\> Update-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
+    PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
+
     This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
     for resources within the domain called MGMT
 #>
@@ -2017,7 +2018,7 @@ Function Update-VCFCertificate {
         throw "JSON File Not Found"
     }
     else {    
-        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
         $ConfigJson = (Get-Content -Raw $json)
         $headers = @{"Accept" = "application/json"}
         $headers.Add("Authorization", "Basic $base64AuthInfo")
@@ -2032,7 +2033,7 @@ Function Update-VCFCertificate {
         }
     }
 }
-Export-ModuleMember -Function Update-VCFCertificate
+Export-ModuleMember -Function Set-VCFCertificate
 
 ######### End Certificate Configuration Operations ##########
 
