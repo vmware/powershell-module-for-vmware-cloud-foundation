@@ -94,7 +94,7 @@ Now running Get-VCFNetworkPool should display 2 Network Pools
 Now that you have a network pool you can commission hosts and associate them with the network pool. For this you need the following json
 
 #### TIP 
-For this json you need the network pool name & ID. These were returned when the pool was created and also by Get-VCFNetworkPool
+For this json you need the network pool name & ID. These were returned when the pool was created and can also be obtained using Get-VCFNetworkPool.
 
 ```json
 
@@ -142,6 +142,7 @@ Commission-VCFHost -json .\SampleJSON\Host\commissionHosts.json
 
 #### TIP 
 This returns a task id, which you can monitor by running the following until status=Successful:
+
 ```Powershell
 Get-VCFTask -id b93e2bc7-627b-4f7c-980b-c12b3497c4ea
 ```
