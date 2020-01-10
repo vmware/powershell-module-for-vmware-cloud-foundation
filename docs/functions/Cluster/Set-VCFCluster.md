@@ -173,6 +173,7 @@ Default value: None
 ```
 
 ### Add a multi pNIC host(s) to a cluster
+```
 {
   "clusterExpansionSpec" : {
     "hostSpecs" : [ {
@@ -196,7 +197,7 @@ Default value: None
     } ] 
   }
 }
-
+```
 
 ### Remove a host from a cluster
 ```
