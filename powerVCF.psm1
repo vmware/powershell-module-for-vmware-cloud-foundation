@@ -1344,17 +1344,17 @@ Function Get-VCFCredential {
 }
 Export-ModuleMember -Function Get-VCFCredential
 
-Function Update-VCFCredential {
+Function Set-VCFCredential {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager & updates a credential.
 
     .DESCRIPTION
-	The Update-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential. 
+	The Set-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential. 
     Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 	
     .EXAMPLE
-	PS C:\> Update-VCFCredential -json .\Credential\updateCredentialSpec.json
+	PS C:\> Set-VCFCredential -json .\Credential\updateCredentialSpec.json
     This example shows how to update a credential using a json spec
 #>
 	
@@ -1391,7 +1391,7 @@ Function Update-VCFCredential {
         ResponseExeception
     }
 }
-Export-ModuleMember -Function Update-VCFCredential	
+Export-ModuleMember -Function Set-VCFCredential	
 
 ######### End Credential Operations ##########
 
@@ -1680,7 +1680,7 @@ Function Get-VCFBundle {
     This example gets the list of bundles and filters on the version, download status and the id only
 
 	.EXAMPLE
-    PS C:\> Get-VCFBundle -id 
+    PS C:\> Get-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
     This example gets the details of a specific bundle by its id 
     
     .EXAMPLE
@@ -1792,7 +1792,7 @@ Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
 Function Set-VCFMicrosoftCA {
 <#
     .SYNOPSIS
-    Configurs a Microsoft Certificate Authority
+    Configures a Microsoft Certificate Authority
 	
     .DESCRIPTION
     Configures the Microsoft Certificate Authorty on the connected SDDC Manager
@@ -1919,7 +1919,7 @@ Function Get-VCFCertificate {
     Get latest generated certificate(s) in a domain
 
     .EXAMPLE
-    PS C:\> Get-VCFCertificate 
+    PS C:\> Get-VCFCertificate -domainName MGMT
     This example gets a list of certificates that have been generated
 	
     .EXAMPLE
@@ -1991,7 +1991,7 @@ Function Request-VCFCertificate {
 }
 Export-ModuleMember -Function Request-VCFCertificate
 
-Function Update-VCFCertificate {
+Function Set-VCFCertificate {
 <#
     .SYNOPSIS
     Replace certificate(s) for the selected resource(s) in a domain
@@ -2000,7 +2000,7 @@ Function Update-VCFCertificate {
     Replace certificate(s) for the selected resource(s) in a domain
 	
     .EXAMPLE
-    PS C:\> Update-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+    PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
     This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
     for resources within the domain called MGMT
 #>
@@ -2017,7 +2017,7 @@ Function Update-VCFCertificate {
         throw "JSON File Not Found"
     }
     else {    
-        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
         $ConfigJson = (Get-Content -Raw $json)
         $headers = @{"Accept" = "application/json"}
         $headers.Add("Authorization", "Basic $base64AuthInfo")
@@ -2032,7 +2032,7 @@ Function Update-VCFCertificate {
         }
     }
 }
-Export-ModuleMember -Function Update-VCFCertificate
+Export-ModuleMember -Function Set-VCFCertificate
 
 ######### End Certificate Configuration Operations ##########
 
