@@ -1,5 +1,5 @@
 # PowerVCF
-PowerVCF is a PowerShell Module for interacting the VMware Cloud Foundation (SDDC Manager) public API.
+PowerVCF is a PowerShell Module for interacting with the VMware Cloud Foundation (SDDC Manager) public API.
 
 <a href="https://docs.vmware.com/en/VMware-Cloud-Foundation" target="_blank">VMware Cloud Foundation Product Documentation</a>
 
@@ -29,7 +29,7 @@ This version has been tested using vSAN Ready Nodes. VxRail has not been tested,
 
 All Network pool actions
 
-New/Update/Remove Workload domains
+New/Set/Remove Workload domains
 
 
 ## Installing the module
