@@ -663,7 +663,7 @@ Function Set-VCFCluster {
 	
 	.EXAMPLE
 	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
-	-markForDeletion $true
+	-markForDeletion
     This example shows how to mark a cluster for deletion
 #>
 	
@@ -676,7 +676,7 @@ Function Set-VCFCluster {
             [string]$json,
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [bool]$markForDeletion
+            [switch]$markForDeletion
     )
 
     if ($PsBoundParameters.ContainsKey("json")) {
@@ -2490,6 +2490,33 @@ Function Get-VCFvRSLCM {
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
 
+Function Get-VCFvRSLCMEnvironment {
+<#
+    .SYNOPSIS
+    Get vRealize Suite Lifecycle Manager environments	
+    .DESCRIPTION
+    Gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
+	
+    .EXAMPLE
+    PS C:\> Get-VCFvRSLCMEnvironment
+    This example list all vRealize Suite Lifecycle Manager environments
+
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/vrslcm/environments"
+    try { 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
+
 Function Get-VCFvROPs {
 <#
     .SYNOPSIS
@@ -2502,11 +2529,36 @@ Function Get-VCFvROPs {
     PS C:\> Get-VCFvROPs
     This example list all details concerning the vRealize Operations Manager
 
+    .EXAMPLE
+    PS C:\> Get-VCFvROPs -getIntegratedDomains
+    Retrieves all the existing workload domains and their connection status with vRealize Operations.
+
+    .EXAMPLE
+    PS C:\> Get-VCFvROPs -nodes
+    Retrieves all the vRealize Operations Manager nodes.
 #>
 
+	param (
+			[Parameter (Mandatory=$false)]
+				[ValidateNotNullOrEmpty()]
+				[switch]$getIntegratedDomains,
+            [Parameter (Mandatory=$false)]
+				[ValidateNotNullOrEmpty()]
+				[switch]$nodes     
+		)
+		
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/vropses"
+    
+	if ($PsBoundParameters.ContainsKey("nodes")) {
+        $uri = "https://$sddcmanager/v1/vrops/nodes"
+    }
+    if ($PsBoundParameters.ContainsKey("getIntegratedDomains")) {
+        $uri = "https://$sddcmanager/v1/vrops/domains"
+    }
+    else{
+        $uri = "https://$sddcManager/v1/vropses"
+		}
     try { 
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
