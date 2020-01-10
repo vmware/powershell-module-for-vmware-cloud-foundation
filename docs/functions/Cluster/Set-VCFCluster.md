@@ -30,7 +30,7 @@ Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1
 ### EXAMPLE 3
 ```
 	Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
-	-markForDeletion $true
+	-markForDeletion
     This example shows how to mark a cluster for deletion
 ```
 
@@ -64,7 +64,7 @@ Default value: None
 - Flag a cluster for deletion
 
 ```yaml
-Type: Boolean
+Type: SwitchParameter
 Parameter Sets: (All)
 Aliases:
 

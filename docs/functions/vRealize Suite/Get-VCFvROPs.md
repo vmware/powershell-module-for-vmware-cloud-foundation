@@ -33,7 +33,31 @@ Get-VCFvROPs -nodes
 
 
 ## PARAMETERS
+### -getIntegratedDomains
+- Get Workload domains that are integrated with vRealize Operations Manager. No value required
 
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+```
+
+### -nodes
+- Get vRealize Operations Manager nodes. No value required
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: Username
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+```
 ## NOTES
 
 ## RELATED LINKS
