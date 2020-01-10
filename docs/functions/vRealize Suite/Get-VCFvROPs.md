@@ -5,7 +5,7 @@
 
 ## Syntax
 ```
-Get-VCFvROPs
+Get-VCFvROPs -getIntegratedDomains -nodes
 ```
 
 ## DESCRIPTION
@@ -17,6 +17,18 @@ Get-VCFvROPs
 ```
 Get-VCFvROPs
     This example list all details concerning the vRealize Operations Manager
+```
+
+### EXAMPLE 2
+```
+Get-VCFvROPs -getIntegratedDomains
+    Retrieves all the existing workload domains and their connection status with vRealize Operations.
+```
+
+### EXAMPLE 3
+```
+Get-VCFvROPs -nodes
+    Retrieves all the vRealize Operations Manager nodes.
 ```
 
 
