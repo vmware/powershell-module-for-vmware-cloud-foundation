@@ -1,12 +1,14 @@
 # PowerVCF
 PowerVCF is a PowerShell Module for interacting the VMware Cloud Foundation (SDDC Manager) public API.
-VMware Cloud Foundation Product Documentation: https://docs.vmware.com/en/VMware-Cloud-Foundation/
-VMware Cloud Foundation API Documentation: https://code.vmware.com/apis/723/vmware-cloud-foundation
+
+<a href="https://docs.vmware.com/en/VMware-Cloud-Foundation" target="_blank">VMware Cloud Foundation Product Documentation</a>
+
+<a href="https://code.vmware.com/apis/723/vmware-cloud-foundation" target="_blank">VVMware Cloud Foundation API Documentation</a>
 
 # Disclaimer
 This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU).
 
-The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VCF API & VCF in general. It is provided without warranty and should not be used in a production environment without thouroughly testing first. It has been developed against VMware Cloud Foundation 3.9 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
+The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thouroughly testing first. It has been developed against VMware Cloud Foundation 3.9 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
 
 ## Contributors
 If you would like to contribute please get in touch! Current contributors listed below.
@@ -110,11 +112,11 @@ Get-Command -Module powerVCF
 All cmdlets support the following
 
 ```powershell
-get-help cmdlet-name
+Get-help cmdlet-name
 
-get-help cmdlet-name -examples
+Get-help cmdlet-name -examples
 
-get-help cmdlet-name -detailed
+Get-help cmdlet-name -detailed
 
-get-help cmdlet-name -full
+Get-help cmdlet-name -full
 ```

@@ -2001,6 +2001,7 @@ Function Set-VCFCertificate {
 	
     .EXAMPLE
     PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
+
     This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
     for resources within the domain called MGMT
 #>
