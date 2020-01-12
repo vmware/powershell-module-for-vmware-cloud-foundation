@@ -8,7 +8,7 @@ Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
 Set-VCFCeip -ceipSetting <string>
 ```
 
-#### Description
+### Description
 The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement
 Program (CEIP) of the connected SDDC Manager.
 
