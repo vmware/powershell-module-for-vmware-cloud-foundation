@@ -57,7 +57,7 @@ Function Connect-VCFManager {
 	in a base64 string. It is required once per session before running all other cmdlets
 
     .EXAMPLE
-	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo01.rainpole.local -username admin -password VMware1!
+	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1!
     This example shows how to connect to SDDC Manager
 #>
 

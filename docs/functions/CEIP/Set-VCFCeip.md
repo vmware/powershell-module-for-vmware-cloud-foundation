@@ -1,7 +1,7 @@
 # Set-VCFCeip
 
 ### Synopsis
-    Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
+Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
 
 ### Syntax
 ```
@@ -21,7 +21,7 @@ This example shows how to disable CEIP of the connected SDDC Manager
 
 ### Parameters
 
-### -ceipSetting
+#### -ceipSetting
 - Sets CEIP to Enable/Disable
 
 ```yaml
