@@ -1,26 +1,26 @@
 # Get-VCFCeip
 
-## Synopsis
+### Synopsis
 Retrieves the current setting for CEIP of the connected SDDC Manager
 
-## Syntax
+### Syntax
 ```
 Get-VCFCeip
 ```
 
-## Description
+### Description
 The Get-VCFCeip cmdlet retrieves the current setting for CEIP of the connected SDDC Manager.
 
-## Examples
+### Examples
 
-### Example 1
+#### Example 1
 ```
 Get-VCFCeip
 ```
 This example shows how to get the current setting of CEIP
 
-## Parameters
+### Parameters
 
-## Notes
+### Notes
 
-## Related Links
+### Related Links
