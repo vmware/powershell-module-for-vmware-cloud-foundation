@@ -1,39 +1,38 @@
 # Get-VCFCluster
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of clusters.
+### Synopsis
+Connects to the specified SDDC Manager & retrieves a list of clusters.
 
-## Syntax
+### Syntax
 ```
 Get-VCFWorkloadDomain -name <string> -id <string>
 ```
 
-## DESCRIPTION
-    The Get-VCFCluster cmdlet connects to the specified SDDC Manager & retrieves a list of clusters.
+### Description
+The Get-VCFCluster cmdlet connects to the specified SDDC Manager & retrieves a list of clusters.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFCluster
-    This example shows how to get a list of all clusters
 ```
+This example shows how to get a list of all clusters
 
-### EXAMPLE 2
+#### Example 2
 ```
 Get-VCFCluster -name wld01-cl01
-    This example shows how to get a cluster by name
 ```
+This example shows how to get a cluster by name
 
-### EXAMPLE 3
+#### Example 3
 ```
 Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    This example shows how to get a cluster by id
 ```
+This example shows how to get a cluster by id
 
-## PARAMETERS
+### Parameters
 
-### -name
+#### -name
 - The friendly name of a cluster
 
 ```yaml
@@ -46,7 +45,7 @@ Position: Named
 Default value: None
 ```
 
-### -id
+#### -id
 ID of a specific cluster
 
 ```yaml
@@ -59,6 +58,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+## Notes
 
-## RELATED LINKS
+### Related Links

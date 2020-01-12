@@ -10,7 +10,7 @@ Get-VCFCertificateCSRs -domainName <string> -json <path to json file>
 
 ### Description
 Generate CSR(s) for the selected resource(s) in the domain
-- Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+..* Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
 
 ### Examples
 #### Example 1

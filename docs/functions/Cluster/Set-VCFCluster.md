@@ -1,42 +1,38 @@
 # Set-VCFCluster
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & expands or compacts a cluster.
+### Synopsis
+Connects to the specified SDDC Manager & expands or compacts a cluster.
 
-## Syntax
+### Syntax
 ```
 Set-VCFCluster -id <string> -json <path to JSON file> -markForDeletion <boolean>
 ```
 
-## DESCRIPTION
-	The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or removing a host(s). A cluster can also be marked for deletion
+### Description
+The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or removing a host(s). A cluster can also be marked for deletion
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
-Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
-	-json .\Cluster\clusterExpansionSpec.json
-    This example shows how to expand a cluster by adding a host(s) 
+Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterExpansionSpec.json
 ```
+This example shows how to expand a cluster by adding a host(s)
 
-### EXAMPLE 2
+### Example 2
 ```
-	Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
-	-json .\Cluster\clusterCompactionSpec.json
-    This example shows how to compact a cluster by removing a host(s)
-```	
-### EXAMPLE 3
+Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterCompactionSpec.json
 ```
-	Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 
-	-markForDeletion
-    This example shows how to mark a cluster for deletion
-```
+This example shows how to compact a cluster by removing a host(s)
 
-## PARAMETERS
+### Example 3
+```
+Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -markForDeletion
+```
+This example shows how to mark a cluster for deletion
 
-### -id
+### Parameters
+
+#### -id
 - ID of target cluster
 
 ```yaml
@@ -48,7 +44,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-### -json
+
+#### -json
 - Path to the JSON spec
 
 ```yaml
@@ -60,6 +57,7 @@ Required: False
 Position: Named
 Default value: None
 ```
+
 ### -markForDeletion
 - Flag a cluster for deletion
 
@@ -73,8 +71,7 @@ Position: Named
 Default value: None
 ```
 
-### SAMPLE JSON
-
+### Sample JSON
 #### Add an NSX-V Cluster Multi pNIC
 ```
 {
@@ -143,8 +140,8 @@ Default value: None
         {
           "name": "w01-c02-vds01-vsan",
           "transportType": "VSAN"
-        } 
-      ] 
+        }
+      ]
     },
     {
        "name": "w01-c02-vds02",
@@ -160,7 +157,7 @@ Default value: None
 
 ```
 
-### Add a host(s) to a cluster
+#### Add a host(s) to a cluster
 ```
 {
   "clusterExpansionSpec" : {
@@ -172,7 +169,7 @@ Default value: None
 
 ```
 
-### Add a multi pNIC host(s) to a cluster
+#### Add a multi pNIC host(s) to a cluster
 ```
 {
   "clusterExpansionSpec" : {
@@ -182,24 +179,24 @@ Default value: None
       "hostNetworkSpec" : {
         "vmNics" : [ {
           "id" : "vmnic0",
-          "vdsName" : "SDDC2-Dswitch-Private1" 
+          "vdsName" : "SDDC2-Dswitch-Private1"
         }, {
           "id" : "vmnic1",
-          "vdsName" : "SDDC2-Dswitch-Private1" 
+          "vdsName" : "SDDC2-Dswitch-Private1"
         }, {
           "id" : "vmnic2",
-          "vdsName" : "SDDC2-Dswitch-Private2" 
+          "vdsName" : "SDDC2-Dswitch-Private2"
         }, {
           "id" : "vmnic3",
-          "vdsName" : "SDDC2-Dswitch-Private2" 
-        } ] 
-      } 
-    } ] 
+          "vdsName" : "SDDC2-Dswitch-Private2"
+        } ]
+      }
+    } ]
   }
 }
 ```
 
-### Remove a host from a cluster
+#### Remove a host from a cluster
 ```
 {
   "clusterCompactionSpec" : {
@@ -210,7 +207,6 @@ Default value: None
 }
 ```
 
+### Notes
 
-## NOTES
-
-## RELATED LINKS
+### Related Links

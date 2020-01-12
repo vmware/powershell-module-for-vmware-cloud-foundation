@@ -73,8 +73,6 @@ Default value: None
 ```
 
 ### Notes
-```
 Preparing a certificate template including configuring basic auth <a href="https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.admin.doc_39/GUID-BCD83622-4AB8-41EB-BD54-80F2B40FD9CE.html#GUID-BCD83622-4AB8-41EB-BD54-80F2B40FD9CE" target="_blank">Prepare the Certificate Service Template</a>
-```
 
 ### Related Links

@@ -18,7 +18,7 @@ Get-VCFCertificate -domainName MGMT
 ```
 This example gets a list of certificates that have been generated
 
-### Example 2
+#### Example 2
 ```
 Get-VCFCertificate -domainName MGMT | ConvertTo-Json
 ```
