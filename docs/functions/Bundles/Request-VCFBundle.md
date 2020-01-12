@@ -1,28 +1,27 @@
 # Request-VCFBundle
 
-## SYNOPSIS
-    Request a Bundle for downloading from depot
+### Synopsis
+Request a Bundle for downloading from depot
 
-## Syntax
+### Syntax
 ```
 Request-VCFBundle -id <string>
 ```
 
-## DESCRIPTION
-    Triggers an immediate download. Only one download can be triggered for a Bundle. 
+### Description
+Triggers an immediate download. Only one download can be triggered for a Bundle.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Request-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
-    This example requests the immediate download of a bundle based on its id
 ```
+This example requests the immediate download of a bundle based on its id
 
-## PARAMETERS
+### Parameters
 
-### -id
-- ID of a specific bundle 
+#### -id
+- ID of a specific bundle
 
 ```yaml
 Type: String
@@ -34,6 +33,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links
