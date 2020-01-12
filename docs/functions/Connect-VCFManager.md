@@ -1,6 +1,6 @@
 # Connect-VCFManager
 
-### ### Synopsis
+### Synopsis
 Connect to a VCF SDDC Manager
 
 ### Syntax
@@ -67,6 +67,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-## Notes
+### Notes
 
 ### Related Links
