@@ -1306,7 +1306,7 @@ Function Get-VCFCredential {
 
 	.EXAMPLE
     PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local
-	-privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo01.rainpole.local
+	-privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
     This example shows how to get the credential for a specific resourceName (FQDN)
 #>
 
