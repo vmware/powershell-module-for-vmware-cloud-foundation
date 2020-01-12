@@ -1630,7 +1630,7 @@ Function Start-VCFBackup {
     Start the SDDC Manager backup
 
     .DESCRIPTION
-    The Start-VCFBackup cmdlet invoke the SDDC Manager backup task.
+    The Start-VCFBackup cmdlet invokes the SDDC Manager backup task.
 
     .EXAMPLE
 	PS C:\> Start-VCFBackup

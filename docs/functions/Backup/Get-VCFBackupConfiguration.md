@@ -1,28 +1,25 @@
 # Get-VCFBackupConfiguration
 
-## SYNOPSIS
-    Gets the backup configuration of NSX Manager and SDDC Manager
+### Synopsis
+Gets the backup configuration of NSX Manager and SDDC Manager
 
-## Syntax
+### Syntax
 ```
 Get-VCFBackupConfiguration
 ```
 
-## DESCRIPTION
-     Retrieves the backup configuration details and the status
+### Description
+Retrieves the backup configuration details and the status
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+#### Examples
+#### Example 1
 ```
-Get-VCFBackupConfiguration
-    This example shows the backup configuratio
+Get-VCFBackupConfiguration    
 ```
+This example shows the backup configuration
 
-## PARAMETERS
+### Parameters
 
+### Notes
 
-## NOTES
-
-## RELATED LINKS
+### Related Links
