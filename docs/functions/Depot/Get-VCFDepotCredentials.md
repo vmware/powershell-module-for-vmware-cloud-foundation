@@ -1,27 +1,25 @@
 # Get-VCFDepotCredentials
 
-## SYNOPSIS
-    Get Depot Settings
+### Synopsis
+Get Depot Settings
 
-## Syntax
+### Syntax
 ```
 Get-VCFDepotCredentials
 ```
 
-## DESCRIPTION
-     Retrieves the configuration for the depot of the connected SDDC Manager
+### Description
+Retrieves the configuration for the depot of the connected SDDC Manager
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFDepotCredentials
-    This example shows credentials that have been configured for the depot.
 ```
+This example shows credentials that have been configured for the depot.
 
+### Parameters
 
-## PARAMETERS
+### Notes
 
-## NOTES
-
-## RELATED LINKS
+### Related Links

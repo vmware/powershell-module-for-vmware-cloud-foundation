@@ -1,29 +1,27 @@
 # Set-VCFDepotCredentials
 
-## SYNOPSIS
-    Update the Depot Settings
+### Synopsis
+Update the Depot Settings
 
-## Syntax
+### Syntax
 ```
 Set-VCFDepotCredentials -username <string> -password <string>
 ```
 
-## DESCRIPTION
-     Update the configuration for the depot of the connected SDDC Manager
+### Description
+Update the configuration for the depot of the connected SDDC Manager
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
-    This example sets the credentials that have been configured for the depot.
-```    
+```
+This example sets the credentials that have been configured for the depot.
 
+### Parameters
 
-## PARAMETERS
-
-### -username
-- My VMware Username for the depot 
+#### -username
+- My VMware Username for the depot
 
 ```yaml
 Type: String
@@ -35,7 +33,7 @@ Position: Named
 Default value: None
 ```
 
-### -password
+#### -password
 - Password for My VMware Username for the depot
 
 ```yaml
@@ -48,6 +46,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links
