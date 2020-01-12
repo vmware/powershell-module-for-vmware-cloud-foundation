@@ -1527,7 +1527,8 @@ Function Get-VCFCeip {
     Retrieves the current setting for CEIP of the connected SDDC Manager
 
     .DESCRIPTION
-    The Get-VCFCeip cmdlet retrieves the current setting for CEIP of the connected SDDC Manager.
+    TThe Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program
+    (CEIP) of the connected SDDC Manager.
 
     .EXAMPLE
 	PS C:\> Get-VCFCeip
@@ -1555,7 +1556,8 @@ Function Set-VCFCeip {
     Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
 
     .DESCRIPTION
-    The Set-VCFCeip cmdlet configures the setting for CEIP of the connected SDDC Manager.
+    The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement
+    Program (CEIP) of the connected SDDC Manager.
 
     .EXAMPLE
     PS C:\> Set-VCFCeip -ceipSetting ENABLE
