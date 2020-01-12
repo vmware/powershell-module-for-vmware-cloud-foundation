@@ -1,30 +1,27 @@
 # Set-VCFCertificate
 
-## SYNOPSIS
-    Replace certificate(s) for the selected resource(s) in a domain
+### Synopsis
+Replace certificate(s) for the selected resource(s) in a domain
 
-## Syntax
+### Syntax
 ```
 Request-VCFCertificate -domainName <string> -json <path to json file>
 ```
 
-## DESCRIPTION
-    Replace certificate(s) for the selected resource(s) in a domain
+### Description
+Replace certificate(s) for the selected resource(s) in a domain
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
-    This example replaces the Certificates based on the entries within the updateCertificateSpec.json file
-    for resources within the domain called MGMT
-```    
+```
+This example replaces the Certificates based on the entries within the updateCertificateSpec.json file for resources within the domain called MGMT
 
+### Parameters
 
-## PARAMETERS
-
-### -domainName
-- Name of the Management Domain 
+#### -domainName
+- Name of the Management Domain
 
 ```yaml
 Type: String
@@ -36,7 +33,7 @@ Position: Named
 Default value: None
 ```
 
-### -json
+#### -json
 - Path to a JSON file
 
 ```yaml
@@ -49,7 +46,7 @@ Position: Named
 Default value: None
 ```
 
-## SAMPLE JSON
+### Sample JSON
 ```json
 {
     "operationType": "INSTALL",
@@ -73,6 +70,7 @@ Default value: None
 	]
 }
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

@@ -1,28 +1,26 @@
 # Set-VCFMicrosoftCA
 
-## SYNOPSIS
-    Configures a Microsoft Certificate Authority
+### Synopsis
+Configures a Microsoft Certificate Authority
 
-## Syntax
+### Syntax
 ```
 Set-VCFMicrosoftCA -serverUrl <URL> -username <string> -password <string> -templateName <string>
-    This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
 ```
 
-## DESCRIPTION
-    Configures the Microsoft Certificate Authorty on the connected SDDC Manager
+### Description
+Configures the Microsoft Certificate Authorty on the connected SDDC Manager
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
-    This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
 ```
+This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
 
-## PARAMETERS
+### Parameters
 
-### -serverUrl
+#### -serverUrl
 - URL of the Microsoft CA in quotes. e.g. "https://rainpole.local/certsrv"
 
 ```yaml
@@ -35,7 +33,7 @@ Position: Named
 Default value: None
 ```
 
-### -username
+#### -username
 - Username of the Microsoft CA
 
 ```yaml
@@ -48,7 +46,7 @@ Position: Named
 Default value: None
 ```
 
-### -password
+#### -password
 - Password of the Microsoft CA user
 
 ```yaml
@@ -61,7 +59,7 @@ Position: Named
 Default value: None
 ```
 
-### -templateName
+#### -templateName
 - Certificate Template Name to be Used
 
 ```yaml
@@ -73,9 +71,10 @@ Required: True
 Position: Named
 Default value: None
 ```
-## NOTES
+
+### Notes
 ```
-Preparing a certificate template including configuring basic auth
-https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.admin.doc_39/GUID-BCD83622-4AB8-41EB-BD54-80F2B40FD9CE.html#GUID-BCD83622-4AB8-41EB-BD54-80F2B40FD9CE
+Preparing a certificate template including configuring basic auth <a href="https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.admin.doc_39/GUID-BCD83622-4AB8-41EB-BD54-80F2B40FD9CE.html#GUID-BCD83622-4AB8-41EB-BD54-80F2B40FD9CE" target="_blank">Prepare the Certificate Service Template</a>
 ```
-## RELATED LINKS
+
+### Related Links

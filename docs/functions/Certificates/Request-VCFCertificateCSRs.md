@@ -1,31 +1,28 @@
 # Request-VCFCertificateCSRs
 
-## SYNOPSIS
-    Generate CSR(s)
+### Synopsis
+Generate CSR(s)
 
-## Syntax
+### Syntax
 ```
 Get-VCFCertificateCSRs -domainName <string> -json <path to json file>
 ```
 
-## DESCRIPTION
-    Generate CSR(s) for the selected resource(s) in the domain
-    - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
-      VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+### Description
+Generate CSR(s) for the selected resource(s) in the domain
+- Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Request-VCFCertificateCSRs -domainName MGMT -json .\requestCsrSpec.json
-    This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within the domain called MGMT
 ```
+This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within the domain called MGMT
 
+### Parameters
 
-## PARAMETERS
-
-### -domainName
-- Name of the Management Domain 
+#### -domainName
+- Name of the Management Domain
 
 ```yaml
 Type: String
@@ -37,7 +34,7 @@ Position: Named
 Default value: None
 ```
 
-### -json
+#### -json
 - Path to a JSON file
 
 ```yaml
@@ -50,7 +47,7 @@ Position: Named
 Default value: None
 ```
 
-## SAMPLE JSON
+### Sample JSON
 ```json
 {
     "csrGenerationSpec": {
@@ -78,6 +75,7 @@ Default value: None
 	]
 }
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

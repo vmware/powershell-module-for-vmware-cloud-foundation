@@ -18,19 +18,19 @@ Get-VCFBundle
 ```
 This example gets the list of bundles and all details
 
-#### EXAMPLE 2
+#### Example 2
 ```
 Get-VCFBundle | Select version,downloadStatus,id  
 ```
 This example gets the list of bundles and filters on the version, download status and the id only
 
-#### EXAMPLE 3
+#### Example 3
 ```
 Get-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db   
 ```
 This example gets the details of a specific bundle by its id
 
-#### EXAMPLE 4
+#### Example 4
 ```
 Get-VCFBundle | Where {$_.description -Match "vRealize"}
 ```

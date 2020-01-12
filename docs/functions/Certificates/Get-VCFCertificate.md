@@ -1,33 +1,33 @@
 # Get-VCFCertificate
 
-## SYNOPSIS
-    Get latest generated certificate(s) in a domain
+### Synopsis
+Get latest generated certificate(s) in a domain
 
-## Syntax
+### Syntax
 ```
 Get-VCFCertificate -domainName <string>
 ```
 
-## DESCRIPTION
-    Get latest generated certificate(s) in a domain
+### Description
+Get latest generated certificate(s) in a domain
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFCertificate -domainName MGMT
-    This example gets a list of certificates that have been generated
 ```
-### EXAMPLE 2
+This example gets a list of certificates that have been generated
+
+### Example 2
 ```
 Get-VCFCertificate -domainName MGMT | ConvertTo-Json
-    This example gets a list of certificates and displays them in JSON format
 ```
+This example gets a list of certificates and displays them in JSON format
 
-## PARAMETERS
+### Parameters
 
-### -domainName
-- Name of the Management Domain 
+#### -domainName
+- Name of the Management Domain
 
 ```yaml
 Type: String
@@ -39,6 +39,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

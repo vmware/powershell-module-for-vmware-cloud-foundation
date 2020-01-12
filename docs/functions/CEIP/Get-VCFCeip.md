@@ -9,8 +9,7 @@ Get-VCFCeip
 ```
 
 ### Description
-The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program
-(CEIP) of the connected SDDC Manager.
+The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager.
 
 ### Examples
 #### Example 1
