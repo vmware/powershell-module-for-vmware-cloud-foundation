@@ -10,7 +10,7 @@ Connect-VCFManager -fqdn <String> -Username <String> -Password <String>
 
 ### Description
 Connect to the SDDC Manager and stores the credentials in a base64 string.
-It is required once per session before running all other cmdlets
+It is required once per session before running all other cmdlets.
 
 ### Examples
 #### Example 1
