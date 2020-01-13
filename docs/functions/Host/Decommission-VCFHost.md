@@ -1,29 +1,27 @@
 # Decommission-VCFHost
 
-## SYNOPSIS
-Connects to the specified SDDC Manager & decommissions a list of hosts. Host list is provided in a JSON file.
+### Synopsis
+Connects to the specified SDDC Manager and decommissions a list of hosts. Host list is provided in a JSON file.
 
-## SYNTAX
-
+### Syntax
 ```
 Decommission-VCFHost -json <json file>
 ```
 
-## DESCRIPTION
-    The Decommission-VCFHost cmdlet connects to the specified SDDC Manager & decommissions a list of hosts.	
+### Description
+The Decommission-VCFHost cmdlet connects to the specified SDDC Manager and decommissions a list of hosts.
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Decommission-VCFHost -json .\Host\decommissionHostSpec.json
 ```
+This example shows how to decommission a set of hosts based on the details provided in the JSON file.
 
-## PARAMETERS
+### Parameters
 
-### -json
-Path to the json spec
+#### -json
+- Path to the json spec
 
 ```yaml
 Type: JSON
@@ -35,21 +33,20 @@ Position: Named
 Default value: None
 ```
 
-#### Sample JSON
+### Sample JSON
 ```json
 [ {
-	"fqdn": "sfo01w01esx01.sfo01.rainpole.local"
+	"fqdn": "sfo01w01esx01.sfo.rainpole.local"
 },{
-	"fqdn": "sfo01w01esx02.sfo01.rainpole.local"
+	"fqdn": "sfo01w01esx02.sfo.rainpole.local"
 },{
-	"fqdn": "sfo01w01esx03.sfo01.rainpole.local"
+	"fqdn": "sfo01w01esx03.sfo.rainpole.local"
 },{
-	"fqdn": "sfo01w01esx04.sfo01.rainpole.local"
+	"fqdn": "sfo01w01esx04.sfo.rainpole.local"
 }]
-
 
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

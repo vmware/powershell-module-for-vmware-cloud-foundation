@@ -1,29 +1,27 @@
 # Get-VCFCertificateCSRs
 
-## SYNOPSIS
-    Get available CSR(s)
+### Synopsis
+Get available CSR(s)
 
-## Syntax
+### Syntax
 ```
 Get-VCFCertificateCSRs -domainName <string>
 ```
 
-## DESCRIPTION
-    Gets available CSRs from SDDC Manager
+### Description
+Gets available CSRs from SDDC Manager
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
-    This example gets a list of CSRs and displays them in JSON format
 ```
+This example gets a list of CSRs and displays them in JSON format
 
+### Parameters
 
-## PARAMETERS
-
-### -domainName
-- Name of the Management Domain 
+#### -domainName
+- Name of the Management Domain
 
 ```yaml
 Type: String
@@ -35,6 +33,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

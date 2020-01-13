@@ -1,28 +1,27 @@
 # Remove-VCFNetworkPool
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a Network Pool.
+### Synopsis
+Connects to the specified SDDC Manager and deletes a Network Pool.
 
-## Syntax
+### Syntax
 ```
 Remove-VCFNetworkPool -id <string>
 ```
 
-## DESCRIPTION
-    The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool. 
+### Description
+The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager and deletes a Network Pool.
 
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
-    This example shows how to get a Network Pool by id
 ```
+This example shows how to get a Network Pool by id
 
-## PARAMETERS
+### Parameters
 
-### -id
+#### -id
 - ID of the network pool
 
 ```yaml
@@ -35,6 +34,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

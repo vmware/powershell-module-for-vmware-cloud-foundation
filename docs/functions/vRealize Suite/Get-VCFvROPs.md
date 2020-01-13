@@ -1,39 +1,38 @@
 # Get-VCFvROPs
 
-## SYNOPSIS
-    Get the existing vRealize Operations Manager
+### Synopsis
+Get the existing vRealize Operations Manager
 
-## Syntax
+### Syntax
 ```
 Get-VCFvROPs -getIntegratedDomains -nodes
 ```
 
-## DESCRIPTION
-    Gets the complete information about the existing vRealize Operations Manager.
+### Description
+Gets the complete information about the existing vRealize Operations Manager.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFvROPs
-    This example list all details concerning the vRealize Operations Manager
 ```
+This example list all details concerning the vRealize Operations Manager
 
-### EXAMPLE 2
+#### Example 2
 ```
 Get-VCFvROPs -getIntegratedDomains
-    Retrieves all the existing workload domains and their connection status with vRealize Operations.
 ```
+Retrieves all the existing workload domains and their connection status with vRealize Operations
 
-### EXAMPLE 3
+#### Example 3
 ```
 Get-VCFvROPs -nodes
-    Retrieves all the vRealize Operations Manager nodes.
 ```
+Retrieves all the vRealize Operations Manager nodes
 
+### Parameters
 
-## PARAMETERS
-### -getIntegratedDomains
+#### -getIntegratedDomains
 - Get Workload domains that are integrated with vRealize Operations Manager. No value required
 
 ```yaml
@@ -46,7 +45,7 @@ Position: Named
 Default value: None
 ```
 
-### -nodes
+#### -nodes
 - Get vRealize Operations Manager nodes. No value required
 
 ```yaml
@@ -58,6 +57,7 @@ Required: False
 Position: Named
 Default value: None
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

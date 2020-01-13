@@ -1,31 +1,27 @@
 # Remove-VCFWorkloadDomain
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a workload domain.
+### Synopsis
+Connects to the specified SDDC Manager and deletes a workload domain.
 
-## Syntax
+### Syntax
 ```
 Remove-VCFWorkloadDomain -id <string>
 ```
 
-## DESCRIPTION
-    Before a workload domain can be deleted it must first be marked for deletion. See Set-VCFWorkloadDomain
-	The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager 
-	& deletes a workload domain. 
- 
+### Description
+Before a workload domain can be deleted it must first be marked for deletion (See Set-VCFWorkloadDomain).  
+The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager and deletes a workload domain.  
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Remove-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-    This example shows how to delete a workload domain
 ```
+This example shows how to delete a workload domain
 
-## PARAMETERS
+### Parameters
 
-### -id
+#### -id
 - ID of a workload domain
 
 ```yaml
@@ -38,6 +34,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

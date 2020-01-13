@@ -1,31 +1,32 @@
 # Get-VCFService
 
-## SYNOPSIS
-    Gets a list of running VCF Services
+### Synopsis
+Gets a list of running VCF Services
 
-## Syntax
+### Syntax
 ```
-Get-VCFManager -id <string>
+Get-VCFService -id <string>
 ```
 
-## DESCRIPTION
-     Retrieves the list of services running on the connected SDDC Manager
+### Description
+Retrieves the list of services running on the connected SDDC Manager
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFService
-    This example shows how to get the list of services running on the connected SDDC Manager 
 ```
-### EXAMPLE 2
+This example shows how to get the list of services running on the connected SDDC Manager
+
+#### Example 2
 ```
 Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
-    This example shows how to return the details for a specic service running on the connected SDDC Manager based on the ID 
 ```
+This example shows how to return the details for a specific service running on the connected SDDC Manager based on the ID
 
-## PARAMETERS
-### -id
+### Parameters
+
+#### -id
 - ID of a specific SDDC Manager Service
 
 ```yaml
@@ -37,6 +38,7 @@ Required: False
 Position: Named
 Default value: None
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

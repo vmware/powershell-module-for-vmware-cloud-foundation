@@ -1,27 +1,25 @@
 # Get-VCFvRSLCM
 
-## SYNOPSIS
-    Get the existing vRealize Suite Lifecycle Manager
+### Synopsis
+Get the existing vRealize Suite Lifecycle Manager
 
-## Syntax
+### Syntax
 ```
 Get-VCFvRSLCM
 ```
 
-## DESCRIPTION
-    Gets the complete information about the existing vRealize Suite Lifecycle Manager.
+### Description
+Gets the complete information about the existing vRealize Suite Lifecycle Manager.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFvRSLCM
-    This example list all details concerning the vRealize Suite Lifecycle Manager
 ```
+This example list all details concerning the vRealize Suite Lifecycle Manager
 
+### Parameters
 
-## PARAMETERS
+### Notes
 
-## NOTES
-
-## RELATED LINKS
+### Related Links

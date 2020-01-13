@@ -1,31 +1,31 @@
 # Get-VCFvRLI
 
-## SYNOPSIS
-    Get the existing vRealize Log Insight Details
+### Synopsis
+Get the existing vRealize Log Insight Details
 
-## Syntax
+### Syntax
 ```
 Get-VCFvRLI
 ```
 
-## DESCRIPTION
-    Gets the complete information about the existing vRealize Log Insight deployment.
+### Description
+Gets the complete information about the existing vRealize Log Insight deployment.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFvRLI
-    This example list all details concerning the vRealize Log Insight Cluster
 ```
-### EXAMPLE 2
+This example list all details concerning the vRealize Log Insight Cluster
+
+#### Example 2
 ```
 Get-VCFvRLI | Select nodes | ConvertTo-Json
-    This example lists the node details of the cluster and outputs them in JSON format 
 ```
+This example lists the node details of the cluster and outputs them in JSON format
 
-## PARAMETERS
+### Parameters
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

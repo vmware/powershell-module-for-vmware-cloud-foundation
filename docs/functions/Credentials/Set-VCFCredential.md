@@ -1,29 +1,27 @@
 # Set-VCFCredential
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & updates a credential.
+### Synopsis
+Connects to the specified SDDC Manager and updates a credential.
 
-## Syntax
+### Syntax
 ```
 Set-VCFCredential -privilegedUsername <string> -privilegedPassword <string> -json <path to json file>
 ```
 
-## DESCRIPTION
-	The Set-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential. 
-    Credentials can be updated with a specified password(s) or rotated using system generated password(s).
+### Description
+The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
+Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Set-VCFCredential -json .\Credential\updateCredentialSpec.json
-    This example shows how to update a credential using a json spec
 ```
+This example shows how to update a credential using a json spec
 
-## PARAMETERS
+### Parameters
 
-### -privilegejdUsername
+#### -privilegejdUsername
 - Privileged Username for dual authentication
 
 ```yaml
@@ -35,7 +33,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-### -privilegedPassword
+
+#### -privilegedPassword
 - Privileged Password for dual authentication
 
 ```yaml
@@ -47,7 +46,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-### -json
+
+#### -json
 - Path to JSON file with credentials to be updated
 
 ```yaml
@@ -60,13 +60,13 @@ Position: Named
 Default value: None
 Accepted Value: Resource FQDN
 ```
-## SAMPLE JSON
-### Update Credentials with specified password
+### Sample JSON
+#### Update Credentials with specified password
 ```
 {
   "operationType" : "UPDATE",
   "elements" : [ {
-    "resourceName" : "sfo01m01esx02.sfo01.rainpole.local",
+    "resourceName" : "sfo01m01esx02.sfo.rainpole.local",
     "resourceType" : "ESXI",
     "credentials" : [ {
       "credentialType" : "SSH",
@@ -77,12 +77,12 @@ Accepted Value: Resource FQDN
 }
 
 ```
-### Rotate Credentials with system defined password
+#### Rotate Credentials with system defined password
 ```
 {
   "operationType" : "ROTATE",
   "elements" : [ {
-    "resourceName" : "sfo01m01esx02.sfo01.rainpole.local",
+    "resourceName" : "sfo01m01esx02.sfo.rainpole.local",
     "resourceType" : "ESXI",
     "credentials" : [ {
       "credentialType" : "SSH",
@@ -92,9 +92,8 @@ Accepted Value: Resource FQDN
 }
 
 ```
-## NOTES
 
-## RELATED LINKS
-```
+### Notes
+
+### Related Links
 Steps to configure Dual Authentication https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.ovdeploy.doc_39/GUID-FAB78718-E626-4924-85DC-97536C3DA337.html
-```

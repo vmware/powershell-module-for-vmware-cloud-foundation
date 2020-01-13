@@ -1,28 +1,26 @@
 # New-VCFCluster
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & creates cluster.
+### Synopsis
+Connects to the specified SDDC Manager & creates cluster.
 
-## Syntax
+### Syntax
 ```
 New-VCFWorkloadDomain -json <path to json file>
 ```
 
-## DESCRIPTION
-    The New-VCFCluster cmdlet connects to the specified SDDC Manager & creates a cluster in a specified workload domains. 
+### Description
+The New-VCFCluster cmdlet connects to the specified SDDC Manager & creates a cluster in a specified workload domains.
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
-    This example shows how to create a cluster in a Workload Domain from a json spec
 ```
+This example shows how to create a cluster in a Workload Domain from a json spec
 
-## PARAMETERS
+### Parameters
 
-### -json
+#### -json
 - Path to the JSON spec
 
 ```yaml
@@ -35,7 +33,7 @@ Position: Named
 Default value: None
 ```
 
-### SAMPLE JSON
+### Sample JSON
 ```
 {
   "nsxVClusterSpec": {
@@ -103,8 +101,8 @@ Default value: None
         {
           "name": "w01-c02-vds01-vsan",
           "transportType": "VSAN"
-        } 
-      ] 
+        }
+      ]
     },
     {
        "name": "w01-c02-vds02",
@@ -120,6 +118,6 @@ Default value: None
 
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

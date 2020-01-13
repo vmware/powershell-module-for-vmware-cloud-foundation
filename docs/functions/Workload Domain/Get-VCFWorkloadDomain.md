@@ -1,37 +1,36 @@
 # Get-VCFWorkloadDomain
 
-## SYNOPSIS
-Connects to the specified SDDC Manager & retrieves a list of workload domains.
+### Synopsis
+Connects to the specified SDDC Manager and retrieves a list of workload domains.
 
-## Syntax
+### Syntax
 ```
 Get-VCFWorkloadDomain -name <string> -id <string>
 ```
 
-## DESCRIPTION
-The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & retrieves a list of workload domains.
+### Description
+The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager and retrieves a list of workload domains.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFWorkloadDomain
-    This example shows how to get a list of Workload Domains
 ```
+This example shows how to get a list of Workload Domains
 
-### EXAMPLE 2
+#### Example 2
 ```
 Get-VCFWorkloadDomain -name WLD01
-    This example shows how to get a Workload Domain by name
 ```
+This example shows how to get a Workload Domain by name
 
-### EXAMPLE 3
+#### Example 3
 ```
 Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    This example shows how to get a Workload Domain by id
 ```
+This example shows how to get a Workload Domain by id
 
-## PARAMETERS
+### Parameters
 
 ### -name
 - The friendly name of a workload domain
@@ -46,7 +45,7 @@ Position: Named
 Default value: None
 ```
 
-### -id
+#### -id
 ID of a specific workload domain
 
 ```yaml
@@ -59,6 +58,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

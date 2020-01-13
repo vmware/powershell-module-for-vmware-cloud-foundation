@@ -1,28 +1,28 @@
 # Set-VCFCeip
 
-## SYNOPSIS
-    Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
+### Synopsis
+Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
 
-## Syntax
+### Syntax
 ```
 Set-VCFCeip -ceipSetting <string>
 ```
 
-## DESCRIPTION
-    The Set-VCFCeip cmdlet configures the setting for CEIP of the connected SDDC Manager. 
+### Description
+The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement
+Program (CEIP) of the connected SDDC Manager.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
-Set-VCFCeip -ceipSetting ENABLE
-    This example shows how to disable CEIP of the connected SDDC Manager
+Set-VCFCeip -ceipSetting ENABLE    
 ```
+This example shows how to disable CEIP of the connected SDDC Manager
 
-## PARAMETERS
+### Parameters
 
-### -ceipSetting
-- Sets CEIP to Enable/Disable 
+#### -ceipSetting
+- Sets CEIP to Enable/Disable
 
 ```yaml
 Type: String
@@ -35,6 +35,6 @@ Default value: None
 Accepted Value: ENABLE,DISABLE
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

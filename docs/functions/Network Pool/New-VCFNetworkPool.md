@@ -1,28 +1,27 @@
 # New-VCFNetworkPool
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & creates a new Network Pool.
+### Synopsis
+Connects to the specified SDDC Manager and creates a new Network Pool.
 
-## Syntax
+### Syntax
 ```
 New-VCFNetworkPool -json <path to JSON file>
 ```
 
-## DESCRIPTION
-    The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager & retrieves a list of Network Pools. 
+### Description
+The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager and retrieves a list of Network Pools.
 
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
-    This example shows how to create a Network Pool
 ```
+This example shows how to create a Network Pool
 
-## PARAMETERS
+### Parameters
 
-### -json
+#### -json
 - Path to JSON file
 
 ```yaml
@@ -34,7 +33,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-## Sample JSON
+
+### Sample JSON
 ```json
 {
 	"name": "sfo01w01-cl01",
@@ -70,6 +70,7 @@ Default value: None
 	]
 }
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

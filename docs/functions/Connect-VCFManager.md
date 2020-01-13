@@ -1,29 +1,27 @@
 # Connect-VCFManager
 
-## SYNOPSIS
+### Synopsis
 Connect to a VCF SDDC Manager
 
-## SYNTAX
-
-### Username & Password
+### Syntax
 ```
 Connect-VCFManager -fqdn <String> -Username <String> -Password <String>
 ```
 
-## DESCRIPTION
-Connect to a VCF SDDC Manager and stores the credentials in a base64 string. 
-It is required once per session before running all other cmdlets
+### Description
+Connect to the SDDC Manager and stores the credentials in a base64 string.
+It is required once per session before running all other cmdlets.
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
-Connect-VCFManager -fqdn sfo01vcf01.sfo01.rainpole.local -username admin -password VMware1!
+Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1!
+```
+This example shows how to connect to SDDC Manager
 
+### Parameters
 
-## PARAMETERS
-
-### -fqdn
+#### -fqdn
 VCF SDDC Manager to connect to
 
 ```yaml
@@ -38,7 +36,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Username
+#### -Username
 Username to connect with
 Currently supported with VCF admin account only
 
@@ -54,7 +52,7 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Password
+#### -Password
 Password to connect with
 
 ```yaml
@@ -69,6 +67,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

@@ -1,37 +1,38 @@
 # Get-VCFNetworkPool
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of Network Pools.
+### Synopsis
+Connects to the specified SDDC Manager and retrieves a list of Network Pools.
 
-## Syntax
+### Syntax
 ```
 Get-VCFNetworkPool -name <string> -id <string>
 ```
 
-## DESCRIPTION
-    The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager & retrieves a list of Network Pools. 
+### Description
+The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager and retrieves a list of Network Pools.
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFNetworkPool
-    This example shows how to get a list of all Network Pools
 ```
-### EXAMPLE 2
+This example shows how to get a list of all Network Pools
+
+#### Example 2
 ```
 Get-VCFNetworkPool -name sfo01-networkpool
-    This example shows how to get a Network Pool by name
 ```
-### EXAMPLE 3
+This example shows how to get a Network Pool by name
+
+#### Example 3
 ```
 Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
-    This example shows how to get a Network Pool by id
 ```
-## PARAMETERS
+This example shows how to get a Network Pool by id
 
-### -name
+### Parameters
+
+#### -name
 - ID of target cluster
 
 ```yaml
@@ -43,7 +44,8 @@ Required: False
 Position: Named
 Default value: None
 ```
-### -id
+
+#### -id
 - ID of target cluster
 
 ```yaml
@@ -55,6 +57,7 @@ Required: False
 Position: Named
 Default value: None
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links
