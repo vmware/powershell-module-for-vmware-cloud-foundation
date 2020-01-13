@@ -1,4 +1,4 @@
-# New-VCFWorkloadDomain
+# Set-VCFWorkloadDomain
 
 ### Synopsis
 Connects to the specified SDDC Manager and marks a workload domain for deletion.
@@ -9,8 +9,8 @@ Set-VCFWorkloadDomain -id <string>
 ```
 
 ### Description
-Before a workload domain can be deleted it must first be marked for deletion.
-The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager and marks a workload domain for deletion.
+Before a workload domain can be deleted it must first be marked for deletion.  
+The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager and marks a workload domain for deletion.  
 
 ### Examples
 #### Example 1

@@ -9,7 +9,7 @@ Remove-VCFWorkloadDomain -id <string>
 ```
 
 ### Description
-Before a workload domain can be deleted it must first be marked for deletion. See Set-VCFWorkloadDomain
+Before a workload domain can be deleted it must first be marked for deletion (See Set-VCFWorkloadDomain).  
 The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager and deletes a workload domain.  
 
 ### Examples
