@@ -1,45 +1,46 @@
 # Get-VCFLicenseKey
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of License keys.
+### Synopsis
+Connects to the specified SDDC Manager and retrieves a list of License keys.
 
-## Syntax
+### Syntax
 ```
 Get-VCFLicenseKey -key <string> -productType <string> -status <string>
 ```
 
-## DESCRIPTION
-    The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager & retrieves a list of License keys. 
+### Description
+The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys.
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFLicenseKey
-    This example shows how to get a list of all License keys
 ```
-### EXAMPLE 2
+This example shows how to get a list of all License keys
+
+#### Example 2
 ```
 Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-    This example shows how to get a specified License key	
 ```
-### EXAMPLE 3
+This example shows how to get a specified License key
+
+#### Example 3
 ```
 Get-VCFLicenseKey -productType "VCENTER,VSAN"
-    This example shows how to get a License Key by product type
-	Supported Product Types: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT	
 ```
-### EXAMPLE 4
+This example shows how to get a License Key by product type
+Supported Product Types: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT
+
+#### Example 4
 ```
 Get-VCFLicenseKey -status EXPIRED
-    This example shows how to get a License by status
-	Supported Status Types: EXPIRED,ACTIVE,NEVER_EXPIRES	
 ```
+This example shows how to get a License by status
+Supported Status Types: EXPIRED,ACTIVE,NEVER_EXPIRES
 
-## PARAMETERS
+### Parameters
 
-### -key
+#### -key
 - License Key
 
 ```yaml
@@ -51,7 +52,8 @@ Required: False
 Position: Named
 Default value: None
 ```
-### -productType
+
+#### -productType
 - Product Type
 
 ```yaml
@@ -64,7 +66,8 @@ Position: Named
 Default value: None
 Accepted Value: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT
 ```
-### -status
+
+#### -status
 - Status of a license
 
 ```yaml
@@ -77,6 +80,7 @@ Position: Named
 Default value: None
 Accepted Value: EXPIRED,ACTIVE,NEVER_EXPIRES
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

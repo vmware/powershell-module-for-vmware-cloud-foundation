@@ -1057,10 +1057,10 @@ Export-ModuleMember -Function Remove-VCFNetworkIPPool
 Function Get-VCFLicenseKey {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of License keys.
+    Connects to the specified SDDC Manager and retrieves a list of License keys.
 
     .DESCRIPTION
-    The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager & retrieves a list of License keys.
+    The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys.
 
     .EXAMPLE
     PS C:\> Get-VCFLicenseKey
@@ -1128,10 +1128,10 @@ Export-ModuleMember -Function Get-VCFLicenseKey
 Function New-VCFLicenseKey {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & adds a new License Key.
+    Connects to the specified SDDC Manager and adds a new License Key.
 
     .DESCRIPTION
-    The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager & adds a new License Key.
+    The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
 
     .EXAMPLE
     PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
@@ -1171,11 +1171,11 @@ Export-ModuleMember -Function New-VCFLicenseKey
 Function Remove-VCFLicenseKey {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a license key.
+    Connects to the specified SDDC Manager and deletes a license key.
 
     .DESCRIPTION
     The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager
-	& deletes a License Key. A license Key can only be removed if it is not in use.
+	  and deletes a License Key. A license Key can only be removed if it is not in use.
 
     .EXAMPLE
     PS C:\> Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"

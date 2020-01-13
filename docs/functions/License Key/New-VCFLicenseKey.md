@@ -1,28 +1,26 @@
 # New-VCFLicenseKey
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & adds a new License Key.
+### Synopsis
+Connects to the specified SDDC Manager and adds a new License Key.
 
-## Syntax
+### Syntax
 ```
 New-VCFLicenseKey -json <path to JSON file>
 ```
 
-## DESCRIPTION
-    The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager & adds a new License Key. 
+### Description
+The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
-    This example shows how to add a new License Key
 ```
+This example shows how to add a new License Key
 
-## PARAMETERS
+### Parameters
 
-### -json
+#### -json
 - Path to the JSON file
 
 ```yaml
@@ -34,7 +32,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-## Sample JSON
+
+### Sample JSON
 ```json
 {
   "key" : "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
@@ -85,6 +84,7 @@ Default value: None
 }
 
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

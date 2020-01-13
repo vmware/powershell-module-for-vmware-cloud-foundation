@@ -6,9 +6,9 @@ Connects to the specified SDDC Manager and retrieves a list of hosts.
 ### Description
 The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.  
 VCF Hosts are defined by a status
-..* ASSIGNED - Hosts that are assigned to a Workload domain
-..* UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
-..* UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used for other domain tasks after completion of cleanup operation
+	- ASSIGNED - Hosts that are assigned to a Workload domain
+	- UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
+	- UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used for other domain tasks after completion of cleanup operation
 
 ### Examples
 #### Example 1
