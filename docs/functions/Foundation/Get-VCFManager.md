@@ -16,13 +16,13 @@ Retrieves the details for SDDC Manager
 ```
 Get-VCFManager
 ```
-This example shows how to retrieve a list of SDDC Managers
+This example shows how to retrieve a list of SDDC Managers  
 
 #### Example 2
 ```
 Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
 ```
-This example shows how to return the details for a specific SDDC Manager based on the ID
+This example shows how to return the details for a specific SDDC Manager based on the ID  
 
 ### Parameters
 
