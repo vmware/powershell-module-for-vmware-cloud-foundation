@@ -1,36 +1,38 @@
 # Get-VCFnsxvManager
 
-## SYNOPSIS
-    Gets a list of NSX-v Managers
+### Synopsis
+Gets a list of NSX-v Managers
 
-## Syntax
+### Syntax
 ```
 Get-VCFnsxvManager -id <string>
 ```
 
-## DESCRIPTION
-     Retrieves a list of NSX-v Managers managed by the connected SDDC Manager
+### Description
+Retrieves a list of NSX-v Managers managed by the connected SDDC Manager
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFnsxvManager
-    This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager
 ```
-### EXAMPLE 2
+This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager
+
+#### Example 2
 ```
 Get-VCFnsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
 ```
-### EXAMPLE 3
+This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
+
+#### Example 3
 ```
 Get-VCFnsxvManager | select fqdn
-    This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager but only return the fqdn		
 ```
+This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager but only return the fqdn
 
-## PARAMETERS
-### -id
+### Parameters
+
+#### -id
 - ID of a specific VCF NSX-V Manager
 
 ```yaml
@@ -42,6 +44,7 @@ Required: False
 Position: Named
 Default value: None
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

@@ -1,36 +1,38 @@
 # Get-VCFvCenter
 
-## SYNOPSIS
-    Gets a list of vCenter Servers
+### Synopsis
+Gets a list of vCenter Servers
 
-## Syntax
+### Syntax
 ```
 Get-VCFvCenter -id <string>
 ```
 
-## DESCRIPTION
-    Retrieves a list of vCenter Servers managed by the connected SDDC Manager
+### Description
+Retrieves a list of vCenter Servers managed by the connected SDDC Manager
 
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFvCenter
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
 ```
-### EXAMPLE 2
+This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
+
+#### Example 2
 ```
 Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specic vCenter Server managed by the connected SDDC Manager
 ```
-### EXAMPLE 3
+This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
+
+#### Example 3
 ```
 Get-VCFvCenter | select fqdn
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn	
 ```
+This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
 
-## PARAMETERS
-### -id
+### Parameters
+
+#### -id
 - ID of a specific VCF vCenter
 
 ```yaml
@@ -42,6 +44,7 @@ Required: False
 Position: Named
 Default value: None
 ```
-## NOTES
 
-## RELATED LINKS
+### Notes
+
+### Related Links

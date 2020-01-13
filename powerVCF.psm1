@@ -2176,7 +2176,7 @@ Function Get-VCFService {
 
     .EXAMPLE
     PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
-    This example shows how to return the details for a specic service running on the connected SDDC Manager based on the ID
+    This example shows how to return the details for a specific service running on the connected SDDC Manager based on the ID
 #>
 
 	Param (
@@ -2224,7 +2224,7 @@ Function Get-VCFvCenter {
 
     .EXAMPLE
     PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specic vCenter Server managed by the connected SDDC Manager
+    This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
 
     .EXAMPLE
     PS C:\> Get-VCFvCenter | select fqdn
@@ -2271,7 +2271,7 @@ Function Get-VCFPSC {
         Gets a list of Platform Services Controller (PSC) Servers
 
         .DESCRIPTION
-        Retrieves a list of PSC managed by the connected SDDC Manager
+        Retrieves a list of Platform Services Controllers (PSC)s managed by the connected SDDC Manager
 
         .EXAMPLE
         PS C:\> Get-VCFPSC
@@ -2279,7 +2279,7 @@ Function Get-VCFPSC {
 
         .EXAMPLE
         PS C:\> Get-VCFPSC -id 23832dec-e156-4d2d-89bf-37fb0a47aab5
-        This example shows how to return the details for a specic PSC servers managed by the connected SDDC Manager
+        This example shows how to return the details for a specific PSC server managed by the connected SDDC Manager
 
         .EXAMPLE
         PS C:\> Get-VCFPSC | select fqdn
