@@ -1,33 +1,32 @@
 # Get-VCFTask
 
-## SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of tasks.
+### Synopsis
+Connects to the specified SDDC Manager and retrieves a list of tasks.
 
-## Syntax
+### Syntax
 ```
 Get-VCFTask -id <string>
 ```
 
-## DESCRIPTION
-    The Get-VCFTask cmdlet connects to the specified SDDC Manager & retrieves a list of tasks. 
+### Description
+The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Get-VCFTask
-    This example shows how to get all tasks 
 ```
-### EXAMPLE 2
-```
-Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a 
-    This example shows how to get a task by id	
-```
+This example shows how to get all tasks
 
-## PARAMETERS
+#### Example 2
+```
+Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a 	
+```
+This example shows how to get a task by id
 
-### -id
+### Parameters
+
+#### -id
 - ID of a task
 
 ```yaml
@@ -40,6 +39,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links
