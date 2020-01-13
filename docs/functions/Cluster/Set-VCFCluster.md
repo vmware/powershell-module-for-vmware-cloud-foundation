@@ -9,7 +9,7 @@ Set-VCFCluster -id <string> -json <path to JSON file> -markForDeletion <boolean>
 ```
 
 ### Description
-The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or removing a host(s). A cluster can also be marked for deletion
+The Set-VCFCluster cmdlet connects to the specified SDDC Manager and expands or compacts a cluster by adding or removing a host(s). A cluster can also be marked for deletion
 
 ### Examples
 #### Example 1
@@ -18,13 +18,13 @@ Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterE
 ```
 This example shows how to expand a cluster by adding a host(s)
 
-### Example 2
+#### Example 2
 ```
 Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterCompactionSpec.json
 ```
 This example shows how to compact a cluster by removing a host(s)
 
-### Example 3
+#### Example 3
 ```
 Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -markForDeletion
 ```
@@ -58,7 +58,7 @@ Position: Named
 Default value: None
 ```
 
-### -markForDeletion
+#### -markForDeletion
 - Flag a cluster for deletion
 
 ```yaml

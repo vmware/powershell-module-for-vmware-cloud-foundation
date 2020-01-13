@@ -121,31 +121,31 @@ Export-ModuleMember -function Connect-VCFManager
 Function Get-VCFHost {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of hosts.
+    Connects to the specified SDDC Manager and retrieves a list of hosts.
 
     .DESCRIPTION
-    The Get-VCFHost cmdlet connects to the specified SDDC Manager & retrieves a list of hosts.
-	VCF Hosts are defined by status
-	- ASSIGNED - Hosts that are assigned to a Workload domain
-	- UNASSIGNED_USEABLE - Hosts that are availbale to be assigned to a Workload Domain
-	- UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used
-	for other domain tasks after completion of cleanup operation
+    The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.
+	  VCF Hosts are defined by status
+	  - ASSIGNED - Hosts that are assigned to a Workload domain
+	  - UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
+	  - UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used
+	  for other domain tasks after completion of cleanup operation
 
     .EXAMPLE
-	PS C:\> Get-VCFHost
+	  PS C:\> Get-VCFHost
     This example shows how to get all hosts regardless of status
 
-	.EXAMPLE
-	PS C:\> Get-VCFHost -Status ASSIGNED
-    This example shows how to get all hosts with a specific status
+	 .EXAMPLE
+	 PS C:\> Get-VCFHost -Status ASSIGNED
+   This example shows how to get all hosts with a specific status
 
-	.EXAMPLE
-	PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
-    This example shows how to get a host by id
+	 .EXAMPLE
+	 PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+   This example shows how to get a host by id
 
-	.EXAMPLE
-	PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
-    This example shows how to get a host by fqdn
+	 .EXAMPLE
+	 PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
+   This example shows how to get a host by fqdn
 #>
 
 	param (
@@ -204,15 +204,16 @@ Export-ModuleMember -Function Get-VCFHost
 Function Commission-VCFHost {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & commissions a list of hosts.
+    Connects to the specified SDDC Manager and commissions a list of hosts.
 
     .DESCRIPTION
     The Commission-VCFHost cmdlet connects to the specified SDDC Manager
-	& commissions a list of hosts. Host list spec is provided in a JSON file.
+	  and commissions a list of hosts. Host list spec is provided in a JSON file.
 
     .EXAMPLE
     PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-    This example shows how to commission a list of hosts
+    This example shows how to commission a list of hosts based on the details
+    provided in the JSON file.
 #>
 
 	param (
@@ -269,16 +270,17 @@ Export-ModuleMember -Function Commission-VCFHost
 Function Decommission-VCFHost {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & decommissions a list of hosts.
-	Host list is provided in a JSON file.
+    Connects to the specified SDDC Manager and decommissions a list of hosts.
+	  Host list is provided in a JSON file.
 
     .DESCRIPTION
     The Decommission-VCFHost cmdlet connects to the specified SDDC Manager
-	& decommissions a list of hosts.
+	  and decommissions a list of hosts.
 
     .EXAMPLE
     PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
-    This example shows how to decommission a set of hosts
+    This example shows how to decommission a set of hosts based on the details
+    provided in the JSON file.
 #>
 
 	param (

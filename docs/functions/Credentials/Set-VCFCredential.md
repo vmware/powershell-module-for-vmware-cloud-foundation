@@ -1,7 +1,7 @@
 # Set-VCFCredential
 
 ### Synopsis
-Connects to the specified SDDC Manager & updates a credential.
+Connects to the specified SDDC Manager and updates a credential.
 
 ### Syntax
 ```
@@ -9,7 +9,7 @@ Set-VCFCredential -privilegedUsername <string> -privilegedPassword <string> -jso
 ```
 
 ### Description
-The Set-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential.
+The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
 Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 
 ### Examples
@@ -66,7 +66,7 @@ Accepted Value: Resource FQDN
 {
   "operationType" : "UPDATE",
   "elements" : [ {
-    "resourceName" : "sfo01m01esx02.sfo01.rainpole.local",
+    "resourceName" : "sfo01m01esx02.sfo.rainpole.local",
     "resourceType" : "ESXI",
     "credentials" : [ {
       "credentialType" : "SSH",
@@ -82,7 +82,7 @@ Accepted Value: Resource FQDN
 {
   "operationType" : "ROTATE",
   "elements" : [ {
-    "resourceName" : "sfo01m01esx02.sfo01.rainpole.local",
+    "resourceName" : "sfo01m01esx02.sfo.rainpole.local",
     "resourceType" : "ESXI",
     "credentials" : [ {
       "credentialType" : "SSH",

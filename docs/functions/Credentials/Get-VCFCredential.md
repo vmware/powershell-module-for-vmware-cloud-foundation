@@ -9,7 +9,7 @@ Get-VCFCredential -privilegedUsername <string> -privilegedPassword <string> -res
 ```
 
 ### Description
-The Get-VCFCredential cmdlet connects to the specified SDDC Manager & retrieves a list of credentials. A privileged user account is required.
+The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials. A privileged user account is required.
 
 
 ### Examples
