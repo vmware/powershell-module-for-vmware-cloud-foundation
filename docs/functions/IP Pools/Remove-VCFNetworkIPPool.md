@@ -1,28 +1,26 @@
 # Remove-VCFNetworkIPPool
 
-## SYNOPSIS
-    Remove an IP Pool from the Network of a Network Pool
+### Synopsis
+Remove an IP Pool from the Network of a Network Pool
 
-## Syntax
+### Syntax
 ```
 Remove-VCFNetworkIPPool -id <string>
 ```
 
-## DESCRIPTION
-    The Remove-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an existing Network within a Network Pool. 
+### Description
+The Remove-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an existing Network within a Network Pool.
 
-
-## EXAMPLES
-
-### EXAMPLE 1
+### Examples
+#### Example 1
 ```
 Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
-    This example shows how remove an IP Pool on the existing network for a given Network Pool
 ```
+This example shows how remove an IP Pool on the existing network for a given Network Pool
 
-## PARAMETERS
+### Parameters
 
-### -id
+#### -id
 - ID of target Network Pool
 
 ```yaml
@@ -34,7 +32,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-### -networkid
+
+#### -networkid
 - ID of target IP Pool
 
 ```yaml
@@ -46,7 +45,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-### -ipStart
+
+#### -ipStart
 - Start IP in the new range
 
 ```yaml
@@ -58,7 +58,8 @@ Required: True
 Position: Named
 Default value: None
 ```
-### -ipEnd
+
+#### -ipEnd
 - End IP in the new range
 
 ```yaml
@@ -71,6 +72,6 @@ Position: Named
 Default value: None
 ```
 
-## NOTES
+### Notes
 
-## RELATED LINKS
+### Related Links

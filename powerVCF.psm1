@@ -18,7 +18,7 @@
 
 
 # Enable communication with self signed certs when using Powershell Core
-# If you require all communications to be secure & do not wish to
+# If you require all communications to be secure and do not wish to
 # allow communication with self signed certs remove lines 31-52 before
 # importing the module
 
@@ -50,10 +50,10 @@ add-type @"
 Function Connect-VCFManager {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & stores the credentials in a base64 string
+    Connects to the specified SDDC Manager and stores the credentials in a base64 string
 
     .DESCRIPTION
-    The Connect-VCFManager cmdlet connects to the specified SDDC Manager & stores the credentials
+    The Connect-VCFManager cmdlet connects to the specified SDDC Manager and stores the credentials
 	in a base64 string. It is required once per session before running all other cmdlets
 
     .EXAMPLE
@@ -915,8 +915,8 @@ Function Get-VCFNetworkIPPool {
     Get a Network of a Network Pool
 
     .DESCRIPTION
-    The Get-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and retrives a list of the networks
-	configured for the provided network pool.
+    The Get-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and retrieves a list of the networks
+	  configured for the provided network pool.
 
     .EXAMPLE
     PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52
@@ -1211,10 +1211,10 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 Function Get-VCFTask {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of tasks.
+    Connects to the specified SDDC Manager and retrieves a list of tasks.
 
     .DESCRIPTION
-    The Get-VCFTask cmdlet connects to the specified SDDC Manager & retrieves a list of tasks.
+    The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
 
     .EXAMPLE
 	PS C:\> Get-VCFTask
@@ -1257,10 +1257,10 @@ Export-ModuleMember -Function Get-VCFTask
 Function Retry-VCFTask {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & retries a previously failed task.
+    Connects to the specified SDDC Manager and retries a previously failed task.
 
     .DESCRIPTION
-    The Retry-VCFTask cmdlet connects to the specified SDDC Manager & retries a previously
+    The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
     failed task using the task id.
 
     .EXAMPLE
@@ -1295,10 +1295,10 @@ Export-ModuleMember -Function Retry-VCFTask
 Function Get-VCFCredential {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of credentials.
+    Connects to the specified SDDC Manager and retrieves a list of credentials.
 
     .DESCRIPTION
-    The Get-VCFCredential cmdlet connects to the specified SDDC Manager & retrieves a list of
+    The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
     credentials. A privileged user account is required.
 
     .EXAMPLE
@@ -1349,10 +1349,10 @@ Export-ModuleMember -Function Get-VCFCredential
 Function Set-VCFCredential {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager & updates a credential.
+    Connects to the specified SDDC Manager and updates a credential.
 
     .DESCRIPTION
-	The Set-VCFCredential cmdlet connects to the specified SDDC Manager & updates a credential.
+	The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
     Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 
     .EXAMPLE
