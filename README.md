@@ -21,7 +21,7 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 
 
 ## Supported Platforms
-This version has been tested using vSAN Ready Nodes. VxRail has not been tested, The following cmdlets will not work with VxRail as the API is different. _Other cmdlets may work subject to testing._
+This version has been tested using vSAN Ready Nodes. VMware Cloud Foundation on VxRail has not been fully tested, The following cmdlets will not work with VxRail as the workflow is different due to the use of VxRail Manager. _Other cmdlets may work subject to testing._
 
 `Commission-VCFHost`
 
@@ -35,7 +35,7 @@ New/Set/Remove Workload domains
 ## Installing the module
 Tested in Windows PowerShell 5.x & PowerShell Core 6.x
 
-To install the module from the PowerShell Gallery Open POwerShell as Administrator and run the following
+To install the module from the PowerShell Gallery Open PowerShell as Administrator and run the following
 
 ```PowerShell
 Install-Module -Name PowerVCF
