@@ -119,13 +119,13 @@ Get-Command -Module powerVCF
 All cmdlets support the following
 
 ```powershell
-Get-help cmdlet-name
+Get-Help cmdlet-name
 
-Get-help cmdlet-name -examples
+Get-Help cmdlet-name -examples
 
-Get-help cmdlet-name -detailed
+Get-Help cmdlet-name -detailed
 
-Get-help cmdlet-name -full
+Get-Help cmdlet-name -full
 ```
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
