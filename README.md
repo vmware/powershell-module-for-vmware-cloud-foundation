@@ -34,7 +34,14 @@ New/Set/Remove Workload domains
 
 ## Installing the module
 Tested in Windows PowerShell 5.x & PowerShell Core 6.x
-To install the module download the full module zip, extract and run the following in PowerShell
+
+To install the module from the PowerShell Gallery Open POwerShell as Administrator and run the following
+
+```PowerShell
+Install-Module -Name PowerVCF
+```
+
+Alternatively to manually install the module download the full module zip from the GitHub repo, extract and run the following in PowerShell
 
 ```PowerShell
 Import-Module .\PowerVCF
