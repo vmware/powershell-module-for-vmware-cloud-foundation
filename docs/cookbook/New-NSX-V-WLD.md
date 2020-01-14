@@ -35,41 +35,33 @@ Before you can create a network pool you first need to create the json body that
 Here is the json format required for creating a vSAN network pool (Please use the same json with the module rather than copying from here as formatting is probably messed up!)
 
 ```json
-
 {
-"name": "sfo01w01-cl01",
-"networks": [
-{
-"type": "VSAN",
-"vlanId": 2240,
-"mtu": 9000,
-"subnet": "172.16.240.0",
-"mask": "255.255.255.0",
-"gateway": "172.16.240.253",
-"ipPools": [
-{
-"start": "172.16.240.5",
-"end": "172.16.240.100"
+    "name": "sfo01w01-cl01",
+    "networks": [{
+        "type": "VSAN",
+        "vlanId": 2240,
+        "mtu": 9000,
+        "subnet": "172.16.240.0",
+        "mask": "255.255.255.0",
+        "gateway": "172.16.240.253",
+        "ipPools": [{
+            "start": "172.16.240.5",
+            "end": "172.16.240.100"
+        }]
+    },
+    {
+        "type": "VMOTION",
+        "vlanId": 2236,
+        "mtu": 9000,
+        "subnet": "172.16.236.0",
+        "mask": "255.255.255.0",
+        "gateway": "172.16.236.253",
+        "ipPools": [{
+            "start": "172.16.236.5",
+            "end": "172.16.236.100"
+        }]
+    }]
 }
-]
-},
-{
-"type": "VMOTION",
-"vlanId": 2236,
-"mtu": 9000,
-"subnet": "172.16.236.0",
-"mask": "255.255.255.0",
-"gateway": "172.16.236.253",
-"ipPools": [
-{
-"start": "172.16.236.5",
-"end": "172.16.236.100"
-}
-]
-}
-]
-}
-
 ```
 
 So first off lets get a list of current Network Pools. To do this run the following cmdlet:
@@ -98,39 +90,38 @@ For this json you need the network pool name & ID. These were returned when the 
 
 ```json
 [
-{
-"fqdn": "sfo01w01esx01.sfo01.rainpole.local",
-"username": "root",
-"storageType": "VSAN",
-"password": "VMw@re1!",
-"networkPoolName": "sfo01w01-cl01",
-"networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-},
-{
-"fqdn": "sfo01w01esx02.sfo01.rainpole.local",
-"username": "root",
-"storageType": "VSAN",
-"password": "VMw@re1!",
-"networkPoolName": "sfo01w01-cl01",
-"networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-
-},
-{
-"fqdn": "sfo01w01esx03.sfo01.rainpole.local",
-"username": "root",
-"storageType": "VSAN",
-"password": "VMw@re1!",
-"networkPoolName": "sfo01w01-cl01",
-"networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-},
-{
-"fqdn": "sfo01w01esx04.sfo01.rainpole.local",
-"username": "root",
-"storageType": "VSAN",
-"password": "VMw@re1!",
-"networkPoolName": "sfo01w01-cl01",
-"networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-}
+    {
+        "fqdn": "sfo01w01esx01.sfo01.rainpole.local",
+        "username": "root",
+        "storageType": "VSAN",
+        "password": "VMw@re1!",
+        "networkPoolName": "sfo01w01-cl01",
+        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+    },
+    {
+        "fqdn": "sfo01w01esx02.sfo01.rainpole.local",
+        "username": "root",
+        "storageType": "VSAN",
+        "password": "VMw@re1!",
+        "networkPoolName": "sfo01w01-cl01",
+        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+    },
+    {
+        "fqdn": "sfo01w01esx03.sfo01.rainpole.local",
+        "username": "root",
+        "storageType": "VSAN",
+        "password": "VMw@re1!",
+        "networkPoolName": "sfo01w01-cl01",
+        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+    },
+    {
+        "fqdn": "sfo01w01esx04.sfo01.rainpole.local",
+        "username": "root",
+        "storageType": "VSAN",
+        "password": "VMw@re1!",
+        "networkPoolName": "sfo01w01-cl01",
+        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+    }
 ]
 ```
 
@@ -156,17 +147,16 @@ Get-VCFHost -Status UNASSIGNED_USEABLE | select fqdn,id
 This returns the ids we need for creating the workload domain. Here is the Workload domain json. (Replace ESXi licence (AAAAA), vSAN licence (BBBBB) & NSX-V licence (CCCCC) with your keys)
 
 ```json
-
-{
-"domainName" : "PowerVCF",
-"vcenterSpec" : {
-"name" : "sfo01w01vc01",
-"networkDetailsSpec" : {
-"ipAddress" : "172.16.225.64",
-"dnsName" : "sfo01w01vc01.sfo01.rainpole.local",
-"gateway" : "172.16.225.1",
-"subnetMask" : "255.255.255.0"
-},
+    {
+        "domainName" : "PowerVCF",
+        "vcenterSpec" : {
+        "name" : "sfo01w01vc01",
+        "networkDetailsSpec" : {
+        "ipAddress" : "172.16.225.64",
+        "dnsName" : "sfo01w01vc01.sfo01.rainpole.local",
+        "gateway" : "172.16.225.1",
+        "subnetMask" : "255.255.255.0"
+    },
 "rootPassword" : "VMw@re1!",
 "datacenterName" : "PowerVCF-DC"
 },
