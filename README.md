@@ -3,12 +3,12 @@ PowerVCF is a PowerShell Module for interacting with the VMware Cloud Foundation
 
 <a href="https://docs.vmware.com/en/VMware-Cloud-Foundation" target="_blank">VMware Cloud Foundation Product Documentation</a>
 
-<a href="https://code.vmware.com/apis/723/vmware-cloud-foundation" target="_blank">VVMware Cloud Foundation API Documentation</a>
+<a href="https://code.vmware.com/apis/723/vmware-cloud-foundation" target="_blank">VMware Cloud Foundation API Documentation</a>
 
 # Disclaimer
 This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU).
 
-The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thouroughly testing first. It has been developed against VMware Cloud Foundation 3.9 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
+The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. It has been developed against VMware Cloud Foundation 3.9 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
 
 ## Contributors
 If you would like to contribute please get in touch! Current contributors listed below.
@@ -34,7 +34,14 @@ New/Set/Remove Workload domains
 
 ## Installing the module
 Tested in Windows PowerShell 5.x & PowerShell Core 6.x
-To install the module download the full module zip, extract and run the following in PowerShell
+
+To install the module from the PowerShell Gallery Open POwerShell as Administrator and run the following
+
+```PowerShell
+Install-Module -Name PowerVCF
+```
+
+Alternatively to manually install the module download the full module zip from the GitHub repo, extract and run the following in PowerShell
 
 ```PowerShell
 Import-Module .\PowerVCF
@@ -112,13 +119,13 @@ Get-Command -Module powerVCF
 All cmdlets support the following
 
 ```powershell
-Get-help cmdlet-name
+Get-Help cmdlet-name
 
-Get-help cmdlet-name -examples
+Get-Help cmdlet-name -examples
 
-Get-help cmdlet-name -detailed
+Get-Help cmdlet-name -detailed
 
-Get-help cmdlet-name -full
+Get-Help cmdlet-name -full
 ```
-## Documentation 
+## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
