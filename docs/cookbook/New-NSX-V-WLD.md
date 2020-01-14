@@ -89,40 +89,38 @@ Now that you have a network pool you can commission hosts and associate them wit
 For this json you need the network pool name & ID. These were returned when the pool was created and can also be obtained using Get-VCFNetworkPool.
 
 ```json
-[
-    {
-        "fqdn": "sfo01w01esx01.sfo01.rainpole.local",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo01w01-cl01",
-        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-    },
-    {
-        "fqdn": "sfo01w01esx02.sfo01.rainpole.local",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo01w01-cl01",
-        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-    },
-    {
-        "fqdn": "sfo01w01esx03.sfo01.rainpole.local",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo01w01-cl01",
-        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-    },
-    {
-        "fqdn": "sfo01w01esx04.sfo01.rainpole.local",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo01w01-cl01",
-        "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
-    }
-]
+[{
+    "fqdn": "sfo01w01esx01.sfo01.rainpole.local",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPoolName": "sfo01w01-cl01",
+    "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+},
+{
+    "fqdn": "sfo01w01esx02.sfo01.rainpole.local",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPoolName": "sfo01w01-cl01",
+    "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+},
+{
+    "fqdn": "sfo01w01esx03.sfo01.rainpole.local",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPoolName": "sfo01w01-cl01",
+    "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+},
+{
+    "fqdn": "sfo01w01esx04.sfo01.rainpole.local",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPoolName": "sfo01w01-cl01",
+    "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
+}]
 ```
 
 So to commission the 4 new hosts into my VCF inventory you run:
@@ -147,111 +145,110 @@ Get-VCFHost -Status UNASSIGNED_USEABLE | select fqdn,id
 This returns the ids we need for creating the workload domain. Here is the Workload domain json. (Replace ESXi licence (AAAAA), vSAN licence (BBBBB) & NSX-V licence (CCCCC) with your keys)
 
 ```json
-    {
-        "domainName" : "PowerVCF",
-        "vcenterSpec" : {
+{
+    "domainName" : "PowerVCF",
+    "vcenterSpec" : {
         "name" : "sfo01w01vc01",
         "networkDetailsSpec" : {
-        "ipAddress" : "172.16.225.64",
-        "dnsName" : "sfo01w01vc01.sfo01.rainpole.local",
-        "gateway" : "172.16.225.1",
-        "subnetMask" : "255.255.255.0"
+            "ipAddress" : "172.16.225.64",
+            "dnsName" : "sfo01w01vc01.sfo01.rainpole.local",
+            "gateway" : "172.16.225.1",
+            "subnetMask" : "255.255.255.0"
+        },
+    "rootPassword" : "VMw@re1!",
+    "datacenterName" : "PowerVCF-DC"
     },
-"rootPassword" : "VMw@re1!",
-"datacenterName" : "PowerVCF-DC"
-},
-"computeSpec" : {
-"clusterSpecs" : [ {
-"name" : "Cluster1",
-"hostSpecs" : [ {
-"id" : "dd2ec05f-39e1-464e-83f1-1349a0dcf723",
-"license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
-"hostNetworkSpec" : {
-"vmNics" : [ {
-"id" : "vmnic0",
-"vdsName" : "sfo01w01vds01"
-}, {
-"id" : "vmnic1",
-"vdsName" : "sfo01w01vds01"
-} ]
+    "computeSpec" : {
+        "clusterSpecs" : [{
+            "name" : "Cluster1",
+            "hostSpecs" : [{
+                "id" : "dd2ec05f-39e1-464e-83f1-1349a0dcf723",
+                "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+                "hostNetworkSpec" : {
+                    "vmNics" : [{
+                        "id" : "vmnic0",
+                        "vdsName" : "sfo01w01vds01"
+                    }, {
+                        "id" : "vmnic1",
+                        "vdsName" : "sfo01w01vds01"
+                    }]
+                }
+            }, {
+                "id" : "809b25e8-1db6-464b-b310-97f581c56da5",
+                "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+                "hostNetworkSpec" : {
+                    "vmNics" : [{
+                        "id" : "vmnic0",
+                        "vdsName" : "sfo01w01vds01"
+                    }, {
+                        "id" : "vmnic1",
+                        "vdsName" : "sfo01w01vds01"
+                    }]
+                }        
+            }, {
+                "id" : "5d3eea32-6464-4ae6-9866-932fb926a5f1",
+                "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+                "hostNetworkSpec" : {
+                    "vmNics" : [{
+                        "id" : "vmnic0",
+                        "vdsName" : "sfo01w01vds01"
+                    }, {
+                        "id" : "vmnic1",
+                        "vdsName" : "sfo01w01vds01"
+                    }]
+                }
+            }],
+            "datastoreSpec" : {
+                "vsanDatastoreSpec" : {
+                    "failuresToTolerate" : 1,
+                    "licenseKey" : "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB",
+                    "datastoreName" : "sfo01w01vsan01"
+                }
+            },
+            "networkSpec" : {
+                "vdsSpecs" : [{
+                    "name" : "sfo01w01vds01",
+                    "portGroupSpecs" : [{
+                        "name" : "sfo01w01vds01-Mgmt",
+                        "transportType" : "MANAGEMENT"
+                    }, {
+                        "name" : "sfo01w01vds01-VSAN",
+                        "transportType" : "VSAN"
+                    }, {
+                        "name" : "sfo01w01vds01-vMotion",
+                        "transportType" : "VMOTION"
+                    }]
+                }],
+                "nsxClusterSpec" : {
+                    "nsxVClusterSpec" : {
+                        "vlanId" : 2237,
+                        "vdsNameForVxlanConfig" : "sfo01w01vds01"
+                    }
+                }
+            }
+        } ]
+    },
+    "nsxVSpec" : {
+        "nsxManagerSpec" : {
+            "name" : "sfo01w01nsx01",
+            "networkDetailsSpec" : {
+                "ipAddress" : "172.16.225.66",
+                "dnsName" : "sfo01w01nsx01.sfo01.rainpole.local",
+                "gateway" : "172.16.225.1",
+                "subnetMask" : "255.255.255.0"
+            }
+        },
+        "nsxVControllerSpec" : {
+            "nsxControllerIps" : [ "172.16.235.121", "172.16.235.122", "172.16.235.123" ],
+            "nsxControllerPassword" : "VMw@re123456!",
+            "nsxControllerGateway" : "172.16.235.1",
+            "nsxControllerSubnetMask" : "255.255.255.0"
+        },
+        "licenseKey" : "CCCCC-CCCCC-CCCCC-CCCCC-CCCCC",
+        "nsxManagerAdminPassword" : "VMw@re1!",
+        "nsxManagerEnablePassword" : "VMw@re1!"
+    }
 }
-}, {
-"id" : "809b25e8-1db6-464b-b310-97f581c56da5",
-"license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
-"hostNetworkSpec" : {
-"vmNics" : [ {
-"id" : "vmnic0",
-"vdsName" : "sfo01w01vds01"
-}, {
-"id" : "vmnic1",
-"vdsName" : "sfo01w01vds01"
-} ]
-}
-}, {
-"id" : "5d3eea32-6464-4ae6-9866-932fb926a5f1",
-"license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
-"hostNetworkSpec" : {
-"vmNics" : [ {
-"id" : "vmnic0",
-"vdsName" : "sfo01w01vds01"
-}, {
-"id" : "vmnic1",
-"vdsName" : "sfo01w01vds01"
-} ]
-}
-} ],
-"datastoreSpec" : {
-"vsanDatastoreSpec" : {
-"failuresToTolerate" : 1,
-"licenseKey" : "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB",
-"datastoreName" : "sfo01w01vsan01"
-}
-},
-"networkSpec" : {
-"vdsSpecs" : [ {
-"name" : "sfo01w01vds01",
-"portGroupSpecs" : [ {
-"name" : "sfo01w01vds01-Mgmt",
-"transportType" : "MANAGEMENT"
-}, {
-"name" : "sfo01w01vds01-VSAN",
-"transportType" : "VSAN"
-}, {
-"name" : "sfo01w01vds01-vMotion",
-"transportType" : "VMOTION"
-} ]
-} ],
-"nsxClusterSpec" : {
-"nsxVClusterSpec" : {
-"vlanId" : 2237,
-"vdsNameForVxlanConfig" : "sfo01w01vds01"
-}
-}
-}
-} ]
-},
-"nsxVSpec" : {
-"nsxManagerSpec" : {
-"name" : "sfo01w01nsx01",
-"networkDetailsSpec" : {
-"ipAddress" : "172.16.225.66",
-"dnsName" : "sfo01w01nsx01.sfo01.rainpole.local",
-"gateway" : "172.16.225.1",
-"subnetMask" : "255.255.255.0"
-}
-},
-"nsxVControllerSpec" : {
-"nsxControllerIps" : [ "172.16.235.121", "172.16.235.122", "172.16.235.123" ],
-"nsxControllerPassword" : "VMw@re123456!",
-"nsxControllerGateway" : "172.16.235.1",
-"nsxControllerSubnetMask" : "255.255.255.0"
-},
-"licenseKey" : "CCCCC-CCCCC-CCCCC-CCCCC-CCCCC",
-"nsxManagerAdminPassword" : "VMw@re1!",
-"nsxManagerEnablePassword" : "VMw@re1!"
-}
-}
-
 ```
 
 To create the workload domain run the following:
