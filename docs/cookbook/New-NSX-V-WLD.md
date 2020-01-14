@@ -97,7 +97,6 @@ Now that you have a network pool you can commission hosts and associate them wit
 For this json you need the network pool name & ID. These were returned when the pool was created and can also be obtained using Get-VCFNetworkPool.
 
 ```json
-
 [
 {
 "fqdn": "sfo01w01esx01.sfo01.rainpole.local",
@@ -133,7 +132,6 @@ For this json you need the network pool name & ID. These were returned when the 
 "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
 }
 ]
-
 ```
 
 So to commission the 4 new hosts into my VCF inventory you run:
