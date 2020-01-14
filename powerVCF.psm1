@@ -2607,3 +2607,116 @@ Function CheckVCFVersion {
         break
     }
 }
+
+Function Invoke-VCFManagerCommand {
+<#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager using SSH and invoke SOS utility CLI commands.
+
+    .DESCRIPTION
+    The Connect-VCFManager cmdlet connects to the specified SDDC Manager and stores the credentials
+	in a base64 string. It is required once per session before running all other cmdlets
+
+    .EXAMPLE
+	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1!
+    This example shows how to connect to SDDC Manager
+#>
+
+    param (
+
+        [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$fqdn,
+       
+        [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String] $vcfPassword,
+
+        [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String] $rootPassword,
+
+        [Parameter (Mandatory=$true)]
+        [ValidateSet("general-health","ntp-health","password-health","get-file")]
+        [String] $sosOption,
+
+        [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String] $sshCommand
+    )
+    # POSH is required so if not present skipping
+    if (Get-Module -Name Posh-SSH) { 
+        # Expected sudo prompt from SDDC Manager for elevated commands
+        $sudoPrompt = "[sudo] password for vcf"
+        
+        # Expected string to match before displaying the SSH stream
+        #$sosEndMessage = "For detailed report please refer"
+
+        # validate if the SDDC Manager vcf password is passed as input, if not prompt the user and then build the PSCredential object
+        if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
+            Write-Host "Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
+            $vcfSecuredPassword = Read-Host -AsSecureString
+            $vcfCreds = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
+        }
+        else {
+            $vcfSecuredPassword = ConvertTo-SecureString $vcfPassword -AsPlainText -Force
+            $vcfCreds = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
+        }
+        
+        # validate if the SDDC Managaner root password is passed as input, if not prompt the user and then build the PSCredential object
+        if ( -not $PsBoundParameters.ContainsKey("rootPassword") ) {
+            Write-Host "Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
+            $rootSecuredPassword = Read-Host -AsSecureString
+            $rootCreds = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
+        }
+        else {
+            $rootSecuredPassword = ConvertTo-SecureString $rootPassword -AsPlainText -Force
+            $rootCreds = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
+        }
+        # depending on the SOS command there will be a different pattern to match at the end of the stream (ssh output)
+        switch ($sosOption) {
+            "general-health"    { $sosEndMessage = "For detailed report" }
+            "ntp-health"        { $sosEndMessage = "For detailed report" }
+            "password-health"   { $sosEndMessage = "completed"  }
+            "get-file"          { $sosEndMessage = "Log Collection completed" }
+        }
+
+        # Create SSH session to SDDC Manager using vcf user
+        $sessionSSH = New-SSHSession -Computer $fqdn -Credential $vcfCreds -AcceptKey
+
+        # Create a stream for SSH
+        $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
+        
+        if ($sosOption -eq "get-file") {
+            # testing log extration
+            # /var/log/vmware/vcf/sddc-support/sos-2020-01-14-23-20-30-2236
+            $path = "C:\TFTP-Root\sos-2020-01-14-23-20-30-2236"
+            if (!(Test-Path $path)) {
+                New-Item -ItemType Directory -Path $path
+            }
+            Get-SCPFolder -ComputerName $fqdn -Credential $vcfCreds -LocalFolder $path -RemoteFolder '/var/log/vmware/vcf/sddc-support/sos-2020-01-14-23-20-30-2236'
+        }
+        else {
+            # SSH command to run
+            $sshCommand = "sudo /opt/vmware/sddc-support/sos " + "--" + $sosOption
+        }
+
+        # Invoke the SSH stream command
+        $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCreds.Password
+        
+        if ($outInvoke) {
+            Write-Host ""
+            Write-Host "Waiting for the command to finish running before displaying the output, this might take a while..." -ForegroundColor Yellow
+            Write-Host ""
+            $stream.Expect($sosEndMessage)
+        }
+
+        Remove-SSHSession -SessionId $sessionSSH.SessionId
+    }
+    else {
+
+        Write-Host "PowerShell Module Posh-SSH is not installed but is required to invoke remote SSH commands. Please install the module and try again later." -ForegroundColor Yellow
+    
+    }
+}
+Export-ModuleMember -Function Invoke-VCFManagerCommand
