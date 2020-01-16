@@ -2607,19 +2607,86 @@ Function CheckVCFVersion {
         break
     }
 }
+Function Resolve-PSModule {
+<# 
+    Currently all Write-Host are commented because I am thinking not to export this function.
+    The idea is to use searchResult from the caller function just to establish if we can proceed 
+    to the next step where the module will be required (developed to check on Posh-SSH)
 
-Function Invoke-VCFManagerCommand {
+    Not sure if it's worth having this function exported and callable by the user ? 
+
+#>
+    param (
+        [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$moduleName
+    )
+
+    # check if module is imported into the current session
+    if (Get-Module -Name $moduleName) {
+        $searchResult = "ALREADY_IMPORTED"
+    }
+    else {
+        # If module is not imported, check if available on disk and try to import
+        if (Get-Module -ListAvailable | Where-Object {$_.Name -eq $moduleName}) {
+            Try { 
+                #Write-Host "Installing module $moduleName, please wait..."
+                Import-Module $moduleName
+                #Write-Host "Module $moduleName installed successfully."
+                $searchResult = "IMPORTED"
+            }
+            Catch {
+                #Write-Host "There has been a problem trying to install and import the module $moduleName"
+                #Write-Host "The error message is:" $_.Exception.Message -ForegroundColor Red
+                $searchResult = "IMPORT_FAILED"
+            }
+        }
+        else {
+            # If module is not imported & not available on disk, try PSGallery then install and import
+            if (Find-Module -Name $moduleName | Where-Object {$_.Name -eq $moduleName}) {
+                Try {
+                    #Write-Host "Installing module $moduleName, please wait..."
+                    Install-Module -Name $moduleName -Force -Scope CurrentUser
+                    #Write-Host "Importing module $moduleName, please wait..."
+                    Import-Module $moduleName
+                    #Write-Host "Module $moduleName installed and imported"
+                    $searchResult = "INSTALLED_IMPORTED"
+
+                }
+                Catch {
+                    #Write-Host "There has been a problem trying to install and import the module $moduleName"
+                    #Write-Host "The error message is:" $_.Exception.Message -ForegroundColor Red
+                    $searchResult = "INSTALLIMPORT_FAILED"
+                }
+            }
+            else {
+                # If module is not imported, not available and not in online gallery then abort
+                #Write-host "Module $moduleName not imported, not available on disk and neither on PS Gallery(online), exiting."
+                $searchResult = "NOTAVAILABLE"
+            }
+        }
+    }
+return $searchResult
+}
+
+Function Invoke-VCFCommand {
 <#
     .SYNOPSIS
-    Connects to the specified SDDC Manager using SSH and invoke SOS utility CLI commands.
+    Connects to the specified SDDC Manager using SSH and invoke SSH commands (SOS)
 
     .DESCRIPTION
-    The Connect-VCFManager cmdlet connects to the specified SDDC Manager and stores the credentials
-	in a base64 string. It is required once per session before running all other cmdlets
+    The Invoke-VCFCommand cmdlet connects to the specified SDDC Manager via SSH using vcf user and 
+    subsequently execute elevated SOS commands using the root account. This is why both vcf and root password are
+    mandatory parameters. If passwords are not passed as parameters it will prompt for them.
 
     .EXAMPLE
-	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1!
-    This example shows how to connect to SDDC Manager
+	PS C:\> Connect-VCFCommand -fqdn sfo01vcf01.sfo.rainpole.local -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health 
+    This example will execute and display the output of "/opt/vmware/sddc-support/sos --general-health" command
+
+    .EXAMPLE
+	PS C:\> Connect-VCFCommand -fqdn sfo01vcf01.sfo.rainpole.local -sosOption general-health 
+    This example will ask for vcf and root password to the user and then execute and display the output of "/opt/vmware/sddc-support/sos --general-health" command
+
 #>
 
     param (
@@ -2638,41 +2705,44 @@ Function Invoke-VCFManagerCommand {
 
         [Parameter (Mandatory=$true)]
         [ValidateSet("general-health","ntp-health","password-health","get-file")]
-        [String] $sosOption,
+        [String] $sosOption
 
-        [Parameter (Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
-        [String] $sshCommand
     )
-    # POSH is required so if not present skipping
+    # POSH module is required, if not present skipping
     if (Get-Module -Name Posh-SSH) { 
+        Import-Module -Name Posh-SSH
         # Expected sudo prompt from SDDC Manager for elevated commands
         $sudoPrompt = "[sudo] password for vcf"
         
         # Expected string to match before displaying the SSH stream
         #$sosEndMessage = "For detailed report please refer"
 
-        # validate if the SDDC Manager vcf password is passed as input, if not prompt the user and then build the PSCredential object
+        # validate if the SDDC Manager vcf password parameter is passed, if not prompt the user and then build vcfCreds PSCredential object
         if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
             Write-Host "Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
             $vcfSecuredPassword = Read-Host -AsSecureString
             $vcfCreds = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
         }
         else {
+            # Convert the clear text input password to secure string 
             $vcfSecuredPassword = ConvertTo-SecureString $vcfPassword -AsPlainText -Force
+            # build credential object
             $vcfCreds = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
         }
         
-        # validate if the SDDC Managaner root password is passed as input, if not prompt the user and then build the PSCredential object
+        # validate if the SDDC Manager root password parameter is passed, if not prompt the user and then build rootCreds PSCredential object
         if ( -not $PsBoundParameters.ContainsKey("rootPassword") ) {
             Write-Host "Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
             $rootSecuredPassword = Read-Host -AsSecureString
             $rootCreds = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
         }
         else {
+            # Convert the clear text input password to secure string 
             $rootSecuredPassword = ConvertTo-SecureString $rootPassword -AsPlainText -Force
+            # build credential object
             $rootCreds = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
         }
+
         # depending on the SOS command there will be a different pattern to match at the end of the stream (ssh output)
         switch ($sosOption) {
             "general-health"    { $sosEndMessage = "For detailed report" }
@@ -2681,10 +2751,10 @@ Function Invoke-VCFManagerCommand {
             "get-file"          { $sosEndMessage = "Log Collection completed" }
         }
 
-        # Create SSH session to SDDC Manager using vcf user
+        # Create SSH session to SDDC Manager using vcf user (can't ssh as root by default)
         $sessionSSH = New-SSHSession -Computer $fqdn -Credential $vcfCreds -AcceptKey
 
-        # Create a stream for SSH
+        # Create the SSH stream
         $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
         
         if ($sosOption -eq "get-file") {
@@ -2699,24 +2769,25 @@ Function Invoke-VCFManagerCommand {
         else {
             # SSH command to run
             $sshCommand = "sudo /opt/vmware/sddc-support/sos " + "--" + $sosOption
-        }
-
-        # Invoke the SSH stream command
-        $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCreds.Password
         
-        if ($outInvoke) {
-            Write-Host ""
-            Write-Host "Waiting for the command to finish running before displaying the output, this might take a while..." -ForegroundColor Yellow
-            Write-Host ""
-            $stream.Expect($sosEndMessage)
-        }
 
-        Remove-SSHSession -SessionId $sessionSSH.SessionId
+            # Invoke the SSH stream command
+            $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCreds.Password
+            
+            if ($outInvoke) {
+                Write-Host ""
+                Write-Host "Waiting for the command to finish running before displaying the output, this might take a while..." -ForegroundColor Yellow
+                Write-Host ""
+                $stream.Expect($sosEndMessage)
+            }
+
+            Remove-SSHSession -SessionId $sessionSSH.SessionId
+        }
     }
     else {
 
-        Write-Host "PowerShell Module Posh-SSH is not installed but is required to invoke remote SSH commands. Please install the module and try again later." -ForegroundColor Yellow
+        Write-Host "PowerShell Module Posh-SSH is not installed and it's required to invoke remote SSH commands. Please install the module and try again this command." -ForegroundColor Yellow
     
     }
 }
-Export-ModuleMember -Function Invoke-VCFManagerCommand
+Export-ModuleMember -Function Invoke-VCFCommand
