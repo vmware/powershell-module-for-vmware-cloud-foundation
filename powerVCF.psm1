@@ -2578,6 +2578,76 @@ Export-ModuleMember -Function Get-VCFvROPs
 
 ######### End vRealize Suite Operations ##########
 
+######### Start Federation Management ##########
+
+Function Get-SDDCFederation {
+<#
+    .SYNOPSIS
+    Get information on existing Federation
+
+    .DESCRIPTION
+    Gets the complete information about the existing SDDC Federation.
+
+    .EXAMPLE
+    PS C:\> Get-Federation
+    This example list all details concerning the SDDC Federation
+
+#>
+# Get VCF Version
+CheckVCFVersion
+    
+$headers = @{"Accept" = "application/json"}
+$headers.Add("Authorization", "Basic $base64AuthInfo")
+$uri = "https://$sddcManager/v1/sddc-federation"
+try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+    }
+catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+    }
+}
+   
+Export-ModuleMember -function Get-SDDCFederation
+
+Function Get-SDDCFederationMembers {
+<#
+    .SYNOPSIS
+    A function that gets information on all members in the SDDC Federation
+
+    .DESCRIPTION
+    Gets the complete information about the existing SDDC Federation members.
+
+    .EXAMPLE
+    PS C:\> Get-FederationMembers
+    This example lists all details concerning the SDDC Federation members.
+
+#>
+# Get VCF Version
+CheckVCFVersion
+    
+$headers = @{"Accept" = "application/json"}
+$headers.Add("Authorization", "Basic $base64AuthInfo")
+$uri = "https://$sddcManager/v1/sddc-federation/members"
+try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if ($response.federationName -eq $null) {
+        Throw "Failed to get members, no Federation found."
+    }
+    else { 
+        $response
+    }
+}
+catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+    }
+}   
+Export-ModuleMember -function Get-SDDCFederationMembers
+
+######### Start Federation Management ##########
+
 Function ResponseExeception {
     #Get response from the exception
     $response = $_.exception.response
@@ -2600,7 +2670,7 @@ Function ResponseExeception {
 Function CheckVCFVersion {
     [string]$getvcfVersion = Get-VCFManager | Select version
     $vcfVersion = $getvcfVersion.substring(10,3)
-    if ($vcfVersion -ne "3.9") {
+    if ($vcfVersion -lt "3.9") {
         Write-Host ""
         Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
         Write-Host ""
