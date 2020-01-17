@@ -431,6 +431,8 @@ Function New-VCFWorkloadDomain {
 					$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 					return $response
 					Write-Host ""
+					return $response
+					Write-Host ""
 					}
 				catch {
 					#Get response from the exception
