@@ -2609,10 +2609,10 @@ Function CheckVCFVersion {
 }
 Function Resolve-PSModule {
 <# 
-    Currently all Write-Host are commented because I am thinking not to export this function.
-    The idea is to use searchResult from the caller function just to establish if we can proceed 
-    to the next step where the module will be required (developed to check on Posh-SSH)
-
+    I am thinking not to export this function.The idea is to use searchResult from the caller function 
+    just to establish if we can proceed to the next step where the module will be required (developed to check on Posh-SSH)
+    Informing user (Write-Host) only if the module needsimporting/installing. If already present nothing to display.
+    
     Not sure if it's worth having this function exported and callable by the user ? 
 
 #>
@@ -2630,9 +2630,10 @@ Function Resolve-PSModule {
         # If module is not imported, check if available on disk and try to import
         if (Get-Module -ListAvailable | Where-Object {$_.Name -eq $moduleName}) {
             Try { 
-                #Write-Host "Installing module $moduleName, please wait..."
+                Write-Host ""
+                Write-Host "Module $moduleName not loaded, importing now please wait..."
                 Import-Module $moduleName
-                #Write-Host "Module $moduleName installed successfully."
+                Write-Host "Module $moduleName imported successfully."
                 $searchResult = "IMPORTED"
             }
             Catch {
@@ -2645,11 +2646,12 @@ Function Resolve-PSModule {
             # If module is not imported & not available on disk, try PSGallery then install and import
             if (Find-Module -Name $moduleName | Where-Object {$_.Name -eq $moduleName}) {
                 Try {
-                    #Write-Host "Installing module $moduleName, please wait..."
+                    Write-Host ""
+                    Write-Host "Module $moduleName was missing, installing now please wait..."
                     Install-Module -Name $moduleName -Force -Scope CurrentUser
-                    #Write-Host "Importing module $moduleName, please wait..."
+                    Write-Host "Importing module $moduleName, please wait..."
                     Import-Module $moduleName
-                    #Write-Host "Module $moduleName installed and imported"
+                    Write-Host "Module $moduleName installed and imported"
                     $searchResult = "INSTALLED_IMPORTED"
 
                 }
@@ -2704,19 +2706,18 @@ Function Invoke-VCFCommand {
         [String] $rootPassword,
 
         [Parameter (Mandatory=$true)]
-        [ValidateSet("general-health","ntp-health","password-health","get-file")]
+        [ValidateSet("general-health","ntp-health","password-health","get-vcf-summary","get-file")]
         [String] $sosOption
 
     )
     # POSH module is required, if not present skipping
-    if (Get-Module -Name Posh-SSH) { 
-        Import-Module -Name Posh-SSH
+    $poshSSH = Resolve-PSModule -moduleName "Posh-SSH"
+
+    if ($poshSSH -eq "ALREADY_IMPORTED" -or $poshSSH -eq "IMPORTED" -or $poshSSH -eq "INSTALLED_IMPORTED") {
+        
         # Expected sudo prompt from SDDC Manager for elevated commands
         $sudoPrompt = "[sudo] password for vcf"
         
-        # Expected string to match before displaying the SSH stream
-        #$sosEndMessage = "For detailed report please refer"
-
         # validate if the SDDC Manager vcf password parameter is passed, if not prompt the user and then build vcfCreds PSCredential object
         if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
             Write-Host "Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
@@ -2749,6 +2750,7 @@ Function Invoke-VCFCommand {
             "ntp-health"        { $sosEndMessage = "For detailed report" }
             "password-health"   { $sosEndMessage = "completed"  }
             "get-file"          { $sosEndMessage = "Log Collection completed" }
+            "get-vcf-summary"   { $sosEndMessage = "SOLUTIONS_MANAGER" }
         }
 
         # Create SSH session to SDDC Manager using vcf user (can't ssh as root by default)
@@ -2767,26 +2769,24 @@ Function Invoke-VCFCommand {
             Get-SCPFolder -ComputerName $fqdn -Credential $vcfCreds -LocalFolder $path -RemoteFolder '/var/log/vmware/vcf/sddc-support/sos-2020-01-14-23-20-30-2236'
         }
         else {
-            # SSH command to run
+            # build the SOS command to run
             $sshCommand = "sudo /opt/vmware/sddc-support/sos " + "--" + $sosOption
-        
-
             # Invoke the SSH stream command
             $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCreds.Password
             
             if ($outInvoke) {
                 Write-Host ""
-                Write-Host "Waiting for the command to finish running before displaying the output, this might take a while..." -ForegroundColor Yellow
+                Write-Host "Waiting for the command to finish running before displaying the output, this might take a while..."
                 Write-Host ""
                 $stream.Expect($sosEndMessage)
             }
-
-            Remove-SSHSession -SessionId $sessionSSH.SessionId
+            # remove the connection previously established
+            Remove-SSHSession -SessionId $sessionSSH.SessionId | Out-Null
         }
     }
     else {
 
-        Write-Host "PowerShell Module Posh-SSH is not installed and it's required to invoke remote SSH commands. Please install the module and try again this command." -ForegroundColor Yellow
+        Write-Host "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again." -ForegroundColor Yellow
     
     }
 }
