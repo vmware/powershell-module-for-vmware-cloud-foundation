@@ -370,8 +370,6 @@ Function Get-VCFWorkloadDomain {
         $uri = "https://$sddcManager/v1/domains"
     }
     try {
-        <# $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response #>
         if ($PsBoundParameters.ContainsKey("name")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
@@ -431,6 +429,7 @@ Function New-VCFWorkloadDomain {
                     Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
 					$uri = "https://$sddcManager/v1/domains"
 					$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+					return $response
 					Write-Host ""
 					}
 				catch {
