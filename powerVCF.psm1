@@ -2611,6 +2611,54 @@ catch {
    
 Export-ModuleMember -function Get-SDDCFederation
 
+Function New-SDDCFederationInvite {
+<#
+    .SYNOPSIS
+    Invite new member to SDDC Federation
+
+    .DESCRIPTION
+    A function that creates a new invitation for a member to join the existing SDDC Federation.
+
+    .EXAMPLE
+    PS C:\> New-SDDCFederationInvite
+    This example list all details concerning the SDDC Federation
+
+#>
+
+param (
+			[Parameter (Mandatory=$true)]
+				[ValidateNotNullOrEmpty()]
+				[string]$inviteeFqdn
+)
+# Get VCF Version
+CheckVCFVersion
+    
+$headers = @{"Accept" = "application/json"}
+$headers.Add("Authorization", "Basic $base64AuthInfo")
+$uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
+try {
+    $sddcMemberRole = Get-SDDCFederationMembers
+    if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
+        Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
+    }
+    else {
+        $inviteeDetails = @{
+            inviteeRole='MEMBER'
+            inviteeFqdn=$inviteeFqdn
+        }
+        $ConfigJson = $inviteeDetails | ConvertTo-Json
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json' 
+        $response
+    }
+}
+catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+    }
+}
+   
+Export-ModuleMember -function New-SDDCFederationInvite
+
 Function Get-SDDCFederationMembers {
 <#
     .SYNOPSIS
@@ -2632,7 +2680,7 @@ $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/sddc-federation/members"
 try {
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    if ($response.federationName -eq $null) {
+    if (!$response.federationName) {
         Throw "Failed to get members, no Federation found."
     }
     else { 
@@ -2646,7 +2694,7 @@ catch {
 }   
 Export-ModuleMember -function Get-SDDCFederationMembers
 
-######### Start Federation Management ##########
+######### End Federation Management ##########
 
 Function ResponseExeception {
     #Get response from the exception
