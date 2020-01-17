@@ -1451,6 +1451,7 @@ Function Validate-WorkloadDomainSpec {
 		}
     try {
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+	return $response
 	}
     catch {
         #Get response from the exception
