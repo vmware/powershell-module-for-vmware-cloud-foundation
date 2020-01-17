@@ -19,6 +19,8 @@ Gary Blake - VMware HCI BU Staff II Architect \[[Twitter](https://twitter.com/Ga
 
 Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
 
+## Documentation
+<a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
 
 ## Supported Platforms
 This version has been tested using vSAN Ready Nodes. VMware Cloud Foundation on VxRail has not been fully tested, The following cmdlets will not work with VxRail as the workflow is different due to the use of VxRail Manager. _Other cmdlets may work subject to testing._
@@ -127,5 +129,3 @@ Get-Help cmdlet-name -detailed
 
 Get-Help cmdlet-name -full
 ```
-## Documentation
-<a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
