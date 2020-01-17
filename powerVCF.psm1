@@ -432,6 +432,8 @@ Function New-VCFWorkloadDomain {
 					$uri = "https://$sddcManager/v1/domains"
 					$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 					Write-Host ""
+					return $response
+					Write-Host ""
 					}
 				catch {
 					#Get response from the exception
