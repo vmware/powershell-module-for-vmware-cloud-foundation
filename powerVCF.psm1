@@ -2580,6 +2580,123 @@ Export-ModuleMember -Function Get-VCFvROPs
 
 ######### End vRealize Suite Operations ##########
 
+######### Start Federation Management ##########
+
+Function Get-SDDCFederation {
+<#
+    .SYNOPSIS
+    Get information on existing Federation
+
+    .DESCRIPTION
+    Gets the complete information about the existing SDDC Federation.
+
+    .EXAMPLE
+    PS C:\> Get-Federation
+    This example list all details concerning the SDDC Federation
+
+#>
+# Get VCF Version
+CheckVCFVersion
+    
+$headers = @{"Accept" = "application/json"}
+$headers.Add("Authorization", "Basic $base64AuthInfo")
+$uri = "https://$sddcManager/v1/sddc-federation"
+try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+    }
+catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+    }
+}
+   
+Export-ModuleMember -function Get-SDDCFederation
+
+Function New-SDDCFederationInvite {
+<#
+    .SYNOPSIS
+    Invite new member to SDDC Federation
+
+    .DESCRIPTION
+    A function that creates a new invitation for a member to join the existing SDDC Federation.
+
+    .EXAMPLE
+    PS C:\> New-SDDCFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
+    This example demonstrates how to create an invitation for a particular SDDC Manager from the Federation controller.
+#>
+
+param (
+			[Parameter (Mandatory=$true)]
+				[ValidateNotNullOrEmpty()]
+				[string]$inviteeFqdn
+)
+# Get VCF Version
+CheckVCFVersion
+    
+$headers = @{"Accept" = "application/json"}
+$headers.Add("Authorization", "Basic $base64AuthInfo")
+$uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
+try {
+    $sddcMemberRole = Get-SDDCFederationMembers
+    if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
+        Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
+    }
+    else {
+        $inviteeDetails = @{
+            inviteeRole = 'MEMBER'
+            inviteeFqdn = $inviteeFqdn
+        }
+        $ConfigJson = $inviteeDetails | ConvertTo-Json
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json' 
+        $response
+    }
+}
+catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+    }
+}
+   
+Export-ModuleMember -function New-SDDCFederationInvite
+
+Function Get-SDDCFederationMembers {
+<#
+    .SYNOPSIS
+    A function that gets information on all members in the SDDC Federation
+
+    .DESCRIPTION
+    Gets the complete information about the existing SDDC Federation members.
+
+    .EXAMPLE
+    PS C:\> Get-FederationMembers
+    This example lists all details concerning the SDDC Federation members.
+
+#>
+# Get VCF Version
+CheckVCFVersion
+    
+$headers = @{"Accept" = "application/json"}
+$headers.Add("Authorization", "Basic $base64AuthInfo")
+$uri = "https://$sddcManager/v1/sddc-federation/members"
+try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if (!$response.federationName) {
+        Throw "Failed to get members, no Federation found."
+    }
+    else { 
+        $response
+    }
+}
+catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+    }
+}   
+Export-ModuleMember -function Get-SDDCFederationMembers
+
+######### End Federation Management ##########
+
 Function ResponseExeception {
     #Get response from the exception
     $response = $_.exception.response
@@ -2602,7 +2719,7 @@ Function ResponseExeception {
 Function CheckVCFVersion {
     [string]$getvcfVersion = Get-VCFManager | Select version
     $vcfVersion = $getvcfVersion.substring(10,3)
-    if ($vcfVersion -ne "3.9") {
+    if ($vcfVersion -lt "3.9") {
         Write-Host ""
         Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
         Write-Host ""
