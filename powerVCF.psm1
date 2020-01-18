@@ -2620,9 +2620,8 @@ Function New-SDDCFederationInvite {
     A function that creates a new invitation for a member to join the existing SDDC Federation.
 
     .EXAMPLE
-    PS C:\> New-SDDCFederationInvite
-    This example list all details concerning the SDDC Federation
-
+    PS C:\> New-SDDCFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
+    This example demonstrates how to create an invitation for a particular SDDC Manager from the Federation controller.
 #>
 
 param (
@@ -2643,8 +2642,8 @@ try {
     }
     else {
         $inviteeDetails = @{
-            inviteeRole='MEMBER'
-            inviteeFqdn=$inviteeFqdn
+            inviteeRole = 'MEMBER'
+            inviteeFqdn = $inviteeFqdn
         }
         $ConfigJson = $inviteeDetails | ConvertTo-Json
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json' 
