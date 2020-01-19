@@ -1346,15 +1346,15 @@ Function Get-VCFCredential {
         $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
     
     }
+    else {
+        $uri = "https://$sddcManager/v1/credentials"
+    }
     # if requesting credential by type then name is ignored (mutually exclusive)
     if ($PsBoundParameters.ContainsKey("resourceType") ) {
 
         $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
     }
-    else {
 
-        $uri = "https://$sddcManager/v1/credentials"
-    }
     Try {
 	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 	    $response
