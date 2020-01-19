@@ -312,16 +312,70 @@ Function Decommission-VCFHost {
 Export-ModuleMember -Function Decommission-VCFHost
 
 #TODO: Add Posh-SSH Support
-Function Cleanup-VCFHosts {
-# Print Instructions to screen
-Write-Output "Not Implemented as a function yet as it requires SSH access to SDDC Manager"
-Write-Output "SSH to $sddcManager"
-Write-Output "Run /opt/vmware/sddc-support/sos --cleanup-host ALL"
+Function Cleanup-VCFHost {
+<#
+    .SYNOPSIS
+    
 
-				}
+    .DESCRIPTION
+    
+
+    .EXAMPLE
+	
+
+    .EXAMPLE
+	
+#>
+
+param (
+    [Parameter (Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [String] $privilegedUsername,
+
+    [Parameter (Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [String] $privilegedPassword,
+
+    [Parameter (Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [String] $sddcManagerRootPassword,
+
+    [Parameter (Mandatory=$true)]
+    [ValidateNotNullOrEmpty()]
+    [string]$hosts
+)
+    # get all PSC list of credentials 
+    $pscCreds = Get-VCFCredential -privilegedUsername $privilegedUsername -privilegedPassword $privilegedPassword -resourceType PSC
+    
+    # from PSC credentials extract the SSO username and password
+    $ssoCreds= $pscCreds.elements | Where-Object {$_.credentialType -eq "SSO"}
+    
+    # get the list of all VCENTER credentials
+    $vcCreds = Get-VCFCredential $privilegedUsername -privilegedPassword $privilegedPassword -resourceType VCENTER
+    
+    #  find out which one is the MGMT VC
+    $mgmtVC = $vcCreds.elements.resource | Where-Object {$_.domainName -eq "MGMT"}
+    
+    # connect to the management vCenter without displaying the connection
+    Connect-VIServer -Server $mgmtVC.resourceName -User $ssoCreds.username -Password $ssoCreds.password | Out-Null
+    
+    # get the vm object for sddc-manager
+    $sddcManagerVM = Get-VM -Name "sddc-manager"
+    # build the cmd to run
+    $sshCommand = "/opt/vmware/sddc-support/sos --cleanup-host " + $hosts
+    
+    Write-Host ""
+    Write-Host "Executing Host clean up for host(s):" $hosts
+    Try {
+        $vmScript = Invoke-VMScript -VM $sddcManagerVM -ScriptText $sshCommand -GuestUser root -GuestPassword $sddcManagerRootPassword
+        $vmScript
+    }
+    Catch {
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Cleanup-VCFHost
 ######### End Host Operations ##########
-
-
 
 ######### Start Workload Domain Operations ##########
 
@@ -2724,8 +2778,16 @@ Function Invoke-VCFCommand {
         [ValidateNotNullOrEmpty()]
         [String] $rootPassword,
 
+        [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String] $privilegedUsername,
+
+        [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [String] $privilegedPassword,
+
         [Parameter (Mandatory=$true)]
-        [ValidateSet("general-health","ntp-health","password-health","get-vcf-summary","get-file")]
+        [ValidateSet("general-health","ntp-health","password-health","get-vcf-summary","get-file","cleanup-host")]
         [String] $sosOption
 
     )
@@ -2786,6 +2848,9 @@ Function Invoke-VCFCommand {
                 New-Item -ItemType Directory -Path $path
             }
             Get-SCPFolder -ComputerName $fqdn -Credential $vcfCreds -LocalFolder $path -RemoteFolder '/var/log/vmware/vcf/sddc-support/sos-2020-01-14-23-20-30-2236'
+        }
+        elseif ($sosOption -eq "cleanup-host") {
+            Cleanup-VCFHosts
         }
         else {
             # build the SOS command to run
