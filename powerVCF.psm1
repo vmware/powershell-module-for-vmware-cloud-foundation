@@ -1322,7 +1322,10 @@ Function Get-VCFCredential {
             [string]$privilegedPassword,
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$resourceName
+            [string]$resourceName,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$resourceType   
     )
 
     $headers = @{"Accept" = "application/json"}
@@ -1331,16 +1334,24 @@ Function Get-VCFCredential {
     $headers.Add("privileged-password", "$privilegedPassword")
 
     if ($PsBoundParameters.ContainsKey("resourceName")) {
+
+        $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
+    
+    }
+    # if requesting by resource type then resourceName must be empty
+    if ($PsBoundParameters.ContainsKey("resourceType") -and (-not $PsBoundParameters.ContainsKey("resourceName"))) {
+
         $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
     }
     else {
+
         $uri = "https://$sddcManager/v1/credentials"
     }
-    try {
+    Try {
 	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 	    $response
     }
-    catch {
+    Catch {
         #Get response from the exception
         ResponseExeception
     }
