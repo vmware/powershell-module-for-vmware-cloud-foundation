@@ -1297,19 +1297,23 @@ Function Get-VCFCredential {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager and retrieves a list of credentials.
+    Supported resource types are: PSC, VCENTER, ESXI, NSX_MANAGER, NSX_CONTROLLER, BACKUP
+    Please note: if you are requesting credentials by resource type then the resource name parameter (if passed) will be ignored (they are mutually exclusive)
 
     .DESCRIPTION
     The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
     credentials. A privileged user account is required.
 
     .EXAMPLE
-    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local
-	-privilegedPassword VMw@re1!
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1!
     This example shows how to get a list of credentials
 
+    .EXAMPLE
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceType PSC
+    This example shows how to get a list of PSC credentials
+
 	.EXAMPLE
-    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local
-	-privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
     This example shows how to get the credential for a specific resourceName (FQDN)
 #>
 
@@ -1317,12 +1321,19 @@ Function Get-VCFCredential {
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$privilegedUsername,
+
 		[Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$privilegedPassword,
+
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$resourceName
+            [string]$resourceName,
+
+        [Parameter (Mandatory=$false)]
+            [ValidateSet("PSC", "VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
+            [ValidateNotNullOrEmpty()]
+            [string]$resourceType   
     )
 
     $headers = @{"Accept" = "application/json"}
@@ -1331,16 +1342,24 @@ Function Get-VCFCredential {
     $headers.Add("privileged-password", "$privilegedPassword")
 
     if ($PsBoundParameters.ContainsKey("resourceName")) {
+
         $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
+    
     }
     else {
         $uri = "https://$sddcManager/v1/credentials"
     }
-    try {
+    # if requesting credential by type then name is ignored (mutually exclusive)
+    if ($PsBoundParameters.ContainsKey("resourceType") ) {
+
+        $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
+    }
+
+    Try {
 	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 	    $response
     }
-    catch {
+    Catch {
         #Get response from the exception
         ResponseExeception
     }
