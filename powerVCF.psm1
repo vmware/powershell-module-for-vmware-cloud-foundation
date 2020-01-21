@@ -2599,6 +2599,7 @@ Export-ModuleMember -Function Get-VCFvROPs
 
 ######### End vRealize Suite Operations ##########
 
+######### Start Utility Functions (not exported) ##########
 Function ResponseExeception {
     #Get response from the exception
     $response = $_.exception.response
@@ -2628,3 +2629,78 @@ Function CheckVCFVersion {
         break
     }
 }
+
+Function Resolve-PSModule {
+    <# 
+        .SYNOPSIS
+        Check for a PowerShell module presence, if not there try to import/install it.
+    
+        .DESCRIPTION
+        This function is not exported. The idea is to use the return searchResult from the caller function to establish 
+        if we can proceed to the next step where the module will be required (developed to check on Posh-SSH).
+        Logic:
+            - Check if module is imported into the current session
+            - If module is not imported, check if available on disk and try to import
+            - If module is not imported & not available on disk, try PSGallery then install and import
+            - If module is not imported, not available and not in online gallery then abort
+        
+            Informing user only if the module needs importing/installing. If the module is already present nothing will be displayed.
+    
+        .EXAMPLE
+        PS C:\> $poshSSH = Resolve-PSModule -moduleName "Posh-SSH" 
+        This example will check if the current PS module session has Posh-SSH installed, if not will try to install it
+    
+    #>
+        param (
+            [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$moduleName
+        )
+    
+        # check if module is imported into the current session
+        if (Get-Module -Name $moduleName) {
+            $searchResult = "ALREADY_IMPORTED"
+        }
+        else {
+            # If module is not imported, check if available on disk and try to import
+            if (Get-Module -ListAvailable | Where-Object {$_.Name -eq $moduleName}) {
+                Try { 
+                    Write-Host ""
+                    Write-Host "Module $moduleName not loaded, importing now please wait..."
+                    Import-Module $moduleName
+                    Write-Host "Module $moduleName imported successfully."
+                    $searchResult = "IMPORTED"
+                }
+                Catch {
+                    #Write-Host "There has been a problem trying to install and import the module $moduleName"
+                    #Write-Host "The error message is:" $_.Exception.Message -ForegroundColor Red
+                    $searchResult = "IMPORT_FAILED"
+                }
+            }
+            else {
+                # If module is not imported & not available on disk, try PSGallery then install and import
+                if (Find-Module -Name $moduleName | Where-Object {$_.Name -eq $moduleName}) {
+                    Try {
+                        Write-Host ""
+                        Write-Host "Module $moduleName was missing, installing now please wait..."
+                        Install-Module -Name $moduleName -Force -Scope CurrentUser
+                        Write-Host "Importing module $moduleName, please wait..."
+                        Import-Module $moduleName
+                        Write-Host "Module $moduleName installed and imported"
+                        $searchResult = "INSTALLED_IMPORTED"
+    
+                    }
+                    Catch {
+                        $searchResult = "INSTALLIMPORT_FAILED"
+                    }
+                }
+                else {
+                    # If module is not imported, not available and not in online gallery then abort
+                    $searchResult = "NOTAVAILABLE"
+                }
+            }
+        }
+    return $searchResult
+}
+
+######### End Utility Functions (not exported) ##########
