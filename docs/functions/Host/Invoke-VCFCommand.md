@@ -1,19 +1,5 @@
 # Invoke-VCFCommand
 
-
- [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [String] $vcfPassword,
-    
-            [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [String] $rootPassword,
-    
-            [Parameter (Mandatory=$true)]
-            [ValidateSet("
-            [String] $sosOption
-        
-
 ### Synopsis
 Connects to the specified SDDC Manager using SSH and invoke SSH commands (SOS)
 
