@@ -1506,6 +1506,7 @@ Function Validate-VCFClusterSpec {
         #Get response from the exception
         ResponseExeception
     }
+return $response
 }
 
 Function Validate-VCFUpdateClusterSpec {
@@ -1537,6 +1538,7 @@ Function Validate-VCFUpdateClusterSpec {
         #Get response from the exception
         ResponseExeception
     }
+return $response
 }
 
 ######## End Validation Functions ########
