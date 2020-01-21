@@ -246,7 +246,7 @@ Function Commission-VCFHost {
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Try {
                     Write-Host ""
-                    Write-Host "Task validation completed successfully, invoking host(s) commissiong on SDDC Manager" -ForegroundColor Green
+                    Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
                     $uri = "https://$sddcManager/v1/hosts/"
                     $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 		    return $response
@@ -2582,17 +2582,17 @@ Export-ModuleMember -Function Get-VCFvROPs
 
 ######### Start Federation Management ##########
 
-Function Get-SDDCFederation {
+Function Get-VCFFederation {
 <#
     .SYNOPSIS
     Get information on existing Federation
 
     .DESCRIPTION
-    Gets the complete information about the existing SDDC Federation.
+    Gets the complete information about the existing VCF Federation.
 
     .EXAMPLE
-    PS C:\> Get-Federation
-    This example list all details concerning the SDDC Federation
+    PS C:\> Get-VCFFederation
+    This example list all details concerning the VCF Federation
 
 #>
 # Get VCF Version
@@ -2611,19 +2611,19 @@ catch {
     }
 }
    
-Export-ModuleMember -function Get-SDDCFederation
+Export-ModuleMember -function Get-VCFFederation
 
-Function New-SDDCFederationInvite {
+Function New-VCFFederationInvite {
 <#
     .SYNOPSIS
-    Invite new member to SDDC Federation
+    Invite new member to VCF Federation.
 
     .DESCRIPTION
-    A function that creates a new invitation for a member to join the existing SDDC Federation.
+    A function that creates a new invitation for a member to join the existing VCF Federation.
 
     .EXAMPLE
-    PS C:\> New-SDDCFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
-    This example demonstrates how to create an invitation for a particular SDDC Manager from the Federation controller.
+    PS C:\> New-VCFFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
+    This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
 #>
 
 param (
@@ -2638,7 +2638,7 @@ $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
 try {
-    $sddcMemberRole = Get-SDDCFederationMembers
+    $sddcMemberRole = Get-VCFFederationMembers
     if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
         Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
     }
@@ -2658,19 +2658,19 @@ catch {
     }
 }
    
-Export-ModuleMember -function New-SDDCFederationInvite
+Export-ModuleMember -function New-VCFFederationInvite
 
-Function Get-SDDCFederationMembers {
+Function Get-VCFFederationMembers {
 <#
     .SYNOPSIS
-    A function that gets information on all members in the SDDC Federation
+    A function that gets information on all members in the VCF Federation
 
     .DESCRIPTION
-    Gets the complete information about the existing SDDC Federation members.
+    Gets the complete information about the existing VCF Federation members.
 
     .EXAMPLE
-    PS C:\> Get-FederationMembers
-    This example lists all details concerning the SDDC Federation members.
+    PS C:\> Get-VCFFederationMembers
+    This example lists all details concerning the VCF Federation members.
 
 #>
 # Get VCF Version
@@ -2693,7 +2693,112 @@ catch {
     ResponseExeception
     }
 }   
-Export-ModuleMember -function Get-SDDCFederationMembers
+Export-ModuleMember -function Get-VCFFederationMembers
+
+Function Join-VCFFederation {
+<#
+.SYNOPSIS
+A function to join an existing VCF Federation
+
+.DESCRIPTION
+A function that enables a new VCF Manager to join an existing VCF Federation.
+
+.EXAMPLE
+PS C:\> Join-VCFFederation .\joinVCFFederationSpec.json
+This example demonstrates how to join an VCF Federation by referencing config info in JSON file.
+#>
+
+param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    if (!(Test-Path $json)) {
+        throw "JSON File Not Found"
+    }
+    else {
+        # Get VCF Version
+        CheckVCFVersion
+        # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        $headers = @{"Accept" = "application/json"}
+        $headers.Add("Authorization", "Basic $base64AuthInfo")
+	    $uri = "https://$sddcManager/v1/sddc-federation/members"
+
+        try {
+			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType 'application/json' -body $ConfigJson
+        	$response
+            # get the task id from the action
+            $taskId = $response.taskId
+            # keep checking until executionStatus is not IN_PROGRESS
+            do {
+                $uri = "https://$sddcManager/v1/sddc-federation/tasks/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType 'application/json'
+                Start-Sleep -Second 5
+            } While ($response.status -eq "IN_PROGRESS")
+            $response
+        }
+        catch {
+            #Get response from the exception
+            ResponseExeception
+            }
+        }
+}
+Export-ModuleMember -function Join-VCFFederation
+
+Function Remove-VCFFederation {
+    <#
+        .SYNOPSIS
+        Remove VCF Federation
+    
+        .DESCRIPTION
+        A function that ensures VCF Federation is empty and completely dismantles it.
+    
+        .EXAMPLE
+        PS C:\> Remove-VCFFederation
+        This example demonstrates how to dismantle the VCF Federation
+    
+    #>
+    # Get VCF Version
+    CheckVCFVersion
+        
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/sddc-federation"
+    try {
+        
+        # Verify that SDDC Manager we're connected to is a controller and only one in the Federation
+        $sddcs = Get-VCFFederation | Select-Object memberDetails
+        foreach ($sddc in $sddcs)
+        {
+            if ($sddc.memberDetails.role -eq "CONTROLLER")
+            {
+                $controller++
+            if ($sddc.memberDetails.role -eq "MEMBER")
+            {
+                $member++
+            }
+            }
+        }
+        if ($controller -gt 1)
+        {
+            throw "Only one controller can be present when dismantling VCF Federation. Remove additional controllers and try again"
+        }
+        if ($member -gt 0)
+        {
+            throw "VCF Federation members still exist. Remove all members and additional controllers before dismantling VCF Federation"
+        }
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        $response
+        }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+        }
+    }
+       
+    Export-ModuleMember -function Remove-VCFFederation
 
 ######### End Federation Management ##########
 
