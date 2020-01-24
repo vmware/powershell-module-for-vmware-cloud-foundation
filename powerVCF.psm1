@@ -3043,9 +3043,10 @@ Function ResponseExeception {
 }
 
 Function CheckVCFVersion {
-    [string]$getvcfVersion = Get-VCFManager | Select version
-    $vcfVersion = $getvcfVersion.substring(10,3)
-    if ($vcfVersion -lt "3.9") {
+    
+    $vcfManager = Get-VCFManager
+	
+    if ($vcfManager.version.Substring(0,3) -ne "3.9") {
         Write-Host ""
         Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
         Write-Host ""
