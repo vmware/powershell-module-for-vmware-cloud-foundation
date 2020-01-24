@@ -2558,7 +2558,7 @@ Export-ModuleMember -Function Get-VCFvRLI
 Function Invoke-VCFCommand {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager using SSH and invoke SSH commands (SOS)
+        Connects to the specified SDDC Manager using SSH and invoke SSH commands (SoS)
     
         .DESCRIPTION
         The Invoke-VCFCommand cmdlet connects to the specified SDDC Manager via SSH using vcf user and subsequently 
@@ -2566,7 +2566,7 @@ Function Invoke-VCFCommand {
             If passwords are not passed as parameters it will prompt for them.
     
         .EXAMPLE
-        PS C:\> Connect-VCFCommand -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health 
+        PS C:\> Invoke-VCFCommand -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health 
         This example will execute and display the output of "/opt/vmware/sddc-support/sos --general-health" command
     
         .EXAMPLE
