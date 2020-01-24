@@ -11,3 +11,6 @@ Thumbs.db
 # Application Generated Files #
 ######################
 .vscode
+=======
+
+.DS_Store

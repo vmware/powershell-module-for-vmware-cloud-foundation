@@ -311,14 +311,82 @@ Function Decommission-VCFHost {
 }
 Export-ModuleMember -Function Decommission-VCFHost
 
-#TODO: Add Posh-SSH Support
-Function Cleanup-VCFHosts {
-# Print Instructions to screen
-Write-Output "Not Implemented as a function yet as it requires SSH access to SDDC Manager"
-Write-Output "SSH to $sddcManager"
-Write-Output "Run /opt/vmware/sddc-support/sos --cleanup-host ALL"
+Function Reset-VCFHost {
+    <#
+        .SYNOPSIS
+        Performs an ESXi host cleanup using the command line SoS utility
+    
+        .DESCRIPTION
+        Performs a host cleanup using SoS option --cleanup-host. Valid options for the -dirtyHost parameter are: ALL, <MGMT ESXi IP>
+        Please note:The SoS utility on VCF 3.9 is unable to perform networking host cleanup when the host belongs to an NSX-T cluster. 
+                    This issue has been resolved on VCF 3.9.1
+    
+        .EXAMPLE
+        Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!"-dirtyHost 192.168.210.53
+        
+        This command will perform SoS host cleanup for host 192.168.210.53
+    
+        .EXAMPLE
+        Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!" -dirtyHost all
+        
+        This command will perform SoS host cleanup for all hosts in need of cleanup in the SDDC Manager database.
+        
+    #>
+    
+    param (
+        [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String] $privilegedUsername,
+    
+        [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String] $privilegedPassword,
+    
+        [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [String] $sddcManagerRootPassword,
+    
+        [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$dirtyHost
+    )
+        # get the full list of PSC credentials
+        $pscCreds = Get-VCFCredential -privilegedUsername $privilegedUsername -privilegedPassword $privilegedPassword -resourceType PSC
+        
+        # from PSC credentials extract the SSO username and password
+        $ssoCreds = $pscCreds.elements | Where-Object {$_.credentialType -eq "SSO"}
+        
+        # get the list of all VCENTER credentials
+        $vcCreds = Get-VCFCredential $privilegedUsername -privilegedPassword $privilegedPassword -resourceType VCENTER
+        
+        #  find out which VC is the MGMT. This is use to extract the MGMT VC FQDN ($mgmtVC.resourceName)
+        $mgmtVC = $vcCreds.elements.resource | Where-Object {$_.domainName -eq "MGMT"}
+        
+        # connect to the management vCenter without displaying the connection
+        Connect-VIServer -Server $mgmtVC.resourceName -User $ssoCreds.username -Password $ssoCreds.password | Out-Null
+        
+        # get the vm object for sddc-manager
+        $sddcManagerVM = Get-VM -Name "sddc-manager"
+        
+        # the SoS help says to use ALL not sure if it's case sensitive but I'm converting upper case
+        if ($dirtyHost -eq "all") { $dirtyHost = "ALL" }
+        
+        # build the cmd to run and auto confirm 
+        $sshCommand = "echo Y | /opt/vmware/sddc-support/sos --cleanup-host " + $dirtyHost
+        
+        Write-Host ""
+        Write-Host "Executing clean up for host(s): $dirtyHost - This might take a while, please wait..."
+        Write-Host ""
+        Try {
+            $vmScript = Invoke-VMScript -VM $sddcManagerVM -ScriptText $sshCommand -GuestUser root -GuestPassword $sddcManagerRootPassword
+            $vmScript
+        }
+        Catch {
+            ResponseExeception
+        }
+}
+Export-ModuleMember -Function Reset-VCFHost
 
-				}
 ######### End Host Operations ##########
 
 
@@ -1297,19 +1365,23 @@ Function Get-VCFCredential {
 <#
     .SYNOPSIS
     Connects to the specified SDDC Manager and retrieves a list of credentials.
+    Supported resource types are: PSC, VCENTER, ESXI, NSX_MANAGER, NSX_CONTROLLER, BACKUP
+    Please note: if you are requesting credentials by resource type then the resource name parameter (if passed) will be ignored (they are mutually exclusive)
 
     .DESCRIPTION
     The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
     credentials. A privileged user account is required.
 
     .EXAMPLE
-    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local
-	-privilegedPassword VMw@re1!
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1!
     This example shows how to get a list of credentials
 
+    .EXAMPLE
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceType PSC
+    This example shows how to get a list of PSC credentials
+
 	.EXAMPLE
-    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local
-	-privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
     This example shows how to get the credential for a specific resourceName (FQDN)
 #>
 
@@ -1317,12 +1389,19 @@ Function Get-VCFCredential {
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$privilegedUsername,
+
 		[Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$privilegedPassword,
+
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$resourceName
+            [string]$resourceName,
+
+        [Parameter (Mandatory=$false)]
+            [ValidateSet("PSC", "VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
+            [ValidateNotNullOrEmpty()]
+            [string]$resourceType   
     )
 
     $headers = @{"Accept" = "application/json"}
@@ -1331,16 +1410,24 @@ Function Get-VCFCredential {
     $headers.Add("privileged-password", "$privilegedPassword")
 
     if ($PsBoundParameters.ContainsKey("resourceName")) {
+
         $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
+    
     }
     else {
         $uri = "https://$sddcManager/v1/credentials"
     }
-    try {
+    # if requesting credential by type then name is ignored (mutually exclusive)
+    if ($PsBoundParameters.ContainsKey("resourceType") ) {
+
+        $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
+    }
+
+    Try {
 	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 	    $response
     }
-    catch {
+    Catch {
         #Get response from the exception
         ResponseExeception
     }
@@ -1487,6 +1574,7 @@ Function Validate-VCFClusterSpec {
         #Get response from the exception
         ResponseExeception
     }
+return $response
 }
 
 Function Validate-VCFUpdateClusterSpec {
@@ -1518,6 +1606,7 @@ Function Validate-VCFUpdateClusterSpec {
         #Get response from the exception
         ResponseExeception
     }
+return $response
 }
 
 ######## End Validation Functions ########
@@ -2465,6 +2554,138 @@ Function Get-VCFvRLI {
     }
 }
 Export-ModuleMember -Function Get-VCFvRLI
+
+Function Invoke-VCFCommand {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager using SSH and invoke SSH commands (SOS)
+    
+        .DESCRIPTION
+        The Invoke-VCFCommand cmdlet connects to the specified SDDC Manager via SSH using vcf user and 
+        subsequently execute elevated SOS commands using the root account. This is why both vcf and root password are
+        mandatory parameters. If passwords are not passed as parameters it will prompt for them.
+    
+        .EXAMPLE
+        PS C:\> Connect-VCFCommand -fqdn sfo01vcf01.sfo.rainpole.local -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health 
+        This example will execute and display the output of "/opt/vmware/sddc-support/sos --general-health" command
+    
+        .EXAMPLE
+        PS C:\> Connect-VCFCommand -fqdn sfo01vcf01.sfo.rainpole.local -sosOption general-health 
+        This example will ask for vcf and root password to the user and then execute and display the output of "/opt/vmware/sddc-support/sos --general-health" command
+    
+    #>
+    
+        param (
+    
+            [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$fqdn,
+           
+            [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [String] $vcfPassword,
+    
+            [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [String] $rootPassword,
+    
+            [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [String] $privilegedUsername,
+    
+            [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [String] $privilegedPassword,
+    
+            [Parameter (Mandatory=$true)]
+            [ValidateSet("general-health","ntp-health","password-health","get-vcf-summary","get-file","cleanup-host")]
+            [String] $sosOption
+    
+        )
+        # POSH module is required, if not present skipping
+        $poshSSH = Resolve-PSModule -moduleName "Posh-SSH"
+    
+        if ($poshSSH -eq "ALREADY_IMPORTED" -or $poshSSH -eq "IMPORTED" -or $poshSSH -eq "INSTALLED_IMPORTED") {
+            
+            # Expected sudo prompt from SDDC Manager for elevated commands
+            $sudoPrompt = "[sudo] password for vcf"
+            
+            # validate if the SDDC Manager vcf password parameter is passed, if not prompt the user and then build vcfCreds PSCredential object
+            if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
+                Write-Host "Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
+                $vcfSecuredPassword = Read-Host -AsSecureString
+                $vcfCreds = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
+            }
+            else {
+                # Convert the clear text input password to secure string 
+                $vcfSecuredPassword = ConvertTo-SecureString $vcfPassword -AsPlainText -Force
+                # build credential object
+                $vcfCreds = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
+            }
+            
+            # validate if the SDDC Manager root password parameter is passed, if not prompt the user and then build rootCreds PSCredential object
+            if ( -not $PsBoundParameters.ContainsKey("rootPassword") ) {
+                Write-Host "Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
+                $rootSecuredPassword = Read-Host -AsSecureString
+                $rootCreds = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
+            }
+            else {
+                # Convert the clear text input password to secure string 
+                $rootSecuredPassword = ConvertTo-SecureString $rootPassword -AsPlainText -Force
+                # build credential object
+                $rootCreds = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
+            }
+    
+            # depending on the SOS command there will be a different pattern to match at the end of the stream (ssh output)
+            switch ($sosOption) {
+                "general-health"    { $sosEndMessage = "For detailed report" }
+                "ntp-health"        { $sosEndMessage = "For detailed report" }
+                "password-health"   { $sosEndMessage = "completed"  }
+                "get-file"          { $sosEndMessage = "Log Collection completed" }
+                "get-vcf-summary"   { $sosEndMessage = "SOLUTIONS_MANAGER" }
+            }
+    
+            # Create SSH session to SDDC Manager using vcf user (can't ssh as root by default)
+            $sessionSSH = New-SSHSession -Computer $fqdn -Credential $vcfCreds -AcceptKey
+    
+            # Create the SSH stream
+            $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
+            
+            if ($sosOption -eq "get-file") {
+                # testing log extration
+                # /var/log/vmware/vcf/sddc-support/sos-2020-01-14-23-20-30-2236
+                $path = "C:\TFTP-Root\sos-2020-01-14-23-20-30-2236"
+                if (!(Test-Path $path)) {
+                    New-Item -ItemType Directory -Path $path
+                }
+                Get-SCPFolder -ComputerName $fqdn -Credential $vcfCreds -LocalFolder $path -RemoteFolder '/var/log/vmware/vcf/sddc-support/sos-2020-01-14-23-20-30-2236'
+            }
+            elseif ($sosOption -eq "cleanup-host") {
+                Cleanup-VCFHosts
+            }
+            else {
+                # build the SOS command to run
+                $sshCommand = "sudo /opt/vmware/sddc-support/sos " + "--" + $sosOption
+                # Invoke the SSH stream command
+                $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCreds.Password
+                
+                if ($outInvoke) {
+                    Write-Host ""
+                    Write-Host "Waiting for the command to finish running before displaying the output, this might take a while..."
+                    Write-Host ""
+                    $stream.Expect($sosEndMessage)
+                }
+                # remove the connection previously established
+                Remove-SSHSession -SessionId $sessionSSH.SessionId | Out-Null
+            }
+        }
+        else {
+    
+            Write-Host "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again." -ForegroundColor Yellow
+        
+        }
+    }
+Export-ModuleMember -Function Invoke-VCFCommand
 
 ######### End Foundation Component Operations ##########
 
