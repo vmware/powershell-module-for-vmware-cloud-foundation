@@ -2570,7 +2570,7 @@ Function Invoke-VCFCommand {
         This example will execute and display the output of "/opt/vmware/sddc-support/sos --general-health"
     
         .EXAMPLE
-        PS C:\> Connect-VCFCommand -sosOption general-health 
+        PS C:\> Invoke-VCFCommand -sosOption general-health 
         This example will ask for vcf and root password to the user and then execute and display the output of "/opt/vmware/sddc-support/sos --general-health"
     
     #>
