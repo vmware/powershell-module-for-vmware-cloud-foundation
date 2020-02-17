@@ -11,18 +11,12 @@ Get-VCFBackupConfiguration
 ### Description
 Retrieves the backup configuration details and the status
 
-### Examples
+#### Examples
 #### Example 1
 ```
 Get-VCFBackupConfiguration    
 ```
-This example retrieves the backup configuration
-
-#### Example 2
-```
-Get-VCFBackupConfiguration | ConvertTo-Json  
-```
-This example retrieves the backup configuration and outputs it in json format
+This example shows the backup configuration
 
 ### Parameters
 
