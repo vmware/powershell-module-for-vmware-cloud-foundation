@@ -1910,31 +1910,36 @@ Export-ModuleMember -Function Request-VCFBundle
 
 Function Get-VCFCertificateAuthConfiguration {
 <#
-    .SYNOPSIS
-    Get certificate authorities information
+  .SYNOPSIS
+  Get certificate authorities information
 
-    .DESCRIPTION
-     Retrieves the certificate authorities information for the connected SDDC Manager
+  .DESCRIPTION
+  Retrieves the certificate authorities information for the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificateAuthConfiguration
-    This example shows how to get the certificate authority configuration from the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFCertificateAuthConfiguration
+  This example shows how to get the certificate authority configuration from the connected SDDC Manager
+
+  .EXAMPLE
+  PS C:\> Get-VCFCertificateAuthConfiguration | ConvertTo-Json
+  This example shows how to get the certificate authority configuration from the connected SDDC Manager
+  and output to Json format
 #>
 
-    # Check the version of SDDC Manager
-    CheckVCFVersion
+  # Check the version of SDDC Manager
+  CheckVCFVersion
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/certificate-authorities"
-    try {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/certificate-authorities"
+  try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response.elements
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
 
