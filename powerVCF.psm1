@@ -197,66 +197,65 @@ Export-ModuleMember -Function Get-VCFHost
 
 Function Commission-VCFHost {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and commissions a list of hosts.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and commissions a list of hosts.
 
-    .DESCRIPTION
-    The Commission-VCFHost cmdlet connects to the specified SDDC Manager
-	  and commissions a list of hosts. Host list spec is provided in a JSON file.
+  .DESCRIPTION
+  The Commission-VCFHost cmdlet connects to the specified SDDC Manager
+  and commissions a list of hosts. Host list spec is provided in a JSON file.
 
-    .EXAMPLE
-    PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-    This example shows how to commission a list of hosts based on the details
-    provided in the JSON file.
+  .EXAMPLE
+  PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
+  This example shows how to commission a list of hosts based on the details
+  provided in the JSON file.
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+  param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if (!(Test-Path $json)) {
-        throw "JSON File Not Found"
-    }
-    else {
-        # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content -Raw $json)
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-            # Validate the provided JSON input specification file
-            $response = Validate-CommissionHostSpec -json $ConfigJson
-            # get the task id from the validation function
-            $taskId = $response.id
-            # keep checking until executionStatus is not IN_PROGRESS
-            do {
-                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
-                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-
-            } While ($response.executionStatus -eq "IN_PROGRESS")
-
-            # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Try {
-                    Write-Host ""
-                    Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
-                    $uri = "https://$sddcManager/v1/hosts/"
-                    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-		    return $response
-                    Write-Host ""
-                }
-                Catch {
-                    #Get response from the exception
-                    ResponseExeception
-                }
-            }
-            else {
-                Write-Host ""
-                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-                Write-Host ""
-            }
+    # Validate the provided JSON input specification file
+    $response = Validate-CommissionHostSpec -json $ConfigJson
+    # Get the task id from the validation function
+    $taskId = $response.id
+    # Keep checking until executionStatus is not IN_PROGRESS
+    do {
+      $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+      $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+      }
+      While ($response.executionStatus -eq "IN_PROGRESS")
+      # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+      if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+        Try {
+          Write-Host ""
+          Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
+          $uri = "https://$sddcManager/v1/hosts/"
+          $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+          return $response
+          Write-Host ""
+        }
+        Catch {
+          #Get response from the exception
+          ResponseExeception
+        }
+      }
+      else {
+        Write-Host ""
+        Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+        Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+        Write-Host ""
+      }
     }
 }
 Export-ModuleMember -Function Commission-VCFHost
