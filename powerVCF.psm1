@@ -1945,45 +1945,49 @@ Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
 
 Function Set-VCFMicrosoftCA {
 <#
-    .SYNOPSIS
-    Configures a Microsoft Certificate Authority
+  .SYNOPSIS
+  Configures a Microsoft Certificate Authority
 
-    .DESCRIPTION
-    Configures the Microsoft Certificate Authorty on the connected SDDC Manager
+  .DESCRIPTION
+  Configures the Microsoft Certificate Authorty on the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
-    This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+  This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
 #>
 
-	Param (
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$serverUrl,
 		[Parameter (Mandatory=$true)]
-        [string]$serverUrl,
+      [ValidateNotNullOrEmpty()]
+      [string]$username,
 		[Parameter (Mandatory=$true)]
-        [string]$username,
-		[Parameter (Mandatory=$true)]
-        [string]$password,
-  		[Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$password,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
         [string]$templateName
-    )
+  )
 
-    # Check the version of SDDC Manager
-    CheckVCFVersion
+  # Check the version of SDDC Manager
+  CheckVCFVersion
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/certificate-authorities"
-    try {
-        if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
-			throw "You must enter the mandatory values"
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/certificate-authorities"
+  try {
+    if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
+      Throw "You must enter the mandatory values"
 		}
-        $ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
-        $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+    $ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
+    $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
 
@@ -2196,28 +2200,28 @@ Export-ModuleMember -Function Set-VCFCertificate
 
 Function Get-VCFDepotCredentials {
 <#
-    .SYNOPSIS
-    Get Depot Settings
+  .SYNOPSIS
+  Get Depot Settings
 
-    .DESCRIPTION
-     Retrieves the configuration for the depot of the connected SDDC Manager
+  .DESCRIPTION
+  Retrieves the configuration for the depot of the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFDepotCredentials
-    This example shows credentials that have been configured for the depot.
+  .EXAMPLE
+  PS C:\> Get-VCFDepotCredentials
+  This example shows credentials that have been configured for the depot.
 #>
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/system/settings/depot"
-    try {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/system/settings/depot"
+  try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFDepotCredentials
 
