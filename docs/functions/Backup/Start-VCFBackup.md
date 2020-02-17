@@ -1,7 +1,7 @@
 # Start-VCFBackup
 
 ### Synopsis
-Start the SDDC Manager backup
+Start backup of SDDC Manager
 
 ### Syntax
 ```
@@ -9,14 +9,14 @@ Start-VCFBackup
 ```
 
 ### Description
-The Start-VCFBackup cmdlet invokes the SDDC Manager backup task.
+The Start-VCFBackup cmdlet triggers the backup task of SDDC Manager
 
 ### Examples
 #### Example 1
 ```
 Start-VCFBackup    
 ```
-This example shows how to start the SDDC Manager backup
+This example shows how to start the backup of SDDC Manager
 
 ### Parameters
 
