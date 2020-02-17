@@ -1,7 +1,7 @@
 # Request-VCFBundle
 
 ### Synopsis
-Request a Bundle for downloading from depot
+Start download of bundle from depot
 
 ### Syntax
 ```
@@ -9,7 +9,8 @@ Request-VCFBundle -id <string>
 ```
 
 ### Description
-Triggers an immediate download. Only one download can be triggered for a Bundle.
+The Request-VCFBundle cmdlet starts an immediate download of a bundle from the depot.
+Only one download can be triggered for a bundle.
 
 ### Examples
 #### Example 1

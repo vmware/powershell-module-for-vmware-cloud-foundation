@@ -1878,33 +1878,35 @@ Export-ModuleMember -Function Get-VCFBundle
 
 Function Request-VCFBundle {
 <#
-    .SYNOPSIS
-    Request a Bundle for downloading from depot
+  .SYNOPSIS
+  Start download of bundle from depot
 
-    .DESCRIPTION
-    Triggers an immediate download. Only one download can be triggered for a Bundle.
+  .DESCRIPTION
+  The Request-VCFBundle cmdlet starts an immediate download of a bundle from the depot.
+  Only one download can be triggered for a bundle.
 
-    .EXAMPLE
-    PS C:\> Request-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
-    This example requests the immediate download of a bundle based on its id
+  .EXAMPLE
+  PS C:\> Request-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
+  This example requests the immediate download of a bundle based on its id
 #>
 
-	Param (
-		[Parameter (Mandatory=$true)]
-        [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/bundles/$id"
-    try {
-        $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/bundles/$id"
+  try {
+    $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Request-VCFBundle
 
