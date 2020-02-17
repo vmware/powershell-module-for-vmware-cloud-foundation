@@ -1,7 +1,7 @@
 # Connect-VCFManager
 
 ### Synopsis
-Connect to a VCF SDDC Manager
+Connects to the specified SDDC Manager and stores the credentials in a base64 string
 
 ### Syntax
 ```
@@ -9,8 +9,8 @@ Connect-VCFManager -fqdn <String> -Username <String> -Password <String>
 ```
 
 ### Description
-Connect to the SDDC Manager and stores the credentials in a base64 string.
-It is required once per session before running all other cmdlets.
+The Connect-VCFManager cmdlet connects to the specified SDDC Manager and stores the credentials
+in a base64 string. It is required once per session before running all other cmdlets
 
 ### Examples
 #### Example 1

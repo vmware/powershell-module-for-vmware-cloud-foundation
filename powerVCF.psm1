@@ -49,69 +49,64 @@ add-type @"
 
 Function Connect-VCFManager {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and stores the credentials in a base64 string
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and stores the credentials in a base64 string
 
-    .DESCRIPTION
-    The Connect-VCFManager cmdlet connects to the specified SDDC Manager and stores the credentials
+  .DESCRIPTION
+  The Connect-VCFManager cmdlet connects to the specified SDDC Manager and stores the credentials
 	in a base64 string. It is required once per session before running all other cmdlets
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1!
-    This example shows how to connect to SDDC Manager
+  This example shows how to connect to SDDC Manager
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$fqdn,
+  param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$fqdn,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$username,
+      [ValidateNotNullOrEmpty()]
+      [string]$username,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$password
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$password
+  )
 
-    if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username")))
-        {
-            # Request Credentials
-            $creds = Get-Credential
-            $username = $creds.UserName.ToString()
-            $password = $creds.GetNetworkCredential().password
-        }
+  if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
+    # Request Credentials
+    $creds = Get-Credential
+    $username = $creds.UserName.ToString()
+    $password = $creds.GetNetworkCredential().password
+  }
 
-    $Global:sddcManager = $fqdn
+  $Global:sddcManager = $fqdn
 
-    # Create Basic Authentication Encoded Credentials
-    $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))
+  # Create Basic Authentication Encoded Credentials
+  $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))
 
-    # validate credentials by executing an API call
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  # Validate credentials by executing an API call
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-    # Checking against the sddc-managers API
-    $uri = "https://$sddcManager/v1/sddc-managers"
-    Try {
-            # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
-            if ($PSEdition -eq 'Core') {
-                $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
-            }
-            else {
-                $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
-            }
-        if ($response.StatusCode -eq 200) {
-            Write-Host ""
-            Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
-            Write-Host ""
-        }
+  # Checking against the sddc-managers API
+  $uri = "https://$sddcManager/v1/sddc-managers"
+  Try {
+    # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+    if ($PSEdition -eq 'Core') {
+      $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
     }
-    Catch {
-            Write-Host ""
-            Write-Host "" $_.Exception.Message -ForegroundColor Red
-            Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
-            Write-Host
+    else {
+      $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
     }
+    if ($response.StatusCode -eq 200) {
+      Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+    }
+  }
+  Catch {
+    Write-Host "" $_.Exception.Message -ForegroundColor Red
+    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+  }
 }
 Export-ModuleMember -function Connect-VCFManager
 
