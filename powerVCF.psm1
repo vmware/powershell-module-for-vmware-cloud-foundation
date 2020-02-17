@@ -1616,72 +1616,75 @@ return $response
 
 Function Get-VCFCeip {
 <#
-    .SYNOPSIS
-    Retrieves the current setting for CEIP of the connected SDDC Manager
+  .SYNOPSIS
+  Retrieves the current setting for CEIP of the connected SDDC Manager
 
-    .DESCRIPTION
-    TThe Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program
-    (CEIP) of the connected SDDC Manager.
+  .DESCRIPTION
+  The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Get-VCFCeip
-    This example shows how to get the current setting of CEIP
+  This example shows how to get the current setting of CEIP
 #>
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/system/ceip"
-    try {
-		    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
-
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/system/ceip"
+  try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFCeip
 
 Function Set-VCFCeip {
 <#
-    .SYNOPSIS
-    Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager
+  .SYNOPSIS
+  Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
 
-    .DESCRIPTION
-    The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement
-    Program (CEIP) of the connected SDDC Manager.
+  .DESCRIPTION
+  The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
+  and the components managed (vCenter Server, vSAN and NSX Manager)
 
-    .EXAMPLE
-    PS C:\> Set-VCFCeip -ceipSetting ENABLE
-    This example shows how to disable CEIP of the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Set-VCFCeip -ceipSetting DISABLE
+  This example shows how to DISABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
+
+  .EXAMPLE
+  PS C:\> Set-VCFCeip -ceipSetting ENABLE
+  This example shows how to ENABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
 #>
 
 	Param (
 		[Parameter (Mandatory=$true)]
-        [string]$ceipSetting
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$ceipSetting
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/system/ceip"
-    try {
-        if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
-			throw "You must define ENABLE or DISABLE as an input"
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/system/ceip"
+  try {
+    if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
+      Throw "You must define ENABLE or DISABLE as an input"
 		}
-        if ($ceipSetting -eq "ENABLE") {
-			$ConfigJson = '{"status": "ENABLE"}'
-        }
-        if ($ceipSetting -eq "DISABLE") {
+    if ($ceipSetting -eq "ENABLE") {
+      $ConfigJson = '{"status": "ENABLE"}'
+    }
+    if ($ceipSetting -eq "DISABLE") {
 			$ConfigJson = '{"status": "DISABLE"}'
-        }
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        $response
     }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    $response
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Set-VCFCeip
 
