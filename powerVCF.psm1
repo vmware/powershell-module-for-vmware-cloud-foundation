@@ -115,84 +115,83 @@ Export-ModuleMember -function Connect-VCFManager
 
 Function Get-VCFHost {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of hosts.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and retrieves a list of hosts.
 
-    .DESCRIPTION
-    The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.
-	  VCF Hosts are defined by status
-	  - ASSIGNED - Hosts that are assigned to a Workload domain
-	  - UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
-	  - UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used
-	  for other domain tasks after completion of cleanup operation
+  .DESCRIPTION
+  The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.
+  VCF Hosts are defined by status
+  - ASSIGNED - Hosts that are assigned to a Workload domain
+  - UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
+  - UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used for other domain tasks after completion of cleanup operation
 
-    .EXAMPLE
-	  PS C:\> Get-VCFHost
-    This example shows how to get all hosts regardless of status
+  .EXAMPLE
+	PS C:\> Get-VCFHost
+  This example shows how to get all hosts regardless of status
 
-	 .EXAMPLE
-	 PS C:\> Get-VCFHost -Status ASSIGNED
-   This example shows how to get all hosts with a specific status
+	.EXAMPLE
+	PS C:\> Get-VCFHost -Status ASSIGNED
+  This example shows how to get all hosts with a specific status
 
-	 .EXAMPLE
-	 PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
-   This example shows how to get a host by id
+	.EXAMPLE
+	PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+  This example shows how to get a host by id
 
-	 .EXAMPLE
-	 PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
-   This example shows how to get a host by fqdn
+	.EXAMPLE
+	PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
+  This example shows how to get a host by fqdn
 #>
 
-	param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$fqdn,
+  param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$fqdn,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$Status,
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$Status,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-    if ($PsBoundParameters.ContainsKey("status")) {
-        $uri = "https://$sddcManager/v1/hosts?status=$status"
+  if ($PsBoundParameters.ContainsKey("status")) {
+    $uri = "https://$sddcManager/v1/hosts?status=$status"
+  }
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/hosts/$id"
+  }
+  if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+    $uri = "https://$sddcManager/v1/hosts"
+  }
+  if ($PsBoundParameters.ContainsKey("fqdn")) {
+    $uri = "https://$sddcManager/v1/hosts"
+  }
+
+  try {
+    if ($PsBoundParameters.ContainsKey("fqdn")) {
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements | Where-Object {$_.fqdn -eq $fqdn}
     }
     if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/hosts/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
-    if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-        $uri = "https://$sddcManager/v1/hosts"
+    if ($PsBoundParameters.ContainsKey("status")) {
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-    if ($PsBoundParameters.ContainsKey("fqdn")) {
-        $uri = "https://$sddcManager/v1/hosts"
+    if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-
-    try {
-        if ($PsBoundParameters.ContainsKey("fqdn")) {
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements | Where-Object {$_.fqdn -eq $fqdn}
-        }
-        if ($PsBoundParameters.ContainsKey("id")) {
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
-        }
-        if ($PsBoundParameters.ContainsKey("status")) {
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
-        if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
-    }
-    catch {
-        #Get response from the exception
-        ResponseExeception
-    }
+  }
+  catch {
+    #Get response from the exception
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFHost
 
