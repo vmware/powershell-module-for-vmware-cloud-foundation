@@ -18,12 +18,6 @@ Set-VCFBackupConfiguration -privilegedUsername svc-mgr-vsphere@vsphere.local -pr
 ```
 This example shows how to configure the backup configuration
 
-#### Example 2
-```
-Set-VCFBackupConfiguration -privilegedUsername svc-mgr-vsphere@vsphere.local -privilegedPassword VMw@re1! -json backupConfiguration.json -update yes 
-```
-This example shows how to update backup configuration
-
 ### Parameters
 #### -privilegedUsername
 - Privileged Username for dual authentication
@@ -64,26 +58,13 @@ Position: Named
 Default value: None
 ```
 
-#### -update
-- Confirms its an update to the configuration
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: Yes
-```
-
 ### Sample JSON
 #### Update Credentials with specified password
 ```
 {
     "backupLocations": [ {
         "directoryPath": "/nfs/vmware/vcf/nfs-mount/backup",
-        "password": "VMw@re1!",
+        "password": "VMware123!",
         "port": 22,
         "protocol": "SFTP",
         "server": "192.168.110.55",
@@ -91,7 +72,7 @@ Default value: Yes
         "username": "backup"
     } ],
     "encryption": {
-        "passphrase": "VMw@re1!"
+        "passphrase": "VMware123!"
     }
 }
 ```

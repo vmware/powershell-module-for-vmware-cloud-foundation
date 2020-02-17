@@ -315,65 +315,65 @@ Function Reset-VCFHost {
     <#
         .SYNOPSIS
         Performs an ESXi host cleanup using the command line SoS utility
-    
+
         .DESCRIPTION
         Performs a host cleanup using SoS option --cleanup-host. Valid options for the -dirtyHost parameter are: ALL, <MGMT ESXi IP>
-        Please note:The SoS utility on VCF 3.9 is unable to perform networking host cleanup when the host belongs to an NSX-T cluster. 
+        Please note:The SoS utility on VCF 3.9 is unable to perform networking host cleanup when the host belongs to an NSX-T cluster.
                     This issue has been resolved on VCF 3.9.1
-    
+
         .EXAMPLE
         Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!"-dirtyHost 192.168.210.53
-        
+
         This command will perform SoS host cleanup for host 192.168.210.53
-    
+
         .EXAMPLE
         Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!" -dirtyHost all
-        
+
         This command will perform SoS host cleanup for all hosts in need of cleanup in the SDDC Manager database.
-        
+
     #>
-    
+
     param (
         [Parameter (Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [String] $privilegedUsername,
-    
+
         [Parameter (Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [String] $privilegedPassword,
-    
+
         [Parameter (Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [String] $sddcManagerRootPassword,
-    
+
         [Parameter (Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [string]$dirtyHost
     )
         # get the full list of PSC credentials
         $pscCreds = Get-VCFCredential -privilegedUsername $privilegedUsername -privilegedPassword $privilegedPassword -resourceType PSC
-        
+
         # from PSC credentials extract the SSO username and password
         $ssoCreds = $pscCreds.elements | Where-Object {$_.credentialType -eq "SSO"}
-        
+
         # get the list of all VCENTER credentials
         $vcCreds = Get-VCFCredential $privilegedUsername -privilegedPassword $privilegedPassword -resourceType VCENTER
-        
+
         #  find out which VC is the MGMT. This is use to extract the MGMT VC FQDN ($mgmtVC.resourceName)
         $mgmtVC = $vcCreds.elements.resource | Where-Object {$_.domainName -eq "MGMT"}
-        
+
         # connect to the management vCenter without displaying the connection
         Connect-VIServer -Server $mgmtVC.resourceName -User $ssoCreds.username -Password $ssoCreds.password | Out-Null
-        
+
         # get the vm object for sddc-manager
         $sddcManagerVM = Get-VM -Name "sddc-manager"
-        
+
         # the SoS help says to use ALL not sure if it's case sensitive but I'm converting upper case
         if ($dirtyHost -eq "all") { $dirtyHost = "ALL" }
-        
-        # build the cmd to run and auto confirm 
+
+        # build the cmd to run and auto confirm
         $sshCommand = "echo Y | /opt/vmware/sddc-support/sos --cleanup-host " + $dirtyHost
-        
+
         Write-Host ""
         Write-Host "Executing clean up for host(s): $dirtyHost - This might take a while, please wait..."
         Write-Host ""
@@ -1401,7 +1401,7 @@ Function Get-VCFCredential {
         [Parameter (Mandatory=$false)]
             [ValidateSet("PSC", "VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
             [ValidateNotNullOrEmpty()]
-            [string]$resourceType   
+            [string]$resourceType
     )
 
     $headers = @{"Accept" = "application/json"}
@@ -1412,7 +1412,7 @@ Function Get-VCFCredential {
     if ($PsBoundParameters.ContainsKey("resourceName")) {
 
         $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
-    
+
     }
     else {
         $uri = "https://$sddcManager/v1/credentials"
@@ -1716,6 +1716,58 @@ Function Get-VCFBackupConfiguration {
     }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
+
+Function Set-VCFBackupConfiguration {
+<#
+  .SYNOPSIS
+  Configure backup settings to backup NSX and SDDC manager
+
+  .DESCRIPTION
+  Configures or updates the backup configuration details for backup up NSX and SDDC Manager
+
+  .EXAMPLE
+  PS C:\> Set-VCFBackupConfiguration -privilegedUsername svc-mgr-vsphere@vsphere.local -privilegedPassword VMw@re1! -json backupConfiguration.json
+  This example shows how to update the backup configuration
+
+#>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$privilegedUsername,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$privilegedPassword,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
+
+  if ($PsBoundParameters.ContainsKey("json")) {
+    if (!(Test-Path $json)) {
+      Throw "JSON File Not Found"
+    }
+    else {
+      # Read the json file contents into the $ConfigJson variable
+      $ConfigJson = (Get-Content -Raw $json)
+    }
+  }
+
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $headers.Add("privileged-username", "$privilegedUsername")
+  $headers.Add("privileged-password", "$privilegedPassword")
+  $uri = "https://$sddcManager/v1/system/backup-configuration"
+  try {
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+    $response
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
+}
+Export-ModuleMember -Function Set-VCFBackupConfiguration
 
 Function Start-VCFBackup {
 <#
@@ -2559,45 +2611,45 @@ Function Invoke-VCFCommand {
     <#
         .SYNOPSIS
         Connects to the specified SDDC Manager using SSH and invoke SSH commands (SoS)
-    
+
         .DESCRIPTION
-        The Invoke-VCFCommand cmdlet connects to the specified SDDC Manager via SSH using vcf user and subsequently 
+        The Invoke-VCFCommand cmdlet connects to the specified SDDC Manager via SSH using vcf user and subsequently
         execute elevated SOS commands using the root account. Both vcf and root password are mandatory parameters.
         If passwords are not passed as parameters it will prompt for them.
-    
+
         .EXAMPLE
-        PS C:\> Invoke-VCFCommand -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health 
+        PS C:\> Invoke-VCFCommand -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health
         This example will execute and display the output of "/opt/vmware/sddc-support/sos --general-health"
-    
+
         .EXAMPLE
         PS C:\> Invoke-VCFCommand -sosOption general-health
         This example will ask for vcf and root password to the user and then execute and display the output of "/opt/vmware/sddc-support/sos --general-health"
-    
+
     #>
-    
+
         param (
-           
+
             [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [String] $vcfPassword,
-    
+
             [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [String] $rootPassword,
-    
+
             [Parameter (Mandatory=$true)]
             [ValidateSet("general-health","compute-health","ntp-health","password-health","get-vcf-summary","get-inventory-info","get-host-ips","get-vcf-services-summary")]
             [String] $sosOption
         )
-    
+
         # POSH module is required, if not present skipping
         $poshSSH = Resolve-PSModule -moduleName "Posh-SSH"
-    
+
         if ($poshSSH -eq "ALREADY_IMPORTED" -or $poshSSH -eq "IMPORTED" -or $poshSSH -eq "INSTALLED_IMPORTED") {
-            
+
             # Expected sudo prompt from SDDC Manager for elevated commands
             $sudoPrompt = "[sudo] password for vcf"
-    
+
             # validate if the SDDC Manager vcf password parameter is passed, if not prompt the user and then build vcfCreds PSCredential object
             if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
                 Write-Host "Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
@@ -2605,12 +2657,12 @@ Function Invoke-VCFCommand {
                 $vcfCred = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
             }
             else {
-                # Convert the clear text input password to secure string 
+                # Convert the clear text input password to secure string
                 $vcfSecuredPassword = ConvertTo-SecureString $vcfPassword -AsPlainText -Force
                 # build credential object
                 $vcfCred = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
             }
-            
+
             # validate if the SDDC Manager root password parameter is passed, if not prompt the user and then build rootCreds PSCredential object
             if ( -not $PsBoundParameters.ContainsKey("rootPassword") ) {
                 Write-Host "Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
@@ -2618,12 +2670,12 @@ Function Invoke-VCFCommand {
                 $rootCred = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
             }
             else {
-                # Convert the clear text input password to secure string 
+                # Convert the clear text input password to secure string
                 $rootSecuredPassword = ConvertTo-SecureString $rootPassword -AsPlainText -Force
                 # build credential object
                 $rootCred = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
             }
-    
+
             # depending on the SoS command there will be a different pattern to match at the end of the ssh stream output
             switch ($sosOption) {
                 "general-health"        { $sosEndMessage = "For detailed report" }
@@ -2635,7 +2687,7 @@ Function Invoke-VCFCommand {
                 "get-host-ips"          { $sosEndMessage = "Health Check completed" }
                 "get-vcf-services-summary" { $sosEndMessage = "VCF SDDC Manager Uptime" }
             }
-    
+
             # Create SSH session to SDDC Manager using vcf user (can't ssh as root by default)
             Try {
                 $sessionSSH = New-SSHSession -Computer $sddcManager -Credential $vcfCred -AcceptKey
@@ -2643,15 +2695,15 @@ Function Invoke-VCFCommand {
             Catch {
                 ResponseExeception
             }
-    
+
             if ($sessionSSH.Connected -eq "True") {
                 $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
-            
+
                 # build the SOS command to run
                 $sshCommand = "sudo /opt/vmware/sddc-support/sos " + "--" + $sosOption
                 # Invoke the SSH stream command
                 $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCred.Password
-                    
+
                     if ($outInvoke) {
                         Write-Host ""
                         Write-Host "Executing the remote SoS command, output will display when the the run is completed. This might take a while, please wait..."
@@ -2660,14 +2712,14 @@ Function Invoke-VCFCommand {
                     }
                     # distroy the connection previously established
                     Remove-SSHSession -SessionId $sessionSSH.SessionId | Out-Null
-            }        
+            }
         }
         else {
-    
+
             Write-Host ""
             Write-Host "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again." -ForegroundColor Yellow
             Write-Host ""
-        
+
         }
 }
 Export-ModuleMember -Function Invoke-VCFCommand
@@ -2803,7 +2855,7 @@ Function Get-VCFFederation {
 #>
 # Get VCF Version
 CheckVCFVersion
-    
+
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/sddc-federation"
@@ -2816,7 +2868,7 @@ catch {
     ResponseExeception
     }
 }
-   
+
 Export-ModuleMember -function Get-VCFFederation
 
 Function New-VCFFederationInvite {
@@ -2839,7 +2891,7 @@ param (
 )
 # Get VCF Version
 CheckVCFVersion
-    
+
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
@@ -2854,7 +2906,7 @@ try {
             inviteeFqdn = $inviteeFqdn
         }
         $ConfigJson = $inviteeDetails | ConvertTo-Json
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json' 
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
         $response
     }
 }
@@ -2863,7 +2915,7 @@ catch {
     ResponseExeception
     }
 }
-   
+
 Export-ModuleMember -function New-VCFFederationInvite
 
 Function Get-VCFFederationMembers {
@@ -2881,7 +2933,7 @@ Function Get-VCFFederationMembers {
 #>
 # Get VCF Version
 CheckVCFVersion
-    
+
 $headers = @{"Accept" = "application/json"}
 $headers.Add("Authorization", "Basic $base64AuthInfo")
 $uri = "https://$sddcManager/v1/sddc-federation/members"
@@ -2890,7 +2942,7 @@ try {
     if (!$response.federationName) {
         Throw "Failed to get members, no Federation found."
     }
-    else { 
+    else {
         $response
     }
 }
@@ -2898,7 +2950,7 @@ catch {
     # Call the function ResponseExeception which handles execption messages
     ResponseExeception
     }
-}   
+}
 Export-ModuleMember -function Get-VCFFederationMembers
 
 Function Join-VCFFederation {
@@ -2957,23 +3009,23 @@ Function Remove-VCFFederation {
     <#
         .SYNOPSIS
         Remove VCF Federation
-    
+
         .DESCRIPTION
         A function that ensures VCF Federation is empty and completely dismantles it.
-    
+
         .EXAMPLE
         PS C:\> Remove-VCFFederation
         This example demonstrates how to dismantle the VCF Federation
-    
+
     #>
     # Get VCF Version
     CheckVCFVersion
-        
+
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     $uri = "https://$sddcManager/v1/sddc-federation"
     try {
-        
+
         # Verify that SDDC Manager we're connected to is a controller and only one in the Federation
         $sddcs = Get-VCFFederation | Select-Object memberDetails
         foreach ($sddc in $sddcs)
@@ -3003,7 +3055,7 @@ Function Remove-VCFFederation {
         ResponseExeception
         }
     }
-       
+
     Export-ModuleMember -function Remove-VCFFederation
 
 ######### End Federation Management ##########
@@ -3029,9 +3081,9 @@ Function ResponseExeception {
 }
 
 Function CheckVCFVersion {
-    
+
     $vcfManager = Get-VCFManager
-	
+
     if ($vcfManager.version.Substring(0,3) -ne "3.9") {
         Write-Host ""
         Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
@@ -3043,32 +3095,32 @@ Function CheckVCFVersion {
 
 
 Function Resolve-PSModule {
-    <# 
+    <#
         .SYNOPSIS
         Check for a PowerShell module presence, if not there try to import/install it.
-    
+
         .DESCRIPTION
-        This function is not exported. The idea is to use the return searchResult from the caller function to establish 
+        This function is not exported. The idea is to use the return searchResult from the caller function to establish
         if we can proceed to the next step where the module will be required (developed to check on Posh-SSH).
         Logic:
             - Check if module is imported into the current session
             - If module is not imported, check if available on disk and try to import
             - If module is not imported & not available on disk, try PSGallery then install and import
             - If module is not imported, not available and not in online gallery then abort
-        
+
             Informing user only if the module needs importing/installing. If the module is already present nothing will be displayed.
-    
+
         .EXAMPLE
-        PS C:\> $poshSSH = Resolve-PSModule -moduleName "Posh-SSH" 
+        PS C:\> $poshSSH = Resolve-PSModule -moduleName "Posh-SSH"
         This example will check if the current PS module session has Posh-SSH installed, if not will try to install it
-    
+
     #>
         param (
             [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$moduleName
         )
-    
+
         # check if module is imported into the current session
         if (Get-Module -Name $moduleName) {
             $searchResult = "ALREADY_IMPORTED"
@@ -3076,7 +3128,7 @@ Function Resolve-PSModule {
         else {
             # If module is not imported, check if available on disk and try to import
             if (Get-Module -ListAvailable | Where-Object {$_.Name -eq $moduleName}) {
-                Try { 
+                Try {
                     Write-Host ""
                     Write-Host "Module $moduleName not loaded, importing now please wait..."
                     Import-Module $moduleName
@@ -3100,7 +3152,7 @@ Function Resolve-PSModule {
                         Import-Module $moduleName
                         Write-Host "Module $moduleName installed and imported"
                         $searchResult = "INSTALLED_IMPORTED"
-    
+
                     }
                     Catch {
                         $searchResult = "INSTALLIMPORT_FAILED"
