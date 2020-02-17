@@ -2227,41 +2227,41 @@ Export-ModuleMember -Function Get-VCFDepotCredentials
 
 Function Set-VCFDepotCredentials {
 <#
-    .SYNOPSIS
-    Update the Depot Settings
+  .SYNOPSIS
+  Update the Depot Settings
 
-    .DESCRIPTION
-     Update the configuration for the depot of the connected SDDC Manager
+  .DESCRIPTION
+  Update the configuration for the depot of the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
-    This example sets the credentials that have been configured for the depot.
+  .EXAMPLE
+  PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
+  This example sets the credentials that have been configured for the depot.
 #>
 
-	Param (
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$username,
 		[Parameter (Mandatory=$true)]
-        [string]$username,
-		[Parameter (Mandatory=$true)]
-        [string]$password
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$password
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/system/settings/depot"
-    try {
-
-        if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))){
-			throw "You must enter a username and password"
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/system/settings/depot"
+  try {
+    if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
+      Throw "You must enter a username and password"
 		}
-        $ConfigJson = '{"vmwareAccount": {"username": "'+$username+'","password": "'+$password+'"}}'
-        $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        $response
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
-
+    $ConfigJson = '{"vmwareAccount": {"username": "'+$username+'","password": "'+$password+'"}}'
+    $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    $response
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Set-VCFDepotCredentials
 
