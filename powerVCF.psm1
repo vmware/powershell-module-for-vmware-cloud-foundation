@@ -2535,60 +2535,61 @@ Function Get-VCFNsxvManager {
 }
 Export-ModuleMember -Function Get-VCFNsxvManager
 
-Function Get-VCFnsxtCluster {
+Function Get-VCFNsxtCluster {
 <#
-    .SYNOPSIS
-    Gets a list of NSX-T Clusters
+  .SYNOPSIS
+  Gets a list of NSX-T Clusters
 
-    .DESCRIPTION
-    Retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
+  .DESCRIPTION
+  The Get-VCFNsxtCluster cmdlet retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFnsxtCluster
-    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFNsxtCluster
+  This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFnsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+  This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFnsxtCluster | select fqdn
-    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the fqdn
+  .EXAMPLE
+  PS C:\> Get-VCFNsxtCluster | select fqdn
+  This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the fqdn
 #>
 
-	Param (
-		[Parameter (Mandatory=$false)]
-        [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    # Check the version of SDDC Manager
-    CheckVCFVersion
+  # Check the version of SDDC Manager
+  CheckVCFVersion
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
 
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
+  }
+  else {
+    $uri = "https://$sddcManager/v1/nsxt-clusters"
+  }
+  try {
     if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
-    else{
-        $uri = "https://$sddcManager/v1/nsxt-clusters"
+    else {
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-    try {
-        if ($PsBoundParameters.ContainsKey("id")) {
-	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	        $response
-        }
-        else{
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response.elements
-        }
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
-Export-ModuleMember -Function Get-VCFnsxtCluster
+Export-ModuleMember -Function Get-VCFNsxtCluster
 
 Function Get-VCFvRLI {
 <#
