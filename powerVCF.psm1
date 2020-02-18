@@ -1966,7 +1966,7 @@ Function Set-VCFMicrosoftCA {
       [string]$password,
     [Parameter (Mandatory=$true)]
       [ValidateNotNullOrEmpty()]
-        [string]$templateName
+      [string]$templateName
   )
 
   # Check the version of SDDC Manager
@@ -1989,37 +1989,43 @@ Function Set-VCFMicrosoftCA {
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
 
-Function Get-VCFCertificateCSRs {
+Function Get-VCFCertificateCSR {
 <#
-    .SYNOPSIS
-    Get available CSR(s)
+  .SYNOPSIS
+  Get available CSR(s)
 
-    .DESCRIPTION
-    Gets available CSRs from SDDC Manager
+  .DESCRIPTION
+  The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created
+  on SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
-    This example gets a list of CSRs and displays them in JSON format
+  .EXAMPLE
+  PS C:\> Get-VCFCertificateCSRs -domainName MGMT
+  This example gets a list of CSRs and displays the output
+
+  .EXAMPLE
+  PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
+  This example gets a list of CSRs and displays them in JSON format
 #>
 
-	Param (
-		[Parameter (Mandatory=$true)]
-        [string]$domainName
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainName
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-    try {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+  try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
-Export-ModuleMember -Function Get-VCFCertificateCSRs
+Export-ModuleMember -Function Get-VCFCertificateCSR
 
 Function Request-VCFCertificateCSRs {
 <#
