@@ -9,7 +9,7 @@ Get-VCFCertificate -domainName <string>
 ```
 
 ### Description
-Get latest generated certificate(s) in a domain
+The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
 
 ### Examples
 #### Example 1
