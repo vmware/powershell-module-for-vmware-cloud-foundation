@@ -1,32 +1,32 @@
-# Get-VCFnsxvManager
+# Get-VCFNsxvManager
 
 ### Synopsis
 Gets a list of NSX-v Managers
 
 ### Syntax
 ```
-Get-VCFnsxvManager -id <string>
+Get-VCFNsxvManager -id <string>
 ```
 
 ### Description
-Retrieves a list of NSX-v Managers managed by the connected SDDC Manager
+The Get-VCFNsxvManager cmdlet retrieves a list of NSX-v Managers managed by the connected SDDC Manager
 
 ### Examples
 #### Example 1
 ```
-Get-VCFnsxvManager
+Get-VCFNsxvManager
 ```
 This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager
 
 #### Example 2
 ```
-Get-VCFnsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+Get-VCFNsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
 ```
 This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
 
 #### Example 3
 ```
-Get-VCFnsxvManager | select fqdn
+Get-VCFNsxvManager | select fqdn
 ```
 This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager but only return the fqdn
 

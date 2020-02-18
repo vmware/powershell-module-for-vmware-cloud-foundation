@@ -2389,6 +2389,7 @@ Function Get-VCFvCenter {
 
   Param (
 		[Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
       [string]$id
   )
 
@@ -2445,6 +2446,7 @@ Function Get-VCFPSC {
 
   Param (
     [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
       [string]$id
   )
 
@@ -2477,60 +2479,61 @@ Function Get-VCFPSC {
 }
 Export-ModuleMember -Function Get-VCFPSC
 
-Function Get-VCFnsxvManager {
+Function Get-VCFNsxvManager {
 <#
-    .SYNOPSIS
-    Gets a list of NSX-v Managers
+  .SYNOPSIS
+  Gets a list of NSX-v Managers
 
-    .DESCRIPTION
-     Retrieves a list of NSX-v Managers managed by the connected SDDC Manager
+  .DESCRIPTION
+  The Get-VCFNsxvManager cmdlet retrieves a list of NSX-v Managers managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFnsxvManager
-    This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFNsxvManager
+  This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFnsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFNsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+  This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFnsxvManager | select fqdn
-    This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager but only return the fqdn
+  .EXAMPLE
+  PS C:\> Get-VCFNsxvManager | select fqdn
+  This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager but only return the fqdn
 #>
 
-	Param (
-		[Parameter (Mandatory=$false)]
-        [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    # Check the version of SDDC Manager
-    CheckVCFVersion
+  # Check the version of SDDC Manager
+  CheckVCFVersion
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
 
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/nsx-managers/$id"
+  }
+  else {
+    $uri = "https://$sddcManager/v1/nsx-managers"
+  }
+  try {
     if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/nsx-managers/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
-    else{
-        $uri = "https://$sddcManager/v1/nsx-managers"
+    else {
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-    try {
-        if ($PsBoundParameters.ContainsKey("id")) {
-	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	        $response
-        }
-        else{
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response.elements
-        }
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
-Export-ModuleMember -Function Get-VCFnsxvManager
+Export-ModuleMember -Function Get-VCFNsxvManager
 
 Function Get-VCFnsxtCluster {
 <#
