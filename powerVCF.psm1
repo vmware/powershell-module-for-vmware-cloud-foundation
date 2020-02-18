@@ -2422,25 +2422,25 @@ Function Get-VCFvCenter {
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
-Function Get-VCFPSC {
+Function Get-VCFPsc {
 <#
   .SYNOPSIS
   Gets a list of Platform Services Controller (PSC) Servers
 
   .DESCRIPTION
-  The Get-VCFPSC cmdlet retrieves a list of Platform Services Controllers (PSC)s managed by
+  The Get-VCFPsc cmdlet retrieves a list of Platform Services Controllers (PSC)s managed by
   the connected SDDC Manager
 
   .EXAMPLE
-  PS C:\> Get-VCFPSC
+  PS C:\> Get-VCFPsc
   This example shows how to get the list of the PSC servers managed by the connected SDDC Manager
 
   .EXAMPLE
-  PS C:\> Get-VCFPSC -id 23832dec-e156-4d2d-89bf-37fb0a47aab5
+  PS C:\> Get-VCFPsc -id 23832dec-e156-4d2d-89bf-37fb0a47aab5
   This example shows how to return the details for a specific PSC server managed by the connected SDDC Manager
 
   .EXAMPLE
-  PS C:\> Get-VCFPSC | select fqdn
+  PS C:\> Get-VCFPsc | select fqdn
   This example shows how to get the list of PSC Servers managed by the connected SDDC Manager but only return the fqdn
 #>
 
@@ -2477,7 +2477,7 @@ Function Get-VCFPSC {
     ResponseExeception
   }
 }
-Export-ModuleMember -Function Get-VCFPSC
+Export-ModuleMember -Function Get-VCFPsc
 
 Function Get-VCFNsxvManager {
 <#
