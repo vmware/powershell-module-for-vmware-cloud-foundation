@@ -2159,45 +2159,45 @@ Export-ModuleMember -Function Request-VCFCertificate
 
 Function Set-VCFCertificate {
 <#
-    .SYNOPSIS
-    Replace certificate(s) for the selected resource(s) in a domain
+  .SYNOPSIS
+  Replace certificate(s) for the selected resource(s) in a domain
 
-    .DESCRIPTION
-    Replace certificate(s) for the selected resource(s) in a domain
+  .DESCRIPTION
+  The Set-VCFCertificate cmdlet replaces certificate(s) for the selected resource(s) in a domain
 
-    .EXAMPLE
-    PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
-
-    This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
-    for resources within the domain called MGMT
+  .EXAMPLE
+  PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
+  This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
+  for resources within the domain called MGMT
 #>
 
-	Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json,
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json,
 		[Parameter (Mandatory=$true)]
-            [string]$domainName
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$domainName
+  )
 
-    if (!(Test-Path $json)) {
-        throw "JSON File Not Found"
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content -Raw $json)
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+    try {
+      $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      $response
     }
-    else {
-        # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-        try {
-            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-            $response
-        }
-        catch {
-            # Call the function ResponseExeception which handles execption messages
-            ResponseExeception
-        }
+    catch {
+      # Call the function ResponseExeception which handles execption messages
+      ResponseExeception
     }
+  }
 }
 Export-ModuleMember -Function Set-VCFCertificate
 
