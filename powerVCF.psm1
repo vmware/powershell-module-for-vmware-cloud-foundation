@@ -1188,44 +1188,44 @@ Export-ModuleMember -Function Get-VCFLicenseKey
 
 Function New-VCFLicenseKey {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and adds a new License Key.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and adds a new License Key.
 
-    .DESCRIPTION
-    The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
+  .DESCRIPTION
+  The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
 
-    .EXAMPLE
-    PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
-    This example shows how to add a new License Key
+  .EXAMPLE
+  PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
+  This example shows how to add a new License Key
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+  param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Read the createNetworkPool json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/license-keys"
-        try {
-			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Read the createNetworkPool json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content $json)
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/license-keys"
+    try {
+      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			# This API does not return a response body. Sending GET to validate the License Key creation was successful
 			$license = $ConfigJson | ConvertFrom-Json
 			$licenseKey = $license.key
 			Get-VCFLicenseKey -key $licenseKey
-        }
-        catch {
-            #Get response from the exception
-            ResponseExeception
-        }
     }
+    catch {
+      #Get response from the exception
+      ResponseExeception
+    }
+  }
 }
 Export-ModuleMember -Function New-VCFLicenseKey
 
