@@ -9,7 +9,7 @@ Get-VCFPSC -id <string>
 ```
 
 ### Description
-Retrieves a list of Platform Services Controllers (PSC)s managed by the connected SDDC Manager
+The Get-VCFPSC cmdlet retrieves a list of Platform Services Controllers (PSC)s managed by the connected SDDC Manager
 
 ### Examples
 #### Example 1
