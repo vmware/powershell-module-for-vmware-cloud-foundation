@@ -3,7 +3,7 @@
 ### Synopsis
 Connects to the specified SDDC Manager & retrieves a list of credentials.
 
-### Syntaxx
+### Syntax
 ```
 Get-VCFCredential -privilegedUsername <string> -privilegedPassword <string> -resourceName <string>
 ```

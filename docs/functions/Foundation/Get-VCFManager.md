@@ -5,7 +5,7 @@ Get a list of SDDC Managers
 
 ### Syntax
 ```
-Get-VCFManager -id <string> 
+Get-VCFManager -id <string>
 ```
 
 ### Description
@@ -26,7 +26,7 @@ This example shows how to return the details for a specific SDDC Manager based o
 
 #### Example 3
 ```
-Get-VCFManager -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
+Get-VCFManager -domainId 1a6291f2-ed54-4088-910f-ead57b9f9902
 ```
 This example shows how to return the details for a specific SDDC Manager based on a domain ID  
 
