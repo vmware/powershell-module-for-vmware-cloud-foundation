@@ -2027,50 +2027,51 @@ Function Get-VCFCertificateCSR {
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
 
-Function Request-VCFCertificateCSRs {
+Function Request-VCFCertificateCSR {
 <#
-    .SYNOPSIS
-    Generate CSR(s)
+  .SYNOPSIS
+  Generate CSR(s)
 
-    .DESCRIPTION
-    Generate CSR(s) for the selected resource(s) in the domain
-    - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
-      VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+  .DESCRIPTION
+  The Request-VCFCertificateCSR generates CSR(s) for the selected resource(s) in the domain
+  - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
+    VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
 
-    .EXAMPLE
-    PS C:\> Request-VCFCertificateCSRs -domainName MGMT -json .\requestCsrSpec.json
-    This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
+  .EXAMPLE
+  PS C:\> Request-VCFCertificateCSR -domainName MGMT -json .\requestCsrSpec.json
+  This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
     the domain called MGMT
 #>
 
-	Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json,
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json,
 		[Parameter (Mandatory=$true)]
-            [string]$domainName
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$domainName
+  )
 
-    if (!(Test-Path $json)) {
-        throw "JSON File Not Found"
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content -Raw $json)
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+    try {
+      $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      $response
     }
-    else {
-        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-        try {
-            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-            $response
-        }
-        catch {
-            # Call the function ResponseExeception which handles execption messages
-            ResponseExeception
-        }
+    catch {
+      # Call the function ResponseExeception which handles execption messages
+      ResponseExeception
     }
+  }
 }
-Export-ModuleMember -Function Request-VCFCertificateCSRs
+Export-ModuleMember -Function Request-VCFCertificateCSR
 
 Function Get-VCFCertificate {
 <#
