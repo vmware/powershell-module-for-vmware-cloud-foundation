@@ -2318,48 +2318,49 @@ Export-ModuleMember -Function Get-VCFManager
 
 Function Get-VCFService {
 <#
-    .SYNOPSIS
-    Gets a list of running VCF Services
+  .SYNOPSIS
+  Gets a list of running VCF Services
 
-    .DESCRIPTION
-     Retrieves the list of services running on the connected SDDC Manager
+  .DESCRIPTION
+  The Get-VCFService cmdlet retrieves the list of services running on the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFService
-    This example shows how to get the list of services running on the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFService
+  This example shows how to get the list of services running on the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
-    This example shows how to return the details for a specific service running on the connected SDDC Manager based on the ID
+  .EXAMPLE
+  PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
+  This example shows how to return the details for a specific service running on the connected SDDC Manager based on the ID
 #>
 
-	Param (
-		[Parameter (Mandatory=$false)]
-        [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
 
-    if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/vcf-services/$id"
-    }
-    else{
-        $uri = "https://$sddcManager/v1/vcf-services"
-    }
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/vcf-services/$id"
+  }
+  else {
+    $uri = "https://$sddcManager/v1/vcf-services"
+  }
     try {
-        if ($PsBoundParameters.ContainsKey("id")) {
-	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	        $response
-        }
-        else{
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response.elements
-        }
+      if ($PsBoundParameters.ContainsKey("id")) {
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+      }
+      else{
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+      }
     }
     catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
+      # Call the function ResponseExeception which handles execption messages
+      ResponseExeception
     }
 }
 Export-ModuleMember -Function Get-VCFService
