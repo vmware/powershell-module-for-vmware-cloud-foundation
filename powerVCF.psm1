@@ -1118,54 +1118,54 @@ Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
 Function Get-VCFLicenseKey {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of License keys.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and retrieves a list of License keys
 
-    .DESCRIPTION
-    The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys.
+  .DESCRIPTION
+  The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys
 
-    .EXAMPLE
-    PS C:\> Get-VCFLicenseKey
-    This example shows how to get a list of all License keys
+  .EXAMPLE
+  PS C:\> Get-VCFLicenseKey
+  This example shows how to get a list of all License keys
+
+  .EXAMPLE
+  PS C:\> Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+  This example shows how to get a specified License key
+
+  .EXAMPLE
+  PS C:\> Get-VCFLicenseKey -productType "VCENTER,VSAN"
+  This example shows how to get a License Key by product type
+	Supported Product Types: SDDC_MANAGER, VCENTER, NSXV, VSAN, ESXI, VRA, VROPS, NSXT
 
 	.EXAMPLE
-    PS C:\> Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-    This example shows how to get a specified License key
-
-	.EXAMPLE
-    PS C:\> Get-VCFLicenseKey -productType "VCENTER,VSAN"
-    This example shows how to get a License Key by product type
-	Supported Product Types: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT
-
-	.EXAMPLE
-    PS C:\> Get-VCFLicenseKey -status EXPIRED
-    This example shows how to get a License by status
-	Supported Status Types: EXPIRED,ACTIVE,NEVER_EXPIRES
+  PS C:\> Get-VCFLicenseKey -status EXPIRED
+  This example shows how to get a License by status
+	Supported Status Types: EXPIRED, ACTIVE, NEVER_EXPIRES
 #>
 
-	param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$key,
+  param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$key,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$productType,
+      [ValidateNotNullOrEmpty()]
+      [string]$productType,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$status
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$status
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    try {
-        if ($PsBoundParameters.ContainsKey("key")) {
-			$uri = "https://$sddcManager/v1/license-keys/$key"
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response
-		}
-		if ($PsBoundParameters.ContainsKey("productType")) {
-			$uri = "https://$sddcManager/v1/license-keys?productType=$productType"
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  try {
+    if ($PsBoundParameters.ContainsKey("key")) {
+      $uri = "https://$sddcManager/v1/license-keys/$key"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if ($PsBoundParameters.ContainsKey("productType")) {
+      $uri = "https://$sddcManager/v1/license-keys?productType=$productType"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 		}
 		if ($PsBoundParameters.ContainsKey("status")) {
@@ -1173,17 +1173,16 @@ Function Get-VCFLicenseKey {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 		}
-        if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status"))) {
-			$uri = "https://$sddcManager/v1/license-keys"
+    if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status"))) {
+      $uri = "https://$sddcManager/v1/license-keys"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 		}
-
-    }
-    catch {
-        #Get response from the exception
-        ResponseExeception
-    }
+  }
+  catch {
+    #Get response from the exception
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
 
