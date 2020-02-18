@@ -1231,36 +1231,35 @@ Export-ModuleMember -Function New-VCFLicenseKey
 
 Function Remove-VCFLicenseKey {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and deletes a license key.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and deletes a license key.
 
-    .DESCRIPTION
-    The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager
-	  and deletes a License Key. A license Key can only be removed if it is not in use.
+  .DESCRIPTION
+  The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager
+  and deletes a License Key. A license Key can only be removed if it is not in use.
 
-    .EXAMPLE
-    PS C:\> Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-    This example shows how to delete a License Key
+  .EXAMPLE
+  PS C:\> Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+  This example shows how to delete a License Key
 #>
 
 	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$key
-    )
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$key
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/license-keys/$key"
-    try {
-            # This API does not return a response
-			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    }
-    catch {
-        #Get response from the exception
-        ResponseExeception
-    }
-
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/license-keys/$key"
+  try {
+    # This API does not return a response
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+  }
+  catch {
+    #Get response from the exception
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
 
