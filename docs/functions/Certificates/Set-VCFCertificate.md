@@ -9,7 +9,7 @@ Request-VCFCertificate -domainName <string> -json <path to json file>
 ```
 
 ### Description
-Replace certificate(s) for the selected resource(s) in a domain
+The Set-VCFCertificate cmdlet replaces certificate(s) for the selected resource(s) in a domain
 
 ### Examples
 #### Example 1

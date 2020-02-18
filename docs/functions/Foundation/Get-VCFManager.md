@@ -9,7 +9,7 @@ Get-VCFManager -id <string>
 ```
 
 ### Description
-Retrieves the details for SDDC Manager
+The Get-VCFManager cmdlet retrieves the SDDC Manager details
 
 ### Examples
 #### Example 1

@@ -9,7 +9,7 @@ Get-VCFService -id <string>
 ```
 
 ### Description
-Retrieves the list of services running on the connected SDDC Manager
+The Get-VCFService cmdlet retrieves the list of services running on the connected SDDC Manager
 
 ### Examples
 #### Example 1
