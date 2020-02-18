@@ -2270,49 +2270,50 @@ Export-ModuleMember -Function Set-VCFDepotCredentials
 
 Function Get-VCFManager {
 <#
-    .SYNOPSIS
-    Get a list of SDDC Managers
+  .SYNOPSIS
+  Get a list of SDDC Managers
 
-    .DESCRIPTION
-     Retrieves the details for SDDC Manager
+  .DESCRIPTION
+  The Get-VCFManager cmdlet retrieves the SDDC Manager details
 
-    .EXAMPLE
-    PS C:\> Get-VCFManager
-    This example shows how to retrieve a list of SDDC Managers
+  .EXAMPLE
+  PS C:\> Get-VCFManager
+  This example shows how to retrieve a list of SDDC Managers
 
-    .EXAMPLE
-    PS C:\> Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
-    This example shows how to return the details for a specific SDDC Manager based on the ID
+  .EXAMPLE
+  PS C:\> Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
+  This example shows how to return the details for a specific SDDC Manager based on the ID
 #>
 
-	Param (
-		[Parameter (Mandatory=$false)]
-        [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
 
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/sddc-managers/$id"
+  }
+  else {
+    $uri = "https://$sddcManager/v1/sddc-managers"
+  }
+  try {
     if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/sddc-managers/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
-    else{
-        $uri = "https://$sddcManager/v1/sddc-managers"
+    else {
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-    try {
-        if ($PsBoundParameters.ContainsKey("id")) {
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
-        }
-        else{
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	        $response.elements
-        }
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFManager
 
