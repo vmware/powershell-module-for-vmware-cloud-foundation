@@ -2361,27 +2361,24 @@ Function Get-VCFService {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/vcf-services/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/vcf-services"
-  }
-    try {
-      if ($PsBoundParameters.ContainsKey("id")) {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-      }
-      else{
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
-      }
+  try {
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/vcf-services/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response
     }
-    catch {
-      # Call the function ResponseExeception which handles execption messages
-      ResponseExeception
+    if (-not $PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/vcf-services"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
     }
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFService
 
