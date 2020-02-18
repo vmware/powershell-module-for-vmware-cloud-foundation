@@ -2368,56 +2368,56 @@ Export-ModuleMember -Function Get-VCFService
 
 Function Get-VCFvCenter {
 <#
-    .SYNOPSIS
-    Gets a list of vCenter Servers
+  .SYNOPSIS
+  Gets a list of vCenter Servers
 
-    .DESCRIPTION
-    Retrieves a list of vCenter Servers managed by the connected SDDC Manager
+  .DESCRIPTION
+  Retrieves a list of vCenter Servers managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFvCenter
+  This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
+  .EXAMPLE
+  PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+  This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter | select fqdn
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
+  .EXAMPLE
+  PS C:\> Get-VCFvCenter | select fqdn
+  This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
 #>
 
-	Param (
+  Param (
 		[Parameter (Mandatory=$false)]
-        [string]$id
-    )
+      [string]$id
+  )
 
-    # Check the version of SDDC Manager
-    CheckVCFVersion
+  # Check the version of SDDC Manager
+  CheckVCFVersion
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
 
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/vcenters/$id"
+  }
+  else {
+    $uri = "https://$sddcManager/v1/vcenters"
+  }
+  try {
     if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/vcenters/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
     else{
-        $uri = "https://$sddcManager/v1/vcenters"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-    try {
-        if ($PsBoundParameters.ContainsKey("id")) {
-	        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	        $response
-        }
-        else{
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-		    $response.elements
-        }
-    }
-    catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
-    }
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
