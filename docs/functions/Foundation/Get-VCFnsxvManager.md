@@ -51,6 +51,19 @@ Position: Named
 Default value: None
 ```
 
+#### -domainId
+- ID of a specific domain
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+```
+
 ### Notes
 
 ### Related Links
