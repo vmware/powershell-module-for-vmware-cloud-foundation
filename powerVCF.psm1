@@ -414,6 +414,10 @@ Function Get-VCFWorkloadDomain {
 	.EXAMPLE
     PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
     This example shows how to get a Workload Domain by id
+
+    .EXAMPLE
+    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints
+    This example shows how to get endpoints of a Workload Domain by its id
 #>
 
 	param (
@@ -422,7 +426,11 @@ Function Get-VCFWorkloadDomain {
             [string]$name,
 		[Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$id
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$endpoints
+
     )
 
     $headers = @{"Accept" = "application/json"}
@@ -437,6 +445,10 @@ Function Get-VCFWorkloadDomain {
     if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
         $uri = "https://$sddcManager/v1/domains"
     }
+    if ( $PsBoundParameters.ContainsKey("id") -and ( $PsBoundParameters.ContainsKey("endpoints"))) {
+        $uri = "https://$sddcManager/v1/domains/$id/endpoints"
+    }
+
     try {
         if ($PsBoundParameters.ContainsKey("name")) {
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
