@@ -2397,6 +2397,12 @@ Function Get-VCFvCenter {
   .EXAMPLE
   PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
   This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
+  using its id
+
+  .EXAMPLE
+  PS C:\> Get-VCFvCenter -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
+  This example shows how to return the details off all vCenter Server managed by the connected SDDC Manager using
+  its domainId
 
   .EXAMPLE
   PS C:\> Get-VCFvCenter | select fqdn
@@ -2406,7 +2412,10 @@ Function Get-VCFvCenter {
   Param (
 		[Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
-      [string]$id
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
   )
 
   # Check the version of SDDC Manager
@@ -2414,20 +2423,22 @@ Function Get-VCFvCenter {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/vcenters/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/vcenters"
-  }
   try {
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/vcenters"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("id")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $uri = "https://$sddcManager/v1/vcenters/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response
     }
-    else{
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response.elements
     }
   }
