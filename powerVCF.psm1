@@ -190,7 +190,7 @@ Function Get-VCFHost {
   }
   catch {
     #Get response from the exception
-    ResponseExeception
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFHost
@@ -247,7 +247,7 @@ Function Commission-VCFHost {
         }
         Catch {
           #Get response from the exception
-          ResponseExeception
+          ResponseException
         }
       }
       else {
@@ -298,7 +298,7 @@ Function Decommission-VCFHost {
         }
         catch {
             #Get response from the exception
-            ResponseExeception
+            ResponseException
         }
     }
 }
@@ -375,7 +375,7 @@ Function Reset-VCFHost {
             $vmScript
         }
         Catch {
-            ResponseExeception
+            ResponseException
         }
 }
 Export-ModuleMember -Function Reset-VCFHost
@@ -458,7 +458,7 @@ Function Get-VCFWorkloadDomain {
 	}
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFWorkloadDomain
@@ -509,7 +509,7 @@ Function New-VCFWorkloadDomain {
 					}
 				catch {
 					#Get response from the exception
-					ResponseExeception
+					ResponseException
 					}
 				}
             else {
@@ -553,7 +553,7 @@ Function Set-VCFWorkloadDomain {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Set-VCFWorkloadDomain
@@ -590,7 +590,7 @@ Function Remove-VCFWorkloadDomain {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
@@ -656,7 +656,7 @@ Function Get-VCFCluster {
 	}
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFCluster
@@ -704,7 +704,7 @@ Function New-VCFCluster {
 				}
 				catch {
 					#Get response from the exception
-					ResponseExeception
+					ResponseException
 				}
 			}
 			else {
@@ -787,7 +787,7 @@ Function Set-VCFCluster {
 					}
 					Catch {
 						#Get response from the exception
-						ResponseExeception
+						ResponseException
 					}
 				}
 				else {
@@ -804,7 +804,7 @@ Function Set-VCFCluster {
 		}
 		catch {
 			#Get response from the exception
-			ResponseExeception
+			ResponseException
 		}
 }
 Export-ModuleMember -Function Set-VCFCluster
@@ -840,7 +840,7 @@ Function Remove-VCFCluster {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Remove-VCFCluster
@@ -901,7 +901,7 @@ Function Get-VCFNetworkPool {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkPool
@@ -944,7 +944,7 @@ Function New-VCFNetworkPool {
         }
         catch {
             #Get response from the exception
-            ResponseExeception
+            ResponseException
         }
     }
 }
@@ -978,7 +978,7 @@ Function Remove-VCFNetworkPool {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
@@ -1030,7 +1030,7 @@ Function Get-VCFNetworkIPPool {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkIPPool
@@ -1074,7 +1074,7 @@ Function Add-VCFNetworkIPPool {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Add-VCFNetworkIPPool
@@ -1118,7 +1118,7 @@ Function Remove-VCFNetworkIPPool {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
@@ -1193,7 +1193,7 @@ Function Get-VCFLicenseKey {
   }
   catch {
     #Get response from the exception
-    ResponseExeception
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
@@ -1235,7 +1235,7 @@ Function New-VCFLicenseKey {
     }
     catch {
       #Get response from the exception
-      ResponseExeception
+      ResponseException
     }
   }
 }
@@ -1270,7 +1270,7 @@ Function Remove-VCFLicenseKey {
   }
   catch {
     #Get response from the exception
-    ResponseExeception
+    ResponseException
   }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
@@ -1321,7 +1321,7 @@ Function Get-VCFTask {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFTask
@@ -1354,7 +1354,7 @@ Function Retry-VCFTask {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Retry-VCFTask
@@ -1432,7 +1432,7 @@ Function Get-VCFCredential {
     }
     Catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFCredential
@@ -1481,7 +1481,7 @@ Function Set-VCFCredential {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Set-VCFCredential
@@ -1516,7 +1516,7 @@ Function Validate-CommissionHostSpec {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 
@@ -1546,7 +1546,7 @@ Function Validate-WorkloadDomainSpec {
 	}
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 
@@ -1575,7 +1575,7 @@ Function Validate-VCFClusterSpec {
 	}
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 return $response
 }
@@ -1607,7 +1607,7 @@ Function Validate-VCFUpdateClusterSpec {
 	}
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 return $response
 }
@@ -1638,8 +1638,8 @@ Function Get-VCFCeip {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFCeip
@@ -1685,8 +1685,8 @@ Function Set-VCFCeip {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Set-VCFCeip
@@ -1721,8 +1721,8 @@ Function Get-VCFBackupConfiguration {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
@@ -1773,8 +1773,8 @@ Function Set-VCFBackupConfiguration {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
@@ -1808,8 +1808,8 @@ Function Start-VCFBackup {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Start-VCFBackup
@@ -1873,8 +1873,8 @@ Function Get-VCFBundle {
     }
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFBundle
@@ -1907,8 +1907,8 @@ Function Request-VCFBundle {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Request-VCFBundle
@@ -1947,8 +1947,8 @@ Function Get-VCFCertificateAuthConfiguration {
     $response.elements
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
@@ -1995,8 +1995,8 @@ Function Set-VCFMicrosoftCA {
     $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
@@ -2033,8 +2033,8 @@ Function Get-VCFCertificateCSR {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
@@ -2078,8 +2078,8 @@ Function Request-VCFCertificateCSR {
       $response
     }
     catch {
-      # Call the function ResponseExeception which handles execption messages
-      ResponseExeception
+      # Call the function ResponseException which handles execption messages
+      ResponseException
     }
   }
 }
@@ -2116,8 +2116,8 @@ Function Get-VCFCertificate {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFCertificate
@@ -2162,8 +2162,8 @@ Function Request-VCFCertificate {
       $response
     }
     catch {
-      # Call the function ResponseExeception which handles execption messages
-      ResponseExeception
+      # Call the function ResponseException which handles execption messages
+      ResponseException
     }
   }
 }
@@ -2206,8 +2206,8 @@ Function Set-VCFCertificate {
       $response
     }
     catch {
-      # Call the function ResponseExeception which handles execption messages
-      ResponseExeception
+      # Call the function ResponseException which handles execption messages
+      ResponseException
     }
   }
 }
@@ -2239,8 +2239,8 @@ Function Get-VCFDepotCredentials {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFDepotCredentials
@@ -2279,8 +2279,8 @@ Function Set-VCFDepotCredentials {
     $response
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Set-VCFDepotCredentials
@@ -2342,8 +2342,8 @@ Function Get-VCFManager {
     }
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFManager
@@ -2388,8 +2388,8 @@ Function Get-VCFService {
     }
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFService
@@ -2455,8 +2455,8 @@ Function Get-VCFvCenter {
     }
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFvCenter
@@ -2523,8 +2523,8 @@ Function Get-VCFPsc {
     }
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFPsc
@@ -2589,8 +2589,8 @@ Function Get-VCFNsxvManager {
     }
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFNsxvManager
@@ -2656,8 +2656,8 @@ Function Get-VCFNsxtCluster {
     }
   }
   catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
   }
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
@@ -2687,8 +2687,8 @@ Function Get-VCFvRLI {
         $response
     }
     catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
+        # Call the function ResponseException which handles execption messages
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFvRLI
@@ -2779,7 +2779,7 @@ Function Invoke-VCFCommand {
                 $sessionSSH = New-SSHSession -Computer $sddcManager -Credential $vcfCred -AcceptKey
             }
             Catch {
-                ResponseExeception
+                ResponseException
             }
 
             if ($sessionSSH.Connected -eq "True") {
@@ -2835,8 +2835,8 @@ Function Get-VCFvRSLCM {
         $response
     }
     catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
+        # Call the function ResponseException which handles execption messages
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
@@ -2862,8 +2862,8 @@ Function Get-VCFvRSLCMEnvironment {
         $response
     }
     catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
+        # Call the function ResponseException which handles execption messages
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
@@ -2915,8 +2915,8 @@ Function Get-VCFvROPs {
         $response
     }
     catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
+        # Call the function ResponseException which handles execption messages
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFvROPs
@@ -2950,8 +2950,8 @@ try {
     $response
     }
 catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
     }
 }
 
@@ -2997,8 +2997,8 @@ try {
     }
 }
 catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
     }
 }
 
@@ -3033,8 +3033,8 @@ try {
     }
 }
 catch {
-    # Call the function ResponseExeception which handles execption messages
-    ResponseExeception
+    # Call the function ResponseException which handles execption messages
+    ResponseException
     }
 }
 Export-ModuleMember -function Get-VCFFederationMembers
@@ -3085,7 +3085,7 @@ param (
         }
         catch {
             #Get response from the exception
-            ResponseExeception
+            ResponseException
             }
         }
 }
@@ -3137,8 +3137,8 @@ Function Remove-VCFFederation {
         $response
         }
     catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
+        # Call the function ResponseException which handles execption messages
+        ResponseException
         }
     }
 
@@ -3148,7 +3148,7 @@ Function Remove-VCFFederation {
 
 ######### Start Utility Functions (not exported) ##########
 
-Function ResponseExeception {
+Function ResponseException {
     #Get response from the exception
     $response = $_.exception.response
     if ($response) {
@@ -3177,8 +3177,6 @@ Function CheckVCFVersion {
     break
   }
 }
-
-
 
 Function Resolve-PSModule {
     <#
