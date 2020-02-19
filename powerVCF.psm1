@@ -1370,6 +1370,65 @@ Export-ModuleMember -Function Retry-VCFTask
 
 #### End Task Operations #####
 
+######### Start Credential Task Operations ##########
+
+Function Get-VCFCredentialTask {
+<#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
+
+    .DESCRIPTION
+    The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
+    credential tasks in reverse chronological order.
+
+    .EXAMPLE
+    PS C:\> Get-VCFCredentialTask 
+    This example shows how to get a list of all credentials tasks
+
+    .EXAMPLE
+    PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3
+    This example shows how to get the credential tasks for a specific task id
+
+    .EXAMPLE
+    PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
+    This example shows how to get resource credentials for a credential task id
+#>
+	param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+		[Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$resourceCredentials
+    )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        if ($PsBoundParameters.ContainsKey("resourceCredentials")) {
+            $uri = "https://$sddcManager/v1/credentials/tasks/$id/resource-credentials"
+        } else {
+            $uri = "https://$sddcManager/v1/credentials/tasks/$id"
+        }
+    }
+    else {
+        $uri = "https://$sddcManager/v1/credentials/tasks"
+    }
+
+    try {
+	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	    $response
+    }
+    catch {
+        #Get response from the exception
+        ResponseExeception
+    }
+}
+Export-ModuleMember -Function Get-VCFCredentialTask
+
+######### End Credential Task Operations ##########
+
 
 ######### Start Credential Operations ##########
 
@@ -1496,6 +1555,119 @@ Function Set-VCFCredential {
 Export-ModuleMember -Function Set-VCFCredential
 
 ######### End Credential Operations ##########
+
+######### Start Credential Failed Task Cancel Operation ##########
+
+Function Cancel-VCFCredentialTask {
+
+<#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
+
+    .DESCRIPTION
+	The Cancel-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
+
+    .EXAMPLE
+	PS C:\> Cancel-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+    This example shows how to cancel a failed rotate or update password task.
+#>
+
+	param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/credentials/tasks/$id"
+    } else  {
+        Throw "task id to be cancelled is not provided"
+    }
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    try {
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers 
+        $response
+    }
+    catch {
+        #Get response from the exception
+        ResponseExeception
+    }
+
+}
+
+Export-ModuleMember -Function Cancel-VCFCredentialTask
+
+######### End Credential Failed Task Cancel Operation ##########
+
+######### Start Retry Credential Failed Task Rotate/Update operation ##########
+
+Function Retry-VCFCredentialTask {
+
+<#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
+
+    .DESCRIPTION
+	The Retry-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
+
+    .EXAMPLE
+	PS C:\> Retry-VCFCredentialTask -id -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
+    This example shows how to update passwords of a resource type using a json spec
+
+    .EXAMPLE
+	PS C:\> Retry-VCFCredentialTask -id -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\rotateCredentialSpec.json
+    This example shows how to rotate passwords of a resource type using a json spec
+#>
+
+	param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$privilegedUsername,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$privilegedPassword,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    if ($PsBoundParameters.ContainsKey("json")) {
+        if (!(Test-Path $json)) {
+            Throw "JSON File Not Found"
+        }
+        else {
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content $json)
+        }
+    }
+    if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/credentials/tasks/$id"
+    } else {
+            Throw "task id not provided"
+    }
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $headers.Add("privileged-username", "$privilegedUsername")
+    $headers.Add("privileged-password", "$privilegedPassword")
+    try {
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $response
+    }
+    catch {
+        #Get response from the exception
+        ResponseExeception
+    }
+
+}
+
+Export-ModuleMember -Function Retry-VCFCredentialTask
+
+######### End Retry Credential Failed Task Rotate/Update operation ##########
 
 
 ######## Start Validation Functions ########
@@ -1921,6 +2093,40 @@ Export-ModuleMember -Function Request-VCFBundle
 
 ######### End Bundle Operations ##########
 
+######### Start Get Upgradable Operations ##########
+
+Function Get-VCFUpgradables {
+
+<#
+    .SYNOPSIS
+    Retrieves list of upgradables in the system
+
+    .DESCRIPTION
+    Retrieves list of upgradables in the system
+
+    .EXAMPLE
+    PS C:\> Get-VCFUpgradables
+    This example shows how to retrieve the list of upgradables in the system 
+#>
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    $uri = "https://$sddcManager/v1/system/upgradables"
+
+    try {
+            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers 
+            $response
+    }
+    catch {
+        # Call the function ResponseExeception which handles execption messages
+        ResponseExeception
+    }
+}
+
+######### End Get Upgradable Operations ##########
+
+Export-ModuleMember -Function Get-VCFUpgradables 
 
 ######### Start Certificate Configuration Operations ##########
 
