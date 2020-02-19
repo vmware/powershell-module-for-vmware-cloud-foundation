@@ -2606,8 +2606,8 @@ Function Get-VCFNsxtCluster {
   using the domain ID
 
   .EXAMPLE
-  PS C:\> Get-VCFNsxtCluster | select fqdn
-  This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the fqdn
+  PS C:\> Get-VCFNsxtCluster | select vipfqdn
+  This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
 #>
 
   Param (
@@ -2640,7 +2640,7 @@ Function Get-VCFNsxtCluster {
     if ($PsBoundParameters.ContainsKey("domainId")) {
       $uri = "https://$sddcManager/v1/nsxt-clusters/?domain=$domainId"
       $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
-      $response
+      $response.elements
     }
   }
   catch {
@@ -3135,6 +3135,7 @@ Function Remove-VCFFederation {
 ######### End Federation Management ##########
 
 ######### Start Utility Functions (not exported) ##########
+
 Function ResponseExeception {
     #Get response from the exception
     $response = $_.exception.response
