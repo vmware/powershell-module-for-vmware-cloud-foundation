@@ -22,7 +22,7 @@ This example shows how to connect to SDDC Manager
 ### Parameters
 
 #### -fqdn
-VCF SDDC Manager to connect to
+The fully qualified domain name of the SDDC Manager to connect to
 
 ```yaml
 Type: String

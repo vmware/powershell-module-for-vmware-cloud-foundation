@@ -2305,30 +2305,39 @@ Function Get-VCFManager {
   .EXAMPLE
   PS C:\> Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
   This example shows how to return the details for a specific SDDC Manager based on the ID
+
+  .EXAMPLE
+  PS C:\> Get-VCFManager -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
+  This example shows how to return the details for a specific SDDC Manager based on a domain ID
 #>
 
   Param (
     [Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
-      [string]$id
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
   )
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/sddc-managers/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/sddc-managers"
-  }
   try {
     if ($PsBoundParameters.ContainsKey("id")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $uri = "https://$sddcManager/v1/sddc-managers/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response
     }
-    else {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/sddc-managers"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
+    }
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/sddc-managers/?domain=$domainId"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response.elements
     }
   }
@@ -2364,27 +2373,24 @@ Function Get-VCFService {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/vcf-services/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/vcf-services"
-  }
-    try {
-      if ($PsBoundParameters.ContainsKey("id")) {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-      }
-      else{
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
-      }
+  try {
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/vcf-services/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response
     }
-    catch {
-      # Call the function ResponseExeception which handles execption messages
-      ResponseExeception
+    if (-not $PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/vcf-services"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
     }
+  }
+  catch {
+    # Call the function ResponseExeception which handles execption messages
+    ResponseExeception
+  }
 }
 Export-ModuleMember -Function Get-VCFService
 
@@ -2403,6 +2409,12 @@ Function Get-VCFvCenter {
   .EXAMPLE
   PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
   This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
+  using its id
+
+  .EXAMPLE
+  PS C:\> Get-VCFvCenter -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
+  This example shows how to return the details off all vCenter Server managed by the connected SDDC Manager using
+  its domainId
 
   .EXAMPLE
   PS C:\> Get-VCFvCenter | select fqdn
@@ -2412,7 +2424,10 @@ Function Get-VCFvCenter {
   Param (
 		[Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
-      [string]$id
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
   )
 
   # Check the version of SDDC Manager
@@ -2420,20 +2435,22 @@ Function Get-VCFvCenter {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/vcenters/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/vcenters"
-  }
   try {
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/vcenters"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("id")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $uri = "https://$sddcManager/v1/vcenters/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response
     }
-    else{
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response.elements
     }
   }
@@ -2460,6 +2477,12 @@ Function Get-VCFPsc {
   .EXAMPLE
   PS C:\> Get-VCFPsc -id 23832dec-e156-4d2d-89bf-37fb0a47aab5
   This example shows how to return the details for a specific PSC server managed by the connected SDDC Manager
+  using its id
+
+  .EXAMPLE
+  PS C:\> Get-VCFPsc -domainId 1a6291f2-ed54-4088-910f-ead57b9f9902
+  This example shows how to return the details for all PSC servers managed by the connected SDDC Manager using
+  the domain ID
 
   .EXAMPLE
   PS C:\> Get-VCFPsc | select fqdn
@@ -2469,7 +2492,10 @@ Function Get-VCFPsc {
   Param (
     [Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
-      [string]$id
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
   )
 
   # Check the version of SDDC Manager
@@ -2477,20 +2503,22 @@ Function Get-VCFPsc {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/pscs/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/pscs"
-  }
   try {
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/pscs"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("id")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $uri = "https://$sddcManager/v1/pscs/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response
     }
-    else {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/pscs/?domain=$domainId"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response.elements
     }
   }
@@ -2516,6 +2544,11 @@ Function Get-VCFNsxvManager {
   .EXAMPLE
   PS C:\> Get-VCFNsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
   This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
+  using its ID
+
+  PS C:\> Get-VCFNsxvManager -domainId 9a13bde7-bbd7-4d91-95a2-ee0189ffdaf3
+  This example shows how to return details for all NSX-v Managers managed by the connected SDDC Manager
+  using its Domain ID
 
   .EXAMPLE
   PS C:\> Get-VCFNsxvManager | select fqdn
@@ -2525,7 +2558,10 @@ Function Get-VCFNsxvManager {
   Param (
     [Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
-      [string]$id
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
   )
 
   # Check the version of SDDC Manager
@@ -2533,20 +2569,22 @@ Function Get-VCFNsxvManager {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/nsx-managers/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/nsx-managers"
-  }
   try {
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/nsx-managers"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("id")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $uri = "https://$sddcManager/v1/nsx-managers/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response
     }
-    else {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/nsx-managers/?domain=$domainId"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response.elements
     }
   }
@@ -2572,16 +2610,25 @@ Function Get-VCFNsxtCluster {
   .EXAMPLE
   PS C:\> Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
   This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
+  using the ID
 
   .EXAMPLE
-  PS C:\> Get-VCFNsxtCluster | select fqdn
-  This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the fqdn
+  PS C:\> Get-VCFNsxtCluster -domainId 9a13bde7-bbd7-4d91-95a2-ee0189ffdaf3
+  This example shows how to return the details for all NSX-T Clusters managed by the connected SDDC Manager
+  using the domain ID
+
+  .EXAMPLE
+  PS C:\> Get-VCFNsxtCluster | select vipfqdn
+  This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
 #>
 
   Param (
     [Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
-      [string]$id
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
   )
 
   # Check the version of SDDC Manager
@@ -2589,20 +2636,22 @@ Function Get-VCFNsxtCluster {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/nsxt-clusters"
-  }
   try {
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/nsxt-clusters"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("id")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response
     }
-    else {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/nsxt-clusters/?domain=$domainId"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response.elements
     }
   }
@@ -3098,6 +3147,7 @@ Function Remove-VCFFederation {
 ######### End Federation Management ##########
 
 ######### Start Utility Functions (not exported) ##########
+
 Function ResponseExeception {
     #Get response from the exception
     $response = $_.exception.response
@@ -3119,14 +3169,13 @@ Function ResponseExeception {
 
 Function CheckVCFVersion {
 
-    $vcfManager = Get-VCFManager
-
-    if ($vcfManager.version.Substring(0,3) -ne "3.9") {
-        Write-Host ""
-        Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
-        Write-Host ""
-        break
-    }
+  $vcfManager = Get-VCFManager
+  if (($vcfManager.version.Substring(0,3) -ne "3.9") -and ($vcfManager.version.Substring(0,3) -ne "4.0")) {
+    Write-Host ""
+    Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
+    Write-Host ""
+    break
+  }
 }
 
 
