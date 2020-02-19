@@ -2465,6 +2465,12 @@ Function Get-VCFPsc {
   .EXAMPLE
   PS C:\> Get-VCFPsc -id 23832dec-e156-4d2d-89bf-37fb0a47aab5
   This example shows how to return the details for a specific PSC server managed by the connected SDDC Manager
+  using its id
+
+  .EXAMPLE
+  PS C:\> Get-VCFPsc -domainId 1a6291f2-ed54-4088-910f-ead57b9f9902
+  This example shows how to return the details for all PSC servers managed by the connected SDDC Manager using
+  the domain ID
 
   .EXAMPLE
   PS C:\> Get-VCFPsc | select fqdn
@@ -2474,7 +2480,10 @@ Function Get-VCFPsc {
   Param (
     [Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
-      [string]$id
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
   )
 
   # Check the version of SDDC Manager
@@ -2482,20 +2491,22 @@ Function Get-VCFPsc {
 
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $method = "GET"
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/pscs/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/pscs"
-  }
   try {
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/pscs"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("id")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $uri = "https://$sddcManager/v1/pscs/$id"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response
     }
-    else {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/pscs/?domain=$domainId"
+      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
       $response.elements
     }
   }
