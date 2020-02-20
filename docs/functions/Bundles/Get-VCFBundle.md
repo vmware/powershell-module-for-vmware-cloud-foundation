@@ -1,7 +1,7 @@
 # Get-VCFBundle
 
 ### Synopsis
-Get all Bundles i.e uploaded bundles and also bundles available via depot access
+Get all Bundles available to SDDC Manager
 
 ### Syntax
 ```
@@ -9,14 +9,15 @@ Get-VCFBundle -id <string>
 ```
 
 ### Description
-Get all Bundles i.e uploaded bundles and also bundles available via depot access.
+The Get-VCFBundle cmdlet gets all bundles available to the SDDC Manager instance.
+i.e. Manually uploaded bundles and bundles available via depot access.
 
 ### Examples
 #### Example 1
 ```
 Get-VCFBundle
 ```
-This example gets the list of bundles and all details
+This example gets the list of bundles and all their details
 
 #### Example 2
 ```
@@ -34,7 +35,7 @@ This example gets the details of a specific bundle by its id
 ```
 Get-VCFBundle | Where {$_.description -Match "vRealize"}
 ```
-This example lists all bundles that have vRealize in the description field
+This example lists all bundles that match vRealize in the description field
 
 ### Parameters
 

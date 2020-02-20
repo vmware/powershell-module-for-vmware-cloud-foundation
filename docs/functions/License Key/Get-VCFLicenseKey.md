@@ -29,14 +29,14 @@ This example shows how to get a specified License key
 Get-VCFLicenseKey -productType "VCENTER,VSAN"
 ```
 This example shows how to get a License Key by product type
-Supported Product Types: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT
+Supported Product Types: SDDC_MANAGER, VCENTER, NSXV, VSAN, ESXI, VRA, VROPS, NSXT
 
 #### Example 4
 ```
 Get-VCFLicenseKey -status EXPIRED
 ```
 This example shows how to get a License by status
-Supported Status Types: EXPIRED,ACTIVE,NEVER_EXPIRES
+Supported Status Types: EXPIRED, ACTIVE, NEVER_EXPIRES
 
 ### Parameters
 

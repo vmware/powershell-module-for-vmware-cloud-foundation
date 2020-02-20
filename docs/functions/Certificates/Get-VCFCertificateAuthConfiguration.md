@@ -18,6 +18,13 @@ Get-VCFCertificateAuthConfiguration
 ```
 This example shows how to get the certificate authority configuration from the connected SDDC Manager
 
+#### Example 2
+```
+Get-VCFCertificateAuthConfiguration | ConvertTo-Json
+```
+This example shows how to get the certificate authority configuration from the connected SDDC Manager 
+and output to Json format
+
 ### Parameters
 
 ### Notes

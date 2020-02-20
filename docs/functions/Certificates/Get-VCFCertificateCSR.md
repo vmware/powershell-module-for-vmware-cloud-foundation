@@ -1,4 +1,4 @@
-# Get-VCFCertificateCSRs
+# Get-VCFCertificateCSR
 
 ### Synopsis
 Get available CSR(s)
@@ -9,10 +9,16 @@ Get-VCFCertificateCSRs -domainName <string>
 ```
 
 ### Description
-Gets available CSRs from SDDC Manager
+The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
 
 ### Examples
 #### Example 1
+```
+Get-VCFCertificateCSRs -domainName MGMT
+```
+This example gets a list of CSRs and displays the output
+
+#### Example 2
 ```
 Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
 ```
@@ -21,7 +27,7 @@ This example gets a list of CSRs and displays them in JSON format
 ### Parameters
 
 #### -domainName
-- Name of the Management Domain
+- Name of the Domain
 
 ```yaml
 Type: String

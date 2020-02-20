@@ -9,7 +9,8 @@ Request-VCFCertificate -domainName <string> -json <path to json file>
 ```
 
 ### Description
-Generate certificate(s) for the selected resource(s) in a domain. CA must be configured and CSR must be generated beforehand
+The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a domain.
+CA must be configured and CSR must be generated beforehand
 ..* Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
 
 ### Examples
