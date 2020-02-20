@@ -1413,7 +1413,7 @@ Function Get-VCFCredentialTask {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
@@ -1582,7 +1582,7 @@ Function Cancel-VCFCredentialTask {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 
 }
@@ -1651,7 +1651,7 @@ Function Retry-VCFCredentialTask {
     }
     catch {
         #Get response from the exception
-        ResponseExeception
+        ResponseException
     }
 
 }
@@ -2113,8 +2113,8 @@ Function Get-VCFUpgradables {
             $response
     }
     catch {
-        # Call the function ResponseExeception which handles execption messages
-        ResponseExeception
+        # Call the function ResponseException which handles execption messages
+        ResponseException
     }
 }
 
