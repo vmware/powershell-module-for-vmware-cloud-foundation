@@ -2498,10 +2498,10 @@ Function Start-PreCheckVCFSystem {
 
 <#
     .SYNOPSIS
-    Performs system level health checks and upgrade pre-checks for an upgrade to be successful
+    The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
     .DESCRIPTION
-    Performs system level health checks and upgrade pre-checks for an upgrade to be successful
+    The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
     .EXAMPLE
     PS C:\> Start-PreCheckVCFSystem -json 
@@ -2549,10 +2549,10 @@ Function Get-PreCheckVCFSystemTask {
 
 <#
     .SYNOPSIS
-    Performs retrieval of a system precheck task that can be polled and monitored.
+    The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
     .DESCRIPTION
-    Performs retrieval of a system precheck task that can be polled and monitored.
+    The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
     .EXAMPLE
     PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
