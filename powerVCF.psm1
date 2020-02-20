@@ -2493,6 +2493,100 @@ Export-ModuleMember -Function Set-VCFDepotCredentials
 
 ######### End Depot Configuration Operations ##########
 
+######### Start System Health Check ##########
+Function Start-PreCheckVCFSystem {
+
+<#
+    .SYNOPSIS
+    Performs system level health checks and upgrade pre-checks for an upgrade to be successful
+
+    .DESCRIPTION
+    Performs system level health checks and upgrade pre-checks for an upgrade to be successful
+
+    .EXAMPLE
+    PS C:\> Start-PreCheckVCFSystem -json 
+    This example shows how to perform system level health check
+
+#>
+	Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+        )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("json")) {
+        if (!(Test-Path $json)) {
+            Throw "JSON File Not Found"
+        }
+        else {
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content $json)
+        }
+    } else {
+        Throw "json file not found"
+    }
+    $uri = "https://$sddcManager/v1/system/prechecks"
+    try {
+            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            $response
+    }
+    catch {
+        # Call the function ResponseException which handles execption messages
+        ResponseException
+    }
+}
+
+Export-ModuleMember -Function Start-PreCheckVCFSystem
+
+######### End System Health Check ##########
+
+######### Start System Health Check Task Monitoring ##########
+
+Function Get-PreCheckVCFSystemTask {
+
+<#
+    .SYNOPSIS
+    Performs retrieval of a system precheck task that can be polled and monitored.
+
+    .DESCRIPTION
+    Performs retrieval of a system precheck task that can be polled and monitored.
+
+    .EXAMPLE
+    PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+    This example shows how to retrieve the status of a system level precheck task
+
+#>
+	Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+        )
+
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
+    } else {
+        Throw "task id not provided"
+    }
+    try {
+            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers 
+            $response
+    }
+    catch {
+        # Call the function ResponseException which handles execption messages
+        ResponseException
+    }
+}
+
+Export-ModuleMember -Function Get-PreCheckVCFSystemTask
+
+######### End System Health Check Task Monitoring ##########
+
 
 ######### Start Foundation Component Operations ##########
 
