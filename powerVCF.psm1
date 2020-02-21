@@ -2498,7 +2498,7 @@ Function Start-PreCheckVCFSystem {
 
 <#
     .SYNOPSIS
-    The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
+    The Start-PreCheckVCFSystem cmdlet performs system level health checks
 
     .DESCRIPTION
     The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
