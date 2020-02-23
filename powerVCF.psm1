@@ -357,78 +357,68 @@ Export-ModuleMember -Function Reset-VCFHost
 
 Function Get-VCFWorkloadDomain {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of workload domains.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & retrieves a list of workload domains.
 
-    .DESCRIPTION
-    The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
+  .DESCRIPTION
+  The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
 	& retrieves a list of workload domains.
 
-
-    .EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain
-    This example shows how to get a list of Workload Domains
-
-	.EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain -name WLD01
-    This example shows how to get a Workload Domain by name
+  .EXAMPLE
+  PS C:\> Get-VCFWorkloadDomain
+  This example shows how to get a list of Workload Domains
 
 	.EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    This example shows how to get a Workload Domain by id
+  PS C:\> Get-VCFWorkloadDomain -name WLD01
+  This example shows how to get a Workload Domain by name
 
-    .EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints
-    This example shows how to get endpoints of a Workload Domain by its id
+	.EXAMPLE
+  PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+  This example shows how to get a Workload Domain by id
+
+  .EXAMPLE
+  PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints | ConvertTo-Json
+  This example shows how to get endpoints of a Workload Domain by its id and displays the output in Json format
 #>
 
-	param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$name,
+	Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$name,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id,
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [switch]$endpoints
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [switch]$endpoints
+  )
 
-    )
-
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-    if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/domains/$id"
-    }
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  Try {
     if ($PsBoundParameters.ContainsKey("name")) {
-        $uri = "https://$sddcManager/v1/domains"
-    }
-    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-        $uri = "https://$sddcManager/v1/domains"
-    }
-    if ( $PsBoundParameters.ContainsKey("id") -and ( $PsBoundParameters.ContainsKey("endpoints"))) {
-        $uri = "https://$sddcManager/v1/domains/$id/endpoints"
-    }
-
-    try {
-        if ($PsBoundParameters.ContainsKey("name")) {
+      $uri = "https://$sddcManager/v1/domains"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
 		}
 		if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/domains/$id"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response
 		}
-        if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+      $uri = "https://$sddcManager/v1/domains"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 		}
-	}
-    catch {
-        #Get response from the exception
-        ResponseException
+    if ( $PsBoundParameters.ContainsKey("id") -and ( $PsBoundParameters.ContainsKey("endpoints"))) {
+      $uri = "https://$sddcManager/v1/domains/$id/endpoints"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+  		$response.elements
     }
+	}
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFWorkloadDomain
 
