@@ -1191,47 +1191,55 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 
 Function Get-VCFTask {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of tasks.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and retrieves a list of tasks.
 
-    .DESCRIPTION
-    The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
+  .DESCRIPTION
+  The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Get-VCFTask
-    This example shows how to get all tasks
+  This example shows how to get all tasks
 
 	.EXAMPLE
 	PS C:\> Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
-    This example shows how to get a task by id
+  This example shows how to get a task by id
+
+  .EXAMPLE
+	PS C:\> Get-VCFTask -status
+  This example shows how to get a task with a status of SUCCESSFUL
 #>
 
-	param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$status
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-    if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/tasks/$id"
-        $uri
-    }
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     if ( -not $PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/tasks/"
+      $uri = "https://$sddcManager/v1/tasks/"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-
-    try {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	    $response
-
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/tasks/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
-    catch {
-        #Get response from the exception
-        ResponseException
+    if ($PsBoundParameters.ContainsKey("status")) {
+      $uri = "https://$sddcManager/v1/tasks/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements | Where-Object {$_.status -eq $status}
     }
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFTask
 
