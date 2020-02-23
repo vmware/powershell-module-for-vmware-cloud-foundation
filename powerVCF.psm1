@@ -1083,9 +1083,8 @@ Function Get-VCFLicenseKey {
       [string]$status
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     if ($PsBoundParameters.ContainsKey("key")) {
       $uri = "https://$sddcManager/v1/license-keys/$key"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1107,9 +1106,8 @@ Function Get-VCFLicenseKey {
 			$response.elements
 		}
   }
-  catch {
-    #Get response from the exception
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
