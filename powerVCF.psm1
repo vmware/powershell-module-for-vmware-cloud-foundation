@@ -880,34 +880,32 @@ Export-ModuleMember -Function New-VCFNetworkPool
 
 Function Remove-VCFNetworkPool {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a Network Pool.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & deletes a Network Pool
 
-    .DESCRIPTION
-    The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool.
+  .DESCRIPTION
+  The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool
 
-    .EXAMPLE
-    PS C:\> Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
-    This example shows how to get a Network Pool by id
+  .EXAMPLE
+  PS C:\> Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
+  This example shows how to get a Network Pool by id
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+	Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  Try {
     $uri = "https://$sddcManager/v1/network-pools/$id"
-    try {
-        # This API does not return a response
-	    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    # This API does not return a response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
 
