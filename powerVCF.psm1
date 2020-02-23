@@ -281,10 +281,9 @@ Function Decommission-VCFHost {
 			$response
     }
     Catch {
-            #Get response from the exception
-            ResponseException
-        }
+      ResponseException # Call Function ResponseExecption to get error response from the exception
     }
+  }
 }
 Export-ModuleMember -Function Decommission-VCFHost
 
