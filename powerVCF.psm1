@@ -2250,18 +2250,15 @@ Function Set-VCFCertificate {
     Throw "JSON File Not Found"
   }
   else {
-    # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $ConfigJson = (Get-Content -Raw $json) # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-    try {
+    Try {
       $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
       $response
     }
-    catch {
-      # Call the function ResponseException which handles execption messages
-      ResponseException
+    Catch {
+      ResponseException # Call Function ResponseExecption to get error response from the exception
     }
   }
 }
