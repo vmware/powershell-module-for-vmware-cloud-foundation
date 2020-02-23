@@ -1559,12 +1559,12 @@ Export-ModuleMember -Function Retry-VCFCredentialTask
 Function Validate-CommissionHostSpec {
 
 	Param (
-        [Parameter (Mandatory=$true)]
-        [object]$json
-    )
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/hosts/validations"
+    [Parameter (Mandatory=$true)]
+    [object]$json
+  )
+
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/hosts/validations"
 	$json = $json | ConvertFrom-json
 	# Construct the hostCommissionSpecs json format as required by the validation API
 	$body = @()
@@ -1574,27 +1574,25 @@ Function Validate-CommissionHostSpec {
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-		}
-    try {
+	}
+  Try {
     $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
-    return $response
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+    Return $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 
 Function Validate-WorkloadDomainSpec {
 
 	Param (
-        [Parameter (Mandatory=$true)]
-        [object]$json
+    [Parameter (Mandatory=$true)]
+      [object]$json
     )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/domains/validations"
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/domains/validations"
 	$json = $json | ConvertFrom-json
 	# Construct the domainCreationSpec json format as required by the validation API
 	$body = @()
@@ -1604,15 +1602,14 @@ Function Validate-WorkloadDomainSpec {
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-		}
-    try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
-	return $response
 	}
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+  Try {
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+	   return $response
+	}
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 
 Function Validate-VCFClusterSpec {
