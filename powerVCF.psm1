@@ -1172,16 +1172,14 @@ Function Remove-VCFLicenseKey {
       [string]$key
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/license-keys/$key"
-  try {
-    # This API does not return a response
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/license-keys/$key"
     $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    # This API does not return a response
   }
-  catch {
-    #Get response from the exception
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
