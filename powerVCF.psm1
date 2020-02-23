@@ -424,60 +424,58 @@ Export-ModuleMember -Function Get-VCFWorkloadDomain
 
 Function New-VCFWorkloadDomain {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & creates a workload domain.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & creates a workload domain.
 
-    .DESCRIPTION
-    The New-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
+  .DESCRIPTION
+  The New-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
 	& creates a workload domain.
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> New-VCFWorkloadDomain -json .\WorkloadDomain\workloadDomainSpec.json
-    This example shows how to create a Workload Domain from a json spec
+  This example shows how to create a Workload Domain from a json spec
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+	Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Read the json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content $json)
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    # Validate the provided JSON input specification file
+    $response = Validate-WorkloadDomainSpec -json $ConfigJson
+    # the validation API does not currently support polling with a task ID
+    Sleep 5
+    # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+      Try {
+        Write-Host ""
+        Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
+        $uri = "https://$sddcManager/v1/domains"
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        Return $response
+        Write-Host ""
+        Return $response
+        Write-Host ""
+      }
+      Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+      }
     }
     else {
-        # Read the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-			# Validate the provided JSON input specification file
-            $response = Validate-WorkloadDomainSpec -json $ConfigJson
-            # the validation API does not currently support polling with a task ID
-            Sleep 5
-            # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-				Try {
-                    Write-Host ""
-                    Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
-					$uri = "https://$sddcManager/v1/domains"
-					$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-					return $response
-					Write-Host ""
-					return $response
-					Write-Host ""
-					}
-				catch {
-					#Get response from the exception
-					ResponseException
-					}
-				}
-            else {
-                Write-Host ""
-                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-                Write-Host ""
-            }
+      Write-Host ""
+      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+      Write-Host ""
     }
+  }
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
 
