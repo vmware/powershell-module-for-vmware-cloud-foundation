@@ -1619,9 +1619,8 @@ Function Validate-VCFClusterSpec {
         [object]$json
     )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/clusters/validations"
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/clusters/validations"
 	$json = $json | ConvertFrom-json
 	# Construct the clusterCreationSpec json format as required by the validation API
 	$body = @()
@@ -1631,29 +1630,27 @@ Function Validate-VCFClusterSpec {
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-		}
-    try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
 	}
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
-return $response
+  Try {
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+	}
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
+  Return $response
 }
 
 Function Validate-VCFUpdateClusterSpec {
 
 	Param (
-        [Parameter (Mandatory=$true)]
-        [object]$clusterid,
+    [Parameter (Mandatory=$true)]
+      [object]$clusterid,
 		[Parameter (Mandatory=$true)]
-        [object]$json
-    )
+      [object]$json
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
 	$json = $json | ConvertFrom-json
 	# Construct the clusterUpdateSpec json format as required by the validation API
 	$body = @()
@@ -1663,15 +1660,14 @@ Function Validate-VCFUpdateClusterSpec {
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-		}
-    try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
 	}
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
-return $response
+  Try {
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+	}
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
+  Return $response
 }
 
 ######## End Validation Functions ########
