@@ -999,45 +999,43 @@ Export-ModuleMember -Function Add-VCFNetworkIPPool
 
 Function Remove-VCFNetworkIPPool {
 <#
-    .SYNOPSIS
-    Remove an IP Pool from the Network of a Network Pool
+  .SYNOPSIS
+  Remove an IP Pool from the Network of a Network Pool
 
-    .DESCRIPTION
-    The Remove-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an existing Network within
-	a Network Pool.
+  .DESCRIPTION
+  The Remove-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an
+  existing Network within a Network Pool.
 
-    .EXAMPLE
-    PS C:\> Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
-    This example shows how remove an IP Pool on the existing network for a given Network Pool
+  .EXAMPLE
+  PS C:\> Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+  This example shows how remove an IP Pool on the existing network for a given Network Pool
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$networkid,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$ipStart,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$ipEnd
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$networkid,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$ipStart,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$ipEnd
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
     $body = '{"end": "'+$ipEnd+'","start": "'+$ipStart+'"}'
-    try {
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $body
-        $response
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $body
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
