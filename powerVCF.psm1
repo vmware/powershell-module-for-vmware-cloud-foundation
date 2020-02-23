@@ -3052,7 +3052,7 @@ Function New-VCFFederationInvite {
 			[string]$inviteeFqdn
   )
 
-  CheckVCFVersion # Get VCF Version
+  CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
   createHeader # Calls Function createHeader to set Accept & Authorization
   $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
   Try {
@@ -3078,36 +3078,32 @@ Export-ModuleMember -Function New-VCFFederationInvite
 
 Function Get-VCFFederationMembers {
 <#
-    .SYNOPSIS
-    A function that gets information on all members in the VCF Federation
+  .SYNOPSIS
+  A function that gets information on all members in the VCF Federation
 
-    .DESCRIPTION
-    Gets the complete information about the existing VCF Federation members.
+  .DESCRIPTION
+  Gets the complete information about the existing VCF Federation members.
 
-    .EXAMPLE
-    PS C:\> Get-VCFFederationMembers
-    This example lists all details concerning the VCF Federation members.
-
+  .EXAMPLE
+  PS C:\> Get-VCFFederationMembers
+  This example lists all details concerning the VCF Federation members.
 #>
-# Get VCF Version
-CheckVCFVersion
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/sddc-federation/members"
-try {
+  CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/sddc-federation/members"
+  Try {
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     if (!$response.federationName) {
-        Throw "Failed to get members, no Federation found."
+      Throw "Failed to get members, no Federation found."
     }
     else {
-        $response
+      $response
     }
-}
-catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
-    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -function Get-VCFFederationMembers
 
