@@ -1403,50 +1403,47 @@ Export-ModuleMember -Function Get-VCFCredential
 
 Function Set-VCFCredential {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and updates a credential.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and updates a credential.
 
-    .DESCRIPTION
+  .DESCRIPTION
 	The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
-    Credentials can be updated with a specified password(s) or rotated using system generated password(s).
+  Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Set-VCFCredential -json .\Credential\updateCredentialSpec.json
-    This example shows how to update a credential using a json spec
+  This example shows how to update a credential using a json spec
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedUsername,
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$privilegedUsername,
 		[Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedPassword,
+      [ValidateNotNullOrEmpty()]
+      [string]$privilegedPassword,
 		[Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content $json)
-        }
+  if ($PsBoundParameters.ContainsKey("json")) {
+    if (!(Test-Path $json)) {
+      Throw "JSON File Not Found"
     }
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/credentials"
-    try {
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    else {
+      $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+    }
+  }
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/credentials"
+  Try {
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     $response
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Set-VCFCredential
 
