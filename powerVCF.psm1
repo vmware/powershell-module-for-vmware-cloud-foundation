@@ -1767,16 +1767,14 @@ Function Get-VCFBackupConfiguration {
   This example retrieves the backup configuration and outputs it in json format
 #>
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/system/backup-configuration"
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/system/backup-configuration"
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     $response
   }
   catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
