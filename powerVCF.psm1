@@ -3008,81 +3008,73 @@ Export-ModuleMember -Function Get-VCFvROPs
 
 Function Get-VCFFederation {
 <#
-    .SYNOPSIS
-    Get information on existing Federation
+  .SYNOPSIS
+  Get information on existing Federation
 
-    .DESCRIPTION
-    Gets the complete information about the existing VCF Federation.
+  .DESCRIPTION
+  Gets the complete information about the existing VCF Federation.
 
-    .EXAMPLE
-    PS C:\> Get-VCFFederation
-    This example list all details concerning the VCF Federation
-
+  .EXAMPLE
+  PS C:\> Get-VCFFederation
+  This example list all details concerning the VCF Federation
 #>
-# Get VCF Version
-CheckVCFVersion
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/sddc-federation"
-try {
+  # Get VCF Version
+  CheckVCFVersion
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/sddc-federation"
+  Try {
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     $response
-    }
-catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
-    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
-
-Export-ModuleMember -function Get-VCFFederation
+Export-ModuleMember -Function Get-VCFFederation
 
 Function New-VCFFederationInvite {
 <#
-    .SYNOPSIS
-    Invite new member to VCF Federation.
+  .SYNOPSIS
+  Invite new member to VCF Federation.
 
-    .DESCRIPTION
-    A function that creates a new invitation for a member to join the existing VCF Federation.
+  .DESCRIPTION
+  A function that creates a new invitation for a member to join the existing VCF Federation.
 
-    .EXAMPLE
-    PS C:\> New-VCFFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
-    This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
+  .EXAMPLE
+  PS C:\> New-VCFFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
+  This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
 #>
 
-param (
-			[Parameter (Mandatory=$true)]
-				[ValidateNotNullOrEmpty()]
-				[string]$inviteeFqdn
-)
-# Get VCF Version
-CheckVCFVersion
+  Param (
+	  [Parameter (Mandatory=$true)]
+		  [ValidateNotNullOrEmpty()]
+			[string]$inviteeFqdn
+  )
 
-$headers = @{"Accept" = "application/json"}
-$headers.Add("Authorization", "Basic $base64AuthInfo")
-$uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
-try {
+  CheckVCFVersion # Get VCF Version
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
+  Try {
     $sddcMemberRole = Get-VCFFederationMembers
     if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
-        Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
+      Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
     }
     else {
-        $inviteeDetails = @{
-            inviteeRole = 'MEMBER'
-            inviteeFqdn = $inviteeFqdn
-        }
-        $ConfigJson = $inviteeDetails | ConvertTo-Json
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
-        $response
+      $inviteeDetails = @{
+        inviteeRole = 'MEMBER'
+        inviteeFqdn = $inviteeFqdn
+      }
+      $ConfigJson = $inviteeDetails | ConvertTo-Json
+      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
+      $response
     }
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
-catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
-    }
-}
-
-Export-ModuleMember -function New-VCFFederationInvite
+Export-ModuleMember -Function New-VCFFederationInvite
 
 Function Get-VCFFederationMembers {
 <#
