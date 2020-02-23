@@ -3155,57 +3155,46 @@ Function Join-VCFFederation {
 Export-ModuleMember -Function Join-VCFFederation
 
 Function Remove-VCFFederation {
-    <#
-        .SYNOPSIS
-        Remove VCF Federation
+<#
+  .SYNOPSIS
+  Remove VCF Federation
 
-        .DESCRIPTION
-        A function that ensures VCF Federation is empty and completely dismantles it.
+  .DESCRIPTION
+  A function that ensures VCF Federation is empty and completely dismantles it.
 
-        .EXAMPLE
-        PS C:\> Remove-VCFFederation
-        This example demonstrates how to dismantle the VCF Federation
+  .EXAMPLE
+  PS C:\> Remove-VCFFederation
+  This example demonstrates how to dismantle the VCF Federation
+#>
 
-    #>
-    # Get VCF Version
-    CheckVCFVersion
-
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/sddc-federation"
-    try {
-
-        # Verify that SDDC Manager we're connected to is a controller and only one in the Federation
-        $sddcs = Get-VCFFederation | Select-Object memberDetails
-        foreach ($sddc in $sddcs)
-        {
-            if ($sddc.memberDetails.role -eq "CONTROLLER")
-            {
-                $controller++
-            if ($sddc.memberDetails.role -eq "MEMBER")
-            {
-                $member++
-            }
-            }
+  CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/sddc-federation"
+  Try {
+    # Verify that SDDC Manager we're connected to is a controller and only one in the Federation
+    $sddcs = Get-VCFFederation | Select-Object memberDetails
+    Foreach ($sddc in $sddcs) {
+      if ($sddc.memberDetails.role -eq "CONTROLLER") {
+        $controller++
+        if ($sddc.memberDetails.role -eq "MEMBER") {
+          $member++
+          }
         }
-        if ($controller -gt 1)
-        {
-            throw "Only one controller can be present when dismantling VCF Federation. Remove additional controllers and try again"
-        }
-        if ($member -gt 0)
-        {
-            throw "VCF Federation members still exist. Remove all members and additional controllers before dismantling VCF Federation"
-        }
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-        $response
-        }
-    catch {
-        # Call the function ResponseException which handles execption messages
-        ResponseException
-        }
+      }
+      if ($controller -gt 1) {
+        Throw "Only one controller can be present when dismantling VCF Federation. Remove additional controllers and try again"
+      }
+      if ($member -gt 0) {
+        Throw "VCF Federation members still exist. Remove all members and additional controllers before dismantling VCF Federation"
+      }
+      $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+      $response
     }
-
-    Export-ModuleMember -function Remove-VCFFederation
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Remove-VCFFederation
 
 ######### End Federation Management ##########
 
