@@ -609,57 +609,54 @@ Export-ModuleMember -Function Get-VCFCluster
 
 Function New-VCFCluster {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & creates cluster.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & creates cluster.
 
-    .DESCRIPTION
-    The New-VCFCluster cmdlet connects to the specified SDDC Manager
+  .DESCRIPTION
+  The New-VCFCluster cmdlet connects to the specified SDDC Manager
 	& creates a cluster in a specified workload domains.
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
-    This example shows how to create a cluster in a Workload Domain from a json spec
+  This example shows how to create a cluster in a Workload Domain from a json spec
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+    createHeader # Calls Function createHeader to set Accept & Authorization
+		# Validate the provided JSON input specification file
+    $response = Validate-VCFClusterSpec -json $ConfigJson
+    # the validation API does not currently support polling with a task ID
+    Sleep 5
+    # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+      Try {
+        Write-Host ""
+        Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+        $uri = "https://$sddcManager/v1/clusters"
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $response.elements
+      }
+      Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+      }
+      else {
+        Write-Host ""
+        Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+        Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+        Write-Host ""
+      }
     }
-    else {
-        # Read the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-			# Validate the provided JSON input specification file
-            $response = Validate-VCFClusterSpec -json $ConfigJson
-            # the validation API does not currently support polling with a task ID
-            Sleep 5
-            # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Try {
-                    Write-Host ""
-                    Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
-					$uri = "https://$sddcManager/v1/clusters"
-					$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-					$response.elements
-				}
-				catch {
-					#Get response from the exception
-					ResponseException
-				}
-			}
-			else {
-                Write-Host ""
-                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-                Write-Host ""
-            }
-    }
+  }
 }
 Export-ModuleMember -Function New-VCFCluster
 
