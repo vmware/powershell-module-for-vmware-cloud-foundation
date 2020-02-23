@@ -136,7 +136,7 @@ Function Get-VCFHost {
   This example shows how to get a host by id
 
 	.EXAMPLE
-	PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
+	PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo.rainpole.local
   This example shows how to get a host by fqdn
 #>
 
@@ -152,43 +152,31 @@ Function Get-VCFHost {
       [string]$id
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-  if ($PsBoundParameters.ContainsKey("status")) {
-    $uri = "https://$sddcManager/v1/hosts?status=$status"
-  }
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/hosts/$id"
-  }
-  if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-    $uri = "https://$sddcManager/v1/hosts"
-  }
-  if ($PsBoundParameters.ContainsKey("fqdn")) {
-    $uri = "https://$sddcManager/v1/hosts"
-  }
-
+  createHeader # Calls Function createHeader to set Accept & Authorization
   try {
+    if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
+      $uri = "https://$sddcManager/v1/hosts"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("fqdn")) {
+      $uri = "https://$sddcManager/v1/hosts"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements | Where-Object {$_.fqdn -eq $fqdn}
     }
     if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/hosts/$id"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response
     }
     if ($PsBoundParameters.ContainsKey("status")) {
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
+      $uri = "https://$sddcManager/v1/hosts?status=$status"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
   }
   catch {
-    #Get response from the exception
-    ResponseException
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFHost
@@ -3466,7 +3454,6 @@ Function ResponseException {
 }
 
 Function CheckVCFVersion {
-
   $vcfManager = Get-VCFManager
   if (($vcfManager.version.Substring(0,3) -ne "3.9") -and ($vcfManager.version.Substring(0,3) -ne "4.0")) {
     Write-Host ""
@@ -3474,6 +3461,11 @@ Function CheckVCFVersion {
     Write-Host ""
     break
   }
+}
+
+Function createHeader {
+  $Global:headers = @{"Accept" = "application/json"}
+  $Global:headers.Add("Authorization", "Basic $base64AuthInfo")
 }
 
 Function Resolve-PSModule {
