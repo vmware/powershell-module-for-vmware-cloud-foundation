@@ -2903,29 +2903,26 @@ Export-ModuleMember -Function Invoke-VCFCommand
 ######### Start vRealize Suite Operations ##########
 Function Get-VCFvRSLCM {
 <#
-    .SYNOPSIS
-    Get the existing vRealize Suite Lifecycle Manager
+  .SYNOPSIS
+  Get the existing vRealize Suite Lifecycle Manager
 
-    .DESCRIPTION
-    Gets the complete information about the existing vRealize Suite Lifecycle Manager.
+  .DESCRIPTION
+  Gets the complete information about the existing vRealize Suite Lifecycle Manager.
 
-    .EXAMPLE
-    PS C:\> Get-VCFvRSLCM
-    This example list all details concerning the vRealize Suite Lifecycle Manager
-
+  .EXAMPLE
+  PS C:\> Get-VCFvRSLCM
+  This example list all details concerning the vRealize Suite Lifecycle Manager
 #>
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/vrslcm"
-    try {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    catch {
-        # Call the function ResponseException which handles execption messages
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
 
