@@ -1280,56 +1280,56 @@ Export-ModuleMember -Function Retry-VCFTask
 
 Function Get-VCFCredentialTask {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
 
-    .DESCRIPTION
-    The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
-    credential tasks in reverse chronological order.
+  .DESCRIPTION
+  The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
+  credential tasks in reverse chronological order.
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredentialTask
-    This example shows how to get a list of all credentials tasks
+  .EXAMPLE
+  PS C:\> Get-VCFCredentialTask
+  This example shows how to get a list of all credentials tasks
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3
-    This example shows how to get the credential tasks for a specific task id
+  .EXAMPLE
+  PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3
+  This example shows how to get the credential tasks for a specific task id
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
-    This example shows how to get resource credentials for a credential task id
+  .EXAMPLE
+  PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
+  This example shows how to get resource credentials for a credential task id
 #>
-	param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id,
+
+	Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [switch]$resourceCredentials
-    )
+      [ValidateNotNullOrEmpty()]
+      [switch]$resourceCredentials
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-    if ($PsBoundParameters.ContainsKey("id")) {
-        if ($PsBoundParameters.ContainsKey("resourceCredentials")) {
-            $uri = "https://$sddcManager/v1/credentials/tasks/$id/resource-credentials"
-        } else {
-            $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-        }
-    }
-    else {
-        $uri = "https://$sddcManager/v1/credentials/tasks"
-    }
-
-    try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    if ( -not $PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/credentials/tasks"
 	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 	    $response
     }
-    catch {
-        #Get response from the exception
-        ResponseException
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/credentials/tasks/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
+    if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("resourceCredentials"))) {
+      $uri = "https://$sddcManager/v1/credentials/tasks/$id/resource-credentials"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
 
