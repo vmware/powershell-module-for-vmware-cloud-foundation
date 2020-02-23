@@ -747,37 +747,33 @@ Export-ModuleMember -Function Set-VCFCluster
 
 Function Remove-VCFCluster {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a cluster.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & deletes a cluster.
 
-    .DESCRIPTION
-    Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
+  .DESCRIPTION
+  Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
 	The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster.
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Remove-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1
-    This example shows how to delete a cluster
+  This example shows how to delete a cluster
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  Try {
     $uri = "https://$sddcManager/v1/clusters/$id"
-
-    try {
-	    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-	    #TODO: Parse the response
-	    #$response.elements
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    #TODO: Parse the response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Remove-VCFCluster
 
