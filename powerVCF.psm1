@@ -1493,68 +1493,62 @@ Export-ModuleMember -Function Cancel-VCFCredentialTask
 ######### Start Retry Credential Failed Task Rotate/Update operation ##########
 
 Function Retry-VCFCredentialTask {
-
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
 
-    .DESCRIPTION
+  .DESCRIPTION
 	The Retry-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Retry-VCFCredentialTask -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@reil! -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
-    This example shows how to update passwords of a resource type using a json spec
+  This example shows how to update passwords of a resource type using a json spec
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Retry-VCFCredentialTask  -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@reil! -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\rotateCredentialSpec.json
-    This example shows how to rotate passwords of a resource type using a json spec
+  This example shows how to rotate passwords of a resource type using a json spec
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedUsername,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedPassword,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+	Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$privilegedUsername,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$privilegedPassword,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content $json)
-        }
+  if ($PsBoundParameters.ContainsKey("json")) {
+    if (!(Test-Path $json)) {
+      Throw "JSON File Not Found"
     }
-    if ($PsBoundParameters.ContainsKey("id")) {
-            $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-    } else {
-            Throw "task id not provided"
+    else {
+      $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
     }
-
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $headers.Add("privileged-username", "$privilegedUsername")
-    $headers.Add("privileged-password", "$privilegedPassword")
-    try {
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        $response
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
-
+  }
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/credentials/tasks/$id"
+  }
+  else {
+    Throw "task id not provided"
+  }
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $headers.Add("privileged-username", "$privilegedUsername")
+  $headers.Add("privileged-password", "$privilegedPassword")
+  Try {
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
-
 Export-ModuleMember -Function Retry-VCFCredentialTask
 
 ######### End Retry Credential Failed Task Rotate/Update operation ##########
