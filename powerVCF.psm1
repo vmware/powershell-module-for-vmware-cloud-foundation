@@ -2316,10 +2316,9 @@ Function Set-VCFDepotCredentials {
       [string]$password
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/system/settings/depot"
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/system/settings/depot"
     if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
       Throw "You must enter a username and password"
 		}
@@ -2327,9 +2326,8 @@ Function Set-VCFDepotCredentials {
     $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     $response
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Set-VCFDepotCredentials
@@ -2337,51 +2335,47 @@ Export-ModuleMember -Function Set-VCFDepotCredentials
 ######### End Depot Configuration Operations ##########
 
 ######### Start System Health Check ##########
+
 Function Start-PreCheckVCFSystem {
-
 <#
-    .SYNOPSIS
-    The Start-PreCheckVCFSystem cmdlet performs system level health checks
+  .SYNOPSIS
+  The Start-PreCheckVCFSystem cmdlet performs system level health checks
 
-    .DESCRIPTION
-    The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
+  .DESCRIPTION
+  The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
-    .EXAMPLE
-    PS C:\> Start-PreCheckVCFSystem -json
-    This example shows how to perform system level health check
-
+  .EXAMPLE
+  PS C:\> Start-PreCheckVCFSystem -json
+  This example shows how to perform system level health check
 #>
+
 	Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-        )
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content $json)
-        }
-    } else {
-        Throw "json file not found"
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  if ($PsBoundParameters.ContainsKey("json")) {
+    if (!(Test-Path $json)) {
+      Throw "JSON File Not Found"
     }
-    $uri = "https://$sddcManager/v1/system/prechecks"
-    try {
-            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-            $response
+    else {
+      $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
     }
-    catch {
-        # Call the function ResponseException which handles execption messages
-        ResponseException
-    }
+  }
+  else {
+    Throw "json file not found"
+  }
+  $uri = "https://$sddcManager/v1/system/prechecks"
+  Try {
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
-
 Export-ModuleMember -Function Start-PreCheckVCFSystem
 
 ######### End System Health Check ##########
