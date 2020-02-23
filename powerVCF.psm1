@@ -1206,8 +1206,8 @@ Function Get-VCFTask {
   This example shows how to get a task by id
 
   .EXAMPLE
-	PS C:\> Get-VCFTask -status
-  This example shows how to get a task with a status of SUCCESSFUL
+	PS C:\> Get-VCFTask -status SUCCESSFUL
+  This example shows how to get all tasks with a status of SUCCESSFUL
 #>
 
   Param (
@@ -1245,34 +1245,32 @@ Export-ModuleMember -Function Get-VCFTask
 
 Function Retry-VCFTask {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retries a previously failed task.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and retries a previously failed task.
 
-    .DESCRIPTION
-    The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
-    failed task using the task id.
+  .DESCRIPTION
+  The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
+  failed task using the task id.
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
-    This example retries the task based on the task id
+  This example retries the task based on the task id
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/tasks/$id"
-    try {
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Retry-VCFTask
 
