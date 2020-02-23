@@ -501,9 +501,9 @@ Function Set-VCFWorkloadDomain {
   )
 
   createHeader # Calls Function createHeader to set Accept & Authorization
-  $uri = "https://$sddcManager/v1/domains/$id"
-  $body = '{"markForDeletion": true}'
   Try {
+    $uri = "https://$sddcManager/v1/domains/$id"
+    $body = '{"markForDeletion": true}'
     $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
     # This API does not return a response
   }
@@ -515,38 +515,35 @@ Export-ModuleMember -Function Set-VCFWorkloadDomain
 
 Function Remove-VCFWorkloadDomain {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a workload domain.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & deletes a workload domain.
 
-    .DESCRIPTION
-    Before a workload domain can be deleted it must first be marked for deletion.
+  .DESCRIPTION
+  Before a workload domain can be deleted it must first be marked for deletion.
 	See Set-VCFWorkloadDomain
-	The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
+  The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
 	& deletes a workload domain.
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Remove-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-    This example shows how to delete a workload domain
+  This example shows how to delete a workload domain
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  Try {
     $uri = "https://$sddcManager/v1/domains/$id"
-
-    try {
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-        $response
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
 
