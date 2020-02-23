@@ -481,37 +481,35 @@ Export-ModuleMember -Function New-VCFWorkloadDomain
 
 Function Set-VCFWorkloadDomain {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & marks a workload domain for deletion.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & marks a workload domain for deletion.
 
-    .DESCRIPTION
-    Before a workload domain can be deleted it must first be marked for deletion.
+  .DESCRIPTION
+  Before a workload domain can be deleted it must first be marked for deletion.
 	The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
 	& marks a workload domain for deletion.
 
-    .EXAMPLE
-	PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-    This example shows how to mark a workload domain for deletion
+  .EXAMPLE
+  PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
+  This example shows how to mark a workload domain for deletion
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    $uri = "https://$sddcManager/v1/domains/$id"
-    $body = '{"markForDeletion": true}'
-    try {
-	    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
-	    # This API does not return a response
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  $uri = "https://$sddcManager/v1/domains/$id"
+  $body = '{"markForDeletion": true}'
+  Try {
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
+    # This API does not return a response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Set-VCFWorkloadDomain
 
