@@ -1900,29 +1900,21 @@ Function Get-VCFBundle {
 
   # Check the version of SDDC Manager
   CheckVCFVersion
-
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/bundles/$id"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/bundles"
-  }
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/bundles/$id"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response
     }
     else {
+      $uri = "https://$sddcManager/v1/bundles"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFBundle
