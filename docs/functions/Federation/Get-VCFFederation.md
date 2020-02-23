@@ -18,6 +18,12 @@ Get-VCFFederation
 ```
 This example list all details concerning the VCF Federation
 
+#### Example 2
+```
+Get-VCFFederation | ConvertTo-Json
+```
+This example list all details concerning the VCF Federation and outputs them in Json format
+
 ### Parameters
 
 ### Notes

@@ -3017,12 +3017,16 @@ Function Get-VCFFederation {
   .EXAMPLE
   PS C:\> Get-VCFFederation
   This example list all details concerning the VCF Federation
+
+  .EXAMPLE
+  PS C:\> Get-VCFFederation | ConvertTo-Json
+  This example list all details concerning the VCF Federation and outputs them in Json format
 #>
 
-  CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
-  createHeader # Calls Function createHeader to set Accept & Authorization
-  $uri = "https://$sddcManager/v1/sddc-federation"
   Try {
+    CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/sddc-federation"
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     $response
   }
