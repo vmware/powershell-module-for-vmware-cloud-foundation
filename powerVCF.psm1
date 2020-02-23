@@ -2007,8 +2007,8 @@ Function Get-VCFCertificateAuthConfiguration {
   CheckVCFVersion
 
   Try {
-    $uri = "https://$sddcManager/v1/certificate-authorities"
     createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/certificate-authorities"
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     $response.elements
   }
@@ -2049,19 +2049,17 @@ Function Set-VCFMicrosoftCA {
   # Check the version of SDDC Manager
   CheckVCFVersion
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/certificate-authorities"
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/certificate-authorities"
     if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
       Throw "You must enter the mandatory values"
 		}
     $ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
     $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
