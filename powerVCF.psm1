@@ -2166,16 +2166,14 @@ Function Get-VCFCertificate {
       [string]$domainName
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     $response
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFCertificate
@@ -2212,16 +2210,14 @@ Function Request-VCFCertificate {
   else {
     # Reads the requestCsrSpec json file contents into the $ConfigJson variable
     $ConfigJson = (Get-Content -Raw $json)
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-    try {
+    Try {
       $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
       $response
     }
-    catch {
-      # Call the function ResponseException which handles execption messages
-      ResponseException
+    Catch {
+      ResponseException # Call Function ResponseExecption to get error response from the exception
     }
   }
 }
