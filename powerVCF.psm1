@@ -81,17 +81,15 @@ Function Connect-VCFManager {
   }
 
   $Global:sddcManager = $fqdn
-
-  # Create Basic Authentication Encoded Credentials
-  $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password)))
+  $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
 
   # Validate credentials by executing an API call
   $headers = @{"Accept" = "application/json"}
   $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-  # Checking against the sddc-managers API
   $uri = "https://$sddcManager/v1/sddc-managers"
+
   Try {
+    # Checking against the sddc-managers API
     # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
     if ($PSEdition -eq 'Core') {
       $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
@@ -1373,7 +1371,7 @@ Function Get-VCFCredentialTask {
     credential tasks in reverse chronological order.
 
     .EXAMPLE
-    PS C:\> Get-VCFCredentialTask 
+    PS C:\> Get-VCFCredentialTask
     This example shows how to get a list of all credentials tasks
 
     .EXAMPLE
@@ -1577,7 +1575,7 @@ Function Cancel-VCFCredentialTask {
     $headers = @{"Accept" = "application/json"}
     $headers.Add("Authorization", "Basic $base64AuthInfo")
     try {
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers 
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers
         $response
     }
     catch {
@@ -2100,7 +2098,7 @@ Function Get-VCFUpgradables {
 
     .EXAMPLE
     PS C:\> Get-VCFUpgradables
-    This example shows how to retrieve the list of upgradables in the system 
+    This example shows how to retrieve the list of upgradables in the system
 #>
 
     $headers = @{"Accept" = "application/json"}
@@ -2109,7 +2107,7 @@ Function Get-VCFUpgradables {
     $uri = "https://$sddcManager/v1/system/upgradables"
 
     try {
-            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers 
+            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
             $response
     }
     catch {
@@ -2120,7 +2118,7 @@ Function Get-VCFUpgradables {
 
 ######### End Get Upgradable Operations ##########
 
-Export-ModuleMember -Function Get-VCFUpgradables 
+Export-ModuleMember -Function Get-VCFUpgradables
 
 ######### Start Certificate Configuration Operations ##########
 
@@ -2504,7 +2502,7 @@ Function Start-PreCheckVCFSystem {
     The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
     .EXAMPLE
-    PS C:\> Start-PreCheckVCFSystem -json 
+    PS C:\> Start-PreCheckVCFSystem -json
     This example shows how to perform system level health check
 
 #>
@@ -2574,7 +2572,7 @@ Function Get-PreCheckVCFSystemTask {
         Throw "task id not provided"
     }
     try {
-            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers 
+            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
             $response
     }
     catch {
