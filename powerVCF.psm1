@@ -1454,41 +1454,38 @@ Export-ModuleMember -Function Set-VCFCredential
 Function Cancel-VCFCredentialTask {
 
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
 
-    .DESCRIPTION
+  .DESCRIPTION
 	The Cancel-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
 
-    .EXAMPLE
+  .EXAMPLE
 	PS C:\> Cancel-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
-    This example shows how to cancel a failed rotate or update password task.
+  This example shows how to cancel a failed rotate or update password task.
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-    } else  {
-        Throw "task id to be cancelled is not provided"
-    }
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-    try {
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers
-        $response
-    }
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
-
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/credentials/tasks/$id"
+  }
+  else {
+    Throw "task id to be cancelled is not provided"
+  }
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  Try {
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
-
 Export-ModuleMember -Function Cancel-VCFCredentialTask
 
 ######### End Credential Failed Task Cancel Operation ##########
