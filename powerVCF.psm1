@@ -1815,18 +1815,16 @@ Function Set-VCFBackupConfiguration {
     }
   }
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  createHeader # Calls Function createHeader to set Accept & Authorization
   $headers.Add("privileged-username", "$privilegedUsername")
   $headers.Add("privileged-password", "$privilegedPassword")
   $uri = "https://$sddcManager/v1/system/backup-configuration"
-  try {
+  Try {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
     $response
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
