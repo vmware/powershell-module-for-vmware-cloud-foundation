@@ -61,7 +61,7 @@ Function Connect-VCFManager {
   This example shows how to connect to SDDC Manager
 #>
 
-  param (
+  Param (
     [Parameter (Mandatory=$true)]
       [ValidateNotNullOrEmpty()]
       [string]$fqdn,
@@ -140,7 +140,7 @@ Function Get-VCFHost {
   This example shows how to get a host by fqdn
 #>
 
-  param (
+  Param (
     [Parameter (Mandatory=$false)]
       [ValidateNotNullOrEmpty()]
       [string]$fqdn,
@@ -153,7 +153,7 @@ Function Get-VCFHost {
   )
 
   createHeader # Calls Function createHeader to set Accept & Authorization
-  try {
+  Try {
     if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
       $uri = "https://$sddcManager/v1/hosts"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -175,7 +175,7 @@ Function Get-VCFHost {
       $response.elements
     }
   }
-  catch {
+  Catch {
     ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
@@ -196,7 +196,7 @@ Function Commission-VCFHost {
   provided in the JSON file.
 #>
 
-  param (
+  Param (
     [Parameter (Mandatory=$true)]
       [ValidateNotNullOrEmpty()]
       [string]$json
@@ -216,73 +216,71 @@ Function Commission-VCFHost {
     # Get the task id from the validation function
     $taskId = $response.id
     # Keep checking until executionStatus is not IN_PROGRESS
-    do {
+    Do {
       $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
       $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-      }
-      While ($response.executionStatus -eq "IN_PROGRESS")
-      # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-      if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-        Try {
-          Write-Host ""
-          Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
-          $uri = "https://$sddcManager/v1/hosts/"
-          $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-          return $response
-          Write-Host ""
-        }
-        Catch {
-          #Get response from the exception
-          ResponseException
-        }
-      }
-      else {
+    }
+    While ($response.executionStatus -eq "IN_PROGRESS")
+    # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+      Try {
         Write-Host ""
-        Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-        Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+        Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
+        $uri = "https://$sddcManager/v1/hosts/"
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        Return $response
         Write-Host ""
+      }
+      Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
       }
     }
+    else {
+      Write-Host ""
+      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+      Write-Host ""
+    }
+  }
 }
 Export-ModuleMember -Function Commission-VCFHost
 
 Function Decommission-VCFHost {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and decommissions a list of hosts.
-	  Host list is provided in a JSON file.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager and decommissions a list of hosts.
+  Host list is provided in a JSON file.
 
-    .DESCRIPTION
-    The Decommission-VCFHost cmdlet connects to the specified SDDC Manager
-	  and decommissions a list of hosts.
+  .DESCRIPTION
+  The Decommission-VCFHost cmdlet connects to the specified SDDC Manager
+  and decommissions a list of hosts.
 
-    .EXAMPLE
-    PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
-    This example shows how to decommission a set of hosts based on the details
-    provided in the JSON file.
+  .EXAMPLE
+  PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
+  This example shows how to decommission a set of hosts based on the details
+  provided in the JSON file.
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if (!(Test-Path $json)) {
-        throw "JSON File Not Found"
-    }
-    else {
-        # Reads the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
-	    $headers = @{"Accept" = "application/json"}
-	    $headers.Add("Authorization", "Basic $base64AuthInfo")
-	    $uri = "https://$sddcManager/v1/hosts"
-
-        try {
-			$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Reads the json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content -Raw $json)
+    $headers = @{"Accept" = "application/json"}
+    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/hosts"
+    Try {
+      $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			$response
-        }
-        catch {
+    }
+    Catch {
             #Get response from the exception
             ResponseException
         }
