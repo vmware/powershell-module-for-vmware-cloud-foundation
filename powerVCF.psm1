@@ -554,62 +554,56 @@ Export-ModuleMember -Function Remove-VCFWorkloadDomain
 
 Function Get-VCFCluster {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of clusters.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & retrieves a list of clusters.
 
-    .DESCRIPTION
-    The Get-VCFCluster cmdlet connects to the specified SDDC Manager
+  .DESCRIPTION
+  The Get-VCFCluster cmdlet connects to the specified SDDC Manager
 	& retrieves a list of clusters.
 
-    .EXAMPLE
-    PS C:\> Get-VCFCluster
-    This example shows how to get a list of all clusters
+  .EXAMPLE
+  PS C:\> Get-VCFCluster
+  This example shows how to get a list of all clusters
 
 	.EXAMPLE
-    PS C:\> Get-VCFCluster -name wld01-cl01
-    This example shows how to get a cluster by name
+  PS C:\> Get-VCFCluster -name wld01-cl01
+  This example shows how to get a cluster by name
 
 	.EXAMPLE
-    PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    This example shows how to get a cluster by id
+  PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+  This example shows how to get a cluster by id
 #>
 
-	param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$name,
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$name,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-    )
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  Try {
+    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+      $uri = "https://$sddcManager/v1/clusters"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
     if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/clusters/$id"
-    }
-    else {
-        $uri = "https://$sddcManager/v1/clusters"
-    }
-    try {
-        if ($PsBoundParameters.ContainsKey("name")) {
+      $uri = "https://$sddcManager/v1/clusters/$id"
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+		}
+    if ($PsBoundParameters.ContainsKey("name")) {
+      $uri = "https://$sddcManager/v1/clusters"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
 		}
-		if ($PsBoundParameters.ContainsKey("id")) {
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements | Where-Object {$_.id -eq $id}
-		}
-        if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements
-        }
 	}
-    catch {
-        #Get response from the exception
-        ResponseException
-    }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFCluster
 
