@@ -2558,31 +2558,26 @@ Function Get-VCFvCenter {
 
   # Check the version of SDDC Manager
   CheckVCFVersion
-
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $method = "GET"
-
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
       $uri = "https://$sddcManager/v1/vcenters"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
     if ($PsBoundParameters.ContainsKey("id")) {
       $uri = "https://$sddcManager/v1/vcenters/$id"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response
     }
     if ($PsBoundParameters.ContainsKey("domainId")) {
       $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFvCenter
