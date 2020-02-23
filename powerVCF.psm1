@@ -839,45 +839,42 @@ Export-ModuleMember -Function Get-VCFNetworkPool
 
 Function New-VCFNetworkPool {
 <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & creates a new Network Pool.
+  .SYNOPSIS
+  Connects to the specified SDDC Manager & creates a new Network Pool.
 
-    .DESCRIPTION
-    The New-VCFNetworkPool cmdlet connects to the specified SDDC Manager & creates a new Network Pool.
+  .DESCRIPTION
+  The New-VCFNetworkPool cmdlet connects to the specified SDDC Manager & creates a new Network Pool.
 	Network Pool spec is provided in a JSON file.
 
-    .EXAMPLE
-    PS C:\> New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
-    This example shows how to create a Network Pool
+  .EXAMPLE
+  PS C:\> New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
+  This example shows how to create a Network Pool
 #>
 
-	param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Read the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-        $uri = "https://$sddcManager/v1/network-pools"
-        try {
-			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/network-pools"
+    Try {
+      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			# This API does not return a response body. Sending GET to validate the Network Pool creation was successful
 			$validate = $ConfigJson | ConvertFrom-Json
 			$poolName = $validate.name
 			Get-VCFNetworkPool -name $poolName
-        }
-        catch {
-            #Get response from the exception
-            ResponseException
-        }
     }
+    Catch {
+      ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
+  }
 }
 Export-ModuleMember -Function New-VCFNetworkPool
 
