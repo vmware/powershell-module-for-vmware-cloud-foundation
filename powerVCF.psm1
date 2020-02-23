@@ -1135,21 +1135,18 @@ Function New-VCFLicenseKey {
     Throw "JSON File Not Found"
   }
   else {
-    # Read the createNetworkPool json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content $json)
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/license-keys"
-    try {
+    Try {
       $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			# This API does not return a response body. Sending GET to validate the License Key creation was successful
 			$license = $ConfigJson | ConvertFrom-Json
 			$licenseKey = $license.key
 			Get-VCFLicenseKey -key $licenseKey
     }
-    catch {
-      #Get response from the exception
-      ResponseException
+    Catch {
+      ResponseException # Call Function ResponseExecption to get error response from the exception
     }
   }
 }
