@@ -2953,54 +2953,51 @@ Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
 
 Function Get-VCFvROPs {
 <#
-    .SYNOPSIS
-    Get the existing vRealize Operations Manager
+  .SYNOPSIS
+  Get the existing vRealize Operations Manager
 
-    .DESCRIPTION
-    Gets the complete information about the existing vRealize Operations Manager.
+  .DESCRIPTION
+  Gets the complete information about the existing vRealize Operations Manager.
 
-    .EXAMPLE
-    PS C:\> Get-VCFvROPs
-    This example list all details concerning the vRealize Operations Manager
+  .EXAMPLE
+  PS C:\> Get-VCFvROPs
+  This example list all details concerning the vRealize Operations Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFvROPs -getIntegratedDomains
-    Retrieves all the existing workload domains and their connection status with vRealize Operations.
+  .EXAMPLE
+  PS C:\> Get-VCFvROPs -getIntegratedDomains
+  Retrieves all the existing workload domains and their connection status with vRealize Operations.
 
-    .EXAMPLE
-    PS C:\> Get-VCFvROPs -nodes
-    Retrieves all the vRealize Operations Manager nodes.
+  .EXAMPLE
+  PS C:\> Get-VCFvROPs -nodes
+  Retrieves all the vRealize Operations Manager nodes.
 #>
 
-	param (
-			[Parameter (Mandatory=$false)]
-				[ValidateNotNullOrEmpty()]
-				[switch]$getIntegratedDomains,
-            [Parameter (Mandatory=$false)]
-				[ValidateNotNullOrEmpty()]
-				[switch]$nodes
-		)
+	Param (
+    [Parameter (Mandatory=$false)]
+			[ValidateNotNullOrEmpty()]
+			[switch]$getIntegratedDomains,
+    [Parameter (Mandatory=$false)]
+			[ValidateNotNullOrEmpty()]
+			[switch]$nodes
+	)
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-	if ($PsBoundParameters.ContainsKey("nodes")) {
-        $uri = "https://$sddcmanager/v1/vrops/nodes"
-    }
-    if ($PsBoundParameters.ContainsKey("getIntegratedDomains")) {
-        $uri = "https://$sddcmanager/v1/vrops/domains"
-    }
-    else{
-        $uri = "https://$sddcManager/v1/vropses"
-		}
-    try {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    catch {
-        # Call the function ResponseException which handles execption messages
-        ResponseException
-    }
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  if ($PsBoundParameters.ContainsKey("nodes")) {
+    $uri = "https://$sddcmanager/v1/vrops/nodes"
+  }
+  if ($PsBoundParameters.ContainsKey("getIntegratedDomains")) {
+    $uri = "https://$sddcmanager/v1/vrops/domains"
+  }
+  else {
+    $uri = "https://$sddcManager/v1/vropses"
+	}
+  Try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFvROPs
 
