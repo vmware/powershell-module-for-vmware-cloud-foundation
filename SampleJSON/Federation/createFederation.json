@@ -1,18 +1,16 @@
 {
-    "controllerFqdn" : "sddc-manager.vrack.vsphere.local",
-    "joinToken" : "522c566-836b-44c2-bf84-92dcc7e00764",
-    "commonName" : "sddcmgr-newyork.msm.local",
-    "memberJoinDetail" : {
-      "role" : "MEMBER",
-      "fqdn" : "sddcmgr-newyork.msm.local",
-      "siteType" : "DATACENTER",
-      "siteName" : "New York Epic Center",
-      "country" : "USA",
-      "state" : "New York",
-      "city" : "New York",
-      "coordinate" : {
-        "longitude" : -74.006,
-        "latitude" : 40.712
-      }
+  "federationName" : "Rainpole",
+  "memberJoinDetail" : {
+    "role" : "CONTROLLER",
+    "fqdn" : "sfo01mgr01.sddc.local",
+    "siteType" : "DATACENTER",
+    "siteName" : "San Francisco",
+    "country" : "USA",
+    "state" : "",
+    "city" : "San Francisco",
+    "coordinate" : {
+      "longitude" : -122.838,
+      "latitude" : 37.286
     }
   }
+}

@@ -3036,6 +3036,44 @@ Function Get-VCFFederation {
 }
 Export-ModuleMember -Function Get-VCFFederation
 
+Function Set-VCFFederation {
+<#
+  .SYNOPSIS
+  Bootstrap a VMware Cloud Foundation to form a federation
+
+  .DESCRIPTION
+  The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
+
+  .EXAMPLE
+  PS C:\> Set-VCFFederation -json createFederation.json
+  This example shows how to create a fedration using the json file
+#>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
+
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    Try {
+      CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+      createHeader # Calls Function createHeader to set Accept & Authorization
+      $ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
+      $uri = "https://$sddcManager/v1/sddc-federation"
+      $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      $response
+    }
+    Catch {
+      ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
+  }
+}
+Export-ModuleMember -Function Set-VCFFederation
+
 Function Remove-VCFFederation {
 <#
   .SYNOPSIS
