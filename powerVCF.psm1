@@ -1982,7 +1982,6 @@ Export-ModuleMember -Function Get-VCFUpgradables
 
 ######### End Get Upgradable Operations ##########
 
-Export-ModuleMember -Function Get-VCFUpgradables
 
 ######### Start Certificate Configuration Operations ##########
 
@@ -2007,16 +2006,14 @@ Function Get-VCFCertificateAuthConfiguration {
   # Check the version of SDDC Manager
   CheckVCFVersion
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/certificate-authorities"
-  try {
+  Try {
+    $uri = "https://$sddcManager/v1/certificate-authorities"
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     $response.elements
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
