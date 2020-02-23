@@ -1724,10 +1724,9 @@ Function Set-VCFCeip {
       [string]$ceipSetting
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/system/ceip"
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    $uri = "https://$sddcManager/v1/system/ceip"
     if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
       Throw "You must define ENABLE or DISABLE as an input"
 		}
@@ -1740,9 +1739,8 @@ Function Set-VCFCeip {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     $response
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Set-VCFCeip
