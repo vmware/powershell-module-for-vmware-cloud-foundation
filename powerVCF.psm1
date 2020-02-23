@@ -1956,33 +1956,29 @@ Export-ModuleMember -Function Request-VCFBundle
 ######### Start Get Upgradable Operations ##########
 
 Function Get-VCFUpgradables {
-
 <#
-    .SYNOPSIS
-    Retrieves list of upgradables in the system
+  .SYNOPSIS
+  Retrieves list of upgradables in the system
 
-    .DESCRIPTION
-    Retrieves list of upgradables in the system
+  .DESCRIPTION
+  Retrieves list of upgradables in the system
 
-    .EXAMPLE
+  .EXAMPLE
     PS C:\> Get-VCFUpgradables
-    This example shows how to retrieve the list of upgradables in the system
+  This example shows how to retrieve the list of upgradables in the system
 #>
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/system/upgradables"
-
-    try {
-            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-            $response
-    }
-    catch {
-        # Call the function ResponseException which handles execption messages
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
+Export-ModuleMember -Function Get-VCFUpgradables
 
 ######### End Get Upgradable Operations ##########
 
