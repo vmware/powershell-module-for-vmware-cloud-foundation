@@ -3109,55 +3109,50 @@ Export-ModuleMember -function Get-VCFFederationMembers
 
 Function Join-VCFFederation {
 <#
-.SYNOPSIS
-A function to join an existing VCF Federation
+  .SYNOPSIS
+  A function to join an existing VCF Federation
 
-.DESCRIPTION
-A function that enables a new VCF Manager to join an existing VCF Federation.
+  .DESCRIPTION
+  A function that enables a new VCF Manager to join an existing VCF Federation.
 
-.EXAMPLE
-PS C:\> Join-VCFFederation .\joinVCFFederationSpec.json
-This example demonstrates how to join an VCF Federation by referencing config info in JSON file.
+  .EXAMPLE
+  PS C:\> Join-VCFFederation .\joinVCFFederationSpec.json
+  This example demonstrates how to join an VCF Federation by referencing config info in JSON file.
 #>
 
-param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
 
-    if (!(Test-Path $json)) {
-        throw "JSON File Not Found"
-    }
-    else {
-        # Get VCF Version
-        CheckVCFVersion
-        # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
-        $headers = @{"Accept" = "application/json"}
-        $headers.Add("Authorization", "Basic $base64AuthInfo")
-	    $uri = "https://$sddcManager/v1/sddc-federation/members"
-
-        try {
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+    $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
+    createHeader # Calls Function createHeader to set Accept & Authorization
+	  $uri = "https://$sddcManager/v1/sddc-federation/members"
+    Try {
 			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType 'application/json' -body $ConfigJson
-        	$response
-            # get the task id from the action
-            $taskId = $response.taskId
-            # keep checking until executionStatus is not IN_PROGRESS
-            do {
-                $uri = "https://$sddcManager/v1/sddc-federation/tasks/$taskId"
-                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType 'application/json'
-                Start-Sleep -Second 5
-            } While ($response.status -eq "IN_PROGRESS")
-            $response
-        }
-        catch {
-            #Get response from the exception
-            ResponseException
-            }
-        }
+      $response
+      $taskId = $response.taskId # get the task id from the action
+      # keep checking until executionStatus is not IN_PROGRESS
+      Do {
+        $uri = "https://$sddcManager/v1/sddc-federation/tasks/$taskId"
+        $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType 'application/json'
+        Start-Sleep -Second 5
+      }
+      While ($response.status -eq "IN_PROGRESS")
+        $response
+      }
+    Catch {
+      ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
+  }
 }
-Export-ModuleMember -function Join-VCFFederation
+Export-ModuleMember -Function Join-VCFFederation
 
 Function Remove-VCFFederation {
     <#
