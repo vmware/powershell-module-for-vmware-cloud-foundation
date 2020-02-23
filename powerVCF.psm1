@@ -2385,41 +2385,38 @@ Export-ModuleMember -Function Start-PreCheckVCFSystem
 Function Get-PreCheckVCFSystemTask {
 
 <#
-    .SYNOPSIS
-    The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
+  .SYNOPSIS
+  The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
-    .DESCRIPTION
-    The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
+  .DESCRIPTION
+  The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
-    .EXAMPLE
-    PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
-    This example shows how to retrieve the status of a system level precheck task
-
+  .EXAMPLE
+  PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+  This example shows how to retrieve the status of a system level precheck task
 #>
+
 	Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
-        )
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
-
-    if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
-    } else {
-        Throw "task id not provided"
-    }
-    try {
-            $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-            $response
-    }
-    catch {
-        # Call the function ResponseException which handles execption messages
-        ResponseException
-    }
+  createHeader # Calls Function createHeader to set Accept & Authorization
+  if ($PsBoundParameters.ContainsKey("id")) {
+    $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
+  }
+  else {
+    Throw "task id not provided"
+  }
+  Try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
-
 Export-ModuleMember -Function Get-PreCheckVCFSystemTask
 
 ######### End System Health Check Task Monitoring ##########
@@ -2457,30 +2454,26 @@ Function Get-VCFManager {
       [string]$domainId
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $method = "GET"
-
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     if ($PsBoundParameters.ContainsKey("id")) {
       $uri = "https://$sddcManager/v1/sddc-managers/$id"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GETT -URI $uri -headers $headers
       $response
     }
     if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
       $uri = "https://$sddcManager/v1/sddc-managers"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
     if ($PsBoundParameters.ContainsKey("domainId")) {
       $uri = "https://$sddcManager/v1/sddc-managers/?domain=$domainId"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFManager
@@ -2508,25 +2501,21 @@ Function Get-VCFService {
       [string]$id
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $method = "GET"
-
-  try {
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     if ($PsBoundParameters.ContainsKey("id")) {
       $uri = "https://$sddcManager/v1/vcf-services/$id"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response
     }
     if (-not $PsBoundParameters.ContainsKey("id")) {
       $uri = "https://$sddcManager/v1/vcf-services"
-      $response = Invoke-RestMethod -Method $method -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
   }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFService
