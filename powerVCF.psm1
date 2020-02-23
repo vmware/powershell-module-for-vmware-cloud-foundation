@@ -2928,28 +2928,26 @@ Export-ModuleMember -Function Get-VCFvRSLCM
 
 Function Get-VCFvRSLCMEnvironment {
 <#
-    .SYNOPSIS
-    Get vRealize Suite Lifecycle Manager environments
-    .DESCRIPTION
-    Gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
+  .SYNOPSIS
+  Get vRealize Suite Lifecycle Manager environments
 
-    .EXAMPLE
-    PS C:\> Get-VCFvRSLCMEnvironment
-    This example list all vRealize Suite Lifecycle Manager environments
+  .DESCRIPTION
+  Gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
 
+  .EXAMPLE
+  PS C:\> Get-VCFvRSLCMEnvironment
+  This example list all vRealize Suite Lifecycle Manager environments
 #>
 
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/vrslcm/environments"
-    try {
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    catch {
-        # Call the function ResponseException which handles execption messages
-        ResponseException
-    }
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseExecption to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
 
