@@ -1752,30 +1752,30 @@ Export-ModuleMember -Function Set-VCFCeip
 
 Function Get-VCFBackupConfiguration {
 <#
-  .SYNOPSIS
-  Gets the backup configuration of NSX Manager and SDDC Manager
+    .SYNOPSIS
+    Gets the backup configuration of NSX Manager and SDDC Manager
 
-  .DESCRIPTION
-  Retrieves the backup configuration details and the status
+    .DESCRIPTION
+    The Get-VCFBackupConfiguration cmdlet retrieves the current backup configuration details
 
-  .EXAMPLE
-  PS C:\> Get-VCFBackupConfiguration
-  This example shows the backup configuration
+    .EXAMPLE
+    PS C:\> Get-VCFBackupConfiguration
+    This example retrieves the backup configuration
 
-  .EXAMPLE
-  PS C:\> Get-VCFBackupConfiguration | ConvertTo-Json
-  This example retrieves the backup configuration and outputs it in json format
+    .EXAMPLE
+    PS C:\> Get-VCFBackupConfiguration | ConvertTo-Json
+    This example retrieves the backup configuration and outputs it in json format
 #>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    $uri = "https://$sddcManager/v1/system/backup-configuration"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$sddcManager/v1/system/backup-configuration"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.backupLocations
+    }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
 
