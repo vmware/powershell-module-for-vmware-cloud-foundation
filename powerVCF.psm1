@@ -3024,7 +3024,7 @@ Function Get-VCFFederation {
 #>
 
   Try {
-    CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
     createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/sddc-federation"
     $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3060,7 +3060,7 @@ Function Set-VCFFederation {
   }
   else {
     Try {
-      CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+      CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
       createHeader # Calls Function createHeader to set Accept & Authorization
       $ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
       $uri = "https://$sddcManager/v1/sddc-federation"
@@ -3087,7 +3087,7 @@ Function Remove-VCFFederation {
   This example demonstrates how to dismantle the VCF Federation
 #>
 
-  CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
   createHeader # Calls Function createHeader to set Accept & Authorization
   $uri = "https://$sddcManager/v1/sddc-federation"
   Try {
@@ -3135,7 +3135,7 @@ Function New-VCFFederationInvite {
 			[string]$inviteeFqdn
   )
 
-  CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
   createHeader # Calls Function createHeader to set Accept & Authorization
   $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
   Try {
@@ -3172,7 +3172,7 @@ Function Get-VCFFederationMembers {
   This example lists all details concerning the VCF Federation members.
 #>
 
-  CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
   createHeader # Calls Function createHeader to set Accept & Authorization
   $uri = "https://$sddcManager/v1/sddc-federation/members"
   Try {
@@ -3213,7 +3213,7 @@ Function Join-VCFFederation {
     Throw "JSON File Not Found"
   }
   else {
-    CheckVCFVersion # Calls Funxtion CheckVCFVersion to check VCF Version
+    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
     $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
     createHeader # Calls Function createHeader to set Accept & Authorization
 	  $uri = "https://$sddcManager/v1/sddc-federation/members"
