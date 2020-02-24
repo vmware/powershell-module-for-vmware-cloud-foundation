@@ -1189,7 +1189,7 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 
 ######### Start Task Operations ##########
 
-Function Functionsk {
+Function Get-VCFTask {
 <#
   .SYNOPSIS
   Connects to the specified SDDC Manager and retrieves a list of tasks.
