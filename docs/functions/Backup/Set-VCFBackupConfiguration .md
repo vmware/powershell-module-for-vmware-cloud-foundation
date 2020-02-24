@@ -1,7 +1,7 @@
 # Set-VCFBackupConfiguration
 
 ### Synopsis
-Configure backup settings to backup NSX and SDDC manager
+Configure backup settings for NSX and SDDC manager
 
 ### Syntax
 ```
@@ -9,7 +9,7 @@ Get-VCFBackupConfiguration
 ```
 
 ### Description
-Configures or updates the backup configuration details for backup up NSX and SDDC Manager
+The Set-VCFBackupConfiguration cmdlet configures or updates the backup configuration details for backing up NSX and SDDC Manager
 
 ### Examples
 #### Example 1
