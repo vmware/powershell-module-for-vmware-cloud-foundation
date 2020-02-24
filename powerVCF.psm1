@@ -1981,18 +1981,20 @@ Function Get-VCFUpgradables {
 Export-ModuleMember -Function Get-VCFUpgradables
 
 ######### End Get Upgradable Operations ##########
+
 ######### Start Upload Bundle Operations ##########
 
-Function Start-UploadVCFBundle {
+Function Start-VCFBundleUpload {
 <#
   .SYNOPSIS
   Starts upload of bundle to SDDC Manager
 
   .DESCRIPTION
-  The Start-UploadVCFBundle cmdlet starts upload of bundle(s) to SDDC Manager
+  The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
+  Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool 
 
   .EXAMPLE
-  PS C:\> Start-UploadVCFBundle -json .\Bundle\bundlespec.json
+  PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
   This example invokes the upload of a bundle onto SDDC Manager
 #>
 
@@ -2002,19 +2004,16 @@ Function Start-UploadVCFBundle {
       [string]$json
   )
 
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  createHeader # Calls Function createHeader to set Accept & Authorization
 
-  if ($PsBoundParameters.ContainsKey("json")) {
-      if (!(Test-Path $json)) {
+  if (!(Test-Path $json)) {
            Throw "JSON File Not Found"
       }
       else {
            # Read the json file contents into the $ConfigJson variable
            $ConfigJson = (Get-Content $json)
       }
-  }
-
+  
   $uri = "https://$sddcManager/v1/bundles"
   try {
       $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
@@ -2024,7 +2023,7 @@ Function Start-UploadVCFBundle {
     ResponseException
   }
 }
-Export-ModuleMember -Function Start-UploadVCFBundle
+Export-ModuleMember -Function Start-VCFBundleUpload
 
 ######### End Upload Bundle Operations ##########
 
