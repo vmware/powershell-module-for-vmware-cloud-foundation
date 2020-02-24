@@ -1,0 +1,16 @@
+{
+  "federationName" : "Rainpole",
+  "memberJoinDetail" : {
+    "role" : "CONTROLLER",
+    "fqdn" : "sfo01mgr01.sddc.local",
+    "siteType" : "DATACENTER",
+    "siteName" : "San Francisco",
+    "country" : "USA",
+    "state" : "",
+    "city" : "San Francisco",
+    "coordinate" : {
+      "longitude" : -122.838,
+      "latitude" : 37.286
+    }
+  }
+}

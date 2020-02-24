@@ -31,7 +31,7 @@ This example shows how to get a host by id
 
 #### Example 4
 ```
-Get-VCFHost -fqdn sfo01m01esx01.sfo01.rainpole.local
+Get-VCFHost -fqdn sfo01m01esx01.sfo.rainpole.local
 ```
 This example shows how to get a host by fqdn
 

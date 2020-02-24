@@ -24,6 +24,12 @@ Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
 ```
 This example shows how to get a task by id
 
+#### Example 3
+```
+Get-VCFTask -status SUCCESSFUL 	
+```
+This example shows how to get all tasks with a status of SUCCESSFUL
+
 ### Parameters
 
 #### -id
