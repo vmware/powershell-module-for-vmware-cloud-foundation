@@ -2145,36 +2145,39 @@ Export-ModuleMember -Function Request-VCFCertificateCSR
 
 Function Get-VCFCertificate {
 <#
-  .SYNOPSIS
-  Get latest generated certificate(s) in a domain
+    .SYNOPSIS
+    Get latest generated certificate(s) in a domain
 
-  .DESCRIPTION
-  The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
+    .DESCRIPTION
+    The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificate -domainName MGMT
-  This example gets a list of certificates that have been generated
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT
+    This example gets a list of certificates that have been generated
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificate -domainName MGMT | ConvertTo-Json
-  This example gets a list of certificates and displays them in JSON format
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT | ConvertTo-Json
+    This example gets a list of certificates and displays them in JSON format
+
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT | Select issuedTo
+    This example gets a list of endpoint names where certificates have been issued
 #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domainName
+    )
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFCertificate
 
