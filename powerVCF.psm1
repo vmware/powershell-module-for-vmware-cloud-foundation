@@ -1752,80 +1752,80 @@ Export-ModuleMember -Function Set-VCFCeip
 
 Function Get-VCFBackupConfiguration {
 <#
-  .SYNOPSIS
-  Gets the backup configuration of NSX Manager and SDDC Manager
+    .SYNOPSIS
+    Gets the backup configuration of NSX Manager and SDDC Manager
 
-  .DESCRIPTION
-  Retrieves the backup configuration details and the status
+    .DESCRIPTION
+    The Get-VCFBackupConfiguration cmdlet retrieves the current backup configuration details
 
-  .EXAMPLE
-  PS C:\> Get-VCFBackupConfiguration
-  This example shows the backup configuration
+    .EXAMPLE
+    PS C:\> Get-VCFBackupConfiguration
+    This example retrieves the backup configuration
 
-  .EXAMPLE
-  PS C:\> Get-VCFBackupConfiguration | ConvertTo-Json
-  This example retrieves the backup configuration and outputs it in json format
+    .EXAMPLE
+    PS C:\> Get-VCFBackupConfiguration | ConvertTo-Json
+    This example retrieves the backup configuration and outputs it in json format
 #>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    $uri = "https://$sddcManager/v1/system/backup-configuration"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$sddcManager/v1/system/backup-configuration"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.backupLocations
+    }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
 
 Function Set-VCFBackupConfiguration {
 <#
-  .SYNOPSIS
-  Configure backup settings to backup NSX and SDDC manager
+    .SYNOPSIS
+    Configure backup settings for NSX and SDDC manager
 
-  .DESCRIPTION
-  Configures or updates the backup configuration details for backup up NSX and SDDC Manager
+    .DESCRIPTION
+    The Set-VCFBackupConfiguration cmdlet configures or updates the backup configuration details for
+    backing up NSX and SDDC Manager
 
-  .EXAMPLE
-  PS C:\> Set-VCFBackupConfiguration -privilegedUsername svc-mgr-vsphere@vsphere.local -privilegedPassword VMw@re1! -json backupConfiguration.json
-  This example shows how to update the backup configuration
-
+    .EXAMPLE
+    PS C:\> Set-VCFBackupConfiguration -privilegedUsername svc-mgr-vsphere@vsphere.local -privilegedPassword
+    VMw@re1! -json backupConfiguration.json
+    This example shows how to update the backup configuration
 #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedUsername,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedPassword,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$privilegedUsername,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$privilegedPassword,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
 
-  if ($PsBoundParameters.ContainsKey("json")) {
-    if (!(Test-Path $json)) {
-      Throw "JSON File Not Found"
+    if ($PsBoundParameters.ContainsKey("json")) {
+        if (!(Test-Path $json)) {
+            Throw "JSON File Not Found"
+        }
+        else {
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content -Raw $json)
+        }
     }
-    else {
-      # Read the json file contents into the $ConfigJson variable
-      $ConfigJson = (Get-Content -Raw $json)
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $headers.Add("privileged-username", "$privilegedUsername")
+        $headers.Add("privileged-password", "$privilegedPassword")
+        $uri = "https://$sddcManager/v1/system/backup-configuration"
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        $response
     }
-  }
-
-  createHeader # Calls Function createHeader to set Accept & Authorization
-  $headers.Add("privileged-username", "$privilegedUsername")
-  $headers.Add("privileged-password", "$privilegedPassword")
-  $uri = "https://$sddcManager/v1/system/backup-configuration"
-  Try {
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
 
