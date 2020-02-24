@@ -30,6 +30,12 @@ Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
 ```
 This example shows how to get a Workload Domain by id
 
+#### Example 4
+```
+Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints | ConvertTo-Json
+```
+This example shows how to get endpoints of a Workload Domain by its id and displays the output in Json format
+
 ### Parameters
 
 ### -name
