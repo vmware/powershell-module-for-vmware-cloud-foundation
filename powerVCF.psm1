@@ -2458,7 +2458,7 @@ Function Get-VCFManager {
     createHeader # Calls Function createHeader to set Accept & Authorization
     if ($PsBoundParameters.ContainsKey("id")) {
       $uri = "https://$sddcManager/v1/sddc-managers/$id"
-      $response = Invoke-RestMethod -Method GETT -URI $uri -headers $headers
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response
     }
     if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
