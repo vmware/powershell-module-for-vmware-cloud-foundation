@@ -2066,37 +2066,36 @@ Export-ModuleMember -Function Set-VCFMicrosoftCA
 
 Function Get-VCFCertificateCSR {
 <#
-  .SYNOPSIS
-  Get available CSR(s)
+    .SYNOPSIS
+    Get available CSR(s)
 
-  .DESCRIPTION
-  The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created
-  on SDDC Manager
+    .DESCRIPTION
+    The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificateCSRs -domainName MGMT
-  This example gets a list of CSRs and displays the output
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateCSRs -domainName MGMT
+    This example gets a list of CSRs and displays the output
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
-  This example gets a list of CSRs and displays them in JSON format
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
+    This example gets a list of CSRs and displays them in JSON format
 #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domainName
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
 
