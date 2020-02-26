@@ -24,6 +24,12 @@ Get-VCFCertificate -domainName MGMT | ConvertTo-Json
 ```
 This example gets a list of certificates and displays them in JSON format
 
+#### Example 3
+```
+Get-VCFCertificate -domainName MGMT | Select issuedTo
+```
+This example gets a list of endpoint names where certificates have been issued
+
 ### Parameters
 
 #### -domainName
