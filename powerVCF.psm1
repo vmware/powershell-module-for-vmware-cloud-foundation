@@ -3001,6 +3001,78 @@ Function Get-VCFvRSLCMEnvironment {
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
 
+Function New-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Deploys vRealize Suite Lifecycle Manager
+    
+    .DESCRIPTION
+    Deploys vRealize Suite Lifecycle Manager to the specified network.
+    
+    .EXAMPLE
+    PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
+    This example Deploys vRealize Suite Lifecycle Manager using a supplied json file
+    
+    #>
+
+    param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        try {
+            # Call Function createHeader to set Accept & Authorization
+            createHeader 
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content -Raw $json)
+            $uri = "https://$sddcManager/v1/vrslcms"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        catch {
+            # Call Function ResponseExecption to get error response from the exception
+            ResponseException
+        }
+    }
+}   
+Export-ModuleMember -Function New-VCFvRSLCM
+
+Function Remove-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Removes a failed vRealize Suite Lifecycle Manager deployment
+    
+    .DESCRIPTION
+    Removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
+    to a successful vRealize Suite Lifecycle Manager deployment.
+    
+    .EXAMPLE
+    PS C:\> Remove-VCFvRSLCM
+    This example removes a failed vRealize Suite Lifecycle Manager deployment
+    
+    #>
+
+        try {
+            # Call Function createHeader to set Accept & Authorization
+            createHeader 
+            $uri = "https://$sddcManager/v1/vrslcm"
+            $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+            $response
+        }
+        catch {
+            # Call Function ResponseExecption to get error response from the exception
+            ResponseException
+        }
+    }
+}   
+Export-ModuleMember -Function Remove-VCFvRSLCM
+
+
 Function Get-VCFvROPs {
 <#
   .SYNOPSIS
@@ -3050,6 +3122,8 @@ Function Get-VCFvROPs {
   }
 }
 Export-ModuleMember -Function Get-VCFvROPs
+
+
 
 
 ######### End vRealize Suite Operations ##########
