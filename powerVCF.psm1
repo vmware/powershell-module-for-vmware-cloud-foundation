@@ -1340,64 +1340,65 @@ Export-ModuleMember -Function Get-VCFCredentialTask
 
 Function Get-VCFCredential {
 <#
-  .SYNOPSIS
-  Connects to the specified SDDC Manager and retrieves a list of credentials.
-  Supported resource types are: PSC, VCENTER, ESXI, NSX_MANAGER, NSX_CONTROLLER, BACKUP
-  Please note: if you are requesting credentials by resource type then the resource name parameter (if passed) will be ignored (they are mutually exclusive)
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and retrieves a list of credentials.
+    Supported resource types are: PSC, VCENTER, ESXI, NSX_MANAGER, NSX_CONTROLLER, BACKUP
+    Please note: if you are requesting credentials by resource type then the resource name parameter (if
+    passed) will be ignored (they are mutually exclusive)
 
-  .DESCRIPTION
-  The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
-  credentials. A privileged user account is required.
+    .DESCRIPTION
+    The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
+    A privileged user account is required.
 
-  .EXAMPLE
-  PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1!
-  This example shows how to get a list of credentials
+    .EXAMPLE
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1!
+    This example shows how to get a list of credentials
 
-  .EXAMPLE
-  PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceType PSC
-  This example shows how to get a list of PSC credentials
+    .EXAMPLE
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceType PSC
+    This example shows how to get a list of PSC credentials
 
-	.EXAMPLE
-  PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
-  This example shows how to get the credential for a specific resourceName (FQDN)
+    .EXAMPLE
+    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
+    This example shows how to get the credential for a specific resourceName (FQDN)
 #>
 
-	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedUsername,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedPassword,
-		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$resourceName,
-    [Parameter (Mandatory=$false)]
-      [ValidateSet("PSC", "VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
-      [ValidateNotNullOrEmpty()]
-      [string]$resourceType
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$privilegedUsername,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$privilegedPassword,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$resourceName,
+        [Parameter (Mandatory=$false)]
+            [ValidateSet("PSC", "VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
+            [ValidateNotNullOrEmpty()]
+            [string]$resourceType
+    )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
-  $headers.Add("privileged-username", "$privilegedUsername")
-  $headers.Add("privileged-password", "$privilegedPassword")
-  if ($PsBoundParameters.ContainsKey("resourceName")) {
-    $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/credentials"
-  }
-  # if requesting credential by type then name is ignored (mutually exclusive)
-  if ($PsBoundParameters.ContainsKey("resourceType") ) {
-    $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
-  }
-  Try {
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	  $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $headers.Add("privileged-username", "$privilegedUsername")
+        $headers.Add("privileged-password", "$privilegedPassword")
+        if ($PsBoundParameters.ContainsKey("resourceName")) {
+            $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
+        }
+        else {
+            $uri = "https://$sddcManager/v1/credentials"
+        }
+        # if requesting credential by type then name is ignored (mutually exclusive)
+        if ($PsBoundParameters.ContainsKey("resourceType") ) {
+            $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
+        }
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFCredential
 
@@ -2112,37 +2113,36 @@ Export-ModuleMember -Function Set-VCFMicrosoftCA
 
 Function Get-VCFCertificateCSR {
 <#
-  .SYNOPSIS
-  Get available CSR(s)
+    .SYNOPSIS
+    Get available CSR(s)
 
-  .DESCRIPTION
-  The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created
-  on SDDC Manager
+    .DESCRIPTION
+    The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificateCSRs -domainName MGMT
-  This example gets a list of CSRs and displays the output
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateCSRs -domainName MGMT
+    This example gets a list of CSRs and displays the output
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
-  This example gets a list of CSRs and displays them in JSON format
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
+    This example gets a list of CSRs and displays them in JSON format
 #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domainName
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
 
@@ -2191,36 +2191,39 @@ Export-ModuleMember -Function Request-VCFCertificateCSR
 
 Function Get-VCFCertificate {
 <#
-  .SYNOPSIS
-  Get latest generated certificate(s) in a domain
+    .SYNOPSIS
+    Get latest generated certificate(s) in a domain
 
-  .DESCRIPTION
-  The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
+    .DESCRIPTION
+    The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificate -domainName MGMT
-  This example gets a list of certificates that have been generated
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT
+    This example gets a list of certificates that have been generated
 
-  .EXAMPLE
-  PS C:\> Get-VCFCertificate -domainName MGMT | ConvertTo-Json
-  This example gets a list of certificates and displays them in JSON format
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT | ConvertTo-Json
+    This example gets a list of certificates and displays them in JSON format
+
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName MGMT | Select issuedTo
+    This example gets a list of endpoint names where certificates have been issued
 #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseExecption to get error response from the exception
-  }
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domainName
+    )
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseExecption to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFCertificate
 
