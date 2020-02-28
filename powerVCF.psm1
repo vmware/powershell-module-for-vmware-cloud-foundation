@@ -2957,7 +2957,7 @@ Function Get-VCFvRSLCM {
   Get the existing vRealize Suite Lifecycle Manager
 
   .DESCRIPTION
-  Gets the complete information about the existing vRealize Suite Lifecycle Manager.
+  The Get-VCFvRSLCM cmdlet gets the complete information about the existing vRealize Suite Lifecycle Manager.
 
   .EXAMPLE
   PS C:\> Get-VCFvRSLCM
@@ -2982,7 +2982,7 @@ Function Get-VCFvRSLCMEnvironment {
   Get vRealize Suite Lifecycle Manager environments
 
   .DESCRIPTION
-  Gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
+  The Get-VCFvRSLCMEnvironment cmdlet gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
 
   .EXAMPLE
   PS C:\> Get-VCFvRSLCMEnvironment
@@ -3001,13 +3001,85 @@ Function Get-VCFvRSLCMEnvironment {
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
 
+Function New-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Deploy vRealize Suite Lifecycle Manager
+    
+    .DESCRIPTION
+    The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
+    
+    .EXAMPLE
+    PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
+    This example deploys vRealize Suite Lifecycle Manager using a supplied json file
+    
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        Try {
+            # Call Function createHeader to set Accept & Authorization
+            createHeader 
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content -Raw $json)
+            $uri = "https://$sddcManager/v1/vrslcms"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        Catch {
+            # Call Function ResponseException to get error response from the exception
+            ResponseException
+        }
+    }
+}   
+Export-ModuleMember -Function New-VCFvRSLCM
+
+Function Remove-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Remove a failed vRealize Suite Lifecycle Manager deployment
+    
+    .DESCRIPTION
+    The New-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
+    to a successful vRealize Suite Lifecycle Manager deployment.
+    
+    .EXAMPLE
+    PS C:\> Remove-VCFvRSLCM
+    This example removes a failed vRealize Suite Lifecycle Manager deployment
+    
+    #>
+
+        Try {
+            # Call Function createHeader to set Accept & Authorization
+            createHeader 
+            $uri = "https://$sddcManager/v1/vrslcm"
+            $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+            $response
+        }
+        Catch {
+            # Call Function ResponseException to get error response from the exception
+            ResponseException
+        }
+    }
+}   
+Export-ModuleMember -Function Remove-VCFvRSLCM
+
+
 Function Get-VCFvROPs {
 <#
   .SYNOPSIS
   Get the existing vRealize Operations Manager
 
   .DESCRIPTION
-  Gets the complete information about the existing vRealize Operations Manager.
+  The Get-VCFvROPs cmdlet gets the complete information about the existing vRealize Operations Manager.
 
   .EXAMPLE
   PS C:\> Get-VCFvROPs
@@ -3050,6 +3122,8 @@ Function Get-VCFvROPs {
   }
 }
 Export-ModuleMember -Function Get-VCFvROPs
+
+
 
 
 ######### End vRealize Suite Operations ##########
