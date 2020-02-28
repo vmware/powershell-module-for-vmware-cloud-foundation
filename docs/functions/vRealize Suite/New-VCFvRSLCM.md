@@ -32,7 +32,7 @@ Position: Named
 Default value: None
 ```
 
-### Sample Application Virtual Network JSON
+### Sample VLAN JSON
 ```
 {
     "apiPassword": "VMw@re1!",
@@ -46,7 +46,7 @@ Default value: None
 }
 ```
 
-### Sample VLAN JSON
+### Sample Application Virtual Network JSON
 ```
 {
     "apiPassword": "VMw@re1!",
