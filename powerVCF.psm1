@@ -3034,7 +3034,7 @@ Function New-VCFvRSLCM {
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
             $response
         }
-        catch {
+        Catch {
             # Call Function ResponseException to get error response from the exception
             ResponseException
         }
