@@ -1,7 +1,7 @@
 # Remove-VCFvRSLCM
 
 ### Synopsis
-Removes a failed vRealize Suite Lifecycle Manager deplyment
+The Remove-VCFvRSLCM removes a failed vRealize Suite Lifecycle Manager deployment
 
 ### Syntax
 ```
@@ -9,7 +9,7 @@ Remove-VCFvRSLCM
 ```
 
 ### Description
-Removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
+The Remove-VCFvRSLCM removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
 to a successful vRealize Suite Lifecycle Manager deployment.
 
 ### Examples
