@@ -3057,17 +3057,16 @@ Function Remove-VCFvRSLCM {
     
     #>
 
-        Try {
-            # Call Function createHeader to set Accept & Authorization
-            createHeader 
-            $uri = "https://$sddcManager/v1/vrslcm"
-            $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-            $response
-        }
-        Catch {
-            # Call Function ResponseException to get error response from the exception
-            ResponseException
-        }
+    Try {
+        # Call Function createHeader to set Accept & Authorization
+        createHeader 
+        $uri = "https://$sddcManager/v1/vrslcm"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        # Call Function ResponseException to get error response from the exception
+        ResponseException
     }
 }   
 Export-ModuleMember -Function Remove-VCFvRSLCM
