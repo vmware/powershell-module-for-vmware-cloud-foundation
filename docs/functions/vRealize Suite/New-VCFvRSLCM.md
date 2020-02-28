@@ -1,7 +1,7 @@
 # New-VCFvRSLCM
 
 ### Synopsis
-Deploys vRealize Suite Lifecycle Manager
+The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager
 
 ### Syntax
 ```
@@ -9,14 +9,14 @@ New-VCFvRSLCM -json <path to json file>
 ```
 
 ### Description
-Deploys vRealize Suite Lifecycle Manager based on a JSON spec. Supports vLan or AVN based deployments.
+The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager based on a JSON spec. Supports VLAN or Application Virtual Network based deployments.
 
 ### Examples
 #### Example 1
 ```
 New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
 ```
-This example Deploys vRealize Suite Lifecycle Manager using a supplied json file
+This example deploys vRealize Suite Lifecycle Manager using a supplied json file
 
 ### Parameters
 #### -json
@@ -32,7 +32,7 @@ Position: Named
 Default value: None
 ```
 
-### Sample AVN JSON
+### Sample Application Virtual Network JSON
 ```
 {
     "apiPassword": "VMw@re1!",
@@ -46,7 +46,7 @@ Default value: None
 }
 ```
 
-### Sample vLAN JSON
+### Sample VLAN JSON
 ```
 {
     "apiPassword": "VMw@re1!",
