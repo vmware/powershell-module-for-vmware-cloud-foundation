@@ -1284,7 +1284,7 @@ Function Get-VCFCredentialTask {
   Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
 
   .DESCRIPTION
-  The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of
+  The Get-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retrieves a list of
   credential tasks in reverse chronological order.
 
   .EXAMPLE
