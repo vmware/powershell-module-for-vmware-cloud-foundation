@@ -2956,7 +2956,7 @@ Function Get-VCFvRSLCM {
   Get the existing vRealize Suite Lifecycle Manager
 
   .DESCRIPTION
-  Gets the complete information about the existing vRealize Suite Lifecycle Manager.
+  The Get-VCFvRSLCM cmdlet gets the complete information about the existing vRealize Suite Lifecycle Manager.
 
   .EXAMPLE
   PS C:\> Get-VCFvRSLCM
@@ -2981,7 +2981,7 @@ Function Get-VCFvRSLCMEnvironment {
   Get vRealize Suite Lifecycle Manager environments
 
   .DESCRIPTION
-  Gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
+  The Get-VCFvRSLCMEnvironment cmdlet gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
 
   .EXAMPLE
   PS C:\> Get-VCFvRSLCMEnvironment
@@ -3000,13 +3000,84 @@ Function Get-VCFvRSLCMEnvironment {
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
 
+Function New-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Deploy vRealize Suite Lifecycle Manager
+    
+    .DESCRIPTION
+    The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
+    
+    .EXAMPLE
+    PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
+    This example deploys vRealize Suite Lifecycle Manager using a supplied json file
+    
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        Try {
+            # Call Function createHeader to set Accept & Authorization
+            createHeader 
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content -Raw $json)
+            $uri = "https://$sddcManager/v1/vrslcms"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        Catch {
+            # Call Function ResponseException to get error response from the exception
+            ResponseException
+        }
+    }
+}   
+Export-ModuleMember -Function New-VCFvRSLCM
+
+Function Remove-VCFvRSLCM {
+<#
+    .SYNOPSIS
+    Remove a failed vRealize Suite Lifecycle Manager deployment
+    
+    .DESCRIPTION
+    The New-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
+    to a successful vRealize Suite Lifecycle Manager deployment.
+    
+    .EXAMPLE
+    PS C:\> Remove-VCFvRSLCM
+    This example removes a failed vRealize Suite Lifecycle Manager deployment
+    
+    #>
+
+    Try {
+        # Call Function createHeader to set Accept & Authorization
+        createHeader 
+        $uri = "https://$sddcManager/v1/vrslcm"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        # Call Function ResponseException to get error response from the exception
+        ResponseException
+    }
+}   
+Export-ModuleMember -Function Remove-VCFvRSLCM
+
+
 Function Get-VCFvROPs {
 <#
   .SYNOPSIS
   Get the existing vRealize Operations Manager
 
   .DESCRIPTION
-  Gets the complete information about the existing vRealize Operations Manager.
+  The Get-VCFvROPs cmdlet gets the complete information about the existing vRealize Operations Manager.
 
   .EXAMPLE
   PS C:\> Get-VCFvROPs
@@ -3049,6 +3120,8 @@ Function Get-VCFvROPs {
   }
 }
 Export-ModuleMember -Function Get-VCFvROPs
+
+
 
 
 ######### End vRealize Suite Operations ##########
@@ -3287,6 +3360,68 @@ Function Join-VCFFederation {
 Export-ModuleMember -Function Join-VCFFederation
 
 ######### End Federation Management ##########
+
+
+######### Start Application Virtual Network ##########
+
+Function Get-VCFApplicationVirtualNetwork {
+  <#
+  .SYNOPSIS
+  Retrieves all Application Virtual Networks
+  
+  .DESCRIPTION
+  The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
+    - regionType supports REGION_A, REGION_B, X_REGION
+  
+  .EXAMPLE
+  PS C:\> Get-VCFApplicationVirtualNetwork
+  This example demonstrates how to retrieve a list of Application Virtual Networks
+
+  .EXAMPLE
+  PS C:\> Get-VCFApplicationVirtualNetwork -regionType REGION_A
+  This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
+
+  .EXAMPLE
+  PS C:\> Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
+  This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
+  #>
+
+  Param (
+    [Parameter (Mandatory=$false)]
+        [ValidateSet("REGION_A", "REGION_B", "X_REGION")]
+        [ValidateNotNullOrEmpty()]
+        [string]$regionType,
+    [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
+  )
+
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
+      $uri = "https://$sddcManager/v1/avns"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if ($PsBoundParameters.ContainsKey("regionType")) {
+      $uri = "https://$sddcManager/v1/avns?regionType=$regionType"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/internal/avns/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+  Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
+
+######### End Application Virtual Network ##########
 
 
 ######### Start Utility Functions (not exported) ##########
