@@ -28,7 +28,7 @@ This example shows how to get the credential tasks for a specific task id
 ```
 Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
 ```
-This example shows how to get resource credentials for a credential task id
+This example shows how to get resource credentials (for e.g. ESXI) for a credential task id
 
 ### Parameters
 
