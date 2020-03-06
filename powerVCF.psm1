@@ -1686,7 +1686,7 @@ Function Validate-VCFUpdateClusterSpec {
 Function checkVCFToken {
   $expiryDetails = Get-JWTDetails $Global:accessToken
   if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
-    write-host "API Access Token Expired. Requesting New API Access Token"
+    write-host "API Access Token Expired. Please run Connect-VCFManager to generate a new access token"
     <# $headers = @{"Accept" = "application/json"}
     $body = 'refresh_token='+$refreshToken+'&grant_type=refresh_token'
     $uri = "https://$sddcManager/v1/tokens"
@@ -1916,9 +1916,9 @@ Function Set-VCFBackupConfiguration {
     }
     Try {
         createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $headers.Add("privileged-username", "$privilegedUsername")
-        $headers.Add("privileged-password", "$privilegedPassword")
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        <# $headers.Add("privileged-username", "$privilegedUsername")
+        $headers.Add("privileged-password", "$privilegedPassword") #>
         $uri = "https://$sddcManager/v1/system/backup-configuration"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
         $response
