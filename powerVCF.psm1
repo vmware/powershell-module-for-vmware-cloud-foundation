@@ -1436,12 +1436,6 @@ Function Set-VCFCredential {
 #>
 
   Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedUsername,
-		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedPassword,
 		[Parameter (Mandatory=$true)]
       [ValidateNotNullOrEmpty()]
       [string]$json
@@ -1456,7 +1450,7 @@ Function Set-VCFCredential {
     }
   }
   createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/credentials"
   Try {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
