@@ -8,7 +8,9 @@ PowerVCF is a PowerShell Module for interacting with the VMware Cloud Foundation
 # Disclaimer
 This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU).
 
-The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. It has been developed against VMware Cloud Foundation 3.9 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
+The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. 
+
+This version is supported with VMware Cloud Foundation 4.0 and above due to changes in the API auth process.
 
 ## Contributors
 If you would like to contribute please get in touch! Current contributors listed below.
