@@ -3176,8 +3176,8 @@ Function New-VCFvRSLCM {
     }
     else {
         Try {
-            # Call Function createHeader to set Accept & Authorization
-            createHeader 
+          createHeader # Calls Function createHeader to set Accept & Authorization
+          checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary 
             # Read the json file contents into the $ConfigJson variable
             $ConfigJson = (Get-Content -Raw $json)
             $uri = "https://$sddcManager/v1/vrslcms"
