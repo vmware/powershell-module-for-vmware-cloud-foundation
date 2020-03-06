@@ -1372,33 +1372,27 @@ Function Get-VCFCredential {
 
     .DESCRIPTION
     The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
-    A privileged user account is required.
+    Authenticated user must have ADMIn role.
 
     .EXAMPLE
-    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1!
+    PS C:\> Get-VCFCredential
     This example shows how to get a list of credentials
 
     .EXAMPLE
-    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceType PSC
-    This example shows how to get a list of PSC credentials
+    PS C:\> Get-VCFCredential-resourceType VCENTER
+    This example shows how to get a list of VCENTER credentials
 
     .EXAMPLE
-    PS C:\> Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
+    PS C:\> Get-VCFCredential -resourceName sfo01m01esx01.sfo.rainpole.local
     This example shows how to get the credential for a specific resourceName (FQDN)
 #>
 
     Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedUsername,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedPassword,
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
             [string]$resourceName,
         [Parameter (Mandatory=$false)]
-            [ValidateSet("PSC", "VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
+            [ValidateSet("VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
             [ValidateNotNullOrEmpty()]
             [string]$resourceType
     )
@@ -1406,8 +1400,8 @@ Function Get-VCFCredential {
     Try {
         createHeader # Calls Function createHeader to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $headers.Add("privileged-username", "$privilegedUsername")
-        $headers.Add("privileged-password", "$privilegedPassword")
+        #$headers.Add("privileged-username", "$privilegedUsername")
+        #$headers.Add("privileged-password", "$privilegedPassword")
         if ($PsBoundParameters.ContainsKey("resourceName")) {
             $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
         }
@@ -1705,7 +1699,7 @@ Function Validate-VCFUpdateClusterSpec {
 
 Function checkVCFToken {
   $expiryDetails = Get-JWTDetails $Global:accessToken
-  if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 60) {
+  if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
     write-host "API Access Token Expired. Requesting New API Access Token"
     <# $headers = @{"Accept" = "application/json"}
     $body = 'refresh_token='+$refreshToken+'&grant_type=refresh_token'
