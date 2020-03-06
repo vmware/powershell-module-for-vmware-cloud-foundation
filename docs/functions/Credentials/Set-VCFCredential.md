@@ -5,7 +5,7 @@ Connects to the specified SDDC Manager and updates a credential.
 
 ### Syntax
 ```
-Set-VCFCredential -privilegedUsername <string> -privilegedPassword <string> -json <path to json file>
+Set-VCFCredential -json <path to json file>
 ```
 
 ### Description
@@ -20,32 +20,6 @@ Set-VCFCredential -json .\Credential\updateCredentialSpec.json
 This example shows how to update a credential using a json spec
 
 ### Parameters
-
-#### -privilegejdUsername
-- Privileged Username for dual authentication
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-```
-
-#### -privilegedPassword
-- Privileged Password for dual authentication
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: Named
-Default value: None
-```
 
 #### -json
 - Path to JSON file with credentials to be updated

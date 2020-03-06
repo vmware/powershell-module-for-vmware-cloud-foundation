@@ -5,53 +5,27 @@ Connects to the specified SDDC Manager & retrieves a list of credentials.
 
 ### Syntax
 ```
-Get-VCFCredential -privilegedUsername <string> -privilegedPassword <string> -resourceName <string>
+Get-VCFCredential -resourceName <string>
 ```
 
 ### Description
-The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials. A privileged user account is required.
+The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials. You must have ADMIN role assigned.
 
 
 ### Examples
 #### Example 1
 ```
-Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1!
+Get-VCFCredential
 ```
 This example shows how to get a list of credentials
 
 #### Example 2
 ```
-Get-VCFCredential -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@re1! -resourceName sfo01m01esx01.sfo.rainpole.local
+Get-VCFCredential -resourceName sfo01m01esx01.sfo.rainpole.local
 ```
 This example shows how to get the credential for a specific resourceName (FQDN)
 
 ### Parameters
-
-#### -privilegedUsername
-- Privileged Username for dual authentication
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-```
-
-#### -privilegedPassword
-- Privileged Password for dual authentication
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-```
 
 #### -resourceName
 - Specific target resource to get credentials for

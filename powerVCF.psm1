@@ -1517,21 +1517,15 @@ Function Retry-VCFCredentialTask {
 	The Retry-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
 
   .EXAMPLE
-	PS C:\> Retry-VCFCredentialTask -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@reil! -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
+	PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
   This example shows how to update passwords of a resource type using a json spec
 
   .EXAMPLE
-	PS C:\> Retry-VCFCredentialTask  -privilegedUsername sec-admin@rainpole.local -privilegedPassword VMw@reil! -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\rotateCredentialSpec.json
+	PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\rotateCredentialSpec.json
   This example shows how to rotate passwords of a resource type using a json spec
 #>
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedUsername,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$privilegedPassword,
     [Parameter (Mandatory=$true)]
       [ValidateNotNullOrEmpty()]
       [string]$id,
