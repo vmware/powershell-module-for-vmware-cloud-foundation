@@ -1549,9 +1549,7 @@ Function Retry-VCFCredentialTask {
     Throw "task id not provided"
   }
   createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $headers.Add("privileged-username", "$privilegedUsername")
-  $headers.Add("privileged-password", "$privilegedPassword")
+  checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   Try {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     $response
@@ -1897,18 +1895,11 @@ Function Set-VCFBackupConfiguration {
     backing up NSX and SDDC Manager
 
     .EXAMPLE
-    PS C:\> Set-VCFBackupConfiguration -privilegedUsername svc-mgr-vsphere@vsphere.local -privilegedPassword
-    VMw@re1! -json backupConfiguration.json
+    PS C:\> Set-VCFBackupConfiguration -json .\SampleJSON\Backup\backupConfiguration.json
     This example shows how to update the backup configuration
 #>
 
     Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedUsername,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$privilegedPassword,
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
             [string]$json
