@@ -1684,15 +1684,13 @@ Function Validate-VCFUpdateClusterSpec {
 }
 
 Function checkVCFToken {
-  $expiryDetails = Get-JWTDetails $Global:accessToken
+  $expiryDetails = Get-JWTDetails $accessToken
   if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
-    write-host "API Access Token Expired. Please run Connect-VCFManager to generate a new access token"
-    <# $headers = @{"Accept" = "application/json"}
-    $body = 'refresh_token='+$refreshToken+'&grant_type=refresh_token'
-    $uri = "https://$sddcManager/v1/tokens"
-    $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
-    $Global:accessToken = $response.accessToken
-    $accessToken #>
+    write-host "API Access Token Expired. Requesting a new access token with current refresh token" -ForegroundColor Cyan
+    $headers = @{"Accept" = "application/json"}
+    $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
+    $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
+    $Global:accessToken = $response
   }
   
 }
