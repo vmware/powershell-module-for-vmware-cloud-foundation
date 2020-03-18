@@ -3282,6 +3282,38 @@ Function Get-VCFFederation {
 }
 Export-ModuleMember -Function Get-VCFFederation
 
+Function Get-VCFFederationTask {
+  <#
+    .SYNOPSIS
+    Get task status for Federation operations
+  
+    .DESCRIPTION
+    The Get-VCFFederationTask cmdlet gets the status of tasks relating to Federation operations
+  
+    .EXAMPLE
+    PS C:\> Get-VCFFederationTask -id f6f38f6b-da0c-4ef9-9228-9330f3d30279
+    This example list all tasks for Federation operations
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
+  )
+    Try {
+      CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+      createHeader # Calls Function createHeader to set Accept & Authorization
+      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    Catch {
+      ResponseException # Call Function ResponseException to get error response from the exception
+    }
+  }
+  Export-ModuleMember -Function Get-VCFFederationTask
+
 Function Set-VCFFederation {
 <#
   .SYNOPSIS
