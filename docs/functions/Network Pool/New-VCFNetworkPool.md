@@ -9,7 +9,7 @@ New-VCFNetworkPool -json <path to JSON file>
 ```
 
 ### Description
-The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager and retrieves a list of Network Pools.
+The New-VCFNetworkPool cmdlet connects to the specified SDDC Manager and creates a new Network Pool.
 
 
 ### Examples
