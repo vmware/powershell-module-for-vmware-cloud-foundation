@@ -111,6 +111,66 @@ Function Connect-VCFManager {
 }
 Export-ModuleMember -function Connect-VCFManager
 
+Function Connect-CloudBuilder
+{
+<#
+  .SYNOPSIS
+  Connects to the specified Cloud Builder and stores the credentials in a base64 string
+  
+  .DESCRIPTION
+  The Connect-CloudBuilder cmdlet connects to the specified Cloud Builder and stores the credentials
+  in a base64 string. It is required once per session before running all other cmdlets
+  
+  .EXAMPLE
+  PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
+  This example shows how to connect to SDDC Manager
+#>
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$fqdn,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$username,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$password
+  )
+  
+  if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
+    # Request Credentials
+    $creds = Get-Credential
+    $username = $creds.UserName.ToString()
+    $password = $creds.GetNetworkCredential().password
+  }
+
+  $Global:sddcManager = $fqdn
+  $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
+  
+  # Validate credentials by executing an API call
+  $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+  $uri = "https://$sddcManager/v1/sddc-managers"
+  
+  Try {
+    # Checking against the sddc-managers API
+    # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+    if ($PSEdition -eq 'Core') {
+      $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
+    }
+    else {
+      $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+    }
+    if ($response.StatusCode -eq 200) {
+      Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+    }
+  }
+  Catch {
+    Write-Host "" $_.Exception.Message -ForegroundColor Red
+    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-CloudBuilder cmdlet" -ForegroundColor Red
+  }
+}
+Export-ModuleMember -function Connect-CloudBuilder
 
 ######### Start Host Operations ##########
 
