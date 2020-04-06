@@ -2928,37 +2928,6 @@ Function Get-VCFNsxtCluster
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
 
-Function Get-VCFvRLI
-{
-  <#
-    .SYNOPSIS
-    Get the existing vRealize Log Insight Details
-
-    .DESCRIPTION
-    Gets the complete information about the existing vRealize Log Insight deployment.
-
-    .EXAMPLE
-    PS C:\> Get-VCFvRLI
-    This example list all details concerning the vRealize Log Insight Cluster
-
-    .EXAMPLE
-    PS C:\> Get-VCFvRLI | Select nodes | ConvertTo-Json
-    This example lists the node details of the cluster and outputs them in JSON format
-  #>
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/vrli"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFvRLI
-
 Function Invoke-VCFCommand
 {
   <#
