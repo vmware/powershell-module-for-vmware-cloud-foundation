@@ -2249,8 +2249,76 @@ Function Join-VCFFederation
 }
 Export-ModuleMember -Function Join-VCFFederation
 
-
 ######### End APIs for managing Members of the Federation ##########
+
+
+######### Start APIs for managing NSX-T Clusters ##########
+
+Function Get-VCFNsxtCluster
+{
+  <#
+    .SYNOPSIS
+    Gets a list of NSX-T Clusters
+
+    .DESCRIPTION
+    The Get-VCFNsxtCluster cmdlet retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFNsxtCluster
+    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+    This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
+    using the ID
+
+    .EXAMPLE
+    PS C:\> Get-VCFNsxtCluster -domainId 9a13bde7-bbd7-4d91-95a2-ee0189ffdaf3
+    This example shows how to return the details for all NSX-T Clusters managed by the connected SDDC Manager
+    using the domain ID
+
+    .EXAMPLE
+    PS C:\> Get-VCFNsxtCluster | select vipfqdn
+    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
+  #>
+
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
+  )
+
+  # Check the version of SDDC Manager
+  CheckVCFVersion
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/nsxt-clusters"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/nsxt-clusters/?domain=$domainId"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFNsxtCluster
+
+######### End APIs for managing NSX-T Clusters ##########
 
 
 
@@ -3212,69 +3280,7 @@ Function Get-VCFvCenter
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
-Function Get-VCFNsxtCluster
-{
-  <#
-    .SYNOPSIS
-    Gets a list of NSX-T Clusters
 
-    .DESCRIPTION
-    The Get-VCFNsxtCluster cmdlet retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
-
-    .EXAMPLE
-    PS C:\> Get-VCFNsxtCluster
-    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
-
-    .EXAMPLE
-    PS C:\> Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
-    using the ID
-
-    .EXAMPLE
-    PS C:\> Get-VCFNsxtCluster -domainId 9a13bde7-bbd7-4d91-95a2-ee0189ffdaf3
-    This example shows how to return the details for all NSX-T Clusters managed by the connected SDDC Manager
-    using the domain ID
-
-    .EXAMPLE
-    PS C:\> Get-VCFNsxtCluster | select vipfqdn
-    This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
-  #>
-
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainId
-  )
-
-  # Check the version of SDDC Manager
-  CheckVCFVersion
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
-      $uri = "https://$sddcManager/v1/nsxt-clusters"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("domainId")) {
-      $uri = "https://$sddcManager/v1/nsxt-clusters/?domain=$domainId"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFNsxtCluster
 
 Function Invoke-VCFCommand
 {
