@@ -8,41 +8,41 @@
 
 @{
 
-# Script module or binary module file associated with this manifest.
-RootModule = 'PowerVCF.psm1'
+  # Script module or binary module file associated with this manifest.
+  RootModule        = 'PowerVCF.psm1'
 
-# Version number of this module.
-ModuleVersion = '2.0'
+  # Version number of this module.
+  ModuleVersion     = '2.0'
 
-# Supported PSEditions
-# CompatiblePSEditions = @()
+  # Supported PSEditions
+  # CompatiblePSEditions = @()
 
-# ID used to uniquely identify this module
-GUID = '08e28c56-f231-4a2c-8906-dee337cf99b9'
+  # ID used to uniquely identify this module
+  GUID              = '08e28c56-f231-4a2c-8906-dee337cf99b9'
 
-# Author of this module
-Author = 'Brian O Connell'
+  # Author of this module
+  Author            = 'Brian O Connell'
 
-# Description of the functionality provided by this module
-Description = 'PowerShell Module for the VMware Cloud Foundation 4.0 API.'
+  # Description of the functionality provided by this module
+  Description       = 'PowerShell Module for the VMware Cloud Foundation 4.0 API.'
 
-# Minimum version of the Windows PowerShell engine required by this module
-# PowerShellVersion = '5.0'
+  # Minimum version of the Windows PowerShell engine required by this module
+  # PowerShellVersion = '5.0'
 
-# Name of the Windows PowerShell host required by this module
-# PowerShellHostName = ''
+  # Name of the Windows PowerShell host required by this module
+  # PowerShellHostName = ''
 
-# Minimum version of the Windows PowerShell host required by this module
-# PowerShellHostVersion = ''
+  # Minimum version of the Windows PowerShell host required by this module
+  # PowerShellHostVersion = ''
 
-# Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = '*'
+  # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
+  FunctionsToExport = '*'
 
-# Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = '*'
+  # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
+  CmdletsToExport   = '*'
 
-# Variables to export from this module
-VariablesToExport = '*'
+  # Variables to export from this module
+  VariablesToExport = '*'
 
 }
 
