@@ -3157,58 +3157,6 @@ Function Remove-VCFvRSLCM
 }   
 Export-ModuleMember -Function Remove-VCFvRSLCM
 
-Function Get-VCFvROPs
-{
-  <#
-    .SYNOPSIS
-    Get the existing vRealize Operations Manager
-
-    .DESCRIPTION
-    The Get-VCFvROPs cmdlet gets the complete information about the existing vRealize Operations Manager.
-
-    .EXAMPLE
-    PS C:\> Get-VCFvROPs
-    This example list all details concerning the vRealize Operations Manager
-
-    .EXAMPLE
-    PS C:\> Get-VCFvROPs -getIntegratedDomains
-    Retrieves all the existing workload domains and their connection status with vRealize Operations.
-
-    .EXAMPLE
-    PS C:\> Get-VCFvROPs -nodes
-    Retrieves all the vRealize Operations Manager nodes.
-  #>
-
-	Param (
-    [Parameter (Mandatory=$false)]
-			[ValidateNotNullOrEmpty()]
-			[switch]$getIntegratedDomains,
-    [Parameter (Mandatory=$false)]
-			[ValidateNotNullOrEmpty()]
-			[switch]$nodes
-	)
-
-  createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  if ($PsBoundParameters.ContainsKey("nodes")) {
-    $uri = "https://$sddcmanager/v1/vrops/nodes"
-  }
-  if ($PsBoundParameters.ContainsKey("getIntegratedDomains")) {
-    $uri = "https://$sddcmanager/v1/vrops/domains"
-  }
-  else {
-    $uri = "https://$sddcManager/v1/vropses"
-	}
-  Try {
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFvROPs
-
 ######### End vRealize Suite Operations ##########
 
 
