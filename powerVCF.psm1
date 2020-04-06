@@ -239,6 +239,7 @@ Function Get-VCFApplicationVirtualNetwork
 ######### End APIs for managing Application Virtual Networks ##########
 
 
+
 ######### Start APIs for managing Backup and Restore ##########
 
 Function Get-VCFBackupConfiguration
@@ -355,6 +356,7 @@ Export-ModuleMember -Function Start-VCFBackup
 ######### End APIs for managing Backup and Restore ##########
 
 
+
 ######### Start APIs for managing Bundles ##########
 
 Function Get-VCFBundle
@@ -448,6 +450,7 @@ Export-ModuleMember -Function Request-VCFBundle
 ######### End APIs for managing Bundles ##########
 
 
+
 ######### Start APIs for managing CEIP ##########
 
 Function Get-VCFCeip
@@ -526,6 +529,7 @@ Function Set-VCFCeip
 Export-ModuleMember -Function Set-VCFCeip
 
 ######### End APIs for managing CEIP ##########
+
 
 
 ######### Start APIs for managing Certificates ##########
@@ -828,6 +832,7 @@ Export-ModuleMember -Function Set-VCFCertificate
 ######### End APIs for managing Certificatess ##########
 
 
+
 ######### Start APIs for managing Clusters ##########
 
 Function Get-VCFCluster
@@ -1066,6 +1071,7 @@ Export-ModuleMember -Function Remove-VCFCluster
 ######### End APIs for managing Clusters ##########
 
 
+
 ######### Start APIs for managing Credentials ##########
 
 Function Get-VCFCredential
@@ -1227,7 +1233,6 @@ Function Get-VCFCredentialTask
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
 
-
 Function Cancel-VCFCredentialTask
 {
   <#
@@ -1322,6 +1327,7 @@ Export-ModuleMember -Function Retry-VCFCredentialTask
 ######### End APIs for managing Credentials ##########
 
 
+
 ######### Start APIs for managing Depot Settings ##########
 
 Function Get-VCFDepotCredentials
@@ -1392,6 +1398,7 @@ Function Set-VCFDepotCredentials
 Export-ModuleMember -Function Set-VCFDepotCredentials
 
 ######### End APIs for managing Depot Settings ##########
+
 
 
 ######### Start APIs for managing Domains ##########
@@ -1599,6 +1606,7 @@ Export-ModuleMember -Function Remove-VCFWorkloadDomain
 ######### End APIs for managing Domains ##########
 
 
+
 ######### Start APIs for managing Federation ##########
 
 Function Get-VCFFederation
@@ -1718,6 +1726,7 @@ Function Remove-VCFFederation
 Export-ModuleMember -Function Remove-VCFFederation
 
 ######### Start APIs for managing Federation ##########
+
 
 
 ######### Start APIs for managing Hosts ##########
@@ -1969,6 +1978,7 @@ Export-ModuleMember -Function Reset-VCFHost
 ######### End APIs for managing Hosts ##########
 
 
+
 ######### Start APIs for managing License Keys ##########
 
 Function Get-VCFLicenseKey
@@ -2120,6 +2130,7 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 ######### End APIs for managing License Keys ##########
 
 
+
 ######### Start APIs for managing Members of the Federation ##########
 
 Function Get-VCFFederationMembers
@@ -2252,6 +2263,7 @@ Export-ModuleMember -Function Join-VCFFederation
 ######### End APIs for managing Members of the Federation ##########
 
 
+
 ######### Start APIs for managing NSX-T Clusters ##########
 
 Function Get-VCFNsxtCluster
@@ -2322,26 +2334,7 @@ Export-ModuleMember -Function Get-VCFNsxtCluster
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-######### Start Network Pool Operations ##########
+######### Start APIs for managing Network Pools ##########
 
 Function Get-VCFNetworkPool
 {
@@ -2612,7 +2605,67 @@ Function Remove-VCFNetworkIPPool
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
-######### End Network Pool Operations ##########
+######### End APIs for managing Network Pools ##########
+
+
+
+######### Start APIs for managing NSX-T Edge Clusters ##########
+
+######### End APIs for managing NSX-T Edge Clusters ##########
+
+
+
+######### Start APIs for managing Personalities ##########
+
+######### End APIs for managing Personalities ##########
+
+
+
+######### Start APIs for managing Federation Tasks ##########
+
+Function Get-VCFFederationTask
+{
+  <#
+    .SYNOPSIS
+    Get task status for Federation operations
+  
+    .DESCRIPTION
+    The Get-VCFFederationTask cmdlet gets the status of tasks relating to Federation operations
+  
+    .EXAMPLE
+    PS C:\> Get-VCFFederationTask -id f6f38f6b-da0c-4ef9-9228-9330f3d30279
+    This example list all tasks for Federation operations
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
+  )
+    Try {
+      CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+      createHeader # Calls Function createHeader to set Accept & Authorization
+      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    Catch {
+      ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFFederationTask
+
+######### End APIs for managing Federation Tasks ##########
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2710,8 +2763,6 @@ Function Retry-VCFTask
 Export-ModuleMember -Function Retry-VCFTask
 
 #### End Task Operations #####
-
-
 
 
 ######## Start Validation Functions ########
@@ -3514,45 +3565,6 @@ Export-ModuleMember -Function Remove-VCFvRSLCM
 ######### End vRealize Suite Operations ##########
 
 
-######### Start Federation Management ##########
-
-Function Get-VCFFederationTask
-{
-  <#
-    .SYNOPSIS
-    Get task status for Federation operations
-  
-    .DESCRIPTION
-    The Get-VCFFederationTask cmdlet gets the status of tasks relating to Federation operations
-  
-    .EXAMPLE
-    PS C:\> Get-VCFFederationTask -id f6f38f6b-da0c-4ef9-9228-9330f3d30279
-    This example list all tasks for Federation operations
-  #>
-
-  Param (
-    [Parameter (Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
-  )
-    Try {
-      CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-      createHeader # Calls Function createHeader to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-}
-Export-ModuleMember -Function Get-VCFFederationTask
-
-
-
-
-######### End Federation Management ##########
 
 
 
