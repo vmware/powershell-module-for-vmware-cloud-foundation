@@ -1599,6 +1599,129 @@ Export-ModuleMember -Function Remove-VCFWorkloadDomain
 ######### End APIs for managing Domains ##########
 
 
+######### Start APIs for Federation ##########
+
+Function Get-VCFFederation
+{
+  <#
+    .SYNOPSIS
+    Get information on existing Federation
+
+    .DESCRIPTION
+    The Get-VCFFederation cmdlet gets the complete information about the existing VCF Federation
+
+    .EXAMPLE
+    PS C:\> Get-VCFFederation
+    This example list all details concerning the VCF Federation
+
+    .EXAMPLE
+    PS C:\> Get-VCFFederation | ConvertTo-Json
+    This example list all details concerning the VCF Federation and outputs them in Json format
+  #>
+
+  Try {
+    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/sddc-federation"
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFFederation
+
+Function Set-VCFFederation
+{
+  <#
+    .SYNOPSIS
+    Bootstrap a VMware Cloud Foundation to form a federation
+
+    .DESCRIPTION
+    The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
+
+    .EXAMPLE
+    PS C:\> Set-VCFFederation -json createFederation.json
+    This example shows how to create a fedration using the json file
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
+
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    Try {
+      CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+      createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      $ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
+      $uri = "https://$sddcManager/v1/sddc-federation"
+      $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      $response
+    }
+    Catch {
+      ResponseException # Call Function ResponseException to get error response from the exception
+    }
+  }
+}
+Export-ModuleMember -Function Set-VCFFederation
+
+Function Remove-VCFFederation
+{
+  <#
+    .SYNOPSIS
+    Remove VCF Federation
+
+    .DESCRIPTION
+    A function that ensures VCF Federation is empty and completely dismantles it.
+
+    .EXAMPLE
+    PS C:\> Remove-VCFFederation
+    This example demonstrates how to dismantle the VCF Federation
+  #>
+
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  $uri = "https://$sddcManager/v1/sddc-federation"
+  Try {
+    # Verify that SDDC Manager we're connected to is a controller and only one in the Federation
+    $sddcs = Get-VCFFederation | Select-Object memberDetails
+    Foreach ($sddc in $sddcs) {
+      if ($sddc.memberDetails.role -eq "CONTROLLER") {
+        $controller++
+        if ($sddc.memberDetails.role -eq "MEMBER") {
+          $member++
+          }
+        }
+      }
+      if ($controller -gt 1) {
+        Throw "Only one controller can be present when dismantling VCF Federation. Remove additional controllers and try again"
+      }
+      if ($member -gt 0) {
+        Throw "VCF Federation members still exist. Remove all members and additional controllers before dismantling VCF Federation"
+      }
+      $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+      $response
+    }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Remove-VCFFederation
+
+######### Start APIs for Federation ##########
+
+
+
+
 
 
 
@@ -3251,37 +3374,7 @@ Export-ModuleMember -Function Remove-VCFvRSLCM
 
 ######### Start Federation Management ##########
 
-Function Get-VCFFederation
-{
-  <#
-    .SYNOPSIS
-    Get information on existing Federation
 
-    .DESCRIPTION
-    The Get-VCFFederation cmdlet gets the complete information about the existing VCF Federation
-
-    .EXAMPLE
-    PS C:\> Get-VCFFederation
-    This example list all details concerning the VCF Federation
-
-    .EXAMPLE
-    PS C:\> Get-VCFFederation | ConvertTo-Json
-    This example list all details concerning the VCF Federation and outputs them in Json format
-  #>
-
-  Try {
-    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/sddc-federation"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFFederation
 
 Function Get-VCFFederationTask
 {
@@ -3313,92 +3406,12 @@ Function Get-VCFFederationTask
     Catch {
       ResponseException # Call Function ResponseException to get error response from the exception
     }
-  }
-  Export-ModuleMember -Function Get-VCFFederationTask
-
-Function Set-VCFFederation
-{
-  <#
-    .SYNOPSIS
-    Bootstrap a VMware Cloud Foundation to form a federation
-
-    .DESCRIPTION
-    The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
-
-    .EXAMPLE
-    PS C:\> Set-VCFFederation -json createFederation.json
-    This example shows how to create a fedration using the json file
-  #>
-
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
-
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    Try {
-      CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-      createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      $ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
-      $uri = "https://$sddcManager/v1/sddc-federation"
-      $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-      $response
-    }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-  }
 }
-Export-ModuleMember -Function Set-VCFFederation
+Export-ModuleMember -Function Get-VCFFederationTask
 
-Function Remove-VCFFederation
-{
-  <#
-    .SYNOPSIS
-    Remove VCF Federation
 
-    .DESCRIPTION
-    A function that ensures VCF Federation is empty and completely dismantles it.
 
-    .EXAMPLE
-    PS C:\> Remove-VCFFederation
-    This example demonstrates how to dismantle the VCF Federation
-  #>
 
-  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-  createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/sddc-federation"
-  Try {
-    # Verify that SDDC Manager we're connected to is a controller and only one in the Federation
-    $sddcs = Get-VCFFederation | Select-Object memberDetails
-    Foreach ($sddc in $sddcs) {
-      if ($sddc.memberDetails.role -eq "CONTROLLER") {
-        $controller++
-        if ($sddc.memberDetails.role -eq "MEMBER") {
-          $member++
-          }
-        }
-      }
-      if ($controller -gt 1) {
-        Throw "Only one controller can be present when dismantling VCF Federation. Remove additional controllers and try again"
-      }
-      if ($member -gt 0) {
-        Throw "VCF Federation members still exist. Remove all members and additional controllers before dismantling VCF Federation"
-      }
-      $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-      $response
-    }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Remove-VCFFederation
 
 Function New-VCFFederationInvite
 {
