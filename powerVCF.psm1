@@ -2871,68 +2871,6 @@ Function Get-VCFPsc {
 }
 Export-ModuleMember -Function Get-VCFPsc
 
-Function Get-VCFNsxvManager {
-<#
-  .SYNOPSIS
-  Gets a list of NSX-v Managers
-
-  .DESCRIPTION
-  The Get-VCFNsxvManager cmdlet retrieves a list of NSX-v Managers managed by the connected SDDC Manager
-
-  .EXAMPLE
-  PS C:\> Get-VCFNsxvManager
-  This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager
-
-  .EXAMPLE
-  PS C:\> Get-VCFNsxvManager -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-  This example shows how to return the details for a specic NSX-v Manager managed by the connected SDDC Manager
-  using its ID
-
-  PS C:\> Get-VCFNsxvManager -domainId 9a13bde7-bbd7-4d91-95a2-ee0189ffdaf3
-  This example shows how to return details for all NSX-v Managers managed by the connected SDDC Manager
-  using its Domain ID
-
-  .EXAMPLE
-  PS C:\> Get-VCFNsxvManager | select fqdn
-  This example shows how to get the list of NSX-v Managers managed by the connected SDDC Manager but only return the fqdn
-#>
-
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainId
-  )
-
-  # Check the version of SDDC Manager
-  CheckVCFVersion
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
-      $uri = "https://$sddcManager/v1/nsx-managers"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/nsx-managers/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("domainId")) {
-      $uri = "https://$sddcManager/v1/nsx-managers/?domain=$domainId"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFNsxvManager
-
 Function Get-VCFNsxtCluster {
 <#
   .SYNOPSIS
