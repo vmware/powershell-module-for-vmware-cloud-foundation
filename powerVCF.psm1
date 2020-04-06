@@ -2816,14 +2816,7 @@ Export-ModuleMember -Function Get-PreCheckVCFSystemTask
 
 
 
-
-
-
-
-
-
-
-######### Start Task Operations ##########
+######### Start APIs for managing Tasks ##########
 
 Function Get-VCFTask
 {
@@ -2914,7 +2907,15 @@ Function Retry-VCFTask
 }
 Export-ModuleMember -Function Retry-VCFTask
 
-#### End Task Operations #####
+#### End APIs for managing Tasks #####
+
+
+
+
+
+
+
+
 
 
 ######## Start Validation Functions ########
