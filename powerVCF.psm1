@@ -1187,7 +1187,7 @@ Function Get-VCFCredential
   <#
     .SYNOPSIS
     Connects to the specified SDDC Manager and retrieves a list of credentials.
-    Supported resource types are: PSC, VCENTER, ESXI, NSX_MANAGER, NSX_CONTROLLER, BACKUP
+    Supported resource types are: VCENTER, ESXI, NSXT_MANAGER, NSXT_EDGE, BACKUP
     Please note: if you are requesting credentials by resource type then the resource name parameter (if
     passed) will be ignored (they are mutually exclusive)
 
@@ -1200,12 +1200,16 @@ Function Get-VCFCredential
     This example shows how to get a list of credentials
 
     .EXAMPLE
-    PS C:\> Get-VCFCredential-resourceType VCENTER
+    PS C:\> Get-VCFCredential -resourceType VCENTER
     This example shows how to get a list of VCENTER credentials
 
     .EXAMPLE
-    PS C:\> Get-VCFCredential -resourceName sfo01m01esx01.sfo.rainpole.local
+    PS C:\> Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
     This example shows how to get the credential for a specific resourceName (FQDN)
+
+    .EXAMPLE
+    PS C:\> Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
+    This example shows how to get the credential using the id 
   #>
 
   Param (
@@ -1215,7 +1219,10 @@ Function Get-VCFCredential
     [Parameter (Mandatory=$false)]
       [ValidateSet("VCENTER", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE")]
         [ValidateNotNullOrEmpty()]
-        [string]$resourceType
+        [string]$resourceType,
+    [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
   )
 
   Try {
@@ -1223,16 +1230,25 @@ Function Get-VCFCredential
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     if ($PsBoundParameters.ContainsKey("resourceName")) {
       $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
+    elseif ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/credentials/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
     }
     else {
       $uri = "https://$sddcManager/v1/credentials"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
     # if requesting credential by type then name is ignored (mutually exclusive)
     if ($PsBoundParameters.ContainsKey("resourceType") ) {
       $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response.elements
   }
   Catch {
     ResponseException # Call Function ResponseException to get error response from the exception
@@ -1260,19 +1276,19 @@ Function Set-VCFCredential
       [ValidateNotNullOrEmpty()]
       [string]$json
   )
-
-  if ($PsBoundParameters.ContainsKey("json")) {
-    if (!(Test-Path $json)) {
-      Throw "JSON File Not Found"
-    }
-    else {
-      $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-    }
-  }
-  createHeader # Calls Function createHeader to set Accept & Authorization
-  checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/credentials"
+  
   Try {
+    if ($PsBoundParameters.ContainsKey("json")) {
+      if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+      }
+      else {
+        $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+      }
+    }
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/credentials"
     $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     $response
   }
