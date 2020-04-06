@@ -239,6 +239,122 @@ Function Get-VCFApplicationVirtualNetwork
 ######### End Application Virtual Networks ##########
 
 
+######### Start Backup and Restore ##########
+
+Function Get-VCFBackupConfiguration
+{
+  <#
+      .SYNOPSIS
+      Gets the backup configuration of NSX Manager and SDDC Manager
+
+      .DESCRIPTION
+      The Get-VCFBackupConfiguration cmdlet retrieves the current backup configuration details
+
+      .EXAMPLE
+      PS C:\> Get-VCFBackupConfiguration
+      This example retrieves the backup configuration
+
+      .EXAMPLE
+      PS C:\> Get-VCFBackupConfiguration | ConvertTo-Json
+      This example retrieves the backup configuration and outputs it in json format
+  #>
+
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/backup-configuration"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.backupLocations
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFBackupConfiguration
+
+Function Set-VCFBackupConfiguration
+{
+  <#
+      .SYNOPSIS
+      Configure backup settings for NSX and SDDC manager
+
+      .DESCRIPTION
+      The Set-VCFBackupConfiguration cmdlet configures or updates the backup configuration details for
+      backing up NSX and SDDC Manager
+
+      .EXAMPLE
+      PS C:\> Set-VCFBackupConfiguration -json .\SampleJSON\Backup\backupConfiguration.json
+      This example shows how to update the backup configuration
+  #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    if ($PsBoundParameters.ContainsKey("json")) {
+        if (!(Test-Path $json)) {
+            Throw "JSON File Not Found"
+        }
+        else {
+            # Read the json file contents into the $ConfigJson variable
+            $ConfigJson = (Get-Content -Raw $json)
+        }
+    }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        <# $headers.Add("privileged-username", "$privilegedUsername")
+        $headers.Add("privileged-password", "$privilegedPassword") #>
+        $uri = "https://$sddcManager/v1/system/backup-configuration"
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Set-VCFBackupConfiguration
+
+Function Start-VCFBackup
+{
+  <#
+    .SYNOPSIS
+    Start the SDDC Manager backup
+
+    .DESCRIPTION
+    The Start-VCFBackup cmdlet invokes the SDDC Manager backup task
+
+    .EXAMPLE
+    PS C:\> Start-VCFBackup
+    This example shows how to start the SDDC Manager backup
+  #>
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    # this body is fixed for SDDC Manager backups. not worth having it stored on file
+    $ConfigJson = '
+      {
+        "elements" : [{
+          "resourceType" : "SDDC_MANAGER"
+          }]
+        }
+      '
+    $uri = "https://$sddcManager/v1/backups/tasks"
+    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Start-VCFBackup
+
+######### End Backup and Restore ##########
+
+
 ######### Start Host Operations ##########
 
 Function Get-VCFHost
@@ -2012,120 +2128,7 @@ Export-ModuleMember -Function Set-VCFCeip
 ######### End CEIP Operations ##########
 
 
-######### Start Backup Configuration Operations ##########
 
-Function Get-VCFBackupConfiguration
-{
-  <#
-      .SYNOPSIS
-      Gets the backup configuration of NSX Manager and SDDC Manager
-
-      .DESCRIPTION
-      The Get-VCFBackupConfiguration cmdlet retrieves the current backup configuration details
-
-      .EXAMPLE
-      PS C:\> Get-VCFBackupConfiguration
-      This example retrieves the backup configuration
-
-      .EXAMPLE
-      PS C:\> Get-VCFBackupConfiguration | ConvertTo-Json
-      This example retrieves the backup configuration and outputs it in json format
-  #>
-
-    Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/system/backup-configuration"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.backupLocations
-    }
-    Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-    }
-}
-Export-ModuleMember -Function Get-VCFBackupConfiguration
-
-Function Set-VCFBackupConfiguration
-{
-  <#
-      .SYNOPSIS
-      Configure backup settings for NSX and SDDC manager
-
-      .DESCRIPTION
-      The Set-VCFBackupConfiguration cmdlet configures or updates the backup configuration details for
-      backing up NSX and SDDC Manager
-
-      .EXAMPLE
-      PS C:\> Set-VCFBackupConfiguration -json .\SampleJSON\Backup\backupConfiguration.json
-      This example shows how to update the backup configuration
-  #>
-
-    Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$json
-    )
-
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content -Raw $json)
-        }
-    }
-    Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        <# $headers.Add("privileged-username", "$privilegedUsername")
-        $headers.Add("privileged-password", "$privilegedPassword") #>
-        $uri = "https://$sddcManager/v1/system/backup-configuration"
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-        $response
-    }
-    Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-    }
-}
-Export-ModuleMember -Function Set-VCFBackupConfiguration
-
-Function Start-VCFBackup
-{
-  <#
-    .SYNOPSIS
-    Start the SDDC Manager backup
-
-    .DESCRIPTION
-    The Start-VCFBackup cmdlet invokes the SDDC Manager backup task
-
-    .EXAMPLE
-    PS C:\> Start-VCFBackup
-    This example shows how to start the SDDC Manager backup
-  #>
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    # this body is fixed for SDDC Manager backups. not worth having it stored on file
-    $ConfigJson = '
-      {
-        "elements" : [{
-          "resourceType" : "SDDC_MANAGER"
-          }]
-        }
-      '
-    $uri = "https://$sddcManager/v1/backups/tasks"
-    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Start-VCFBackup
-
-######### End Backup Configuration Operations ##########
 
 
 ######### Start Bundle Operations ##########
