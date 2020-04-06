@@ -2761,17 +2761,18 @@ Function Get-VCFFederationTask
         [ValidateNotNullOrEmpty()]
         [string]$id
   )
-    Try {
-      CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-      createHeader # Calls Function createHeader to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
+  
+  Try {
+    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFFederationTask
 
