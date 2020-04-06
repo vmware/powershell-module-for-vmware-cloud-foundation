@@ -5,7 +5,7 @@ Connects to the specified SDDC Manager & retrieves a list of credentials.
 
 ### Syntax
 ```
-Get-VCFCredential -resourceName <string>
+Get-VCFCredential -resourceName <string> -resourceType <string> -id <string>
 ```
 
 ### Description
@@ -21,11 +21,37 @@ This example shows how to get a list of credentials
 
 #### Example 2
 ```
-Get-VCFCredential -resourceName sfo01m01esx01.sfo.rainpole.local
+Get-VCFCredential -resourceType VCENTER
+```
+This example shows how to get a list of VCENTER credentials
+
+#### Example 3
+```
+Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
 ```
 This example shows how to get the credential for a specific resourceName (FQDN)
 
+#### Example 4
+```
+Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
+```
+This example shows how to get the credential using the id
+
 ### Parameters
+
+#### -resourceType
+- Specify the type of resource
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accepted Value: VCENTER, ESXI, NSXT_MANAGER, NSXT_EDGE, BACKUP
+```
 
 #### -resourceName
 - Specific target resource to get credentials for
@@ -41,7 +67,22 @@ Default value: None
 Accepted Value: Resource FQDN
 ```
 
+#### -id
+ID of a credential
+
+```yaml
+Type: String
+Parameter Sets: Username
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### Notes
 
 ### Related Links
-Steps to configure Dual Authentication https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.ovdeploy.doc_39/GUID-FAB78718-E626-4924-85DC-97536C3DA337.html
+
