@@ -1208,37 +1208,35 @@ Function Get-VCFCredential
     This example shows how to get the credential for a specific resourceName (FQDN)
   #>
 
-    Param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$resourceName,
-        [Parameter (Mandatory=$false)]
-            [ValidateSet("VCENTER", "ESXI", "NSX_MANAGER", "NSX_CONTROLLER", "BACKUP")]
-            [ValidateNotNullOrEmpty()]
-            [string]$resourceType
-    )
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$resourceName,
+    [Parameter (Mandatory=$false)]
+      [ValidateSet("VCENTER", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE")]
+        [ValidateNotNullOrEmpty()]
+        [string]$resourceType
+  )
 
-    Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        #$headers.Add("privileged-username", "$privilegedUsername")
-        #$headers.Add("privileged-password", "$privilegedPassword")
-        if ($PsBoundParameters.ContainsKey("resourceName")) {
-            $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
-        }
-        else {
-            $uri = "https://$sddcManager/v1/credentials"
-        }
-        # if requesting credential by type then name is ignored (mutually exclusive)
-        if ($PsBoundParameters.ContainsKey("resourceType") ) {
-            $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
-        }
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    if ($PsBoundParameters.ContainsKey("resourceName")) {
+      $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
     }
-    Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+    else {
+      $uri = "https://$sddcManager/v1/credentials"
     }
+    # if requesting credential by type then name is ignored (mutually exclusive)
+    if ($PsBoundParameters.ContainsKey("resourceType") ) {
+      $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
+    }
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response.elements
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFCredential
 
