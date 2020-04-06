@@ -1322,7 +1322,7 @@ Export-ModuleMember -Function Retry-VCFCredentialTask
 ######### End APIs for managing Credentials ##########
 
 
-######### Start APIs for managing  Depot Settings ##########
+######### Start APIs for managing Depot Settings ##########
 
 Function Get-VCFDepotCredentials
 {
@@ -1391,8 +1391,212 @@ Function Set-VCFDepotCredentials
 }
 Export-ModuleMember -Function Set-VCFDepotCredentials
 
-######### End APIs for managing  Depot Settings ##########
+######### End APIs for managing Depot Settings ##########
 
+
+######### Start APIs for managing Domains ##########
+
+Function Get-VCFWorkloadDomain
+{
+  <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager & retrieves a list of workload domains.
+
+    .DESCRIPTION
+    The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
+    & retrieves a list of workload domains.
+
+    .EXAMPLE
+    PS C:\> Get-VCFWorkloadDomain
+    This example shows how to get a list of Workload Domains
+
+    .EXAMPLE
+    PS C:\> Get-VCFWorkloadDomain -name WLD01
+    This example shows how to get a Workload Domain by name
+
+    .EXAMPLE
+    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+    This example shows how to get a Workload Domain by id
+
+    .EXAMPLE
+    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints | ConvertTo-Json
+    This example shows how to get endpoints of a Workload Domain by its id and displays the output in Json format
+  #>
+
+	Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$name,
+		[Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [switch]$endpoints
+  )
+
+      createHeader # Calls Function createHeader to set Accept & Authorization
+      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  Try {
+    if ($PsBoundParameters.ContainsKey("name")) {
+      $uri = "https://$sddcManager/v1/domains"
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements | Where-Object {$_.name -eq $name}
+		}
+		if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/domains/$id"
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response
+		}
+    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+      $uri = "https://$sddcManager/v1/domains"
+			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+			$response.elements
+		}
+    if ( $PsBoundParameters.ContainsKey("id") -and ( $PsBoundParameters.ContainsKey("endpoints"))) {
+      $uri = "https://$sddcManager/v1/domains/$id/endpoints"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+  		$response.elements
+    }
+	}
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFWorkloadDomain
+
+Function New-VCFWorkloadDomain
+{
+  <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager & creates a workload domain.
+
+    .DESCRIPTION
+    The New-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
+    & creates a workload domain.
+
+    .EXAMPLE
+    PS C:\> New-VCFWorkloadDomain -json .\WorkloadDomain\workloadDomainSpec.json
+    This example shows how to create a Workload Domain from a json spec
+  #>
+
+	Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
+
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Read the json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content $json)
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    # Validate the provided JSON input specification file
+    $response = Validate-WorkloadDomainSpec -json $ConfigJson
+    # the validation API does not currently support polling with a task ID
+    Sleep 5
+    # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+      Try {
+        Write-Host ""
+        Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
+        $uri = "https://$sddcManager/v1/domains"
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        Return $response
+        Write-Host ""
+        Return $response
+        Write-Host ""
+      }
+      Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+      }
+    }
+    else {
+      Write-Host ""
+      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+      Write-Host ""
+    }
+  }
+}
+Export-ModuleMember -Function New-VCFWorkloadDomain
+
+Function Set-VCFWorkloadDomain
+{
+  <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager & marks a workload domain for deletion.
+
+    .DESCRIPTION
+    Before a workload domain can be deleted it must first be marked for deletion.
+    The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
+    & marks a workload domain for deletion.
+
+    .EXAMPLE
+    PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
+    This example shows how to mark a workload domain for deletion
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
+
+  createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  Try {
+    $uri = "https://$sddcManager/v1/domains/$id"
+    $body = '{"markForDeletion": true}'
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
+    # This API does not return a response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Set-VCFWorkloadDomain
+
+Function Remove-VCFWorkloadDomain
+{
+  <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager & deletes a workload domain.
+
+    .DESCRIPTION
+    Before a workload domain can be deleted it must first be marked for deletion.
+    See Set-VCFWorkloadDomain
+    The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
+    & deletes a workload domain.
+
+    .EXAMPLE
+    PS C:\> Remove-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
+    This example shows how to delete a workload domain
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
+
+  createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  Try {
+    $uri = "https://$sddcManager/v1/domains/$id"
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Remove-VCFWorkloadDomain
+
+######### End APIs for managing Domains ##########
 
 
 
@@ -1656,209 +1860,7 @@ Export-ModuleMember -Function Reset-VCFHost
 ######### End Host Operations ##########
 
 
-######### Start Workload Domain Operations ##########
 
-Function Get-VCFWorkloadDomain
-{
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of workload domains.
-
-    .DESCRIPTION
-    The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
-    & retrieves a list of workload domains.
-
-    .EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain
-    This example shows how to get a list of Workload Domains
-
-    .EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain -name WLD01
-    This example shows how to get a Workload Domain by name
-
-    .EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    This example shows how to get a Workload Domain by id
-
-    .EXAMPLE
-    PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints | ConvertTo-Json
-    This example shows how to get endpoints of a Workload Domain by its id and displays the output in Json format
-  #>
-
-	Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$name,
-		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [switch]$endpoints
-  )
-
-      createHeader # Calls Function createHeader to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    if ($PsBoundParameters.ContainsKey("name")) {
-      $uri = "https://$sddcManager/v1/domains"
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements | Where-Object {$_.name -eq $name}
-		}
-		if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/domains/$id"
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response
-		}
-    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-      $uri = "https://$sddcManager/v1/domains"
-			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-			$response.elements
-		}
-    if ( $PsBoundParameters.ContainsKey("id") -and ( $PsBoundParameters.ContainsKey("endpoints"))) {
-      $uri = "https://$sddcManager/v1/domains/$id/endpoints"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-  		$response.elements
-    }
-	}
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFWorkloadDomain
-
-Function New-VCFWorkloadDomain
-{
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & creates a workload domain.
-
-    .DESCRIPTION
-    The New-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
-    & creates a workload domain.
-
-    .EXAMPLE
-    PS C:\> New-VCFWorkloadDomain -json .\WorkloadDomain\workloadDomainSpec.json
-    This example shows how to create a Workload Domain from a json spec
-  #>
-
-	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
-
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    # Read the json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content $json)
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    # Validate the provided JSON input specification file
-    $response = Validate-WorkloadDomainSpec -json $ConfigJson
-    # the validation API does not currently support polling with a task ID
-    Sleep 5
-    # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-      Try {
-        Write-Host ""
-        Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
-        $uri = "https://$sddcManager/v1/domains"
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        Return $response
-        Write-Host ""
-        Return $response
-        Write-Host ""
-      }
-      Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-      }
-    }
-    else {
-      Write-Host ""
-      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-      Write-Host ""
-    }
-  }
-}
-Export-ModuleMember -Function New-VCFWorkloadDomain
-
-Function Set-VCFWorkloadDomain
-{
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & marks a workload domain for deletion.
-
-    .DESCRIPTION
-    Before a workload domain can be deleted it must first be marked for deletion.
-    The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
-    & marks a workload domain for deletion.
-
-    .EXAMPLE
-    PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-    This example shows how to mark a workload domain for deletion
-  #>
-
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
-
-  createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    $uri = "https://$sddcManager/v1/domains/$id"
-    $body = '{"markForDeletion": true}'
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
-    # This API does not return a response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Set-VCFWorkloadDomain
-
-Function Remove-VCFWorkloadDomain
-{
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a workload domain.
-
-    .DESCRIPTION
-    Before a workload domain can be deleted it must first be marked for deletion.
-    See Set-VCFWorkloadDomain
-    The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager
-    & deletes a workload domain.
-
-    .EXAMPLE
-    PS C:\> Remove-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-    This example shows how to delete a workload domain
-  #>
-
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
-
-  createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    $uri = "https://$sddcManager/v1/domains/$id"
-    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Remove-VCFWorkloadDomain
-
-######### End Workload Domain Operations ##########
 
 
 
