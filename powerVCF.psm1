@@ -1185,27 +1185,27 @@ Export-ModuleMember -Function Remove-VCFCluster
 Function Get-VCFCredential
 {
   <#
-      .SYNOPSIS
-      Connects to the specified SDDC Manager and retrieves a list of credentials.
-      Supported resource types are: PSC, VCENTER, ESXI, NSX_MANAGER, NSX_CONTROLLER, BACKUP
-      Please note: if you are requesting credentials by resource type then the resource name parameter (if
-      passed) will be ignored (they are mutually exclusive)
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and retrieves a list of credentials.
+    Supported resource types are: PSC, VCENTER, ESXI, NSX_MANAGER, NSX_CONTROLLER, BACKUP
+    Please note: if you are requesting credentials by resource type then the resource name parameter (if
+    passed) will be ignored (they are mutually exclusive)
 
-      .DESCRIPTION
-      The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
-      Authenticated user must have ADMIn role.
+    .DESCRIPTION
+    The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
+    Authenticated user must have ADMIN role.
 
-      .EXAMPLE
-      PS C:\> Get-VCFCredential
-      This example shows how to get a list of credentials
+    .EXAMPLE
+    PS C:\> Get-VCFCredential
+    This example shows how to get a list of credentials
 
-      .EXAMPLE
-      PS C:\> Get-VCFCredential-resourceType VCENTER
-      This example shows how to get a list of VCENTER credentials
+    .EXAMPLE
+    PS C:\> Get-VCFCredential-resourceType VCENTER
+    This example shows how to get a list of VCENTER credentials
 
-      .EXAMPLE
-      PS C:\> Get-VCFCredential -resourceName sfo01m01esx01.sfo.rainpole.local
-      This example shows how to get the credential for a specific resourceName (FQDN)
+    .EXAMPLE
+    PS C:\> Get-VCFCredential -resourceName sfo01m01esx01.sfo.rainpole.local
+    This example shows how to get the credential for a specific resourceName (FQDN)
   #>
 
     Param (
