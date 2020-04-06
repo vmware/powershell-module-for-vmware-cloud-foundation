@@ -2911,10 +2911,186 @@ Export-ModuleMember -Function Retry-VCFTask
 
 
 
+######### Start APIs for managing Access and Refresh Token ##########
+
+######### End APIs for managing Access and Refresh Token ##########
 
 
 
+######### Start APIs for managing Upgradables ##########
 
+Function Get-VCFUpgradables
+{
+  <#
+    .SYNOPSIS
+    Retrieves list of upgradables in the system
+
+    .DESCRIPTION
+    Retrieves list of upgradables in the system
+
+    .EXAMPLE
+      PS C:\> Get-VCFUpgradables
+    This example shows how to retrieve the list of upgradables in the system
+  #>
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/system/upgradables"
+    $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFUpgradables
+
+######### End APIs for managing Upgradables ##########
+
+
+
+######### Start APIs for managing Upgrades ##########
+
+######### End APIs for managing Upgrades ##########
+
+
+
+######### Start APIs for managing Users ##########
+
+######### End APIs for managing Users ##########
+
+
+
+######### Start APIs for managing VCF Services ##########
+
+Function Get-VCFService
+{
+  <#
+    .SYNOPSIS
+    Gets a list of running VCF Services
+
+    .DESCRIPTION
+    The Get-VCFService cmdlet retrieves the list of services running on the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFService
+    This example shows how to get the list of services running on the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
+    This example shows how to return the details for a specific service running on the connected SDDC Manager based on the ID
+  #>
+
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id
+  )
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/vcf-services/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if (-not $PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/vcf-services"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFService
+
+######### End APIs for managing VCF Services ##########
+
+
+
+######### Start APIs for managing Version Alias Configuration ##########
+
+######### End APIs for managing Version Alias Configuration ##########
+
+
+
+######### Start APIs for managing DNS & NTP Configuration ##########
+
+######### End APIs for managing DNS & NTP Configuration ##########
+
+
+
+######### Start APIs for managing vCenters ##########
+
+Function Get-VCFvCenter
+{
+  <#
+    .SYNOPSIS
+    Gets a list of vCenter Servers
+
+    .DESCRIPTION
+    Retrieves a list of vCenter Servers managed by the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFvCenter
+    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+    This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
+    using its id
+
+    .EXAMPLE
+    PS C:\> Get-VCFvCenter -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
+    This example shows how to return the details off all vCenter Server managed by the connected SDDC Manager using
+    its domainId
+
+    .EXAMPLE
+    PS C:\> Get-VCFvCenter | select fqdn
+    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
+  #>
+
+  Param (
+		[Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$id,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainId
+  )
+
+  # Check the version of SDDC Manager
+  CheckVCFVersion
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+      $uri = "https://$sddcManager/v1/vcenters"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/vcenters/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if ($PsBoundParameters.ContainsKey("domainId")) {
+      $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFvCenter
+
+######### Start APIs for managing vCenters ##########
 
 
 
@@ -3141,36 +3317,7 @@ Function Get-JWTDetails
 
 
 
-######### Start Get Upgradable Operations ##########
 
-Function Get-VCFUpgradables
-{
-  <#
-    .SYNOPSIS
-    Retrieves list of upgradables in the system
-
-    .DESCRIPTION
-    Retrieves list of upgradables in the system
-
-    .EXAMPLE
-      PS C:\> Get-VCFUpgradables
-    This example shows how to retrieve the list of upgradables in the system
-  #>
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/system/upgradables"
-    $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFUpgradables
-
-######### End Get Upgradable Operations ##########
 
 ######### Start Upload Bundle Operations ##########
 
@@ -3232,113 +3379,9 @@ Export-ModuleMember -Function Start-VCFBundleUpload
 
 
 
-Function Get-VCFService
-{
-  <#
-    .SYNOPSIS
-    Gets a list of running VCF Services
 
-    .DESCRIPTION
-    The Get-VCFService cmdlet retrieves the list of services running on the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFService
-    This example shows how to get the list of services running on the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFService -id 4e416419-fb82-409c-ae37-32a60ba2cf88
-    This example shows how to return the details for a specific service running on the connected SDDC Manager based on the ID
-  #>
-
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/vcf-services/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if (-not $PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/vcf-services"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFService
-
-Function Get-VCFvCenter
-{
-  <#
-    .SYNOPSIS
-    Gets a list of vCenter Servers
-
-    .DESCRIPTION
-    Retrieves a list of vCenter Servers managed by the connected SDDC Manager
-
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
-
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
-    using its id
-
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
-    This example shows how to return the details off all vCenter Server managed by the connected SDDC Manager using
-    its domainId
-
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter | select fqdn
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
-  #>
-
-  Param (
-		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainId
-  )
-
-  # Check the version of SDDC Manager
-  CheckVCFVersion
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
-      $uri = "https://$sddcManager/v1/vcenters"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/vcenters/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("domainId")) {
-      $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFvCenter
 
 
 
