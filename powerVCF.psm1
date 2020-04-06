@@ -714,37 +714,37 @@ Export-ModuleMember -Function Set-VCFMicrosoftCA
 Function Get-VCFCertificateCSR
 {
   <#
-      .SYNOPSIS
-      Get available CSR(s)
+    .SYNOPSIS
+    Get available CSR(s)
 
-      .DESCRIPTION
-      The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
+    .DESCRIPTION
+    The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
 
-      .EXAMPLE
-      PS C:\> Get-VCFCertificateCSRs -domainName MGMT
-      This example gets a list of CSRs and displays the output
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateCSRs -domainName MGMT
+    This example gets a list of CSRs and displays the output
 
-      .EXAMPLE
-      PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
-      This example gets a list of CSRs and displays them in JSON format
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
+    This example gets a list of CSRs and displays them in JSON format
   #>
 
-    Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$domainName
-    )
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainName
+  )
 
-    Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
-    }
-    Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-    }
+    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response.elements
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
 
@@ -803,33 +803,47 @@ Function Get-VCFCertificate
     The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
 
     .EXAMPLE
-    PS C:\> Get-VCFCertificate -domainName MGMT
+    PS C:\> Get-VCFCertificate -domainName sfo-m01
     This example gets a list of certificates that have been generated
 
     .EXAMPLE
-    PS C:\> Get-VCFCertificate -domainName MGMT | ConvertTo-Json
+    PS C:\> Get-VCFCertificate -domainName sfo-m01 | ConvertTo-Json
     This example gets a list of certificates and displays them in JSON format
 
     .EXAMPLE
-    PS C:\> Get-VCFCertificate -domainName MGMT | Select issuedTo
+    PS C:\> Get-VCFCertificate -domainName sfo-m01 | Select issuedTo
     This example gets a list of endpoint names where certificates have been issued
+
+    .EXAMPLE
+    PS C:\> Get-VCFCertificate -domainName sfo-m01 -resources
+    This example gets the certificates of all resources in the domain
   #>
 
-    Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$domainName
-    )
-    Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$domainName,
+    [Parameter (Mandatory=$false)]
+      [ValidateNotNullOrEmpty()]
+      [switch]$resources
+  )
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
+    if ($PsBoundParameters.ContainsKey("resources")) {
+      $uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
-    Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+    else {
+      $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
     }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
 }
 Export-ModuleMember -Function Get-VCFCertificate
 
