@@ -2120,6 +2120,137 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 ######### End APIs for managing License Keys ##########
 
 
+######### Start APIs for managing Members of the Federation ##########
+
+Function Get-VCFFederationMembers
+{
+  <#
+    .SYNOPSIS
+    A function that gets information on all members in the VCF Federation
+
+    .DESCRIPTION
+    Gets the complete information about the existing VCF Federation members.
+
+    .EXAMPLE
+    PS C:\> Get-VCFFederationMembers
+    This example lists all details concerning the VCF Federation members.
+  #>
+
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  $uri = "https://$sddcManager/v1/sddc-federation/members"
+  Try {
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    if (!$response.federationName) {
+      Throw "Failed to get members, no Federation found."
+    }
+    else {
+      $response
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -function Get-VCFFederationMembers
+
+Function New-VCFFederationInvite
+{
+  <#
+    .SYNOPSIS
+    Invite new member to VCF Federation.
+
+    .DESCRIPTION
+    A function that creates a new invitation for a member to join the existing VCF Federation.
+
+    .EXAMPLE
+    PS C:\> New-VCFFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
+    This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
+  #>
+
+  Param (
+	  [Parameter (Mandatory=$true)]
+		  [ValidateNotNullOrEmpty()]
+			[string]$inviteeFqdn
+  )
+
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
+  Try {
+    $sddcMemberRole = Get-VCFFederationMembers
+    if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
+      Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
+    }
+    else {
+      $inviteeDetails = @{
+        inviteeRole = 'MEMBER'
+        inviteeFqdn = $inviteeFqdn
+      }
+      $ConfigJson = $inviteeDetails | ConvertTo-Json
+      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
+      $response
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function New-VCFFederationInvite
+
+Function Join-VCFFederation
+{
+  <#
+    .SYNOPSIS
+    A function to join an existing VCF Federation
+
+    .DESCRIPTION
+    A function that enables a new VCF Manager to join an existing VCF Federation.
+
+    .EXAMPLE
+    PS C:\> Join-VCFFederation .\joinVCFFederationSpec.json
+    This example demonstrates how to join an VCF Federation by referencing config info in JSON file.
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
+
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+    $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+	  $uri = "https://$sddcManager/v1/sddc-federation/members"
+    Try {
+			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType 'application/json' -body $ConfigJson
+      $response
+      $taskId = $response.taskId # get the task id from the action
+      # keep checking until executionStatus is not IN_PROGRESS
+      Do {
+        $uri = "https://$sddcManager/v1/sddc-federation/tasks/$taskId"
+        $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType 'application/json'
+        Start-Sleep -Second 5
+      }
+      While ($response.status -eq "IN_PROGRESS")
+        $response
+      }
+    Catch {
+      ResponseException # Call Function ResponseException to get error response from the exception
+    }
+  }
+}
+Export-ModuleMember -Function Join-VCFFederation
+
+
+######### End APIs for managing Members of the Federation ##########
 
 
 
@@ -3379,8 +3510,6 @@ Export-ModuleMember -Function Remove-VCFvRSLCM
 
 ######### Start Federation Management ##########
 
-
-
 Function Get-VCFFederationTask
 {
   <#
@@ -3416,134 +3545,6 @@ Export-ModuleMember -Function Get-VCFFederationTask
 
 
 
-
-
-Function New-VCFFederationInvite
-{
-  <#
-    .SYNOPSIS
-    Invite new member to VCF Federation.
-
-    .DESCRIPTION
-    A function that creates a new invitation for a member to join the existing VCF Federation.
-
-    .EXAMPLE
-    PS C:\> New-VCFFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
-    This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
-  #>
-
-  Param (
-	  [Parameter (Mandatory=$true)]
-		  [ValidateNotNullOrEmpty()]
-			[string]$inviteeFqdn
-  )
-
-  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-  createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
-  Try {
-    $sddcMemberRole = Get-VCFFederationMembers
-    if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
-      Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
-    }
-    else {
-      $inviteeDetails = @{
-        inviteeRole = 'MEMBER'
-        inviteeFqdn = $inviteeFqdn
-      }
-      $ConfigJson = $inviteeDetails | ConvertTo-Json
-      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
-      $response
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function New-VCFFederationInvite
-
-Function Get-VCFFederationMembers
-{
-  <#
-    .SYNOPSIS
-    A function that gets information on all members in the VCF Federation
-
-    .DESCRIPTION
-    Gets the complete information about the existing VCF Federation members.
-
-    .EXAMPLE
-    PS C:\> Get-VCFFederationMembers
-    This example lists all details concerning the VCF Federation members.
-  #>
-
-  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-  createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/sddc-federation/members"
-  Try {
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    if (!$response.federationName) {
-      Throw "Failed to get members, no Federation found."
-    }
-    else {
-      $response
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -function Get-VCFFederationMembers
-
-Function Join-VCFFederation
-{
-  <#
-    .SYNOPSIS
-    A function to join an existing VCF Federation
-
-    .DESCRIPTION
-    A function that enables a new VCF Manager to join an existing VCF Federation.
-
-    .EXAMPLE
-    PS C:\> Join-VCFFederation .\joinVCFFederationSpec.json
-    This example demonstrates how to join an VCF Federation by referencing config info in JSON file.
-  #>
-
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
-
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-    $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-	  $uri = "https://$sddcManager/v1/sddc-federation/members"
-    Try {
-			$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType 'application/json' -body $ConfigJson
-      $response
-      $taskId = $response.taskId # get the task id from the action
-      # keep checking until executionStatus is not IN_PROGRESS
-      Do {
-        $uri = "https://$sddcManager/v1/sddc-federation/tasks/$taskId"
-        $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType 'application/json'
-        Start-Sleep -Second 5
-      }
-      While ($response.status -eq "IN_PROGRESS")
-        $response
-      }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-  }
-}
-Export-ModuleMember -Function Join-VCFFederation
 
 ######### End Federation Management ##########
 
