@@ -2730,6 +2730,50 @@ Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
 ######### Start APIs for managing NSX-T Edge Clusters ##########
 
+Function Get-VCFEdgeCluster
+{
+  <#
+    .SYNOPSIS
+    Get the Edge Clusters
+  
+    .DESCRIPTION
+    The Get-VCFEdgeCluster cmdlet gets a list of NSX-T Edge Clusters
+
+    .EXAMPLE
+    PS C:\> Get-VCFEdgeCluster
+    This example list all NSX-T Edge Clusters
+
+    .EXAMPLE
+    PS C:\> Get-VCFEdgeCluster -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
+    This example list the NSX-T Edge Cluster by id
+  #>
+
+  Param (
+    [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
+  )
+  
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    if ( -not $PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/edge-clusters"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/v1/edge-clusters/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFEdgeCluster
+
 ######### End APIs for managing NSX-T Edge Clusters ##########
 
 
