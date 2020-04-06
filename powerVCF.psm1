@@ -641,7 +641,7 @@ Function Remove-VCFCertificateAuthority
 
     .EXAMPLE
     PS C:\> Remove-VCFCertificateAuthority
-    This example removes the certificate authority configuration from the connected SDDC Manager
+    This example removes the Micosoft certificate authority configuration from the connected SDDC Manager
   #>
 
   Param (
