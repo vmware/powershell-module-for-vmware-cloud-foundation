@@ -3123,6 +3123,33 @@ Export-ModuleMember -Function Get-VCFUpgradables
 
 ######### Start APIs for managing Users ##########
 
+Function Get-VCFUser
+{
+  <#
+    .SYNOPSIS
+    Get all Users
+  
+    .DESCRIPTION
+    The Get-VCFUser cmdlet gets a list of users in SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFUser
+    This example list all users in SDDC Manager 
+  #>
+  
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/users"
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response.elements
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFUser
+
 ######### End APIs for managing Users ##########
 
 
