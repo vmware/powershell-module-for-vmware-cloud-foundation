@@ -37,36 +37,36 @@ Default value: None
 ```json
 [
         {
-            "fqdn": "sfo01w01esx01.sfo.rainpole.local",
+            "fqdn": "sfo01-w01-esx01.sfo.rainpole.io",
             "username": "root",
             "storageType": "VSAN",
             "password": "VMw@re1!",
-            "networkPoolName": "sfo01w01-cl01",
+            "networkPoolName": "sfo-w01-np01",
 			"networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
         },
         {
-            "fqdn": "sfo01w01esx02.sfo.rainpole.local",
+            "fqdn": "sfo01-w01-esx02.sfo.rainpole.io",
             "username": "root",
             "storageType": "VSAN",
             "password": "VMw@re1!",
-            "networkPoolName": "sfo01w01-cl01",
+            "networkPoolName": "sfo-w01-np01",
 			"networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
 
         },
 		{
-            "fqdn": "sfo01w01esx03.sfo.rainpole.local",
+            "fqdn": "sfo01-w01-esx03.sfo.rainpole.io",
             "username": "root",
             "storageType": "VSAN",
             "password": "VMw@re1!",
-            "networkPoolName": "sfo01w01-cl01",
+            "networkPoolName": "sfo-w01-np01",
 			"networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
         },
 		{
-            "fqdn": "sfo01w01esx04.sfo.rainpole.local",
+            "fqdn": "sfo01-w01-esx04.sfo.rainpole.io",
             "username": "root",
             "storageType": "VSAN",
             "password": "VMw@re1!",
-            "networkPoolName": "sfo01w01-cl01",
+            "networkPoolName": "sfo-w01-np01",
 			"networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
         }
     ]
