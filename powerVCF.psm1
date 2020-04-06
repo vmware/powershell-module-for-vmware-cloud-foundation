@@ -124,7 +124,7 @@ Function Connect-CloudBuilder
     
     .EXAMPLE
     PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
-    This example shows how to connect to SDDC Manager
+    This example shows how to connect to the Cloud Builder applaince
   #>
 
   Param (
@@ -234,7 +234,7 @@ Function Get-VCFApplicationVirtualNetwork
     ResponseException # Call Function ResponseException to get error response from the exception
   }
 }
-  Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
+Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
 
 ######### End APIs for managing Application Virtual Networks ##########
 
@@ -1326,10 +1326,6 @@ Function Retry-VCFCredentialTask
     .EXAMPLE
     PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
     This example shows how to update passwords of a resource type using a json spec
-
-    .EXAMPLE
-    PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\rotateCredentialSpec.json
-    This example shows how to rotate passwords of a resource type using a json spec
   #>
 
 	Param (
@@ -2180,7 +2176,7 @@ Function Get-VCFFederationMembers
 {
   <#
     .SYNOPSIS
-    A function that gets information on all members in the VCF Federation
+    Gets members of the Federation
 
     .DESCRIPTION
     Gets the complete information about the existing VCF Federation members.
@@ -2216,7 +2212,7 @@ Function New-VCFFederationInvite
     Invite new member to VCF Federation.
 
     .DESCRIPTION
-    A function that creates a new invitation for a member to join the existing VCF Federation.
+    The New-VCFFederationInvite cmdlet creates a new invitation for a member to join the existing VCF Federation.
 
     .EXAMPLE
     PS C:\> New-VCFFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
@@ -2258,13 +2254,14 @@ Function Join-VCFFederation
 {
   <#
     .SYNOPSIS
-    A function to join an existing VCF Federation
+    Join an VMware Cloud Foundation instance to a Federation
 
     .DESCRIPTION
-    A function that enables a new VCF Manager to join an existing VCF Federation.
+    The Join-VCFFederation cmdlet joins a VMware Cloud Foundation instance an existing VMware Cloud Foundation
+    Federation (Multi-Instance configuration).
 
     .EXAMPLE
-    PS C:\> Join-VCFFederation .\joinVCFFederationSpec.json
+    PS C:\> Join-VCFFederation -json .\joinVCFFederationSpec.json
     This example demonstrates how to join an VCF Federation by referencing config info in JSON file.
   #>
 
@@ -2783,7 +2780,7 @@ Function Start-PreCheckVCFSystem
     The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
     .EXAMPLE
-    PS C:\> Start-PreCheckVCFSystem -json
+    PS C:\> Start-PreCheckVCFSystem -json .\SystemCheck\precheckVCFSystem.json
     This example shows how to perform system level health check
   #>
 
@@ -2821,7 +2818,7 @@ Function Get-PreCheckVCFSystemTask
 {
   <#
     .SYNOPSIS
-    The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
+    Get Precheck Task by ID
 
     .DESCRIPTION
     The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
@@ -2966,13 +2963,14 @@ Function Get-VCFUpgradables
 {
   <#
     .SYNOPSIS
-    Retrieves list of upgradables in the system
+    Get the Upgradables
 
     .DESCRIPTION
-    Retrieves list of upgradables in the system
+    Fetches the list of Upgradables in the System. Only one Upgradable becomes AVAILABLE for Upgrade. 
+    The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
 
     .EXAMPLE
-      PS C:\> Get-VCFUpgradables
+    PS C:\> Get-VCFUpgradables
     This example shows how to retrieve the list of upgradables in the system
   #>
 

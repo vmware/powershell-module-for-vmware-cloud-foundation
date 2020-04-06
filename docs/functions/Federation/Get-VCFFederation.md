@@ -5,7 +5,7 @@ Get information on existing Federation
 
 ### Syntax
 ```
-Get-VCFManager -id <string>
+Get-VCFFederation -id <string>
 ```
 
 ### Description

@@ -9,7 +9,7 @@ Remove-VCFFederation
 ```
 
 ### Description
-A function that ensures VCF Federation is empty and completely dismantles it
+The Remove-VCFFederation cmdlet ensures VCF Federation is empty and completely dismantles it
 
 ### Examples
 #### Example 1

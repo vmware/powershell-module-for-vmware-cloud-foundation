@@ -1,10 +1,10 @@
 {
-    "controllerFqdn" : "sddc-manager.vrack.vsphere.local",
+    "controllerFqdn" : "sfo-vcf01.sfo.rainpole.io",
     "joinToken" : "522c566-836b-44c2-bf84-92dcc7e00764",
-    "commonName" : "sddcmgr-newyork.msm.local",
+    "commonName" : "nyc-vcf01.lax.rainpole.io",
     "memberJoinDetail" : {
       "role" : "MEMBER",
-      "fqdn" : "sddcmgr-newyork.msm.local",
+      "fqdn" : "nyc-vcf01.lax.rainpole.io",
       "siteType" : "DATACENTER",
       "siteName" : "New York Epic Center",
       "country" : "USA",
