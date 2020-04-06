@@ -1599,7 +1599,7 @@ Export-ModuleMember -Function Remove-VCFWorkloadDomain
 ######### End APIs for managing Domains ##########
 
 
-######### Start APIs for Federation ##########
+######### Start APIs for managing Federation ##########
 
 Function Get-VCFFederation
 {
@@ -1717,24 +1717,10 @@ Function Remove-VCFFederation
 }
 Export-ModuleMember -Function Remove-VCFFederation
 
-######### Start APIs for Federation ##########
+######### Start APIs for managing Federation ##########
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-######### Start Host Operations ##########
+######### Start APIs for managing Hosts ##########
 
 Function Get-VCFHost
 {
@@ -1980,7 +1966,22 @@ Function Reset-VCFHost
 }
 Export-ModuleMember -Function Reset-VCFHost
 
-######### End Host Operations ##########
+######### End APIs for managing Hosts ##########
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
