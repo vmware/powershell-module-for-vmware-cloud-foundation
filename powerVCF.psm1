@@ -3280,7 +3280,7 @@ Function Validate-CommissionHostSpec
   createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/hosts/validations"
-	$json = $json | ConvertFrom-json
+	<# $json = $json | ConvertFrom-json
 	# Construct the hostCommissionSpecs json format as required by the validation API
 	$body = @()
 	$body += [pscustomobject]@{
@@ -3289,9 +3289,9 @@ Function Validate-CommissionHostSpec
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-	}
+	} #>
   Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     Return $response
   }
   Catch {
@@ -3310,7 +3310,7 @@ Function Validate-WorkloadDomainSpec
   createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/domains/validations"
-	$json = $json | ConvertFrom-json
+	<# $json = $json | ConvertFrom-json
 	# Construct the domainCreationSpec json format as required by the validation API
 	$body = @()
 	$body += [pscustomobject]@{
@@ -3319,9 +3319,9 @@ Function Validate-WorkloadDomainSpec
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-	}
+	} #>
   Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	   return $response
 	}
   Catch {
@@ -3340,7 +3340,7 @@ Function Validate-VCFClusterSpec
   createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/clusters/validations"
-	$json = $json | ConvertFrom-json
+	<# $json = $json | ConvertFrom-json
 	# Construct the clusterCreationSpec json format as required by the validation API
 	$body = @()
 	$body += [pscustomobject]@{
@@ -3349,9 +3349,9 @@ Function Validate-VCFClusterSpec
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-	}
+	} #>
   Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
   Catch {
     ResponseException # Call Function ResponseException to get error response from the exception
@@ -3372,7 +3372,7 @@ Function Validate-VCFUpdateClusterSpec
   createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
-	$json = $json | ConvertFrom-json
+	<# $json = $json | ConvertFrom-json
 	# Construct the clusterUpdateSpec json format as required by the validation API
 	$body = @()
 	$body += [pscustomobject]@{
@@ -3381,9 +3381,9 @@ Function Validate-VCFUpdateClusterSpec
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
-	}
+	} #>
   Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
   Catch {
     ResponseException # Call Function ResponseException to get error response from the exception
