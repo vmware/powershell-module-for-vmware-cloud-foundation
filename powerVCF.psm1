@@ -448,6 +448,88 @@ Export-ModuleMember -Function Request-VCFBundle
 ######### End Bundles ##########
 
 
+######### Start CEIP ##########
+
+Function Get-VCFCeip
+{
+  <#
+    .SYNOPSIS
+    Retrieves the current setting for CEIP of the connected SDDC Manager
+
+    .DESCRIPTION
+    The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFCeip
+    This example shows how to get the current setting of CEIP
+  #>
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/system/ceip"
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFCeip
+
+Function Set-VCFCeip
+{
+  <#
+    .SYNOPSIS
+    Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
+
+    .DESCRIPTION
+    The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
+    and the components managed (vCenter Server, vSAN and NSX Manager)
+
+    .EXAMPLE
+    PS C:\> Set-VCFCeip -ceipSetting DISABLE
+    This example shows how to DISABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
+
+    .EXAMPLE
+    PS C:\> Set-VCFCeip -ceipSetting ENABLE
+    This example shows how to ENABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
+  #>
+
+	Param (
+		[Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$ceipSetting
+  )
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/system/ceip"
+    if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
+      Throw "You must define ENABLE or DISABLE as an input"
+		}
+    if ($ceipSetting -eq "ENABLE") {
+      $ConfigJson = '{"status": "ENABLE"}'
+    }
+    if ($ceipSetting -eq "DISABLE") {
+			$ConfigJson = '{"status": "DISABLE"}'
+    }
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Set-VCFCeip
+
+######### End CEIP ##########
+
+
+
+
 
 
 
@@ -2148,84 +2230,7 @@ Function Get-JWTDetails
 ######## End Validation Functions ########
 
 
-######### Start CEIP Operations ##########
 
-Function Get-VCFCeip
-{
-  <#
-    .SYNOPSIS
-    Retrieves the current setting for CEIP of the connected SDDC Manager
-
-    .DESCRIPTION
-    The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
-
-    .EXAMPLE
-    PS C:\> Get-VCFCeip
-    This example shows how to get the current setting of CEIP
-  #>
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/system/ceip"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFCeip
-
-Function Set-VCFCeip
-{
-  <#
-    .SYNOPSIS
-    Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
-
-    .DESCRIPTION
-    The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
-    and the components managed (vCenter Server, vSAN and NSX Manager)
-
-    .EXAMPLE
-    PS C:\> Set-VCFCeip -ceipSetting DISABLE
-    This example shows how to DISABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
-
-    .EXAMPLE
-    PS C:\> Set-VCFCeip -ceipSetting ENABLE
-    This example shows how to ENABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
-  #>
-
-	Param (
-		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$ceipSetting
-  )
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/system/ceip"
-    if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
-      Throw "You must define ENABLE or DISABLE as an input"
-		}
-    if ($ceipSetting -eq "ENABLE") {
-      $ConfigJson = '{"status": "ENABLE"}'
-    }
-    if ($ceipSetting -eq "DISABLE") {
-			$ConfigJson = '{"status": "DISABLE"}'
-    }
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Set-VCFCeip
-
-######### End CEIP Operations ##########
 
 
 
