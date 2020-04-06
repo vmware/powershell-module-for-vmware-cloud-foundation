@@ -447,6 +447,49 @@ Function Request-VCFBundle
 }
 Export-ModuleMember -Function Request-VCFBundle
 
+Function Start-VCFBundleUpload
+{
+  <#
+    .SYNOPSIS
+    Starts upload of bundle to SDDC Manager
+
+    .DESCRIPTION
+    The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
+    Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool 
+
+    .EXAMPLE
+    PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
+    This example invokes the upload of a bundle onto SDDC Manager
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
+
+  createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+
+  if (!(Test-Path $json)) {
+           Throw "JSON File Not Found"
+      }
+      else {
+           # Read the json file contents into the $ConfigJson variable
+           $ConfigJson = (Get-Content $json)
+      }
+  
+  $uri = "https://$sddcManager/v1/bundles"
+  try {
+      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
+  }
+  catch {
+    # Call the function ResponseException which handles execption messages
+    ResponseException
+  }
+}
+Export-ModuleMember -Function Start-VCFBundleUpload
+
 ######### End APIs for managing Bundles ##########
 
 
@@ -3094,7 +3137,7 @@ Export-ModuleMember -Function Get-VCFvCenter
 
 
 
-######### Start vRealize Suite Operations ##########
+######### Start APIs for managing vRealize Suite Lifecycle Manager ##########
 
 Function Get-VCFvRSLCM
 {
@@ -3220,13 +3263,11 @@ Function Remove-VCFvRSLCM
 }   
 Export-ModuleMember -Function Remove-VCFvRSLCM
 
-######### End vRealize Suite Operations ##########
+######### End APIs for managing vRealize Suite Lifecycle Manager ##########
 
 
 
-
-
-######## Start Validation Functions ########
+######## Start APIs for managing Validations ########
 
 Function Validate-CommissionHostSpec
 {
@@ -3438,84 +3479,11 @@ Function Get-JWTDetails
   return $decodedToken
 }
 
-######## End Validation Functions ########
+######## End APIs for managing Validations ########
 
 
 
-
-
-
-
-
-
-
-
-
-######### Start Upload Bundle Operations ##########
-
-Function Start-VCFBundleUpload
-{
-  <#
-    .SYNOPSIS
-    Starts upload of bundle to SDDC Manager
-
-    .DESCRIPTION
-    The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
-    Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool 
-
-    .EXAMPLE
-    PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
-    This example invokes the upload of a bundle onto SDDC Manager
-  #>
-
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
-
-  createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-
-  if (!(Test-Path $json)) {
-           Throw "JSON File Not Found"
-      }
-      else {
-           # Read the json file contents into the $ConfigJson variable
-           $ConfigJson = (Get-Content $json)
-      }
-  
-  $uri = "https://$sddcManager/v1/bundles"
-  try {
-      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
-  }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
-  }
-}
-Export-ModuleMember -Function Start-VCFBundleUpload
-
-######### End Upload Bundle Operations ##########
-
-
-
-
-
-
-
-
-
-
-######### Start Foundation Component Operations ##########
-
-
-
-
-
-
-
-
+######### Start SoS Operations ##########
 
 Function Invoke-VCFCommand
 {
@@ -3619,13 +3587,7 @@ Function Invoke-VCFCommand
 }
 Export-ModuleMember -Function Invoke-VCFCommand
 
-######### End Foundation Component Operations ##########
-
-
-
-
-
-
+######### End SoS Operations ##########
 
 
 
