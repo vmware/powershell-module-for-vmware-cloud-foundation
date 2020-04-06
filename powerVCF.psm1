@@ -1322,6 +1322,80 @@ Export-ModuleMember -Function Retry-VCFCredentialTask
 ######### End APIs for managing Credentials ##########
 
 
+######### Start APIs for managing  Depot Settings ##########
+
+Function Get-VCFDepotCredentials
+{
+  <#
+    .SYNOPSIS
+    Get Depot Settings
+
+    .DESCRIPTION
+    Retrieves the configuration for the depot of the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Get-VCFDepotCredentials
+    This example shows credentials that have been configured for the depot.
+  #>
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/system/settings/depot"
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response.vmwareAccount
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Get-VCFDepotCredentials
+
+Function Set-VCFDepotCredentials
+{
+  <#
+    .SYNOPSIS
+    Update the Depot Settings
+
+    .DESCRIPTION
+    Update the configuration for the depot of the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
+    This example sets the credentials that have been configured for the depot.
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$username,
+		[Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$password
+  )
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/system/settings/depot"
+    if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
+      Throw "You must enter a username and password"
+		}
+    $ConfigJson = '{"vmwareAccount": {"username": "'+$username+'","password": "'+$password+'"}}'
+    $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Set-VCFDepotCredentials
+
+######### End APIs for managing  Depot Settings ##########
+
+
+
+
 
 
 
@@ -2616,76 +2690,7 @@ Export-ModuleMember -Function Start-VCFBundleUpload
 
 
 
-######### Start Depot Configuration Operations ##########
 
-Function Get-VCFDepotCredentials
-{
-  <#
-    .SYNOPSIS
-    Get Depot Settings
-
-    .DESCRIPTION
-    Retrieves the configuration for the depot of the connected SDDC Manager
-
-    .EXAMPLE
-    PS C:\> Get-VCFDepotCredentials
-    This example shows credentials that have been configured for the depot.
-  #>
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/system/settings/depot"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response.vmwareAccount
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFDepotCredentials
-
-Function Set-VCFDepotCredentials
-{
-  <#
-    .SYNOPSIS
-    Update the Depot Settings
-
-    .DESCRIPTION
-    Update the configuration for the depot of the connected SDDC Manager
-
-    .EXAMPLE
-    PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
-    This example sets the credentials that have been configured for the depot.
-  #>
-
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$username,
-		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$password
-  )
-
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/system/settings/depot"
-    if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
-      Throw "You must enter a username and password"
-		}
-    $ConfigJson = '{"vmwareAccount": {"username": "'+$username+'","password": "'+$password+'"}}'
-    $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Set-VCFDepotCredentials
-
-######### End Depot Configuration Operations ##########
 
 
 ######### Start System Health Check ##########
