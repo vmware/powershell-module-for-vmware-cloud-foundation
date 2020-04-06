@@ -3177,6 +3177,33 @@ Function Get-VCFRole
 }
 Export-ModuleMember -Function Get-VCFRole
 
+Function Get-VCFSsoDomain
+{
+  <#
+    .SYNOPSIS
+    Get all SSO domains
+  
+    .DESCRIPTION
+    The Get-VCFSsoDomain cmdlet gets a list of Single Sign-On domains
+
+    .EXAMPLE
+    PS C:\> Get-VCFSsoDomain
+    This example list all Single Sign-On domains
+  #>
+  
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/sso-domains"
+    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    $response.elements
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+#Export-ModuleMember -Function Get-VCFSsoDomain
+
 ######### End APIs for managing Users ##########
 
 
