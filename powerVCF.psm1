@@ -174,6 +174,71 @@ Function Connect-CloudBuilder
 }
 Export-ModuleMember -function Connect-CloudBuilder
 
+
+######### Start Application Virtual Networks ##########
+
+Function Get-VCFApplicationVirtualNetwork
+{
+  <#
+  .SYNOPSIS
+  Retrieves all Application Virtual Networks
+  
+  .DESCRIPTION
+  The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
+    - regionType supports REGION_A, REGION_B, X_REGION
+  
+  .EXAMPLE
+  PS C:\> Get-VCFApplicationVirtualNetwork
+  This example demonstrates how to retrieve a list of Application Virtual Networks
+
+  .EXAMPLE
+  PS C:\> Get-VCFApplicationVirtualNetwork -regionType REGION_A
+  This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
+
+  .EXAMPLE
+  PS C:\> Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
+  This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
+  #>
+
+  Param (
+    [Parameter (Mandatory=$false)]
+        [ValidateSet("REGION_A", "REGION_B", "X_REGION")]
+        [ValidateNotNullOrEmpty()]
+        [string]$regionType,
+    [Parameter (Mandatory=$false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
+  )
+
+  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
+      $uri = "https://$sddcManager/v1/avns"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if ($PsBoundParameters.ContainsKey("regionType")) {
+      $uri = "https://$sddcManager/v1/avns?regionType=$regionType"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    if ($PsBoundParameters.ContainsKey("id")) {
+      $uri = "https://$sddcManager/internal/avns/$id"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+  Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
+
+######### End Application Virtual Networks ##########
+
+
 ######### Start Host Operations ##########
 
 Function Get-VCFHost
@@ -3441,68 +3506,7 @@ Export-ModuleMember -Function Join-VCFFederation
 ######### End Federation Management ##########
 
 
-######### Start Application Virtual Network ##########
 
-Function Get-VCFApplicationVirtualNetwork
-{
-  <#
-  .SYNOPSIS
-  Retrieves all Application Virtual Networks
-  
-  .DESCRIPTION
-  The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
-    - regionType supports REGION_A, REGION_B, X_REGION
-  
-  .EXAMPLE
-  PS C:\> Get-VCFApplicationVirtualNetwork
-  This example demonstrates how to retrieve a list of Application Virtual Networks
-
-  .EXAMPLE
-  PS C:\> Get-VCFApplicationVirtualNetwork -regionType REGION_A
-  This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
-
-  .EXAMPLE
-  PS C:\> Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
-  This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
-  #>
-
-  Param (
-    [Parameter (Mandatory=$false)]
-        [ValidateSet("REGION_A", "REGION_B", "X_REGION")]
-        [ValidateNotNullOrEmpty()]
-        [string]$regionType,
-    [Parameter (Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
-  )
-
-  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
-      $uri = "https://$sddcManager/v1/avns"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("regionType")) {
-      $uri = "https://$sddcManager/v1/avns?regionType=$regionType"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/internal/avns/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-  Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
-
-######### End Application Virtual Network ##########
 
 
 ######### Start Utility Functions (not exported) ##########
