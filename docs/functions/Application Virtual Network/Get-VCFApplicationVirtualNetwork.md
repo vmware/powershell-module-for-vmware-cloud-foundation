@@ -5,7 +5,7 @@ Retrieves all Application Virtual Networks
 
 ### Syntax
 ```
-Get-VCFApplicationVirtualNetwork -regionType <string>
+Get-VCFApplicationVirtualNetwork -regionType <string> -id <string>
 ```
 
 ### Description
