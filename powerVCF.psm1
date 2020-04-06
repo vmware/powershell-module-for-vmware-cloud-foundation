@@ -630,6 +630,39 @@ Function Get-VCFCertificateAuthority
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthority
 
+Function Remove-VCFCertificateAuthority
+{
+  <#
+    .SYNOPSIS
+    Deletes certificate authority configuration
+
+    .DESCRIPTION
+    The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from the connected SDDC Manager
+
+    .EXAMPLE
+    PS C:\> Remove-VCFCertificateAuthority
+    This example removes the certificate authority configuration from the connected SDDC Manager
+  #>
+
+  Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateSet("OpenSSL","Microsoft")]
+      [String] $caType
+  )
+
+  Try {
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
+    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    $response
+  }
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Remove-VCFCertificateAuthority
+
 Function Set-VCFMicrosoftCA
 {
   <#
