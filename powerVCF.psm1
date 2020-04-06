@@ -577,24 +577,35 @@ Export-ModuleMember -Function Set-VCFCeip
 
 ######### Start APIs for managing Certificates ##########
 
-Function Get-VCFCertificateAuthConfiguration
+Function Get-VCFCertificateAuthority
 {
   <#
     .SYNOPSIS
     Get certificate authorities information
 
     .DESCRIPTION
-    Retrieves the certificate authorities information for the connected SDDC Manager
+    The Get-VCFCertificateAuthority cmdlet retrieves the certificate authorities information for the connected SDDC Manager
 
     .EXAMPLE
-    PS C:\> Get-VCFCertificateAuthConfiguration
+    PS C:\> Get-VCFCertificateAuthority
     This example shows how to get the certificate authority configuration from the connected SDDC Manager
 
     .EXAMPLE
-    PS C:\> Get-VCFCertificateAuthConfiguration | ConvertTo-Json
+    PS C:\> Get-VCFCertificateAuthority | ConvertTo-Json
     This example shows how to get the certificate authority configuration from the connected SDDC Manager
     and output to Json format
+
+    .EXAMPLE
+    PS C:\> Get-VCFCertificateAuthority -caType Microsoft
+    This example shows how to get the certificate authority configuration for a Microsoft Certificate Authority from the
+    connected SDDC Manager
   #>
+
+  Param (
+    [Parameter (Mandatory=$false)]
+      [ValidateSet("OpenSSL","Microsoft")]
+      [String] $caType
+  )
 
   # Check the version of SDDC Manager
   CheckVCFVersion
@@ -602,15 +613,22 @@ Function Get-VCFCertificateAuthConfiguration
   Try {
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/certificate-authorities"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response.elements
+    if ($PsBoundParameters.ContainsKey("caType")) {
+      $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response
+    }
+    else {
+      $uri = "https://$sddcManager/v1/certificate-authorities"
+      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      $response.elements
+    }
   }
   Catch {
     ResponseException # Call Function ResponseException to get error response from the exception
   }
 }
-Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
+Export-ModuleMember -Function Get-VCFCertificateAuthority
 
 Function Set-VCFMicrosoftCA
 {
