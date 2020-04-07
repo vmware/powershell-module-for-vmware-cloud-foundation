@@ -2716,102 +2716,101 @@ Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
 Function Get-VCFEdgeCluster
 {
-  <#
-    .SYNOPSIS
-    Get the Edge Clusters
+     <#
+        .SYNOPSIS
+        Get the Edge Clusters
 
-    .DESCRIPTION
-    The Get-VCFEdgeCluster cmdlet gets a list of NSX-T Edge Clusters
+        .DESCRIPTION
+        The Get-VCFEdgeCluster cmdlet gets a list of NSX-T Edge Clusters
 
-    .EXAMPLE
-    PS C:\> Get-VCFEdgeCluster
-    This example list all NSX-T Edge Clusters
+        .EXAMPLE
+        PS C:\> Get-VCFEdgeCluster
+        This example list all NSX-T Edge Clusters
 
-    .EXAMPLE
-    PS C:\> Get-VCFEdgeCluster -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
-    This example list the NSX-T Edge Cluster by id
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFEdgeCluster -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
+        This example list the NSX-T Edge Cluster by id
+    #>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
-  )
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ( -not $PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/edge-clusters"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/edge-clusters"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/edge-clusters/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
     }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/edge-clusters/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
     }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
 }
 Export-ModuleMember -Function Get-VCFEdgeCluster
 
 Function New-VCFEdgeCluster
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & creates an NSX-T edge cluster.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & creates an NSX-T edge cluster.
 
-    .DESCRIPTION
-    The New-VCFEdgeCluster cmdlet connects to the specified SDDC Manager
-    & creates an NSX-T edge cluster.
+        .DESCRIPTION
+        The New-VCFEdgeCluster cmdlet connects to the specified SDDC Manager & creates an NSX-T edge cluster.
 
-    .EXAMPLE
-    PS C:\> New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json
-    This example shows how to create an NSX-T edge cluster from a json spec
-  #>
+        .EXAMPLE
+        PS C:\> New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json
+        This example shows how to create an NSX-T edge cluster from a json spec
+    #>
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    # Read the json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content $json)
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    # Validate the provided JSON input specification file
-    $response = Validate-EdgeClusterSpec -json $ConfigJson
-    # the validation API does not currently support polling with a task ID
-    Start-Sleep 5
-    # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-      Try {
-        Write-Host ""
-        Write-Host "Task validation completed successfully, invoking Edge Cluster Creation on SDDC Manager" -ForegroundColor Green
-        $uri = "https://$sddcManager/v1/edge-clusters"
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        Return $response
-        Write-Host ""
-      }
-      Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-      }
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
     }
     else {
-      Write-Host ""
-      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-      Write-Host ""
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        # Validate the provided JSON input specification file
+        $response = Validate-EdgeClusterSpec -json $ConfigJson
+        # the validation API does not currently support polling with a task ID
+        Start-Sleep 5
+        # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+            Try {
+                Write-Host ""
+                Write-Host "Task validation completed successfully, invoking Edge Cluster Creation on SDDC Manager" -ForegroundColor Green
+                $uri = "https://$sddcManager/v1/edge-clusters"
+                $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+                Return $response
+                Write-Host ""
+            }
+            Catch {
+                ResponseException # Call Function ResponseException to get error response from the exception
+            }
+        }
+        else {
+            Write-Host ""
+            Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+            Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+            Write-Host ""
+        }
     }
-  }
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
 
