@@ -1441,7 +1441,7 @@ Export-ModuleMember -Function Retry-VCFCredentialTask
 
 ######### Start APIs for managing Depot Settings ##########
 
-Function Get-VCFDepotCredentials
+Function Get-VCFDepotCredential
 {
   	<#
     	.SYNOPSIS
@@ -1451,7 +1451,7 @@ Function Get-VCFDepotCredentials
     	Retrieves the configuration for the depot of the connected SDDC Manager
 
     	.EXAMPLE
-    	PS C:\> Get-VCFDepotCredentials
+    	PS C:\> Get-VCFDepotCredential
     	This example shows credentials that have been configured for the depot.
   	#>
 
@@ -1466,7 +1466,7 @@ Function Get-VCFDepotCredentials
     	ResponseException # Call Function ResponseException to get error response from the exception
   	}
 }
-Export-ModuleMember -Function Get-VCFDepotCredentials
+Export-ModuleMember -Function Get-VCFDepotCredential
 
 Function Set-VCFDepotCredentials
 {
