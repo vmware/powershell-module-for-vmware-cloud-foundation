@@ -1198,7 +1198,7 @@ Function Get-VCFCredential
 
     	.EXAMPLE
     	PS C:\> Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
-    This example shows how to get the credential for a specific resourceName (FQDN)
+        This example shows how to get the credential for a specific resourceName (FQDN)
 
     	.EXAMPLE
     	PS C:\> Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
@@ -2498,213 +2498,213 @@ Export-ModuleMember -Function Get-VCFNetworkPool
 
 Function New-VCFNetworkPool
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & creates a new Network Pool.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & creates a new Network Pool.
 
-    .DESCRIPTION
-    The New-VCFNetworkPool cmdlet connects to the specified SDDC Manager & creates a new Network Pool.
-    Network Pool spec is provided in a JSON file.
+        .DESCRIPTION
+        The New-VCFNetworkPool cmdlet connects to the specified SDDC Manager & creates a new Network Pool.
+        Network Pool spec is provided in a JSON file.
 
-    .EXAMPLE
-    PS C:\> New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
-    This example shows how to create a Network Pool
-  #>
+        .EXAMPLE
+        PS C:\> New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
+        This example shows how to create a Network Pool
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/network-pools"
-    Try {
-      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/network-pools"
+        Try {
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			# This API does not return a response body. Sending GET to validate the Network Pool creation was successful
 			$validate = $ConfigJson | ConvertFrom-Json
 			$poolName = $validate.name
 			Get-VCFNetworkPool -name $poolName
+        }
+        Catch {
+            ResponseException # Call Function ResponseException to get error response from the exception
+        }
     }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-  }
 }
 Export-ModuleMember -Function New-VCFNetworkPool
 
 Function Remove-VCFNetworkPool
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a Network Pool
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & deletes a Network Pool
 
-    .DESCRIPTION
-    The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool
+        .DESCRIPTION
+        The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool
 
-    .EXAMPLE
-    PS C:\> Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
-    This example shows how to get a Network Pool by id
-  #>
+        .EXAMPLE
+        PS C:\> Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
+        This example shows how to get a Network Pool by id
+    #>
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    $uri = "https://$sddcManager/v1/network-pools/$id"
-    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    # This API does not return a response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        $uri = "https://$sddcManager/v1/network-pools/$id"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        # This API does not return a response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
 
 Function Get-VCFNetworkIPPool
 {
-  <#
-    .SYNOPSIS
-    Get a Network of a Network Pool
+    <#
+        .SYNOPSIS
+        Get a Network of a Network Pool
 
-    .DESCRIPTION
-    The Get-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and retrieves a list of the networks
-    configured for the provided network pool.
+        .DESCRIPTION
+        The Get-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and retrieves a list of the networks
+        configured for the provided network pool.
 
-    .EXAMPLE
-    PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52
-    This example shows how to get a list of all networks associated to the network pool based on the id provided
+        .EXAMPLE
+        PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52
+        This example shows how to get a list of all networks associated to the network pool based on the id provided
 
-    .EXAMPLE
-    PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795
-    This example shows how to get a list of details for a specific network associated to the network pool using ids
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795
+        This example shows how to get a list of details for a specific network associated to the network pool using ids
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$networkid
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$networkid
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/network-pools/$id/networks"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/network-pools/$id/networks"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("networkid"))) {
+            $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
     }
-    if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("networkid"))) {
-      $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
     }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
 }
 Export-ModuleMember -Function Get-VCFNetworkIPPool
 
 Function Add-VCFNetworkIPPool
 {
-  <#
-    .SYNOPSIS
-    Add an IP Pool to the Network of a Network Pool
+    <#
+        .SYNOPSIS
+        Add an IP Pool to the Network of a Network Pool
 
-    .DESCRIPTION
-    The Add-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and adds a new IP Pool
-    to an existing Network within a Network Pool.
+        .DESCRIPTION
+        The Add-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and adds a new IP Pool
+        to an existing Network within a Network Pool.
 
-    .EXAMPLE
-    PS C:\> Add-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
-    This example shows how create a new IP Pool on the existing network for a given Network Pool
-  #>
+        .EXAMPLE
+        PS C:\> Add-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+        This example shows how create a new IP Pool on the existing network for a given Network Pool
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$networkid,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$ipStart,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$ipEnd
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$networkid,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$ipStart,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$ipEnd
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
-    $body = '{"end": "'+$ipEnd+'","start": "'+$ipStart+'"}'
-    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
+        $body = '{"end": "'+$ipEnd+'","start": "'+$ipStart+'"}'
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Add-VCFNetworkIPPool
 
 Function Remove-VCFNetworkIPPool
 {
-  <#
-    .SYNOPSIS
-    Remove an IP Pool from the Network of a Network Pool
+    <#
+        .SYNOPSIS
+        Remove an IP Pool from the Network of a Network Pool
 
-    .DESCRIPTION
-    The Remove-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an
-    existing Network within a Network Pool.
+        .DESCRIPTION
+        The Remove-VCFNetworkIPPool cmdlet connects to the specified SDDC Manager and removes an IP Pool assigned to an
+        existing Network within a Network Pool.
 
-    .EXAMPLE
-    PS C:\> Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
-    This example shows how remove an IP Pool on the existing network for a given Network Pool
-  #>
+        .EXAMPLE
+        PS C:\> Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+        This example shows how remove an IP Pool on the existing network for a given Network Pool
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$networkid,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$ipStart,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$ipEnd
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$networkid,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$ipStart,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$ipEnd
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
-    $body = '{"end": "'+$ipEnd+'","start": "'+$ipStart+'"}'
-    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $body
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
+        $body = '{"end": "'+$ipEnd+'","start": "'+$ipStart+'"}'
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $body
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
