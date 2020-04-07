@@ -23,11 +23,8 @@ This example shows how to create a cluster in a Workload Domain from a json spec
 #### -user
 - Must be UPN format e.g. sec-admin@rainpole.io or sec-admin@vsphere.local
 
-#### -role
-- Currently supported roles: ADMIN, OPERATOR
-
 ```yaml
-Type: JSON
+Type: string
 Parameter Sets: (All)
 Aliases:
 
@@ -36,7 +33,20 @@ Position: Named
 Default value: None
 ```
 
+#### -role
+- Currently supported roles: ADMIN, OPERATOR
+
+```yaml
+Type: string
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Supported Value: ADMIN, OPERATOR
 ```
+
 
 ### Notes
 
