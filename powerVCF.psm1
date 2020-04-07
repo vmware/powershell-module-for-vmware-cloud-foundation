@@ -434,6 +434,7 @@ Function Request-VCFBundle
         $uri = "https://$sddcManager/v1/bundles/$id"
         $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
+        $response
     }
     Catch {
         ResponseException # Call Function ResponseException to get error response from the exception
@@ -3740,10 +3741,10 @@ Function Get-JWTDetail
         .DESCRIPTION
         Decode a JWT Access Token and convert to a PowerShell Object.
         JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
-        
+
         .PARAMETER token
         The JWT Access Token to decode and udpate with expiry time and time to expiry
-  
+
         .INPUTS
         Token from Pipeline
 
@@ -3752,7 +3753,7 @@ Function Get-JWTDetail
 
         .SYNTAX
         Get-JWTDetail (accesstoken)
-  
+
         .EXAMPLE
         PS> Get-JWTDetail ('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
     #>
