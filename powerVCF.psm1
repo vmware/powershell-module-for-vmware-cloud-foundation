@@ -3477,71 +3477,72 @@ Export-ModuleMember -Function Get-VCFvCenter
 
 Function Get-VCFvRSLCM
 {
-  <#
-    .SYNOPSIS
-    Get the existing vRealize Suite Lifecycle Manager
+    <#
+        .SYNOPSIS
+        Get the existing vRealize Suite Lifecycle Manager
 
-    .DESCRIPTION
-    The Get-VCFvRSLCM cmdlet gets the complete information about the existing vRealize Suite Lifecycle Manager.
+        .DESCRIPTION
+        The Get-VCFvRSLCM cmdlet gets the complete information about the existing vRealize Suite Lifecycle Manager.
 
-    .EXAMPLE
-    PS C:\> Get-VCFvRSLCM
-    This example list all details concerning the vRealize Suite Lifecycle Manager
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFvRSLCM
+        This example list all details concerning the vRealize Suite Lifecycle Manager
+    #>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/vrslcm"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vrslcm"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
 
 Function Get-VCFvRSLCMEnvironment
 {
-  <#
-    .SYNOPSIS
-    Get vRealize Suite Lifecycle Manager environments
+    <#
+        .SYNOPSIS
+        Get vRealize Suite Lifecycle Manager environments
 
-    .DESCRIPTION
-    The Get-VCFvRSLCMEnvironment cmdlet gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager environments that are managed by VMware Cloud Foundation.
+        .DESCRIPTION
+        The Get-VCFvRSLCMEnvironment cmdlet gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager
+        environments that are managed by VMware Cloud Foundation.
 
-    .EXAMPLE
-    PS C:\> Get-VCFvRSLCMEnvironment
-    This example list all vRealize Suite Lifecycle Manager environments
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFvRSLCMEnvironment
+        This example list all vRealize Suite Lifecycle Manager environments
+    #>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/vrslcm/environments"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vrslcm/environments"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
 
 Function New-VCFvRSLCM
 {
-  <#
-    .SYNOPSIS
-    Deploy vRealize Suite Lifecycle Manager
+    <#
+        .SYNOPSIS
+        Deploy vRealize Suite Lifecycle Manager
 
-    .DESCRIPTION
-    The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
+        .DESCRIPTION
+        The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
 
-    .EXAMPLE
-    PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
-    This example deploys vRealize Suite Lifecycle Manager using a supplied json file
-  #>
+        .EXAMPLE
+        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
+        This example deploys vRealize Suite Lifecycle Manager using a supplied json file
+    #>
 
     Param (
         [Parameter (Mandatory=$true)]
@@ -3572,18 +3573,18 @@ Export-ModuleMember -Function New-VCFvRSLCM
 
 Function Remove-VCFvRSLCM
 {
-  <#
-    .SYNOPSIS
-    Remove a failed vRealize Suite Lifecycle Manager deployment
+    <#
+        .SYNOPSIS
+        Remove a failed vRealize Suite Lifecycle Manager deployment
 
-    .DESCRIPTION
-    The Remove-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable
-    to a successful vRealize Suite Lifecycle Manager deployment.
+        .DESCRIPTION
+        The Remove-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable
+        to a successful vRealize Suite Lifecycle Manager deployment.
 
-    .EXAMPLE
-    PS C:\> Remove-VCFvRSLCM
-    This example removes a failed vRealize Suite Lifecycle Manager deployment
-  #>
+        .EXAMPLE
+        PS C:\> Remove-VCFvRSLCM
+        This example removes a failed vRealize Suite Lifecycle Manager deployment
+    #>
 
     Try {
         # Call Function createHeader to set Accept & Authorization
