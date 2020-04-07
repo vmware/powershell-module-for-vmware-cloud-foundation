@@ -3125,29 +3125,29 @@ Export-ModuleMember -Function Retry-VCFTask
 
 Function Get-VCFUpgradables
 {
-  <#
-    .SYNOPSIS
-    Get the Upgradables
+    <#
+        .SYNOPSIS
+        Get the Upgradables
 
-    .DESCRIPTION
-    Fetches the list of Upgradables in the System. Only one Upgradable becomes AVAILABLE for Upgrade.
-    The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
+        .DESCRIPTION
+        Fetches the list of Upgradables in the System. Only one Upgradable becomes AVAILABLE for Upgrade.
+        The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
 
-    .EXAMPLE
-    PS C:\> Get-VCFUpgradables
-    This example shows how to retrieve the list of upgradables in the system
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFUpgradables
+        This example shows how to retrieve the list of upgradables in the system
+    #>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/system/upgradables"
-    $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/upgradables"
+        $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFUpgradables
 
