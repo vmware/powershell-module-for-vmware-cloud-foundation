@@ -2807,7 +2807,6 @@ Function New-VCFEdgeCluster
     # the validation API does not currently support polling with a task ID
 
     do {
-      $i++
       start-sleep -Seconds 10
       $validationId = $response.id
       $uri = "https://$sddcManager/v1/edge-clusters/validations/$validationId"
