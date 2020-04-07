@@ -320,35 +320,29 @@ Export-ModuleMember -Function Set-VCFBackupConfiguration
 
 Function Start-VCFBackup
 {
-  <#
-    .SYNOPSIS
-    Start the SDDC Manager backup
+  	<#
+    	.SYNOPSIS
+    	Start the SDDC Manager backup
 
-    .DESCRIPTION
-    The Start-VCFBackup cmdlet invokes the SDDC Manager backup task
+    	.DESCRIPTION
+    	The Start-VCFBackup cmdlet invokes the SDDC Manager backup task
 
-    .EXAMPLE
-    PS C:\> Start-VCFBackup
-    This example shows how to start the SDDC Manager backup
-  #>
+    	.EXAMPLE
+    	PS C:\> Start-VCFBackup
+    	This example shows how to start the SDDC Manager backup
+  	#>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    # this body is fixed for SDDC Manager backups. not worth having it stored on file
-    $ConfigJson = '
-      {
-        "elements" : [{
-          "resourceType" : "SDDC_MANAGER"
-          }]
-        }
-      '
-    $uri = "https://$sddcManager/v1/backups/tasks"
-    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	# this body is fixed for SDDC Manager backups. not worth having it stored on file
+    	$ConfigJson = '{"elements" : [{"resourceType" : "SDDC_MANAGER"}]}'
+    	$uri = "https://$sddcManager/v1/backups/tasks"
+    	$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+    	$response
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
   }
 }
 Export-ModuleMember -Function Start-VCFBackup
