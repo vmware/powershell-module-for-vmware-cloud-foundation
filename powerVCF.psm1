@@ -3610,44 +3610,24 @@ Export-ModuleMember -Function Remove-VCFvRSLCM
 Function Validate-CommissionHostSpec
 {
 
-	Param (
-    [Parameter (Mandatory=$true)]
-    [object]$json
-  )
-
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/hosts/validations"
-  Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-    Return $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-
-Function Validate-WorkloadDomainSpec
-{
-
-	Param (
-    [Parameter (Mandatory=$true)]
-      [object]$json
+    Param (
+        [Parameter (Mandatory=$true)]
+            [object]$json
     )
 
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/domains/validations"
-  Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-	   return $response
-	}
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    $uri = "https://$sddcManager/v1/hosts/validations"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+        Return $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
   }
 }
 
-Function Validate-VCFClusterSpec
+Function Validate-WorkloadDomainSpec
 {
 
 	Param (
@@ -3657,36 +3637,56 @@ Function Validate-VCFClusterSpec
 
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/clusters/validations"
-  Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+    $uri = "https://$sddcManager/v1/domains/validations"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+	   Return $response
 	}
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-  Return $response
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+
+Function Validate-VCFClusterSpec
+{
+
+	Param (
+        [Parameter (Mandatory=$true)]
+            [object]$json
+    )
+
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/clusters/validations"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+	}
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+    Return $response
 }
 
 Function Validate-VCFUpdateClusterSpec
 {
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [object]$clusterid,
+        [Parameter (Mandatory=$true)]
+            [object]$clusterid,
 		[Parameter (Mandatory=$true)]
-      [object]$json
+        [object]$json
   )
 
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
-  Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+    $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-  Return $response
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+    Return $response
 }
 
 Function Validate-EdgeClusterSpec
@@ -3694,70 +3694,77 @@ Function Validate-EdgeClusterSpec
 
 	Param (
 		[Parameter (Mandatory=$true)]
-      [object]$json
-  )
+            [object]$json
+    )
 
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  $uri = "https://$sddcManager/v1/edge-clusters/validations"
-  Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+    $uri = "https://$sddcManager/v1/edge-clusters/validations"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-  Return $response
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+    Return $response
 }
 
 Function checkVCFToken
 {
-  $expiryDetails = Get-JWTDetails $accessToken
-  if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
-    write-host "API Access Token Expired. Requesting a new access token with current refresh token" -ForegroundColor Cyan
-    $headers = @{"Accept" = "application/json"}
-    $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
-    $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
-    $Global:accessToken = $response
-  }
+    $expiryDetails = Get-JWTDetails $accessToken
+    if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
+        Write-Host "API Access Token Expired. Requesting a new access token with current refresh token" -ForegroundColor Cyan
+        $headers = @{"Accept" = "application/json"}
+        $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
+        $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
+        $Global:accessToken = $response
+    }
 }
 
 Function Get-JWTDetails
 {
-  [cmdletbinding()]
-  param(
-      [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
-      [string]$token
-  )
+    [cmdletbinding()]
 
-  <#
-  .SYNOPSIS
-  Decode a JWT Access Token and convert to a PowerShell Object.
-  JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
-  Written by Darren Robinson
-  https://blog.darrenjrobinson.com
-  https://blog.darrenjrobinson.com/jwtdetails-powershell-module-for-decoding-jwt-access-tokens-with-readable-token-expiry-time/
-  .DESCRIPTION
-  Decode a JWT Access Token and convert to a PowerShell Object.
-  JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
-  .PARAMETER token
-  The JWT Access Token to decode and udpate with expiry time and time to expiry
-  .INPUTS
-  Token from Pipeline
-  .OUTPUTS
-  PowerShell Object
-  .SYNTAX
-  Get-JWTDetails(accesstoken)
-  .EXAMPLE
-  PS> Get-JWTDetails('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
-  #>
+    Param(
+      [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
+        [string]$token
+    )
+
+    <#
+        .SYNOPSIS
+        Decode a JWT Access Token and convert to a PowerShell Object.
+        JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
+        Written by Darren Robinson
+        https://blog.darrenjrobinson.com
+        https://blog.darrenjrobinson.com/jwtdetails-powershell-module-for-decoding-jwt-access-tokens-with-readable-token-expiry-time/
+
+        .DESCRIPTION
+        Decode a JWT Access Token and convert to a PowerShell Object.
+        JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
+        
+        .PARAMETER token
+        The JWT Access Token to decode and udpate with expiry time and time to expiry
+  
+        .INPUTS
+        Token from Pipeline
+
+        .OUTPUTS
+        PowerShell Object
+
+        .SYNTAX
+        Get-JWTDetails(accesstoken)
+  
+        .EXAMPLE
+        PS> Get-JWTDetails('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
+    #>
 
 
   if (!$token.Contains(".") -or !$token.StartsWith("eyJ")) { Write-Error "Invalid token" -ErrorAction Stop }
 
   # Token
-  foreach ($i in 0..1) {
+  Foreach ($i in 0..1) {
       $data = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
-      switch ($data.Length % 4) {
+      Switch ($data.Length % 4) {
           0 { break }
           2 { $data += '==' }
           3 { $data += '=' }
@@ -3769,9 +3776,9 @@ Function Get-JWTDetails
   Write-Verbose $decodedToken
 
   # Signature
-  foreach ($i in 0..2) {
+  Foreach ($i in 0..2) {
       $sig = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
-      switch ($sig.Length % 4) {
+      Switch ($sig.Length % 4) {
           0 { break }
           2 { $sig += '==' }
           3 { $sig += '=' }
@@ -3793,7 +3800,7 @@ Function Get-JWTDetails
   $timeToExpiry = ($localTime - (get-date))
   $decodedToken | Add-Member -Type NoteProperty -Name "timeToExpiry" -Value $timeToExpiry
 
-  return $decodedToken
+  Return $decodedToken
 }
 
 ######## End APIs for managing Validations ########
