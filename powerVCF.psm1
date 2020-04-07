@@ -23,15 +23,15 @@
 # importing the module
 
 if ($PSEdition -eq 'Core') {
-$PSDefaultParameterValues.Add("Invoke-RestMethod:SkipCertificateCheck",$true)
+	$PSDefaultParameterValues.Add("Invoke-RestMethod:SkipCertificateCheck",$true)
 }
 
 if ($PSEdition -eq 'Desktop') {
-# Enable communication with self signed certs when using Windows Powershell
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+	# Enable communication with self signed certs when using Windows Powershell
+	[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
-add-type @"
-    using System.Net;
+	add-type @"
+	using System.Net;
     using System.Security.Cryptography.X509Certificates;
     public class TrustAllCertificatePolicy : ICertificatePolicy {
         public TrustAllCertificatePolicy() {}
@@ -40,137 +40,137 @@ add-type @"
             WebRequest wRequest, int certificateProblem) {
             return true;
         }
-    }
+	}
 "@
-[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
+	[System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
 Function Connect-VCFManager 
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and requests API access & refresh tokens
+	<#
+		.SYNOPSIS
+    	Connects to the specified SDDC Manager and requests API access & refresh tokens
 
-    .DESCRIPTION
-    The Connect-VCFManager cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
-    It is required once per session before running all other cmdlets
+    	.DESCRIPTION
+    	The Connect-VCFManager cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
+    	It is required once per session before running all other cmdlets
 
-    .EXAMPLE
-    PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
-    This example shows how to connect to SDDC Manager to request API access & refresh tokens
-  #>
+    	.EXAMPLE
+    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
+    	This example shows how to connect to SDDC Manager to request API access & refresh tokens
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$fqdn,
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$fqdn,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$username,
+      		[ValidateNotNullOrEmpty()]
+      		[string]$username,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$password
-  )
+      		[ValidateNotNullOrEmpty()]
+      		[string]$password
+  	)
 
-  if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
-    # Request Credentials
-    $creds = Get-Credential
-    $username = $creds.UserName.ToString()
-    $password = $creds.GetNetworkCredential().password
-  }
+  	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
+   		# Request Credentials
+    	$creds = Get-Credential
+    	$username = $creds.UserName.ToString()
+    	$password = $creds.GetNetworkCredential().password
+  	}
 
-  $Global:sddcManager = $fqdn
+  	$Global:sddcManager = $fqdn
 
-  # Validate credentials by executing an API call
-  $headers = @{"Content-Type" = "application/json"}
-  $uri = "https://$sddcManager/v1/tokens"
-  $body = '{"username": "'+$username+'","password": "'+$password+'"}'
+  	# Validate credentials by executing an API call
+  	$headers = @{"Content-Type" = "application/json"}
+  	$uri = "https://$sddcManager/v1/tokens"
+  	$body = '{"username": "'+$username+'","password": "'+$password+'"}'
 
-  Try {
-    # Checking against the sddc-managers API
-    # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
-    if ($PSEdition -eq 'Core') {
-      $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck
-      $Global:accessToken = $response.accessToken
-      $Global:refreshToken = $response.refreshToken.id
-    }
-    else {
-      $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
-      $Global:accessToken = $response.accessToken
-      $Global:refreshToken = $response.refreshToken.id
-    }
-    if ($response.accessToken) {
-      Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
-    }
-  }
-  Catch {
-    Write-Host "" $_.Exception.Message -ForegroundColor Red
-    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
-  }
+  	Try {
+    	# Checking against the sddc-managers API
+    	# PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+    	if ($PSEdition -eq 'Core') {
+      		$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck
+      		$Global:accessToken = $response.accessToken
+      		$Global:refreshToken = $response.refreshToken.id
+    	}
+    	else {
+      		$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
+      		$Global:accessToken = $response.accessToken
+      		$Global:refreshToken = $response.refreshToken.id
+    	}
+    	if ($response.accessToken) {
+      		Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
+    	}
+  	}
+  	Catch {
+   		Write-Host "" $_.Exception.Message -ForegroundColor Red
+    	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+  	}
 }
 Export-ModuleMember -function Connect-VCFManager
 
 Function Connect-CloudBuilder
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified Cloud Builder and stores the credentials in a base64 string
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified Cloud Builder and stores the credentials in a base64 string
     
-    .DESCRIPTION
-    The Connect-CloudBuilder cmdlet connects to the specified Cloud Builder and stores the credentials
-    in a base64 string. It is required once per session before running all other cmdlets
+    	.DESCRIPTION
+    	The Connect-CloudBuilder cmdlet connects to the specified Cloud Builder and stores the credentials
+    	in a base64 string. It is required once per session before running all other cmdlets
     
-    .EXAMPLE
-    PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
-    This example shows how to connect to the Cloud Builder applaince
-  #>
+    	.EXAMPLE
+    	PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
+    	This example shows how to connect to the Cloud Builder applaince
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$fqdn,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$username,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$password
-  )
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$fqdn,
+    	[Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$username,
+    	[Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$password
+  	)
   
-  if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
-    # Request Credentials
-    $creds = Get-Credential
-    $username = $creds.UserName.ToString()
-    $password = $creds.GetNetworkCredential().password
-  }
+  	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
+    	# Request Credentials
+    	$creds = Get-Credential
+    	$username = $creds.UserName.ToString()
+    	$password = $creds.GetNetworkCredential().password
+  	}
 
-  $Global:sddcManager = $fqdn
-  $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
+  	$Global:sddcManager = $fqdn
+  	$Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
   
-  # Validate credentials by executing an API call
-  $headers = @{"Accept" = "application/json"}
-  $headers.Add("Authorization", "Basic $base64AuthInfo")
-  $uri = "https://$sddcManager/v1/sddc-managers"
+  	# Validate credentials by executing an API call
+  	$headers = @{"Accept" = "application/json"}
+  	$headers.Add("Authorization", "Basic $base64AuthInfo")
+  	$uri = "https://$sddcManager/v1/sddc-managers"
   
-  Try {
-    # Checking against the sddc-managers API
-    # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
-    if ($PSEdition -eq 'Core') {
-      $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
-    }
-    else {
-      $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
-    }
-    if ($response.StatusCode -eq 200) {
-      Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
-    }
-  }
-  Catch {
-    Write-Host "" $_.Exception.Message -ForegroundColor Red
-    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-CloudBuilder cmdlet" -ForegroundColor Red
-  }
+  	Try {
+    	# Checking against the sddc-managers API
+    	# PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+    	if ($PSEdition -eq 'Core') {
+      		$response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck
+    	}
+    	else {
+      		$response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
+    	}
+    	if ($response.StatusCode -eq 200) {
+      		Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+    	}
+  	}
+  	Catch {
+    	Write-Host "" $_.Exception.Message -ForegroundColor Red
+    	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-CloudBuilder cmdlet" -ForegroundColor Red
+  	}
 }
 Export-ModuleMember -function Connect-CloudBuilder
 
@@ -179,60 +179,60 @@ Export-ModuleMember -function Connect-CloudBuilder
 
 Function Get-VCFApplicationVirtualNetwork
 {
-  <#
-  .SYNOPSIS
-  Retrieves all Application Virtual Networks
+	<#
+  		.SYNOPSIS
+  		Retrieves all Application Virtual Networks
   
-  .DESCRIPTION
-  The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
-    - regionType supports REGION_A, REGION_B, X_REGION
+  		.DESCRIPTION
+  		The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
+    	- regionType supports REGION_A, REGION_B, X_REGION
   
-  .EXAMPLE
-  PS C:\> Get-VCFApplicationVirtualNetwork
-  This example demonstrates how to retrieve a list of Application Virtual Networks
+  		.EXAMPLE
+  		PS C:\> Get-VCFApplicationVirtualNetwork
+  		This example demonstrates how to retrieve a list of Application Virtual Networks
 
-  .EXAMPLE
-  PS C:\> Get-VCFApplicationVirtualNetwork -regionType REGION_A
-  This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
+  		.EXAMPLE
+  		PS C:\> Get-VCFApplicationVirtualNetwork -regionType REGION_A
+  		This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
 
-  .EXAMPLE
-  PS C:\> Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
-  This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
+  		.EXAMPLE
+  		PS C:\> Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
+  		This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
   #>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-        [ValidateSet("REGION_A", "REGION_B", "X_REGION")]
-        [ValidateNotNullOrEmpty()]
-        [string]$regionType,
-    [Parameter (Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
-  )
+  	Param (
+    	[Parameter (Mandatory=$false)]
+        	[ValidateSet("REGION_A", "REGION_B", "X_REGION")]
+        	[ValidateNotNullOrEmpty()]
+        	[string]$regionType,
+    	[Parameter (Mandatory=$false)]
+        	[ValidateNotNullOrEmpty()]
+        	[string]$id
+  	)
 
-  CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
-      $uri = "https://$sddcManager/v1/avns"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("regionType")) {
-      $uri = "https://$sddcManager/v1/avns?regionType=$regionType"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/internal/avns/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
+      		$uri = "https://$sddcManager/v1/avns"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response
+    	}
+    	if ($PsBoundParameters.ContainsKey("regionType")) {
+      		$uri = "https://$sddcManager/v1/avns?regionType=$regionType"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response
+    	}
+    	if ($PsBoundParameters.ContainsKey("id")) {
+      		$uri = "https://$sddcManager/internal/avns/$id"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response
+    	}
+  	}
+  	Catch {
+   		ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
 
@@ -1648,7 +1648,6 @@ Function New-VCFWorkloadDomain
   }
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
-
 Function Set-VCFWorkloadDomain
 {
   <#
