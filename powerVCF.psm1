@@ -1177,261 +1177,261 @@ Export-ModuleMember -Function Remove-VCFCluster
 
 Function Get-VCFCredential
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of credentials.
-    Supported resource types are: VCENTER, ESXI, NSXT_MANAGER, NSXT_EDGE, BACKUP
-    Please note: if you are requesting credentials by resource type then the resource name parameter (if
-    passed) will be ignored (they are mutually exclusive)
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager and retrieves a list of credentials.
+    	Supported resource types are: VCENTER, ESXI, NSXT_MANAGER, NSXT_EDGE, BACKUP
+    	Please note: if you are requesting credentials by resource type then the resource name parameter (if
+    	passed) will be ignored (they are mutually exclusive)
 
-    .DESCRIPTION
-    The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
-    Authenticated user must have ADMIN role.
+    	.DESCRIPTION
+    	The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
+    	Authenticated user must have ADMIN role.
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredential
-    This example shows how to get a list of credentials
+    	.EXAMPLE
+    	PS C:\> Get-VCFCredential
+    	This example shows how to get a list of credentials
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredential -resourceType VCENTER
-    This example shows how to get a list of VCENTER credentials
+    	.EXAMPLE
+    	PS C:\> Get-VCFCredential -resourceType VCENTER
+    	This example shows how to get a list of VCENTER credentials
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
+    	.EXAMPLE
+    	PS C:\> Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
     This example shows how to get the credential for a specific resourceName (FQDN)
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
-    This example shows how to get the credential using the id 
-  #>
+    	.EXAMPLE
+    	PS C:\> Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
+    	This example shows how to get the credential using the id 
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$resourceName,
-    [Parameter (Mandatory=$false)]
-      [ValidateSet("VCENTER", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE")]
-        [ValidateNotNullOrEmpty()]
-        [string]$resourceType,
-    [Parameter (Mandatory=$false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
-  )
+  	Param (
+    	[Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$resourceName,
+    	[Parameter (Mandatory=$false)]
+      		[ValidateSet("VCENTER", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE")]
+        	[ValidateNotNullOrEmpty()]
+        	[string]$resourceType,
+    	[Parameter (Mandatory=$false)]
+        	[ValidateNotNullOrEmpty()]
+        	[string]$id
+  	)
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("resourceName")) {
-      $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    elseif ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/credentials/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    else {
-      $uri = "https://$sddcManager/v1/credentials"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    # if requesting credential by type then name is ignored (mutually exclusive)
-    if ($PsBoundParameters.ContainsKey("resourceType") ) {
-      $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	if ($PsBoundParameters.ContainsKey("resourceName")) {
+      		$uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response.elements
+    	}
+    	elseif ($PsBoundParameters.ContainsKey("id")) {
+      		$uri = "https://$sddcManager/v1/credentials/$id"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response
+    	}
+    	else {
+      		$uri = "https://$sddcManager/v1/credentials"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response.elements
+    	}
+    	# if requesting credential by type then name is ignored (mutually exclusive)
+    	if ($PsBoundParameters.ContainsKey("resourceType") ) {
+      		$uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response.elements
+    	}
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Get-VCFCredential
 
 Function Set-VCFCredential
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and updates a credential.
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager and updates a credential.
 
-    .DESCRIPTION
-    The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
-    Credentials can be updated with a specified password(s) or rotated using system generated password(s).
+    	.DESCRIPTION
+    	The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
+    	Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 
-    .EXAMPLE
-    PS C:\> Set-VCFCredential -json .\Credential\updateCredentialSpec.json
-    This example shows how to update a credential using a json spec
-  #>
+    	.EXAMPLE
+    	PS C:\> Set-VCFCredential -json .\Credential\updateCredentialSpec.json
+    	This example shows how to update a credential using a json spec
+  	#>
 
-  Param (
+  	Param (
 		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+      		[ValidateNotNullOrEmpty()]
+      		[string]$json
+  	)
   
-  Try {
-    if ($PsBoundParameters.ContainsKey("json")) {
-      if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-      }
-      else {
-        $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-      }
-    }
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/credentials"
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	if ($PsBoundParameters.ContainsKey("json")) {
+      		if (!(Test-Path $json)) {
+        		Throw "JSON File Not Found"
+      		}
+      		else {
+        		$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+      		}
+    	}
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$uri = "https://$sddcManager/v1/credentials"
+    	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    	$response
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Set-VCFCredential
 
 Function Get-VCFCredentialTask
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
 
-    .DESCRIPTION
-    The Get-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retrieves a list of
-    credential tasks in reverse chronological order.
+    	.DESCRIPTION
+    	The Get-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retrieves a list of
+    	credential tasks in reverse chronological order.
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredentialTask
-    This example shows how to get a list of all credentials tasks
+    	.EXAMPLE
+    	PS C:\> Get-VCFCredentialTask
+    	This example shows how to get a list of all credentials tasks
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3
-    This example shows how to get the credential tasks for a specific task id
+    	.EXAMPLE
+    	PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3
+    	This example shows how to get the credential tasks for a specific task id
 
-    .EXAMPLE
-    PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
-    This example shows how to get resource credentials (for e.g. ESXI) for a credential task id
-  #>
+    	.EXAMPLE
+    	PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
+    	This example shows how to get resource credentials (for e.g. ESXI) for a credential task id
+  	#>
 
 	Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
+    	[Parameter (Mandatory=$false)]
+      		ValidateNotNullOrEmpty()]
+      		[string]$id,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [switch]$resourceCredentials
-  )
+      		[ValidateNotNullOrEmpty()]
+      		[switch]$resourceCredentials
+  	)
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ( -not $PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/credentials/tasks"
-	    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	    $response
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("resourceCredentials"))) {
-      $uri = "https://$sddcManager/v1/credentials/tasks/$id/resource-credentials"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	if ( -not $PsBoundParameters.ContainsKey("id")) {
+      		$uri = "https://$sddcManager/v1/credentials/tasks"
+	    	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+	    	$response
+    	}
+    	if ($PsBoundParameters.ContainsKey("id")) {
+      		$uri = "https://$sddcManager/v1/credentials/tasks/$id"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response
+    	}
+    	if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("resourceCredentials"))) {
+      		$uri = "https://$sddcManager/v1/credentials/tasks/$id/resource-credentials"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response
+    	}
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
 
 Function Cancel-VCFCredentialTask
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
 
-    .DESCRIPTION
-    The Cancel-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
+    	.DESCRIPTION
+    	The Cancel-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
 
-    .EXAMPLE
-    PS C:\> Cancel-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
-    This example shows how to cancel a failed rotate or update password task.
-  #>
+    	.EXAMPLE
+    	PS C:\> Cancel-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+    	This example shows how to cancel a failed rotate or update password task.
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$id
+  	)
 
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-  }
-  else {
-    Throw "task id to be cancelled is not provided"
-  }
-  createHeader # Calls Function createHeader to set Accept & Authorization
+  	if ($PsBoundParameters.ContainsKey("id")) {
+    	$uri = "https://$sddcManager/v1/credentials/tasks/$id"
+  	}
+  	else {
+    	Throw "task id to be cancelled is not provided"
+  	}
+  	createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    $response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	$response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers
+    	$response
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Cancel-VCFCredentialTask
 
 Function Retry-VCFCredentialTask
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
 
-    .DESCRIPTION
-    The Retry-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
+    	.DESCRIPTION
+    	The Retry-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
 
-    .EXAMPLE
-    PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
-    This example shows how to update passwords of a resource type using a json spec
-  #>
+    	.EXAMPLE
+    	PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
+    	This example shows how to update passwords of a resource type using a json spec
+  	#>
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$id,
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$json
+  	)
 
-  if ($PsBoundParameters.ContainsKey("json")) {
-    if (!(Test-Path $json)) {
-      Throw "JSON File Not Found"
-    }
-    else {
-      $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-    }
-  }
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-  }
-  else {
-    Throw "task id not provided"
-  }
-  createHeader # Calls Function createHeader to set Accept & Authorization
-  checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	if ($PsBoundParameters.ContainsKey("json")) {
+    	if (!(Test-Path $json)) {
+      		Throw "JSON File Not Found"
+    	}
+    	else {
+      		$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+    	}
+  	}
+  	if ($PsBoundParameters.ContainsKey("id")) {
+    	$uri = "https://$sddcManager/v1/credentials/tasks/$id"
+  	}
+  	else {
+    	Throw "task id not provided"
+  	}
+  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  	Try {
+    	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+    	$response
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Retry-VCFCredentialTask
 
