@@ -1,11 +1,11 @@
-# Get-VCFFederationMembers
+# Get-VCFFederationMember
 
 ### Synopsis
 Gets members of the Federation
 
 ### Syntax
 ```
-Get-VCFFederationMembers
+Get-VCFFederationMember
 ```
 
 ### Description
@@ -14,7 +14,7 @@ Gets the complete information about the existing VCF Federation members.
 ### Examples
 #### Example 1
 ```
-Get-VCFFederationMembers
+Get-VCFFederationMember
 ```
 This example lists all details concerning the VCF Federation members
 

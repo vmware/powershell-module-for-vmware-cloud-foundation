@@ -2236,7 +2236,7 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 
 ######### Start APIs for managing Members of the Federation ##########
 
-Function Get-VCFFederationMembers
+Function Get-VCFFederationMember
 {
     <#
         .SYNOPSIS
@@ -2246,7 +2246,7 @@ Function Get-VCFFederationMembers
         Gets the complete information about the existing VCF Federation members.
 
         .EXAMPLE
-        PS C:\> Get-VCFFederationMembers
+        PS C:\> Get-VCFFederationMember
         This example lists all details concerning the VCF Federation members.
     #>
 
@@ -2267,7 +2267,7 @@ Function Get-VCFFederationMembers
         ResponseException # Call Function ResponseException to get error response from the exception
     }
 }
-Export-ModuleMember -function Get-VCFFederationMembers
+Export-ModuleMember -function Get-VCFFederationMember
 
 Function New-VCFFederationInvite
 {
