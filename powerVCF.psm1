@@ -2936,83 +2936,83 @@ Export-ModuleMember -Function Get-VCFManager
 
 Function Start-PreCheckVCFSystem
 {
-  <#
-    .SYNOPSIS
-    The Start-PreCheckVCFSystem cmdlet performs system level health checks
+    <#
+        .SYNOPSIS
+        The Start-PreCheckVCFSystem cmdlet performs system level health checks
 
-    .DESCRIPTION
-    The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
+        .DESCRIPTION
+        The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
-    .EXAMPLE
-    PS C:\> Start-PreCheckVCFSystem -json .\SystemCheck\precheckVCFSystem.json
-    This example shows how to perform system level health check
-  #>
+        .EXAMPLE
+        PS C:\> Start-PreCheckVCFSystem -json .\SystemCheck\precheckVCFSystem.json
+        This example shows how to perform system level health check
+    #>
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  if ($PsBoundParameters.ContainsKey("json")) {
-    if (!(Test-Path $json)) {
-      Throw "JSON File Not Found"
+    if ($PsBoundParameters.ContainsKey("json")) {
+        if (!(Test-Path $json)) {
+            Throw "JSON File Not Found"
+        }
+        else {
+            $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+        }
     }
     else {
-      $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+        Throw "json file not found"
     }
-  }
-  else {
-    Throw "json file not found"
-  }
-  $uri = "https://$sddcManager/v1/system/prechecks"
-  Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    $uri = "https://$sddcManager/v1/system/prechecks"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Start-PreCheckVCFSystem
 
 Function Get-PreCheckVCFSystemTask
 {
-  <#
-    .SYNOPSIS
-    Get Precheck Task by ID
+    <#
+        .SYNOPSIS
+        Get Precheck Task by ID
 
-    .DESCRIPTION
-    The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
+        .DESCRIPTION
+        The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
-    .EXAMPLE
-    PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
-    This example shows how to retrieve the status of a system level precheck task
-  #>
+        .EXAMPLE
+        PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+        This example shows how to retrieve the status of a system level precheck task
+    #>
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  if ($PsBoundParameters.ContainsKey("id")) {
-    $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
-  }
-  else {
-    Throw "task id not provided"
-  }
-  Try {
-    $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    if ($PsBoundParameters.ContainsKey("id")) {
+        $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
+    }
+    else {
+        Throw "task id not provided"
+    }
+    Try {
+        $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-PreCheckVCFSystemTask
 
