@@ -355,132 +355,131 @@ Export-ModuleMember -Function Start-VCFBackup
 
 Function Get-VCFBundle
 {
-  <#
-    .SYNOPSIS
-    Get all Bundles available to SDDC Manager
+    <#
+        .SYNOPSIS
+        Get all Bundles available to SDDC Manager
 
-    .DESCRIPTION
-    The Get-VCFBundle cmdlet gets all bundles available to the SDDC Manager instance.
-    i.e. Manually uploaded bundles and bundles available via depot access.
+        .DESCRIPTION
+        The Get-VCFBundle cmdlet gets all bundles available to the SDDC Manager instance.
+        i.e. Manually uploaded bundles and bundles available via depot access.
 
-    .EXAMPLE
-    PS C:\> Get-VCFBundle
-    This example gets the list of bundles and all their details
+        .EXAMPLE
+        PS C:\> Get-VCFBundle
+        This example gets the list of bundles and all their details
 
-    .EXAMPLE
-    PS C:\> Get-VCFBundle | Select version,downloadStatus,id
-    This example gets the list of bundles and filters on the version, download status and the id only
+        .EXAMPLE
+        PS C:\> Get-VCFBundle | Select version,downloadStatus,id
+        This example gets the list of bundles and filters on the version, download status and the id only
 
-    .EXAMPLE
-    PS C:\> Get-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
-    This example gets the details of a specific bundle by its id
+        .EXAMPLE
+        PS C:\> Get-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
+        This example gets the details of a specific bundle by its id
 
-    .EXAMPLE
-    PS C:\> Get-VCFBundle | Where {$_.description -Match "vRealize"}
-    This example lists all bundles that match vRealize in the description field
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFBundle | Where {$_.description -Match "vRealize"}
+        This example lists all bundles that match vRealize in the description field
+    #>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-      [string]$id
-  )
+    Param (
+        [Parameter (Mandatory=$false)]
+            [string]$id
+    )
 
-  # Check the version of SDDC Manager
-  CheckVCFVersion
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/bundles/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
+    # Check the version of SDDC Manager
+    CheckVCFVersion
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/bundles/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/bundles"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
     }
-    else {
-      $uri = "https://$sddcManager/v1/bundles"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
     }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
 }
 Export-ModuleMember -Function Get-VCFBundle
 
 Function Request-VCFBundle
 {
-  <#
-    .SYNOPSIS
-    Start download of bundle from depot
+    <#
+        .SYNOPSIS
+        Start download of bundle from depot
 
-    .DESCRIPTION
-    The Request-VCFBundle cmdlet starts an immediate download of a bundle from the depot.
-    Only one download can be triggered for a bundle.
+        .DESCRIPTION
+        The Request-VCFBundle cmdlet starts an immediate download of a bundle from the depot.
+        Only one download can be triggered for a bundle.
 
-    .EXAMPLE
-    PS C:\> Request-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
-    This example requests the immediate download of a bundle based on its id
-  #>
+        .EXAMPLE
+        PS C:\> Request-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
+        This example requests the immediate download of a bundle based on its id
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/bundles/$id"
-    $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/bundles/$id"
+        $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Request-VCFBundle
 
 Function Start-VCFBundleUpload
 {
-  <#
-    .SYNOPSIS
-    Starts upload of bundle to SDDC Manager
+    <#
+        .SYNOPSIS
+        Starts upload of bundle to SDDC Manager
 
-    .DESCRIPTION
-    The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
-    Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool
+        .DESCRIPTION
+        The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
+        Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool
 
-    .EXAMPLE
-    PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
-    This example invokes the upload of a bundle onto SDDC Manager
-  #>
+        .EXAMPLE
+        PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
+        This example invokes the upload of a bundle onto SDDC Manager
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 
-  if (!(Test-Path $json)) {
-           Throw "JSON File Not Found"
-      }
-      else {
-           # Read the json file contents into the $ConfigJson variable
-           $ConfigJson = (Get-Content $json)
-      }
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+    }
 
-  $uri = "https://$sddcManager/v1/bundles"
-  try {
-      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
-  }
-  catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
-  }
+    $uri = "https://$sddcManager/v1/bundles"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
+    }
+    Catch {
+        ResponseException # Call the function ResponseException which handles execption messages
+    }
 }
 Export-ModuleMember -Function Start-VCFBundleUpload
 
