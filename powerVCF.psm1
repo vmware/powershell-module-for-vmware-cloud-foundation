@@ -146,13 +146,13 @@ Function Connect-CloudBuilder
     	$password = $creds.GetNetworkCredential().password
   	}
 
-  	$Global:sddcManager = $fqdn
+  	$Global:cloudBuilder = $fqdn
   	$Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
 
   	# Validate credentials by executing an API call
   	$headers = @{"Accept" = "application/json"}
   	$headers.Add("Authorization", "Basic $base64AuthInfo")
-  	$uri = "https://$sddcManager/v1/sddc-managers"
+  	$uri = "https://$cloudBuilder/v1/sddcs"
 
   	Try {
     	# Checking against the sddc-managers API
@@ -164,7 +164,7 @@ Function Connect-CloudBuilder
       		$response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
     	}
     	if ($response.StatusCode -eq 200) {
-      		Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+      		Write-Host " Successfully connected to the Cloud Builder Appliance:" $cloudBuilder -ForegroundColor Yellow
     	}
   	}
   	Catch {
