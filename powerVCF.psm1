@@ -3024,90 +3024,90 @@ Export-ModuleMember -Function Get-PreCheckVCFSystemTask
 
 Function Get-VCFTask
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of tasks.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves a list of tasks.
 
-    .DESCRIPTION
-    The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
+        .DESCRIPTION
+        The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
 
-    .EXAMPLE
-    PS C:\> Get-VCFTask
-    This example shows how to get all tasks
+        .EXAMPLE
+        PS C:\> Get-VCFTask
+        This example shows how to get all tasks
 
-    .EXAMPLE
-    PS C:\> Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
-    This example shows how to get a task by id
+        .EXAMPLE
+        PS C:\> Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+        This example shows how to get a task by id
 
-    .EXAMPLE
-    PS C:\> Get-VCFTask -status SUCCESSFUL
-    This example shows how to get all tasks with a status of SUCCESSFUL
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFTask -status SUCCESSFUL
+        This example shows how to get all tasks with a status of SUCCESSFUL
+    #>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$status
-  )
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$status
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ( -not $PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/tasks/"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/tasks/"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/tasks/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("status")) {
+            $uri = "https://$sddcManager/v1/tasks/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements | Where-Object {$_.status -eq $status}
+        }
     }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/tasks/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
     }
-    if ($PsBoundParameters.ContainsKey("status")) {
-      $uri = "https://$sddcManager/v1/tasks/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements | Where-Object {$_.status -eq $status}
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
 }
 Export-ModuleMember -Function Get-VCFTask
 
 Function Retry-VCFTask
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retries a previously failed task.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retries a previously failed task.
 
-    .DESCRIPTION
-    The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
-    failed task using the task id.
+        .DESCRIPTION
+        The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
+        failed task using the task id.
 
-    .EXAMPLE
-    PS C:\> Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
-    This example retries the task based on the task id
-  #>
+        .EXAMPLE
+        PS C:\> Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+        This example retries the task based on the task id
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/tasks/$id"
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/tasks/$id"
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Retry-VCFTask
 
