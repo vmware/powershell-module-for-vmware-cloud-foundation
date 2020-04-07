@@ -1025,7 +1025,7 @@ Function New-VCFCluster
 		# Validate the provided JSON input specification file
     	$response = Validate-VCFClusterSpec -json $ConfigJson
     	# the validation API does not currently support polling with a task ID
-    	Sleep 5
+    	Start-Sleep 5
     	# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     	if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       		Try {
@@ -1102,7 +1102,7 @@ Function Set-VCFCluster
       		# Validate the provided JSON input specification file
 			$response = Validate-VCFUpdateClusterSpec -clusterid $clusterid -json $ConfigJson
 			# the validation API does not currently support polling with a task ID
-			Sleep 5
+			Start-Sleep 5
 			# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
       		if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
         		Try {
@@ -1614,7 +1614,7 @@ Function New-VCFWorkloadDomain
 		# Validate the provided JSON input specification file
     	$response = Validate-WorkloadDomainSpec -json $ConfigJson
     	# the validation API does not currently support polling with a task ID
-    	Sleep 5
+    	Start-Sleep 5
     	# Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     	if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       		Try {
@@ -2442,58 +2442,57 @@ Export-ModuleMember -Function Get-VCFNsxtCluster
 
 Function Get-VCFNetworkPool
 {
-  <#
-  .SYNOPSIS
-  Connects to the specified SDDC Manager & retrieves a list of Network Pools.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & retrieves a list of Network Pools.
 
-  .DESCRIPTION
-    The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager
-    & retrieves a list of Network Pools.
+        .DESCRIPTION
+        The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager & retrieves a list of Network Pools.
 
-    .EXAMPLE
-    PS C:\> Get-VCFNetworkPool
-    This example shows how to get a list of all Network Pools
+        .EXAMPLE
+        PS C:\> Get-VCFNetworkPool
+        This example shows how to get a list of all Network Pools
 
-    .EXAMPLE
-    PS C:\> Get-VCFNetworkPool -name sfo01-networkpool
-    This example shows how to get a Network Pool by name
+        .EXAMPLE
+        PS C:\> Get-VCFNetworkPool -name sfo01-networkpool
+        This example shows how to get a Network Pool by name
 
-    .EXAMPLE
-    PS C:\> Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
-    This example shows how to get a Network Pool by id
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
+        This example shows how to get a Network Pool by id
+    #>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$name,
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$name,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-      $uri = "https://$sddcManager/v1/network-pools"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/network-pools/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("name")) {
-      $uri = "https://$sddcManager/v1/network-pools"
+    Try {
+        if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+            $uri = "https://$sddcManager/v1/network-pools"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/network-pools/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("name")) {
+            $uri = "https://$sddcManager/v1/network-pools"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
+        }
     }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFNetworkPool
 
@@ -2791,7 +2790,7 @@ Function New-VCFEdgeCluster
     # Validate the provided JSON input specification file
     $response = Validate-EdgeClusterSpec -json $ConfigJson
     # the validation API does not currently support polling with a task ID
-    Sleep 5
+    Start-Sleep 5
     # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       Try {
