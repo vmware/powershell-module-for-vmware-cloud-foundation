@@ -940,191 +940,189 @@ Export-ModuleMember -Function Set-VCFCertificate
 
 Function Get-VCFCluster
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & retrieves a list of clusters.
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager & retrieves a list of clusters.
 
-    .DESCRIPTION
-    The Get-VCFCluster cmdlet connects to the specified SDDC Manager
-    & retrieves a list of clusters.
+    	.DESCRIPTION
+    	The Get-VCFCluster cmdlet connects to the specified SDDC Manager & retrieves a list of clusters.
 
-    .EXAMPLE
-    PS C:\> Get-VCFCluster
-    This example shows how to get a list of all clusters
+    	.EXAMPLE
+    	PS C:\> Get-VCFCluster
+    	This example shows how to get a list of all clusters
 
-    .EXAMPLE
-    PS C:\> Get-VCFCluster -name wld01-cl01
-    This example shows how to get a cluster by name
+    	.EXAMPLE
+    	PS C:\> Get-VCFCluster -name wld01-cl01
+    	This example shows how to get a cluster by name
 
-    .EXAMPLE
-    PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    This example shows how to get a cluster by id
-  #>
+    	.EXAMPLE
+    	PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+    	This example shows how to get a cluster by id
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$name,
+  	Param (
+    	[Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$name,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+      		[ValidateNotNullOrEmpty()]
+      	[string]$id
+  	)
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-      $uri = "https://$sddcManager/v1/clusters"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/clusters/$id"
+  	Try {
+    	if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
+      		$uri = "https://$sddcManager/v1/clusters"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response.elements
+    	}
+    	if ($PsBoundParameters.ContainsKey("id")) {
+      		$uri = "https://$sddcManager/v1/clusters/$id"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
+      		$response
 		}
-    if ($PsBoundParameters.ContainsKey("name")) {
-      $uri = "https://$sddcManager/v1/clusters"
+    	if ($PsBoundParameters.ContainsKey("name")) {
+      		$uri = "https://$sddcManager/v1/clusters"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements | Where-Object {$_.name -eq $name}
 		}
 	}
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Get-VCFCluster
 
 Function New-VCFCluster
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & creates cluster.
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager & creates cluster.
 
-    .DESCRIPTION
-    The New-VCFCluster cmdlet connects to the specified SDDC Manager
-    & creates a cluster in a specified workload domains.
+    	.DESCRIPTION
+    	The New-VCFCluster cmdlet connects to the specified SDDC Manager
+    	& creates a cluster in a specified workload domains.
 
-    .EXAMPLE
-    PS C:\> New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
-    This example shows how to create a cluster in a Workload Domain from a json spec
-  #>
+    	.EXAMPLE
+    	PS C:\> New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
+    	This example shows how to create a cluster in a Workload Domain from a json spec
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$json
+  	)
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  	if (!(Test-Path $json)) {
+    	Throw "JSON File Not Found"
+  	}
+  	else {
+    	$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 		# Validate the provided JSON input specification file
-    $response = Validate-VCFClusterSpec -json $ConfigJson
-    # the validation API does not currently support polling with a task ID
-    Sleep 5
-    # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-      Try {
-        Write-Host ""
-        Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
-        $uri = "https://$sddcManager/v1/clusters"
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        $response.elements
-      }
-      Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-      }
-      else {
-        Write-Host ""
-        Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-        Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        Write-Host ""
-      }
-    }
-  }
+    	$response = Validate-VCFClusterSpec -json $ConfigJson
+    	# the validation API does not currently support polling with a task ID
+    	Sleep 5
+    	# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+    	if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+      		Try {
+        		Write-Host ""
+        		Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+        		$uri = "https://$sddcManager/v1/clusters"
+        		$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        		$response.elements
+      		}
+      		Catch {
+        		ResponseException # Call Function ResponseException to get error response from the exception
+      		}
+      	else {
+        		Write-Host ""
+        		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+        		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+        		Write-Host ""
+      		}
+    	}
+  	}
 }
 Export-ModuleMember -Function New-VCFCluster
 
 Function Set-VCFCluster
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & expands or compacts a cluster.
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager & expands or compacts a cluster.
 
-    .DESCRIPTION
-    The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands
-    or compacts a cluster by adding or removing a host(s). A cluster can also
-    be marked for deletion
+    	.DESCRIPTION
+		The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or 
+		removing a host(s). A cluster can also be marked for deletion
 
-    .EXAMPLE
-    PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterExpansionSpec.json
-    This example shows how to expand a cluster by adding a host(s)
+    	.EXAMPLE
+    	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterExpansionSpec.json
+    	This example shows how to expand a cluster by adding a host(s)
 
-    .EXAMPLE
-    PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterCompactionSpec.json
-    This example shows how to compact a cluster by removing a host(s)
+    	.EXAMPLE
+    	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterCompactionSpec.json
+    	This example shows how to compact a cluster by removing a host(s)
 
-    .EXAMPLE
-    PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -markForDeletion
-    This example shows how to mark a cluster for deletion
-  #>
+    	.EXAMPLE
+    	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -markForDeletion
+    	This example shows how to mark a cluster for deletion
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$id,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json,
+      		[ValidateNotNullOrEmpty()]
+      		[string]$json,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [switch]$markForDeletion
-  )
+      		[ValidateNotNullOrEmpty()]
+      		[switch]$markForDeletion
+  	)
 
-  if ($PsBoundParameters.ContainsKey("json")) {
-    if (!(Test-Path $json)) {
-      Throw "JSON File Not Found"
-    }
-    else {
-      $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-    }
-  }
-  createHeader # Calls Function createHeader to set Accept & Authorization
+  	if ($PsBoundParameters.ContainsKey("json")) {
+    	if (!(Test-Path $json)) {
+      		Throw "JSON File Not Found"
+    	}
+    	else {
+      		$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+    		}
+  	}
+  	createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
-      Throw "You must include either -json or -markForDeletion"
-    }
-    if ($PsBoundParameters.ContainsKey("json")) {
-      # Validate the provided JSON input specification file
+  	Try {
+    	if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
+      		Throw "You must include either -json or -markForDeletion"
+    	}
+    	if ($PsBoundParameters.ContainsKey("json")) {
+      		# Validate the provided JSON input specification file
 			$response = Validate-VCFUpdateClusterSpec -clusterid $clusterid -json $ConfigJson
 			# the validation API does not currently support polling with a task ID
 			Sleep 5
 			# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-      if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-        Try {
-          Write-Host ""
-          Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
-          $uri = "https://$sddcManager/v1/clusters/$clusterid/"
+      		if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+        		Try {
+          			Write-Host ""
+          			Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+          			$uri = "https://$sddcManager/v1/clusters/$clusterid/"
 					$response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-					Return $response
+				Return $response
 					Write-Host ""
-        }
+        		}
 				Catch {
-          ResponseException # Call Function ResponseException to get error response from the exception
-        }
-      }
-      else {
-        Write-Host ""
-        Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-        Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        Write-Host ""
-      }
+          			ResponseException # Call Function ResponseException to get error response from the exception
+        		}
+      		}
+      		else {
+        		Write-Host ""
+        		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+        		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+        		Write-Host ""
+      		}
 		}
 		if ($PsBoundParameters.ContainsKey("markForDeletion")) {
 			$ConfigJson = '{"markForDeletion": true}'
@@ -1132,42 +1130,42 @@ Function Set-VCFCluster
 		}
 	}
 	Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call Function ResponseException to get error response from the exception
 	}
 }
 Export-ModuleMember -Function Set-VCFCluster
 
 Function Remove-VCFCluster
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager & deletes a cluster.
+  	<#
+    	.SYNOPSIS
+    	Connects to the specified SDDC Manager & deletes a cluster.
 
-    .DESCRIPTION
-    Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
-    The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster.
+    	.DESCRIPTION
+    	Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
+    	The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster.
 
-    .EXAMPLE
-    PS C:\> Remove-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1
-    This example shows how to delete a cluster
-  #>
+    	.EXAMPLE
+    	PS C:\> Remove-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1
+    	This example shows how to delete a cluster
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$id
+  	)
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    $uri = "https://$sddcManager/v1/clusters/$id"
-    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    #TODO: Parse the response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	$uri = "https://$sddcManager/v1/clusters/$id"
+    	$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    	#TODO: Parse the response
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Remove-VCFCluster
 
