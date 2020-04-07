@@ -1238,14 +1238,14 @@ Function Get-VCFCredential
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response
     }
-    else {
-      $uri = "https://$sddcManager/v1/credentials"
+    # if requesting credential by type then name is ignored (mutually exclusive)
+    elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
+      $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
-    # if requesting credential by type then name is ignored (mutually exclusive)
-    if ($PsBoundParameters.ContainsKey("resourceType") ) {
-      $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
+    else {
+      $uri = "https://$sddcManager/v1/credentials"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
     }
@@ -2169,47 +2169,47 @@ Function Get-VCFLicenseKey
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
 
-Function New-VCFLicenseKey
-{
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and adds a new License Key.
+  Function New-VCFLicenseKey
+  {
+    <#
+      .SYNOPSIS
+      Connects to the specified SDDC Manager and adds a new License Key.
 
-    .DESCRIPTION
-    The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
+      .DESCRIPTION
+      The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
 
-    .EXAMPLE
-    PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
-    This example shows how to add a new License Key
-  #>
+      .EXAMPLE
+      PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
+      This example shows how to add a new License Key
+    #>
 
-  param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    param (
+      [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$json
+    )
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/license-keys"
-    Try {
-      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-			# This API does not return a response body. Sending GET to validate the License Key creation was successful
-			$license = $ConfigJson | ConvertFrom-Json
-			$licenseKey = $license.key
-			Get-VCFLicenseKey -key $licenseKey
+    if (!(Test-Path $json)) {
+      Throw "JSON File Not Found"
     }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+    else {
+      $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
+      createHeader # Calls Function createHeader to set Accept & Authorization
+      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      $uri = "https://$sddcManager/v1/license-keys"
+      Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        # This API does not return a response body. Sending GET to validate the License Key creation was successful
+        $license = $ConfigJson | ConvertFrom-Json
+        $licenseKey = $license.key
+        Get-VCFLicenseKey -key $licenseKey
+      }
+      Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+      }
     }
   }
-}
-Export-ModuleMember -Function New-VCFLicenseKey
+  Export-ModuleMember -Function New-VCFLicenseKey
 
 Function Remove-VCFLicenseKey
 {
@@ -3149,6 +3149,98 @@ Function Get-VCFUser
   }
 }
 Export-ModuleMember -Function Get-VCFUser
+Function New-VCFUser
+  {
+    <#
+      .SYNOPSIS
+      Connects to the specified SDDC Manager and adds a new user.
+
+      .DESCRIPTION
+      The New-VCFUser cmdlet connects to the specified SDDC Manager and adds a new user with a specified role.
+
+      .EXAMPLE
+      PS C:\> New-VCFUser -user sec-admin@rainpole.io -role ADMIN
+      This example shows how to add a new user with a specified role
+    #>
+
+    param (
+      [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$user,
+      [Parameter (Mandatory=$true)]
+        [ValidateSet("ADMIN","OPERATOR")]
+        [string]$role
+    )
+
+      createHeader # Calls Function createHeader to set Accept & Authorization
+      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      $uri = "https://$sddcManager/v1/users" 
+      Try {
+        #Get the Role ID
+        $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
+        $domain = $user.split('@')
+        $body = '[ {
+          "name" : "'+$user+'",
+          "domain" : "'+$domain[1]+'",
+          "type" : "USER",
+          "role" : {
+            "id" : "'+$roleID+'"
+          }
+        }]'
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
+        $response
+      }
+      Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+      }
+    }
+Export-ModuleMember -Function New-VCFUser
+
+Function New-VCFServiceUser
+{
+  <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and adds a service user.
+
+    .DESCRIPTION
+    The New-VCFServiceUser cmdlet connects adds a service user.
+
+    .EXAMPLE
+    PS C:\> New-VCFServiceUser -user sec-admin@rainpole.io -role ADMIN
+    This example shows how to add a service user with role ADMIN
+  #>
+
+  param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$user,
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$role
+  )
+
+  
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    $uri = "https://$sddcManager/v1/users"
+    Try {
+      #Get the Role ID
+      $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
+      $body = '[ {
+        "name" : "'+$user+'",
+        "type" : "SERVICE",
+        "role" : {
+          "id" : "'+$roleID+'"
+        }
+      }]'
+      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
+      $response
+    }
+    Catch {
+      ResponseException # Call Function ResponseException to get error response from the exception
+    }
+  }
+Export-ModuleMember -Function New-VCFServiceUser
 
 Function Get-VCFRole
 {
