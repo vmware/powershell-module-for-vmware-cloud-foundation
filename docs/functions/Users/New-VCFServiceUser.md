@@ -14,9 +14,9 @@ The New-VCFServiceUser cmdlet connects to the specified SDDC Manager and adds a 
 ### Examples
 #### Example 1
 ```
-New-VCFServiceUser -user sec-admin@rainpole.io -role ADMIN
+New-VCFServiceUser -user svc-user@rainpole.io -role ADMIN
 ```
-This example shows how to create a cluster in a Workload Domain from a json spec
+This example shows how to create a user with ADMIN role
 
 ### Parameters
 
@@ -50,8 +50,9 @@ Supported Value: ADMIN, OPERATOR
 
 ### Notes
 
-- To return the apikey for a specific user you can do the following
+- To return the apikey for a specific SERVICE user you can do the following
+- apikey is only valid for Service users
 ```yaml
-Get-VCFUser | Where-object {$_.name -eq 'svc-vrops-vra@rainpole.io'} | Select-Object -ExpandProperty apikey
+Get-VCFUser | Where-object {$_.name -eq 'svc-user@rainpole.io'} | Select-Object -ExpandProperty apikey
 ```
 ### Related Links

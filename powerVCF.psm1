@@ -3159,7 +3159,7 @@ Function New-VCFUser
       The New-VCFUser cmdlet connects to the specified SDDC Manager and adds a new user with a specified role.
 
       .EXAMPLE
-      PS C:\> New-VCFUser -user sec-admin@rainpole.io -role ADMIN
+      PS C:\> New-VCFUser -user vcf-admin@rainpole.io -role ADMIN
       This example shows how to add a new user with a specified role
     #>
 
@@ -3206,7 +3206,7 @@ Function New-VCFServiceUser
     The New-VCFServiceUser cmdlet connects adds a service user.
 
     .EXAMPLE
-    PS C:\> New-VCFServiceUser -user sec-admin@rainpole.io -role ADMIN
+    PS C:\> New-VCFServiceUser -user svc-user@rainpole.io -role ADMIN
     This example shows how to add a service user with role ADMIN
   #>
 

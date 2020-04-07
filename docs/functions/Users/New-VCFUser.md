@@ -14,14 +14,14 @@ The New-VCFUser cmdlet connects to the specified SDDC Manager and adds a new use
 ### Examples
 #### Example 1
 ```
-New-VCFUser -user sec-admin@rainpole.io -role ADMIN
+New-VCFUser -user vcf-admin@rainpole.io -role ADMIN
 ```
-This example shows how to create a cluster in a Workload Domain from a json spec
+This example shows how to create a user with ADMIN role
 
 ### Parameters
 
 #### -user
-- Must be UPN format e.g. sec-admin@rainpole.io or sec-admin@vsphere.local
+- Must be UPN format e.g. vcf-admin@rainpole.io or vcf-admin@vsphere.local
 
 ```yaml
 Type: string
