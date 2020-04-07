@@ -2086,55 +2086,55 @@ Export-ModuleMember -Function Reset-VCFHost
 
 Function Get-VCFLicenseKey
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of License keys
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves a list of License keys
 
-    .DESCRIPTION
-    The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys
+        .DESCRIPTION
+        The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys
 
-    .EXAMPLE
-    PS C:\> Get-VCFLicenseKey
-    This example shows how to get a list of all License keys
+        .EXAMPLE
+        PS C:\> Get-VCFLicenseKey
+        This example shows how to get a list of all License keys
 
-    .EXAMPLE
-    PS C:\> Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-    This example shows how to get a specified License key
+        .EXAMPLE
+        PS C:\> Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+        This example shows how to get a specified License key
 
-    .EXAMPLE
-    PS C:\> Get-VCFLicenseKey -productType "VCENTER,VSAN"
-    This example shows how to get a License Key by product type
-    Supported Product Types: SDDC_MANAGER, VCENTER, NSXV, VSAN, ESXI, VRA, VROPS, NSXT
+        .EXAMPLE
+        PS C:\> Get-VCFLicenseKey -productType "VCENTER,VSAN"
+        This example shows how to get a License Key by product type
+        Supported Product Types: SDDC_MANAGER, VCENTER, VSAN, ESXI, VRA, VROPS, NSXT
 
-    .EXAMPLE
-    PS C:\> Get-VCFLicenseKey -status EXPIRED
-    This example shows how to get a License by status
-    Supported Status Types: EXPIRED, ACTIVE, NEVER_EXPIRES
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFLicenseKey -status EXPIRED
+        This example shows how to get a License by status
+        Supported Status Types: EXPIRED, ACTIVE, NEVER_EXPIRES
+    #>
 
-  param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$key,
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$key,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$productType,
+            [ValidateNotNullOrEmpty()]
+            [string]$productType,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$status
-  )
+            [ValidateNotNullOrEmpty()]
+            [string]$status
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("key")) {
-      $uri = "https://$sddcManager/v1/license-keys/$key"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("productType")) {
-      $uri = "https://$sddcManager/v1/license-keys?productType=$productType"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("key")) {
+            $uri = "https://$sddcManager/v1/license-keys/$key"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("productType")) {
+            $uri = "https://$sddcManager/v1/license-keys?productType=$productType"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 		}
 		if ($PsBoundParameters.ContainsKey("status")) {
@@ -2142,91 +2142,91 @@ Function Get-VCFLicenseKey
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 		}
-    if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status"))) {
-      $uri = "https://$sddcManager/v1/license-keys"
+        if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status"))) {
+            $uri = "https://$sddcManager/v1/license-keys"
 			$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 			$response.elements
 		}
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
 
-  Function New-VCFLicenseKey
-  {
+Function New-VCFLicenseKey
+{
     <#
-      .SYNOPSIS
-      Connects to the specified SDDC Manager and adds a new License Key.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and adds a new License Key.
 
-      .DESCRIPTION
-      The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
+        .DESCRIPTION
+        The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
 
-      .EXAMPLE
-      PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
-      This example shows how to add a new License Key
+        .EXAMPLE
+        PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
+        This example shows how to add a new License Key
     #>
 
-    param (
-      [Parameter (Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
     )
 
     if (!(Test-Path $json)) {
-      Throw "JSON File Not Found"
+        Throw "JSON File Not Found"
     }
     else {
-      $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
-      createHeader # Calls Function createHeader to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      $uri = "https://$sddcManager/v1/license-keys"
-      Try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-        # This API does not return a response body. Sending GET to validate the License Key creation was successful
-        $license = $ConfigJson | ConvertFrom-Json
-        $licenseKey = $license.key
-        Get-VCFLicenseKey -key $licenseKey
-      }
-      Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-      }
+        $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/license-keys"
+        Try {
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            # This API does not return a response body. Sending GET to validate the License Key creation was successful
+            $license = $ConfigJson | ConvertFrom-Json
+            $licenseKey = $license.key
+            Get-VCFLicenseKey -key $licenseKey
+        }
+        Catch {
+            ResponseException # Call Function ResponseException to get error response from the exception
+        }
     }
-  }
-  Export-ModuleMember -Function New-VCFLicenseKey
+}
+Export-ModuleMember -Function New-VCFLicenseKey
 
 Function Remove-VCFLicenseKey
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and deletes a license key.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and deletes a license key.
 
-    .DESCRIPTION
-    The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager
-    and deletes a License Key. A license Key can only be removed if it is not in use.
+        .DESCRIPTION
+        The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager and deletes a License Key.
+        A license Key can only be removed if it is not in use.
 
-    .EXAMPLE
-    PS C:\> Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-    This example shows how to delete a License Key
-  #>
+        .EXAMPLE
+        PS C:\> Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+        This example shows how to delete a License Key
+    #>
 
-	param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$key
-  )
+	Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$key
+    )
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/license-keys/$key"
-    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    # This API does not return a response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/license-keys/$key"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        # This API does not return a response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
 
