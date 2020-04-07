@@ -47,7 +47,7 @@ if ($PSEdition -eq 'Desktop') {
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
-Function Connect-VCFManager 
+Function Connect-VCFManager
 {
   <#
 		.SYNOPSIS
@@ -102,11 +102,11 @@ Function Connect-VCFManager
       		$Global:refreshToken = $response.refreshToken.id
     	}
     	if ($response.accessToken) {
-      		Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
+            Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
     	}
   	}
   	Catch {
-   		Write-Host "" $_.Exception.Message -ForegroundColor Red
+        Write-Host "" $_.Exception.Message -ForegroundColor Red
     	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
   	}
 }
@@ -117,11 +117,11 @@ Function Connect-CloudBuilder
   	<#
     	.SYNOPSIS
     	Connects to the specified Cloud Builder and stores the credentials in a base64 string
-    
+
     	.DESCRIPTION
     	The Connect-CloudBuilder cmdlet connects to the specified Cloud Builder and stores the credentials
     	in a base64 string. It is required once per session before running all other cmdlets
-    
+
     	.EXAMPLE
     	PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
     	This example shows how to connect to the Cloud Builder applaince
@@ -138,7 +138,7 @@ Function Connect-CloudBuilder
       		[ValidateNotNullOrEmpty()]
       		[string]$password
   	)
-  
+
   	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
     	# Request Credentials
     	$creds = Get-Credential
@@ -148,12 +148,12 @@ Function Connect-CloudBuilder
 
   	$Global:sddcManager = $fqdn
   	$Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
-  
+
   	# Validate credentials by executing an API call
   	$headers = @{"Accept" = "application/json"}
   	$headers.Add("Authorization", "Basic $base64AuthInfo")
   	$uri = "https://$sddcManager/v1/sddc-managers"
-  
+
   	Try {
     	# Checking against the sddc-managers API
     	# PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
@@ -182,11 +182,11 @@ Function Get-VCFApplicationVirtualNetwork
 	<#
   		.SYNOPSIS
   		Retrieves all Application Virtual Networks
-  
+
   		.DESCRIPTION
   		The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
     	- regionType supports REGION_A, REGION_B, X_REGION
-  
+
   		.EXAMPLE
   		PS C:\> Get-VCFApplicationVirtualNetwork
   		This example demonstrates how to retrieve a list of Application Virtual Networks
@@ -449,7 +449,7 @@ Function Start-VCFBundleUpload
 
     .DESCRIPTION
     The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
-    Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool 
+    Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool
 
     .EXAMPLE
     PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
@@ -472,7 +472,7 @@ Function Start-VCFBundleUpload
            # Read the json file contents into the $ConfigJson variable
            $ConfigJson = (Get-Content $json)
       }
-  
+
   $uri = "https://$sddcManager/v1/bundles"
   try {
       $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
@@ -821,7 +821,7 @@ Function Get-VCFCertificate
       		[ValidateNotNullOrEmpty()]
 			[switch]$resources
 	)
-	  
+
   	Try {
 		createHeader # Calls Function createHeader to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -1056,7 +1056,7 @@ Function Set-VCFCluster
     	Connects to the specified SDDC Manager & expands or compacts a cluster.
 
     	.DESCRIPTION
-		The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or 
+		The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or
 		removing a host(s). A cluster can also be marked for deletion
 
     	.EXAMPLE
@@ -1202,7 +1202,7 @@ Function Get-VCFCredential
 
     	.EXAMPLE
     	PS C:\> Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
-    	This example shows how to get the credential using the id 
+    	This example shows how to get the credential using the id
   	#>
 
   	Param (
@@ -1269,7 +1269,7 @@ Function Set-VCFCredential
       		[ValidateNotNullOrEmpty()]
       		[string]$json
   	)
-  
+
   	Try {
     	if ($PsBoundParameters.ContainsKey("json")) {
       		if (!(Test-Path $json)) {
@@ -1917,7 +1917,7 @@ Function Commission-VCFHost
         Connects to the specified SDDC Manager and commissions a list of hosts.
 
         .DESCRIPTION
-        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts. 
+        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts.
         Host list spec is provided in a JSON file.
 
         .EXAMPLE
@@ -2719,7 +2719,7 @@ Function Get-VCFEdgeCluster
   <#
     .SYNOPSIS
     Get the Edge Clusters
-  
+
     .DESCRIPTION
     The Get-VCFEdgeCluster cmdlet gets a list of NSX-T Edge Clusters
 
@@ -2737,7 +2737,7 @@ Function Get-VCFEdgeCluster
         [ValidateNotNullOrEmpty()]
         [string]$id
   )
-  
+
   Try {
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -2832,10 +2832,10 @@ Function Get-VCFFederationTask
   <#
     .SYNOPSIS
     Get task status for Federation operations
-  
+
     .DESCRIPTION
     The Get-VCFFederationTask cmdlet gets the status of tasks relating to Federation operations
-  
+
     .EXAMPLE
     PS C:\> Get-VCFFederationTask -id f6f38f6b-da0c-4ef9-9228-9330f3d30279
     This example list all tasks for Federation operations
@@ -2846,7 +2846,7 @@ Function Get-VCFFederationTask
         [ValidateNotNullOrEmpty()]
         [string]$id
   )
-  
+
   Try {
     CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
     createHeader # Calls Function createHeader to set Accept & Authorization
@@ -3131,7 +3131,7 @@ Function Get-VCFUpgradables
     Get the Upgradables
 
     .DESCRIPTION
-    Fetches the list of Upgradables in the System. Only one Upgradable becomes AVAILABLE for Upgrade. 
+    Fetches the list of Upgradables in the System. Only one Upgradable becomes AVAILABLE for Upgrade.
     The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
 
     .EXAMPLE
@@ -3169,15 +3169,15 @@ Function Get-VCFUser
   <#
     .SYNOPSIS
     Get all Users
-  
+
     .DESCRIPTION
     The Get-VCFUser cmdlet gets a list of users in SDDC Manager
 
     .EXAMPLE
     PS C:\> Get-VCFUser
-    This example list all users in SDDC Manager 
+    This example list all users in SDDC Manager
   #>
-  
+
   Try {
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -3215,7 +3215,7 @@ Function New-VCFUser
 
       createHeader # Calls Function createHeader to set Accept & Authorization
       checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      $uri = "https://$sddcManager/v1/users" 
+      $uri = "https://$sddcManager/v1/users"
       Try {
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
@@ -3260,7 +3260,6 @@ Function New-VCFServiceUser
       [string]$role
   )
 
-  
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/users"
@@ -3288,15 +3287,15 @@ Function Get-VCFRole
   <#
     .SYNOPSIS
     Get all roles
-  
+
     .DESCRIPTION
     The Get-VCFRole cmdlet gets a list of roles in SDDC Manager
 
     .EXAMPLE
     PS C:\> Get-VCFRole
-    This example list all roles in SDDC Manager 
+    This example list all roles in SDDC Manager
   #>
-  
+
   Try {
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -3315,7 +3314,7 @@ Function Get-VCFSsoDomain
   <#
     .SYNOPSIS
     Get all SSO domains
-  
+
     .DESCRIPTION
     The Get-VCFSsoDomain cmdlet gets a list of Single Sign-On domains
 
@@ -3323,7 +3322,7 @@ Function Get-VCFSsoDomain
     PS C:\> Get-VCFSsoDomain
     This example list all Single Sign-On domains
   #>
-  
+
   Try {
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -3534,10 +3533,10 @@ Function New-VCFvRSLCM
   <#
     .SYNOPSIS
     Deploy vRealize Suite Lifecycle Manager
-    
+
     .DESCRIPTION
     The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
-    
+
     .EXAMPLE
     PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
     This example deploys vRealize Suite Lifecycle Manager using a supplied json file
@@ -3555,7 +3554,7 @@ Function New-VCFvRSLCM
     else {
         Try {
           createHeader # Calls Function createHeader to set Accept & Authorization
-          checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary 
+          checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
             # Read the json file contents into the $ConfigJson variable
             $ConfigJson = (Get-Content -Raw $json)
             $uri = "https://$sddcManager/v1/vrslcms"
@@ -3567,7 +3566,7 @@ Function New-VCFvRSLCM
             ResponseException
         }
     }
-}   
+}
 Export-ModuleMember -Function New-VCFvRSLCM
 
 Function Remove-VCFvRSLCM
@@ -3575,11 +3574,11 @@ Function Remove-VCFvRSLCM
   <#
     .SYNOPSIS
     Remove a failed vRealize Suite Lifecycle Manager deployment
-    
+
     .DESCRIPTION
-    The Remove-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
+    The Remove-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable
     to a successful vRealize Suite Lifecycle Manager deployment.
-    
+
     .EXAMPLE
     PS C:\> Remove-VCFvRSLCM
     This example removes a failed vRealize Suite Lifecycle Manager deployment
@@ -3597,7 +3596,7 @@ Function Remove-VCFvRSLCM
         # Call Function ResponseException to get error response from the exception
         ResponseException
     }
-}   
+}
 Export-ModuleMember -Function Remove-VCFvRSLCM
 
 ######### End APIs for managing vRealize Suite Lifecycle Manager ##########
@@ -3718,7 +3717,6 @@ Function checkVCFToken
     $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
     $Global:accessToken = $response
   }
-  
 }
 
 Function Get-JWTDetails
@@ -3735,20 +3733,20 @@ Function Get-JWTDetails
   JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
   Written by Darren Robinson
   https://blog.darrenjrobinson.com
-  https://blog.darrenjrobinson.com/jwtdetails-powershell-module-for-decoding-jwt-access-tokens-with-readable-token-expiry-time/ 
+  https://blog.darrenjrobinson.com/jwtdetails-powershell-module-for-decoding-jwt-access-tokens-with-readable-token-expiry-time/
   .DESCRIPTION
   Decode a JWT Access Token and convert to a PowerShell Object.
   JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
   .PARAMETER token
   The JWT Access Token to decode and udpate with expiry time and time to expiry
   .INPUTS
-  Token from Pipeline 
+  Token from Pipeline
   .OUTPUTS
   PowerShell Object
   .SYNTAX
   Get-JWTDetails(accesstoken)
   .EXAMPLE
-  PS> Get-JWTDetails('eyJ0eXAiOi........XmN4GnWQAw7OwMA') 
+  PS> Get-JWTDetails('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
   #>
 
 
@@ -3764,7 +3762,7 @@ Function Get-JWTDetails
       }
   }
 
-  $decodedToken = [System.Text.Encoding]::UTF8.GetString([convert]::FromBase64String($data)) | ConvertFrom-Json 
+  $decodedToken = [System.Text.Encoding]::UTF8.GetString([convert]::FromBase64String($data)) | ConvertFrom-Json
   Write-Verbose "JWT Token:"
   Write-Verbose $decodedToken
 
@@ -3788,7 +3786,7 @@ Function Get-JWTDetails
   $hoursOffset = $timeZone.GetUtcOffset($(Get-Date)).hours #Daylight saving needs to be calculated
   $localTime = $utcTime.AddHours($hoursOffset)     # Return local time,
   $decodedToken | Add-Member -Type NoteProperty -Name "expiryDateTime" -Value $localTime
-  
+
   # Time to Expiry
   $timeToExpiry = ($localTime - (get-date))
   $decodedToken | Add-Member -Type NoteProperty -Name "timeToExpiry" -Value $timeToExpiry
