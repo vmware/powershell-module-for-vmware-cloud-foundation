@@ -1,11 +1,11 @@
-# Set-VCFDepotCredentials
+# Set-VCFDepotCredential
 
 ### Synopsis
 Update the Depot Settings
 
 ### Syntax
 ```
-Set-VCFDepotCredentials -username <string> -password <string>
+Set-VCFDepotCredential -username <string> -password <string>
 ```
 
 ### Description
@@ -14,7 +14,7 @@ Update the configuration for the depot of the connected SDDC Manager
 ### Examples
 #### Example 1
 ```
-Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
+Set-VCFDepotCredential -username "user@yourdomain.com" -password "VMware1!"
 ```
 This example sets the credentials that have been configured for the depot.
 
