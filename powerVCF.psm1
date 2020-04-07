@@ -3165,57 +3165,58 @@ Export-ModuleMember -Function Get-VCFUpgradables
 
 Function Get-VCFUser
 {
-  <#
-    .SYNOPSIS
-    Get all Users
+    <#
+        .SYNOPSIS
+        Get all Users
 
-    .DESCRIPTION
-    The Get-VCFUser cmdlet gets a list of users in SDDC Manager
+        .DESCRIPTION
+        The Get-VCFUser cmdlet gets a list of users in SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFUser
-    This example list all users in SDDC Manager
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFUser
+        This example list all users in SDDC Manager
+    #>
 
-  Try {
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFUser
+
+Function New-VCFUser
+{
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and adds a new user.
+
+        .DESCRIPTION
+        The New-VCFUser cmdlet connects to the specified SDDC Manager and adds a new user with a specified role.
+
+        .EXAMPLE
+        PS C:\> New-VCFUser -user vcf-admin@rainpole.io -role ADMIN
+        This example shows how to add a new user with a specified role
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$user,
+        [Parameter (Mandatory=$true)]
+            [ValidateSet("ADMIN","OPERATOR")]
+            [string]$role
+    )
+
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/users"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response.elements
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
-}
-Export-ModuleMember -Function Get-VCFUser
-Function New-VCFUser
-  {
-    <#
-      .SYNOPSIS
-      Connects to the specified SDDC Manager and adds a new user.
-
-      .DESCRIPTION
-      The New-VCFUser cmdlet connects to the specified SDDC Manager and adds a new user with a specified role.
-
-      .EXAMPLE
-      PS C:\> New-VCFUser -user vcf-admin@rainpole.io -role ADMIN
-      This example shows how to add a new user with a specified role
-    #>
-
-    param (
-      [Parameter (Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$user,
-      [Parameter (Mandatory=$true)]
-        [ValidateSet("ADMIN","OPERATOR")]
-        [string]$role
-    )
-
-      createHeader # Calls Function createHeader to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      $uri = "https://$sddcManager/v1/users"
-      Try {
+    Try {
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
         $domain = $user.split('@')
@@ -3229,110 +3230,111 @@ Function New-VCFUser
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
         $response
-      }
-      Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-      }
     }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+ }
 Export-ModuleMember -Function New-VCFUser
 
 Function New-VCFServiceUser
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and adds a service user.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and adds a service user.
 
-    .DESCRIPTION
-    The New-VCFServiceUser cmdlet connects adds a service user.
+        .DESCRIPTION
+        The New-VCFServiceUser cmdlet connects adds a service user.
 
-    .EXAMPLE
-    PS C:\> New-VCFServiceUser -user svc-user@rainpole.io -role ADMIN
-    This example shows how to add a service user with role ADMIN
-  #>
+        .EXAMPLE
+        PS C:\> New-VCFServiceUser -user svc-user@rainpole.io -role ADMIN
+        This example shows how to add a service user with role ADMIN
+    #>
 
-  param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$user,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$role
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$user,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$role
+    )
 
     createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/users"
     Try {
-      #Get the Role ID
-      $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
-      $body = '[ {
-        "name" : "'+$user+'",
-        "type" : "SERVICE",
-        "role" : {
-          "id" : "'+$roleID+'"
-        }
-      }]'
-      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
-      $response
+        #Get the Role ID
+        $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
+        $body = '[ {
+            "name" : "'+$user+'",
+            "type" : "SERVICE",
+            "role" : {
+              "id" : "'+$roleID+'"
+            }
+        }]'
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
+        $response
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call Function ResponseException to get error response from the exception
     }
   }
 Export-ModuleMember -Function New-VCFServiceUser
 
 Function Get-VCFRole
 {
-  <#
-    .SYNOPSIS
-    Get all roles
+    <#
+        .SYNOPSIS
+        Get all roles
 
-    .DESCRIPTION
-    The Get-VCFRole cmdlet gets a list of roles in SDDC Manager
+        .DESCRIPTION
+        The Get-VCFRole cmdlet gets a list of roles in SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFRole
-    This example list all roles in SDDC Manager
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFRole
+        This example list all roles in SDDC Manager
+    #>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/roles"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response.elements
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/roles"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
 Export-ModuleMember -Function Get-VCFRole
 
 Function Get-VCFSsoDomain
 {
-  <#
-    .SYNOPSIS
-    Get all SSO domains
+    <#
+        .SYNOPSIS
+        Get all SSO domains
 
-    .DESCRIPTION
-    The Get-VCFSsoDomain cmdlet gets a list of Single Sign-On domains
+        .DESCRIPTION
+        The Get-VCFSsoDomain cmdlet gets a list of Single Sign-On domains
 
-    .EXAMPLE
-    PS C:\> Get-VCFSsoDomain
-    This example list all Single Sign-On domains
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFSsoDomain
+        This example list all Single Sign-On domains
+    #>
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/sso-domains"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response.elements
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/sso-domains"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
 }
+
 #Export-ModuleMember -Function Get-VCFSsoDomain
 
 ######### End APIs for managing Users ##########
