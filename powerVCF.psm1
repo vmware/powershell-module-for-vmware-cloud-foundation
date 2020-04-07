@@ -2774,6 +2774,63 @@ Function Get-VCFEdgeCluster
 }
 Export-ModuleMember -Function Get-VCFEdgeCluster
 
+Function New-VCFEdgeCluster
+{
+  <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager & creates an NSX-T edge cluster.
+
+    .DESCRIPTION
+    The New-VCFEdgeCluster cmdlet connects to the specified SDDC Manager
+    & creates an NSX-T edge cluster.
+
+    .EXAMPLE
+    PS C:\> New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json
+    This example shows how to create an NSX-T edge cluster from a json spec
+  #>
+
+	Param (
+    [Parameter (Mandatory=$true)]
+      [ValidateNotNullOrEmpty()]
+      [string]$json
+  )
+
+  if (!(Test-Path $json)) {
+    Throw "JSON File Not Found"
+  }
+  else {
+    # Read the json file contents into the $ConfigJson variable
+    $ConfigJson = (Get-Content $json)
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    # Validate the provided JSON input specification file
+    $response = Validate-EdgeClusterSpec -json $ConfigJson
+    # the validation API does not currently support polling with a task ID
+    Sleep 5
+    # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+      Try {
+        Write-Host ""
+        Write-Host "Task validation completed successfully, invoking Edge Cluster Creation on SDDC Manager" -ForegroundColor Green
+        $uri = "https://$sddcManager/v1/edge-clusters"
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        Return $response
+        Write-Host ""
+      }
+      Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+      }
+    }
+    else {
+      Write-Host ""
+      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+      Write-Host ""
+    }
+  }
+}
+Export-ModuleMember -Function New-VCFEdgeCluster
+
 ######### End APIs for managing NSX-T Edge Clusters ##########
 
 
@@ -3444,7 +3501,7 @@ Function Remove-VCFvRSLCM
     Remove a failed vRealize Suite Lifecycle Manager deployment
     
     .DESCRIPTION
-    The New-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
+    The Remove-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable 
     to a successful vRealize Suite Lifecycle Manager deployment.
     
     .EXAMPLE
@@ -3454,7 +3511,8 @@ Function Remove-VCFvRSLCM
 
     Try {
         # Call Function createHeader to set Accept & Authorization
-        createHeader 
+        createHeader
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         $response
@@ -3480,7 +3538,7 @@ Function Validate-CommissionHostSpec
     [object]$json
   )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/hosts/validations"
   Try {
@@ -3500,7 +3558,7 @@ Function Validate-WorkloadDomainSpec
       [object]$json
     )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/domains/validations"
   Try {
@@ -3520,7 +3578,7 @@ Function Validate-VCFClusterSpec
         [object]$json
     )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/clusters/validations"
   Try {
@@ -3542,9 +3600,29 @@ Function Validate-VCFUpdateClusterSpec
       [object]$json
   )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls Function createHeader to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
+  Try {
+    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+	}
+  Catch {
+    ResponseException # Call Function ResponseException to get error response from the exception
+  }
+  Return $response
+}
+
+Function Validate-EdgeClusterSpec
+{
+
+	Param (
+		[Parameter (Mandatory=$true)]
+      [object]$json
+  )
+
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+  $uri = "https://$sddcManager/v1/edge-clusters/validations"
   Try {
     $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
