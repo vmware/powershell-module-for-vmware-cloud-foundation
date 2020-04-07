@@ -1840,244 +1840,240 @@ Export-ModuleMember -Function Remove-VCFFederation
 
 Function Get-VCFHost
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and retrieves a list of hosts.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves a list of hosts.
 
-    .DESCRIPTION
-    The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.
-    VCF Hosts are defined by status
-    - ASSIGNED - Hosts that are assigned to a Workload domain
-    - UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
-    - UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used for other domain tasks after completion of cleanup operation
+        .DESCRIPTION
+        The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.
+        VCF Hosts are defined by status
+        - ASSIGNED - Hosts that are assigned to a Workload domain
+        - UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
+        - UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used for other domain tasks after completion of cleanup operation
 
-    .EXAMPLE
-    PS C:\> Get-VCFHost
-    This example shows how to get all hosts regardless of status
+        .EXAMPLE
+        PS C:\> Get-VCFHost
+        This example shows how to get all hosts regardless of status
 
-    .EXAMPLE
-    PS C:\> Get-VCFHost -Status ASSIGNED
-    This example shows how to get all hosts with a specific status
+        .EXAMPLE
+        PS C:\> Get-VCFHost -Status ASSIGNED
+        This example shows how to get all hosts with a specific status
 
-    .EXAMPLE
-    PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
-    This example shows how to get a host by id
+        .EXAMPLE
+        PS C:\> Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+        This example shows how to get a host by id
 
-    .EXAMPLE
-    PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo.rainpole.local
-    This example shows how to get a host by fqdn
-  #>
+        .EXAMPLE
+        PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo.rainpole.local
+        This example shows how to get a host by fqdn
+    #>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$fqdn,
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$fqdn,
 		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$Status,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id
-  )
+            [ValidateNotNullOrEmpty()]
+            [string]$Status,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
-  createHeader # Calls Function createHeader to set Accept & Authorization
-  checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-  Try {
-    if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
-      $uri = "https://$sddcManager/v1/hosts"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    createHeader # Calls Function createHeader to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    Try {
+        if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
+            $uri = "https://$sddcManager/v1/hosts"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("fqdn")) {
+            $uri = "https://$sddcManager/v1/hosts"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements | Where-Object {$_.fqdn -eq $fqdn}
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/hosts/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("status")) {
+            $uri = "https://$sddcManager/v1/hosts?status=$status"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
     }
-    if ($PsBoundParameters.ContainsKey("fqdn")) {
-      $uri = "https://$sddcManager/v1/hosts"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements | Where-Object {$_.fqdn -eq $fqdn}
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
     }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/hosts/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("status")) {
-      $uri = "https://$sddcManager/v1/hosts?status=$status"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
 }
 Export-ModuleMember -Function Get-VCFHost
 
 Function Commission-VCFHost
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and commissions a list of hosts.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and commissions a list of hosts.
 
-    .DESCRIPTION
-    The Commission-VCFHost cmdlet connects to the specified SDDC Manager
-    and commissions a list of hosts. Host list spec is provided in a JSON file.
+        .DESCRIPTION
+        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts. 
+        Host list spec is provided in a JSON file.
 
-    .EXAMPLE
-    PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-    This example shows how to commission a list of hosts based on the details
-    provided in the JSON file.
-  #>
+        .EXAMPLE
+        PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
+        This example shows how to commission a list of hosts based on the details provided in the JSON file.
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]$json
+    )
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-
-    # Validate the provided JSON input specification file
-    $response = Validate-CommissionHostSpec -json $ConfigJson
-    # Get the task id from the validation function
-    $taskId = $response.id
-    # Keep checking until executionStatus is not IN_PROGRESS
-    Do {
-      $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
-      $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-    }
-    While ($response.executionStatus -eq "IN_PROGRESS")
-    # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-      Try {
-        Write-Host ""
-        Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
-        $uri = "https://$sddcManager/v1/hosts/"
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-        Return $response
-        Write-Host ""
-      }
-      Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
-      }
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
     }
     else {
-      Write-Host ""
-      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-      Write-Host ""
+        # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+
+        # Validate the provided JSON input specification file
+        $response = Validate-CommissionHostSpec -json $ConfigJson
+        # Get the task id from the validation function
+        $taskId = $response.id
+        # Keep checking until executionStatus is not IN_PROGRESS
+        Do {
+            $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+            $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+        }
+        While ($response.executionStatus -eq "IN_PROGRESS")
+            # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Try {
+                    Write-Host ""
+                    Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
+                    $uri = "https://$sddcManager/v1/hosts/"
+                    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                    Return $response
+                    Write-Host ""
+                }
+                Catch {
+                    ResponseException # Call Function ResponseException to get error response from the exception
+                }
+            }
+            else {
+                Write-Host ""
+                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+                Write-Host ""
+            }
     }
-  }
 }
 Export-ModuleMember -Function Commission-VCFHost
 
 Function Decommission-VCFHost
 {
-  <#
-    .SYNOPSIS
-    Connects to the specified SDDC Manager and decommissions a list of hosts.
-    Host list is provided in a JSON file.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and decommissions a list of hosts. Host list is provided in a JSON file.
 
-    .DESCRIPTION
-    The Decommission-VCFHost cmdlet connects to the specified SDDC Manager
-    and decommissions a list of hosts.
+        .DESCRIPTION
+        The Decommission-VCFHost cmdlet connects to the specified SDDC Manager and decommissions a list of hosts.
 
-    .EXAMPLE
-    PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
-    This example shows how to decommission a set of hosts based on the details
-    provided in the JSON file.
-  #>
+        .EXAMPLE
+        PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
+        This example shows how to decommission a set of hosts based on the details provided in the JSON file.
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    # Reads the json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/hosts"
-    Try {
-      $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Reads the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/hosts"
+        Try {
+            $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 			$response
+        }
+        Catch {
+            ResponseException # Call Function ResponseException to get error response from the exception
+        }
     }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-  }
 }
 Export-ModuleMember -Function Decommission-VCFHost
 
 Function Reset-VCFHost
 {
-  <#
-    .SYNOPSIS
-    Performs an ESXi host cleanup using the command line SoS utility
+    <#
+        .SYNOPSIS
+        Performs an ESXi host cleanup using the command line SoS utility
 
-    .DESCRIPTION
-    Performs a host cleanup using SoS option --cleanup-host. Valid options for the -dirtyHost parameter are: ALL, <MGMT ESXi IP>
-    Please note:The SoS utility on VCF 3.9 is unable to perform networking host cleanup when the host belongs to an NSX-T cluster.
-    This issue has been resolved on VCF 3.9.1
+        .DESCRIPTION
+        Performs a host cleanup using SoS option --cleanup-host. Valid options for the -dirtyHost parameter are: ALL, <MGMT ESXi IP>
+        Please note:The SoS utility on VCF 3.9 is unable to perform networking host cleanup when the host belongs to an NSX-T cluster.
+        This issue has been resolved on VCF 3.9.1
 
-    .EXAMPLE
-    Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!"-dirtyHost 192.168.210.53
-    This command will perform SoS host cleanup for host 192.168.210.53
+        .EXAMPLE
+        Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!"-dirtyHost
+        192.168.210.53 This command will perform SoS host cleanup for host 192.168.210.53
 
-    .EXAMPLE
-    Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!" -dirtyHost all
-    This command will perform SoS host cleanup for all hosts in need of cleanup in the SDDC Manager database.
-  #>
+        .EXAMPLE
+        Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!" -dirtyHost all
+        This command will perform SoS host cleanup for all hosts in need of cleanup in the SDDC Manager database.
+    #>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [String] $privilegedUsername,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [String] $privilegedPassword,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [String] $sddcManagerRootPassword,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$dirtyHost
-  )
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [String] $privilegedUsername,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [String] $privilegedPassword,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [String] $sddcManagerRootPassword,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$dirtyHost
+    )
 
-  # Get the full list of PSC credentials
-  $pscCreds = Get-VCFCredential -privilegedUsername $privilegedUsername -privilegedPassword $privilegedPassword -resourceType PSC
-  # From PSC credentials extract the SSO username and password
-  $ssoCreds = $pscCreds.elements | Where-Object {$_.credentialType -eq "SSO"}
-  # Get the list of all VCENTER credentials
-  $vcCreds = Get-VCFCredential $privilegedUsername -privilegedPassword $privilegedPassword -resourceType VCENTER
-  # Find out which VC is the MGMT. This is use to extract the MGMT VC FQDN ($mgmtVC.resourceName)
-  $mgmtVC = $vcCreds.elements.resource | Where-Object {$_.domainName -eq "MGMT"}
-  # Connect to the Management vCenter without displaying the connection
-  Connect-VIServer -Server $mgmtVC.resourceName -User $ssoCreds.username -Password $ssoCreds.password | Out-Null
-  # Get the vm object for sddc-manager
-  $sddcManagerVM = Get-VM -Name "sddc-manager"
-  # The SoS help says to use ALL not sure if it's case sensitive but I'm converting upper case
-  if ($dirtyHost -eq "all") { $dirtyHost = "ALL" }
+    # Get the full list of PSC credentials
+    $pscCreds = Get-VCFCredential -privilegedUsername $privilegedUsername -privilegedPassword $privilegedPassword -resourceType PSC
+    # From PSC credentials extract the SSO username and password
+    $ssoCreds = $pscCreds.elements | Where-Object {$_.credentialType -eq "SSO"}
+    # Get the list of all VCENTER credentials
+    $vcCreds = Get-VCFCredential $privilegedUsername -privilegedPassword $privilegedPassword -resourceType VCENTER
+    # Find out which VC is the MGMT. This is use to extract the MGMT VC FQDN ($mgmtVC.resourceName)
+    $mgmtVC = $vcCreds.elements.resource | Where-Object {$_.domainName -eq "MGMT"}
+    # Connect to the Management vCenter without displaying the connection
+    Connect-VIServer -Server $mgmtVC.resourceName -User $ssoCreds.username -Password $ssoCreds.password | Out-Null
+    # Get the vm object for sddc-manager
+    $sddcManagerVM = Get-VM -Name "sddc-manager"
+    # The SoS help says to use ALL not sure if it's case sensitive but I'm converting upper case
+    if ($dirtyHost -eq "all") { $dirtyHost = "ALL" }
     # Build the cmd to run and auto confirm
     $sshCommand = "echo Y | /opt/vmware/sddc-support/sos --cleanup-host " + $dirtyHost
     Write-Host ""
     Write-Host "Executing clean up for host(s): $dirtyHost - This might take a while, please wait..."
     Write-Host ""
     Try {
-      $vmScript = Invoke-VMScript -VM $sddcManagerVM -ScriptText $sshCommand -GuestUser root -GuestPassword $sddcManagerRootPassword
-      $vmScript
+        $vmScript = Invoke-VMScript -VM $sddcManagerVM -ScriptText $sshCommand -GuestUser root -GuestPassword $sddcManagerRootPassword
+        $vmScript
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call Function ResponseException to get error response from the exception
     }
 }
 Export-ModuleMember -Function Reset-VCFHost
