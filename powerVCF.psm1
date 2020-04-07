@@ -3123,7 +3123,7 @@ Export-ModuleMember -Function Retry-VCFTask
 
 ######### Start APIs for managing Upgradables ##########
 
-Function Get-VCFUpgradables
+Function Get-VCFUpgradable
 {
     <#
         .SYNOPSIS
@@ -3134,7 +3134,7 @@ Function Get-VCFUpgradables
         The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
 
         .EXAMPLE
-        PS C:\> Get-VCFUpgradables
+        PS C:\> Get-VCFUpgradable
         This example shows how to retrieve the list of upgradables in the system
     #>
 
@@ -3149,7 +3149,7 @@ Function Get-VCFUpgradables
         ResponseException # Call Function ResponseException to get error response from the exception
     }
 }
-Export-ModuleMember -Function Get-VCFUpgradables
+Export-ModuleMember -Function Get-VCFUpgradable
 
 ######### End APIs for managing Upgradables ##########
 
