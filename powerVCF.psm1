@@ -573,365 +573,366 @@ Export-ModuleMember -Function Set-VCFCeip
 
 Function Get-VCFCertificateAuthority
 {
-  <#
-    .SYNOPSIS
-    Get certificate authorities information
+	<#
+    	.SYNOPSIS
+    	Get certificate authorities information
 
-    .DESCRIPTION
-    The Get-VCFCertificateAuthority cmdlet retrieves the certificate authorities information for the connected SDDC Manager
+    	.DESCRIPTION
+    	The Get-VCFCertificateAuthority cmdlet retrieves the certificate authorities information for the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificateAuthority
-    This example shows how to get the certificate authority configuration from the connected SDDC Manager
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificateAuthority
+    	This example shows how to get the certificate authority configuration from the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificateAuthority | ConvertTo-Json
-    This example shows how to get the certificate authority configuration from the connected SDDC Manager
-    and output to Json format
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificateAuthority | ConvertTo-Json
+    	This example shows how to get the certificate authority configuration from the connected SDDC Manager
+    	and output to Json format
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificateAuthority -caType Microsoft
-    This example shows how to get the certificate authority configuration for a Microsoft Certificate Authority from the
-    connected SDDC Manager
-  #>
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificateAuthority -caType Microsoft
+    	This example shows how to get the certificate authority configuration for a Microsoft Certificate Authority from the
+    	connected SDDC Manager
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateSet("OpenSSL","Microsoft")]
-      [String] $caType
-  )
+  	Param (
+    	[Parameter (Mandatory=$false)]
+      		[ValidateSet("OpenSSL","Microsoft")]
+      		[String] $caType
+  	)
 
-  # Check the version of SDDC Manager
-  CheckVCFVersion
+  	# Check the version of SDDC Manager
+  	CheckVCFVersion
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("caType")) {
-      $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    else {
-      $uri = "https://$sddcManager/v1/certificate-authorities"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	if ($PsBoundParameters.ContainsKey("caType")) {
+      		$uri = "https://$sddcManager/v1/certificate-authorities/$caType"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response
+    	}
+    	else {
+      		$uri = "https://$sddcManager/v1/certificate-authorities"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response.elements
+    	}
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthority
 
 Function Remove-VCFCertificateAuthority
 {
-  <#
-    .SYNOPSIS
-    Deletes certificate authority configuration
+  	<#
+    	.SYNOPSIS
+    	Deletes certificate authority configuration
 
-    .DESCRIPTION
-    The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from the connected SDDC Manager
+    	.DESCRIPTION
+    	The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Remove-VCFCertificateAuthority
-    This example removes the Micosoft certificate authority configuration from the connected SDDC Manager
-  #>
+    	.EXAMPLE
+    	PS C:\> Remove-VCFCertificateAuthority
+    	This example removes the Micosoft certificate authority configuration from the connected SDDC Manager
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateSet("OpenSSL","Microsoft")]
-      [String] $caType
-  )
+  	Param (
+   		[Parameter (Mandatory=$true)]
+      		[ValidateSet("OpenSSL","Microsoft")]
+      		[String] $caType
+  	)
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
-    $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    $response
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$uri = "https://$sddcManager/v1/certificate-authorities/$caType"
+    	$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+    	$response
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Remove-VCFCertificateAuthority
 
 Function Set-VCFMicrosoftCA
 {
-  <#
-    .SYNOPSIS
-    Configures a Microsoft Certificate Authority
+  	<#
+    	.SYNOPSIS
+    	Configures a Microsoft Certificate Authority
 
-    .DESCRIPTION
-    Configures the Microsoft Certificate Authorty on the connected SDDC Manager
+    	.DESCRIPTION
+    	Configures the Microsoft Certificate Authorty on the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
-    This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
-  #>
+    	.EXAMPLE
+    	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+    	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$serverUrl,
+  	Param (
+   		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$serverUrl,
 		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$username,
+      		[ValidateNotNullOrEmpty()]
+      		[string]$username,
 		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$password,
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$templateName
-  )
+      		[ValidateNotNullOrEmpty()]
+      		[string]$password,
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      	[string]$templateName
+  	)
 
-  # Check the version of SDDC Manager
-  CheckVCFVersion
+  	# Check the version of SDDC Manager
+  	CheckVCFVersion
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/certificate-authorities"
-    if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
-      Throw "You must enter the mandatory values"
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$uri = "https://$sddcManager/v1/certificate-authorities"
+    	if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
+      		Throw "You must enter the mandatory values"
 		}
-    $ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
-    $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+    	$ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
+    	$response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
 
 Function Get-VCFCertificateCSR
 {
-  <#
-    .SYNOPSIS
-    Get available CSR(s)
+  	<#
+    	.SYNOPSIS
+    	Get available CSR(s)
 
-    .DESCRIPTION
-    The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
+    	.DESCRIPTION
+    	The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificateCSRs -domainName MGMT
-    This example gets a list of CSRs and displays the output
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificateCSRs -domainName MGMT
+    	This example gets a list of CSRs and displays the output
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
-    This example gets a list of CSRs and displays them in JSON format
-  #>
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
+    	This example gets a list of CSRs and displays them in JSON format
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$domainName
+  	)
 
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-    $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-    $response.elements
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Try {
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+    	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+    	$response.elements
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
 
 Function Request-VCFCertificateCSR
 {
-  <#
-    .SYNOPSIS
-    Generate CSR(s)
+  	<#
+    	.SYNOPSIS
+    	Generate CSR(s)
 
-    .DESCRIPTION
-    The Request-VCFCertificateCSR generates CSR(s) for the selected resource(s) in the domain
-    - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
-      VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+    	.DESCRIPTION
+    	The Request-VCFCertificateCSR generates CSR(s) for the selected resource(s) in the domain
+    	- Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
+      	VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
 
-    .EXAMPLE
-    PS C:\> Request-VCFCertificateCSR -domainName MGMT -json .\requestCsrSpec.json
-    This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
-      the domain called MGMT
-  #>
+    	.EXAMPLE
+    	PS C:\> Request-VCFCertificateCSR -domainName MGMT -json .\requestCsrSpec.json
+    	This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
+      	the domain called MGMT
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json,
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$json,
 		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
+      		[ValidateNotNullOrEmpty()]
+      	[string]$domainName
+  	)
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    $ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-    Try {
-      $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-      $response
-    }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-  }
+  	if (!(Test-Path $json)) {
+    	Throw "JSON File Not Found"
+  	}
+  	else {
+    	$ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+    	Try {
+      		$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      		$response
+    	}
+    	Catch {
+      		ResponseException # Call Function ResponseException to get error response from the exception
+    	}
+  	}
 }
 Export-ModuleMember -Function Request-VCFCertificateCSR
 
 Function Get-VCFCertificate
 {
-  <#
-    .SYNOPSIS
-    Get latest generated certificate(s) in a domain
+  	<#
+    	.SYNOPSIS
+    	Get latest generated certificate(s) in a domain
 
-    .DESCRIPTION
-    The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
+    	.DESCRIPTION
+    	The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificate -domainName sfo-m01
-    This example gets a list of certificates that have been generated
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificate -domainName sfo-m01
+    	This example gets a list of certificates that have been generated
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificate -domainName sfo-m01 | ConvertTo-Json
-    This example gets a list of certificates and displays them in JSON format
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificate -domainName sfo-m01 | ConvertTo-Json
+    	This example gets a list of certificates and displays them in JSON format
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificate -domainName sfo-m01 | Select issuedTo
-    This example gets a list of endpoint names where certificates have been issued
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificate -domainName sfo-m01 | Select issuedTo
+    	This example gets a list of endpoint names where certificates have been issued
 
-    .EXAMPLE
-    PS C:\> Get-VCFCertificate -domainName sfo-m01 -resources
-    This example gets the certificates of all resources in the domain
-  #>
+    	.EXAMPLE
+    	PS C:\> Get-VCFCertificate -domainName sfo-m01 -resources
+    	This example gets the certificates of all resources in the domain
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [switch]$resources
-  )
-  Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("resources")) {
-      $uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    else {
-      $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
-  }
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$domainName,
+    	[Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+			[switch]$resources
+	)
+	  
+  	Try {
+		createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	if ($PsBoundParameters.ContainsKey("resources")) {
+      		$uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response.elements
+    	}
+    	else {
+      		$uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+      		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      		$response.elements
+    	}
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  	}
 }
 Export-ModuleMember -Function Get-VCFCertificate
 
 Function Request-VCFCertificate
 {
-  <#
-    .SYNOPSIS
-    Generate certificate(s) for the selected resource(s) in a domain
+  	<#
+    	.SYNOPSIS
+    	Generate certificate(s) for the selected resource(s) in a domain
 
-    .DESCRIPTION
-    The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a domain.
-    CA must be configured and CSR must be generated beforehand
-    - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS,
-      VRSLCM, VXRAIL_MANAGER
+    	.DESCRIPTION
+    	The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a domain.
+    	CA must be configured and CSR must be generated beforehand
+    	- Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS,
+      	VRSLCM, VXRAIL_MANAGER
 
-    .EXAMPLE
-    PS C:\> Request-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
-    This example requests the generation of the Certificates based on the entries within the requestCertificateSpec.json file
-    for resources within the domain called MGMT
-  #>
+    	.EXAMPLE
+    	PS C:\> Request-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+    	This example requests the generation of the Certificates based on the entries within the requestCertificateSpec.json file
+    	for resources within the domain called MGMT
+  	#>
 
 	Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json,
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$json,
 		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
+      		[ValidateNotNullOrEmpty()]
+      		[string]$domainName
+  	)
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    # Reads the requestCsrSpec json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-    Try {
-      $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-      $response
-    }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-  }
+  	if (!(Test-Path $json)) {
+    	Throw "JSON File Not Found"
+  	}
+  	else {
+    	# Reads the requestCsrSpec json file contents into the $ConfigJson variable
+    	$ConfigJson = (Get-Content -Raw $json)
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+    	Try {
+      		$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      		$response
+    	}
+    	Catch {
+      		ResponseException # Call Function ResponseException to get error response from the exception
+    	}
+  	}
 }
 Export-ModuleMember -Function Request-VCFCertificate
 
 Function Set-VCFCertificate
 {
-  <#
-    .SYNOPSIS
-    Replace certificate(s) for the selected resource(s) in a domain
+  	<#
+    	.SYNOPSIS
+    	Replace certificate(s) for the selected resource(s) in a domain
 
-    .DESCRIPTION
-    The Set-VCFCertificate cmdlet replaces certificate(s) for the selected resource(s) in a domain
+    	.DESCRIPTION
+    	The Set-VCFCertificate cmdlet replaces certificate(s) for the selected resource(s) in a domain
 
-    .EXAMPLE
-    PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
-    This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
-    for resources within the domain called MGMT
-  #>
+    	.EXAMPLE
+    	PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
+    	This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
+    	for resources within the domain called MGMT
+  	#>
 
-  Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json,
+  	Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$json,
 		[Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainName
-  )
+      		[ValidateNotNullOrEmpty()]
+      		[string]$domainName
+  	)
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    $ConfigJson = (Get-Content -Raw $json) # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-    Try {
-      $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-      $response
-    }
-    Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
-    }
-  }
+  	if (!(Test-Path $json)) {
+    	Throw "JSON File Not Found"
+  	}
+  	else {
+    	$ConfigJson = (Get-Content -Raw $json) # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
+    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+    	Try {
+      		$response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      		$response
+    	}
+    	Catch {
+      		ResponseException # Call Function ResponseException to get error response from the exception
+    	}
+  	}
 }
 Export-ModuleMember -Function Set-VCFCertificate
 
-######### End APIs for managing Certificatess ##########
+######### End APIs for managing Certificates ##########
 
 
 
