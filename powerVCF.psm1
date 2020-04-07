@@ -2805,9 +2805,22 @@ Function New-VCFEdgeCluster
     # Validate the provided JSON input specification file
     $response = Validate-EdgeClusterSpec -json $ConfigJson
     # the validation API does not currently support polling with a task ID
-    Sleep 5
+
+    do {
+      $i++
+      start-sleep -Seconds 10
+      $validationId = $response.id
+      $uri = "https://$sddcManager/v1/edge-clusters/validations/$validationId"
+
+      $validationResponse = Invoke-RestMethod -Method Get -Uri $uri -ContentType "application/json" -Headers $headers
+
+      $validationStatus = $validationResponse.executionStatus
+      $validationResult = $validationResponse.resultStatus
+
+    } while ($validationResponse.executionStatus -ne "COMPLETED")
+
     # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+    if ($validationResult -eq "SUCCEEDED") {
       Try {
         Write-Host ""
         Write-Host "Task validation completed successfully, invoking Edge Cluster Creation on SDDC Manager" -ForegroundColor Green
@@ -3715,7 +3728,7 @@ Function Validate-EdgeClusterSpec
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/edge-clusters/validations"
   Try {
-    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+    $response = Invoke-RestMethod -Method POST -ContentType "application/json" -URI $uri -Headers $headers -body $ConfigJson -SkipCertificateCheck
 	}
   Catch {
     ResponseException # Call Function ResponseException to get error response from the exception
