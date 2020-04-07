@@ -3711,7 +3711,7 @@ Function Validate-EdgeClusterSpec
 
 Function checkVCFToken
 {
-    $expiryDetails = Get-JWTDetails $accessToken
+    $expiryDetails = Get-JWTDetail $accessToken
     if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
         Write-Host "API Access Token Expired. Requesting a new access token with current refresh token" -ForegroundColor Cyan
         $headers = @{"Accept" = "application/json"}
@@ -3721,7 +3721,7 @@ Function checkVCFToken
     }
 }
 
-Function Get-JWTDetails
+Function Get-JWTDetail
 {
     [cmdletbinding()]
 
@@ -3752,10 +3752,10 @@ Function Get-JWTDetails
         PowerShell Object
 
         .SYNTAX
-        Get-JWTDetails(accesstoken)
+        Get-JWTDetail (accesstoken)
   
         .EXAMPLE
-        PS> Get-JWTDetails('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
+        PS> Get-JWTDetail ('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
     #>
 
 
