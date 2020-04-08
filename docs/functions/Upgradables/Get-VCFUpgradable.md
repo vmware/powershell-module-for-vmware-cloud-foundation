@@ -1,11 +1,11 @@
-# Get-VCFUpgradables
+# Get-VCFUpgradable
 
 ### Synopsis
 Connects to the specified SDDC Manager and retrieves a list of tasks.
 
 ### Syntax
 ```
-Get-VCFUpgradables 
+Get-VCFUpgradable
 ```
 
 ### Description
@@ -15,7 +15,7 @@ The Upgradables provides information that can be use for Precheck API and also i
 ### Examples
 #### Example 1
 ```
-Get-VCFUpgradables
+Get-VCFUpgradable
 ```
 This example shows how to retrieve the list of upgradables in the system
 
