@@ -2864,9 +2864,95 @@ Export-ModuleMember -Function Get-VCFFederationTask
 
 
 
-######### Start APIs for managing SDDCs (Cloud Builder) ##########
+######### Start APIs for managing SDDC (Cloud Builder) ##########
 
-######### End APIs for managing SDDCs (Cloud Builder) ##########
+Function Get-CloudBuilderSDDC
+{
+    <#
+        .SYNOPSIS
+        Retrieve all SDDCs
+
+        .DESCRIPTION
+        The Get-CloudBuilderSDDC cmdlet gets a list of SDDC deployments from Cloud Builder
+
+        .EXAMPLE
+        PS C:\> Get-CloudBuilderSDDC
+        This example list all SDDC deployments from Cloud Builder
+
+        .EXAMPLE
+        PS C:\> Get-CloudBuilderSDDC -id 51cc2d90-13b9-4b62-b443-c1d7c3be0c23
+        This example gets the SDDC deployment with a specific ID from Cloud Builder
+    #>
+
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$cloudBuilder/v1/sddcs"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        elseif ($PsBoundParameters.ContainsKey("id")) { 
+            $uri = "https://$cloudBuilder/v1/sddcs/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-CloudBuilderSDDC
+
+Function Get-CloudBuilderSDDCValidation
+{
+    <#
+        .SYNOPSIS
+        Get all SDDC specification validations
+
+        .DESCRIPTION
+        The Get-CloudBuilderSDDCValidation cmdlet gets a list of SDDC validations from Cloud Builder
+
+        .EXAMPLE
+        PS C:\> Get-CloudBuilderSDDCValidation
+        This example list all SDDC validations from Cloud Builder
+
+        .EXAMPLE
+        PS C:\> Get-CloudBuilderSDDCValidation -id 1ff80635-b878-441a-9e23-9369e1f6e5a3
+        This example gets the SDDC validation with a specific ID from Cloud Builder
+    #>
+
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$cloudBuilder/v1/sddcs/validations"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        elseif ($PsBoundParameters.ContainsKey("id")) { 
+            $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-CloudBuilderSDDCValidation
+
+######### End APIs for managing SDDC (Cloud Builder) ##########
 
 
 
@@ -3953,6 +4039,12 @@ Function createHeader
 {
     $Global:headers = @{"Accept" = "application/json"}
     $Global:headers.Add("Authorization", "Bearer $accessToken")
+}
+
+Function createCloudBuilderHeader
+{
+    $Global:headers = @{"Accept" = "application/json"}
+    $Global:headers.Add("Authorization", "Basic $base64AuthInfo")
 }
 
 Function Resolve-PSModule
