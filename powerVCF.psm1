@@ -2820,6 +2820,50 @@ Export-ModuleMember -Function New-VCFEdgeCluster
 
 ######### Start APIs for managing Personalities ##########
 
+Function Get-VCFPersonality
+{
+     <#
+        .SYNOPSIS
+        Get the personalities
+
+        .DESCRIPTION
+        The Get-VCFPersonality cmdlet gets the personalities which are available via depot access
+
+        .EXAMPLE
+        PS C:\> Get-VCFPersonality
+        This example list all the personalities availble in the depot
+
+        .EXAMPLE
+        PS C:\> Get-VCFPersonality -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
+        This example gets a personality by ID
+    #>
+
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createHeader # Calls Function createHeader to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/personalities"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/personalities/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFPersonality
+
 ######### End APIs for managing Personalities ##########
 
 
