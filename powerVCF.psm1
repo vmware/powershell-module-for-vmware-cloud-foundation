@@ -2952,6 +2952,106 @@ Function Get-CloudBuilderSDDCValidation
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDCValidation
 
+Function Start-CloudBuilderSDDCValidation
+{
+    <#
+        .SYNOPSIS
+        Validate SDDC specification before creation
+
+        .DESCRIPTION
+        The Start-CloudBuilderSDDCValidation cmdlet performs validation of the SddcSpec.json provided
+
+        .EXAMPLE
+        PS C:\> Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json
+        This example starts the validation of the SddcSpec.json
+
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    Try {
+        validateJsonInput # Calls Function validateJsonInput to check the JSON file provided exists
+        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$cloudBuilder/v1/sddcs/validations"
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Start-CloudBuilderSDDCValidation
+
+Function Stop-CloudBuilderSDDCValidation
+{
+    <#
+        .SYNOPSIS
+        Cancel SDDC specification validation
+
+        .DESCRIPTION
+        The Stop-CloudBuilderSDDCValidation cancel validation in progress on Cloud Builder
+
+        .EXAMPLE
+        PS C:\> Stop-CloudBuilderSDDCValidation -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
+        This example stops a validation that is running on Cloud Builder based on the ID
+
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Stop-CloudBuilderSDDCValidation
+
+Function Restart-CloudBuilderSDDCValidation
+{
+    <#
+        .SYNOPSIS
+        Retry SDDC validation
+
+        .DESCRIPTION
+        The Restart-CloudBuilderSDDCValidation reties a validation on Cloud Builder
+
+        .EXAMPLE
+        PS C:\> Restart-CloudBuilderSDDCValidation -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
+        This example reties a validation on Cloud Builder based on the ID
+
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
+
 ######### End APIs for managing SDDC (Cloud Builder) ##########
 
 
@@ -4116,6 +4216,15 @@ Function Resolve-PSModule
         }
     }
     Return $searchResult
+}
+
+Function validateJsonInput{
+    if (!(Test-Path $json)) {
+        Throw "JSON file provided not found, please try again"
+    }
+    else {
+        $Global:ConfigJson = (Get-Content -Raw $json) # Read the json file contents into the $ConfigJson variable
+    }
 }
 
 ######### End Utility Functions (not exported) ##########
