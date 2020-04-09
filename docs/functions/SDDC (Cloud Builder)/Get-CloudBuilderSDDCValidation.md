@@ -27,7 +27,7 @@ This example gets the SDDC validation with a specific ID from Cloud Builder
 ### Parameters
 
 #### -id
-ID of a specific host
+ID of the validation
 
 ```yaml
 Type: String

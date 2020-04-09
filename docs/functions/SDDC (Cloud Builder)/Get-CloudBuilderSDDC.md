@@ -27,7 +27,7 @@ This example gets the SDDC deployment with a specific ID from Cloud Builder
 ### Parameters
 
 #### -id
-ID of a specific host
+ID of the deployment
 
 ```yaml
 Type: String
