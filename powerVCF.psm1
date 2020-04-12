@@ -2824,18 +2824,18 @@ Function Get-VCFPersonality
 {
      <#
         .SYNOPSIS
-        Get the personalities
+        Get the vSphere Lifecycle Manager personalities
 
         .DESCRIPTION
-        The Get-VCFPersonality cmdlet gets the personalities which are available via depot access
+        The Get-VCFPersonality cmdlet gets the vSphere Lifecycle Manager personalities which are available via depot access
 
         .EXAMPLE
         PS C:\> Get-VCFPersonality
-        This example list all the personalities availble in the depot
+        This example list all the vSphere Lifecycle Manager personalities availble in the depot
 
         .EXAMPLE
         PS C:\> Get-VCFPersonality -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
-        This example gets a personality by ID
+        This example gets a vSphere Lifecycle Manager personality by ID
     #>
 
     Param (
