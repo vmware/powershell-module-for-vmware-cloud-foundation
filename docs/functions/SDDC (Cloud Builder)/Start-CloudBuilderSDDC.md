@@ -59,7 +59,7 @@ Default value: None
 	},
 	"sddcId": "sfo-m01",
 	"ceipEnabled": true,
-	"esxLicense": "004HH-A019L-48929-0V2UP-1T1JP",
+	"esxLicense": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
 	"taskName": "workflowconfig/workflowspec-ems.json",
 	"ntpServers": [ "ntp.sfo.rainpole.io" ],
 	"dnsSpec": {
@@ -171,7 +171,7 @@ Default value: None
 		},
 		"vip": "172.20.11.65",
 		"vipFqdn": "sfo-m01-nsx01",
-		"nsxtLicense": "MM4L3-DLL93-789CT-0LA26-0WW57",
+		"nsxtLicense": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
 		"transportVlanId": 3064,
 		"nsxtEdgeSpec": {
 			"edgeClusterName": "sfo-m01-ec01",
@@ -242,7 +242,7 @@ Default value: None
 	},
 	"vsanSpec": {
 		"vsanName": "vsan-1",
-        "licenseFile": "0J0J0-F2304-08A80-03CK2-91TL7",
+        "licenseFile": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
         "vsanDedup": "false",
 		"datastoreName": "sfo-m01-cl01-ds-vsan01"
 	},
@@ -380,7 +380,7 @@ Default value: None
 		"vcenterIp": "172.20.11.62",
 		"vcenterHostname": "sfo-m01-vc01",
 		"vcenterId": "vcenter-1",
-		"licenseFile": "140T2-AUH0J-H8149-0A3HK-85V5P",
+		"licenseFile": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
 		"rootVcenterPassword": "VMw@re1!",
 		"vmSize": "small"
 	},
