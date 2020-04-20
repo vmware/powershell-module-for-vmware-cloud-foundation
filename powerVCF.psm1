@@ -4324,7 +4324,6 @@ Function Resolve-PSModule
     Return $searchResult
 }
 
- dev-400-gjb-sddcs
 Function validateJsonInput{
     if (!(Test-Path $json)) {
         Throw "JSON file provided not found, please try again"
