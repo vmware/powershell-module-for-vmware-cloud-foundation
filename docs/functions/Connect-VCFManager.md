@@ -5,12 +5,12 @@ Connects to the specified SDDC Manager and requests API access & refresh tokens
 
 ### Syntax
 ```
-Connect-VCFManager -fqdn <String> -Username <String> -Password <String>
+Connect-VCFManager -fqdn <String> -Username <String> -Password <String> -basicAuth <switch>
 ```
 
 ### Description
 The Connect-VCFManager cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
-  It is required once per session before running all other cmdlets
+It is required once per session before running all other cmdlets
 
 ### Examples
 #### Example 1
@@ -18,6 +18,12 @@ The Connect-VCFManager cmdlet connects to the specified SDDC Manager and request
 Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
 ```
 This example shows how to connect to SDDC Manager
+
+#### Example 2
+```
+Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1! -basicAuth
+```
+This example shows how to connect to SDDC Manager using basic auth for restoring backups
 
 ### Parameters
 

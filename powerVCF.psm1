@@ -49,7 +49,7 @@ if ($PSEdition -eq 'Desktop') {
 
 Function Connect-VCFManager
 {
-  <#
+    <#
 		.SYNOPSIS
     	Connects to the specified SDDC Manager and requests API access & refresh tokens
 
@@ -59,7 +59,11 @@ Function Connect-VCFManager
 
     	.EXAMPLE
     	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
-    	This example shows how to connect to SDDC Manager to request API access & refresh tokens
+        This example shows how to connect to SDDC Manager to request API access & refresh tokens
+ 
+        .EXAMPLE
+    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1! -basicAuth
+        This example shows how to connect to SDDC Manager using basic auth for restoring backups
   	#>
 
   	Param (
@@ -71,7 +75,10 @@ Function Connect-VCFManager
       		[string]$username,
 		[Parameter (Mandatory=$false)]
       		[ValidateNotNullOrEmpty()]
-      		[string]$password
+            [string]$password,
+        [Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+      		[switch]$basicAuth
   	)
 
   	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
@@ -81,34 +88,49 @@ Function Connect-VCFManager
     	$password = $creds.GetNetworkCredential().password
   	}
 
-  	$Global:sddcManager = $fqdn
+    $Global:sddcManager = $fqdn
+    
+    if ( -not $PsBoundParameters.ContainsKey("basicAuth")) {
+  	    # Validate credentials by executing an API call
+  	    $headers = @{"Content-Type" = "application/json"}
+  	    $uri = "https://$sddcManager/v1/tokens"
+  	    $body = '{"username": "'+$username+'","password": "'+$password+'"}'
 
-  	# Validate credentials by executing an API call
-  	$headers = @{"Content-Type" = "application/json"}
-  	$uri = "https://$sddcManager/v1/tokens"
-  	$body = '{"username": "'+$username+'","password": "'+$password+'"}'
-
-  	Try {
-    	# Checking against the sddc-managers API
-    	# PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
-    	if ($PSEdition -eq 'Core') {
-      		$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck
-      		$Global:accessToken = $response.accessToken
-      		$Global:refreshToken = $response.refreshToken.id
-    	}
-    	else {
-      		$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
-      		$Global:accessToken = $response.accessToken
-      		$Global:refreshToken = $response.refreshToken.id
-    	}
-    	if ($response.accessToken) {
-            Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
-    	}
-  	}
-  	Catch {
-        Write-Host "" $_.Exception.Message -ForegroundColor Red
-    	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
-  	}
+  	    Try {
+    	    # Checking against the sddc-managers API
+    	    # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+    	    if ($PSEdition -eq 'Core') {
+      	    	$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck
+      	    	$Global:accessToken = $response.accessToken
+      	    	$Global:refreshToken = $response.refreshToken.id
+    	    }
+    	    else {
+      		    $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
+      		    $Global:accessToken = $response.accessToken
+      		    $Global:refreshToken = $response.refreshToken.id
+    	    }
+    	    if ($response.accessToken) {
+                Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
+    	    }
+  	    }
+  	    Catch {
+            Write-Host "" $_.Exception.Message -ForegroundColor Red
+    	    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+        }
+    }
+    elseif ($PsBoundParameters.ContainsKey("basicAuth")) {
+        Try {
+            # Validate credentials by executing an API call
+            $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
+            $headers = @{"Accept" = "application/json"}
+            $headers.Add("Authorization", "Basic $base64AuthInfo")
+            Write-Host " Successfully Requested New Basic Auth From SDDC Manager:" $sddcManager -ForegroundColor Green
+        }
+        Catch {
+            Write-Host "" $_.Exception.Message -ForegroundColor Red
+    	    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+        }
+    }
 }
 Export-ModuleMember -function Connect-VCFManager
 
@@ -346,6 +368,75 @@ Function Start-VCFBackup
   }
 }
 Export-ModuleMember -Function Start-VCFBackup
+
+Function Start-VCFRestore
+{
+  	<#
+    	.SYNOPSIS
+    	Start the SDDC Manager restore
+
+    	.DESCRIPTION
+    	The Start-VCFRestore cmdlet invokes the SDDC Manager restore task
+
+    	.EXAMPLE
+    	PS C:\> Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-2020-04-20-14-37-25.tar.gz" -passphrase "VMw@re1!VMw@re1!"
+    	This example shows how to start the SDDC Manager restore
+  	#>
+      Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$backupFile,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$passphrase
+    )
+
+  	Try {
+        createCloudBuilderHeader
+    	$ConfigJson = '{ "backupFile": "'+$backupFile+'", "elements": [ {"resourceType": "SDDC_MANAGER"} ], "encryption": {"passphrase": "'+$passphrase+'"}}'
+        $uri = "https://$sddcManager/v1/restores/tasks"
+    	$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+    	$response
+  	}
+  	Catch {
+    	ResponseException # Call Function ResponseException to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Start-VCFRestore
+
+Function Get-VCFRestoreTask
+{
+  	<#
+    	.SYNOPSIS
+    	Fetch the restores task
+
+    	.DESCRIPTION
+    	The Get-VCFRestoreTask cmdlet retrieves the status of the restore task
+
+    	.EXAMPLE
+    	PS C:\> Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753 
+    	This example shows how to retrieve the status of the restore task by id
+      #>
+    
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        if ($PsBoundParameters.ContainsKey("id")) {
+            createCloudBuilderHeader
+            $uri = "https://$sddcManager/v1/restores/tasks/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call Function ResponseException to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFRestoreTask
 
 ######### End APIs for managing Backup and Restore ##########
 
