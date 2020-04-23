@@ -232,7 +232,6 @@ Function Get-VCFApplicationVirtualNetwork
         	[string]$id
   	)
 
-  	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -476,8 +475,6 @@ Function Get-VCFBundle
             [string]$id
     )
 
-    # Check the version of SDDC Manager
-    CheckVCFVersion
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -692,9 +689,6 @@ Function Get-VCFCertificateAuthority
       		[String] $caType
   	)
 
-  	# Check the version of SDDC Manager
-  	CheckVCFVersion
-
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -776,9 +770,6 @@ Function Set-VCFMicrosoftCA
       		[ValidateNotNullOrEmpty()]
       	[string]$templateName
   	)
-
-  	# Check the version of SDDC Manager
-  	CheckVCFVersion
 
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
@@ -1826,7 +1817,6 @@ Function Get-VCFFederation
   	#>
 
   	Try {
-    	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/sddc-federation"
@@ -1864,7 +1854,6 @@ Function Set-VCFFederation
   	}
   	else {
     	Try {
-      		CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
       		createHeader # Calls createHeader function to set Accept & Authorization
     		checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       		$ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
@@ -1893,7 +1882,6 @@ Function Remove-VCFFederation
     	This example demonstrates how to dismantle the VCF Federation
   	#>
 
-  	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
   	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	$uri = "https://$sddcManager/v1/sddc-federation"
@@ -2341,7 +2329,6 @@ Function Get-VCFFederationMember
         This example lists all details concerning the VCF Federation members.
     #>
 
-    CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/members"
@@ -2380,7 +2367,6 @@ Function New-VCFFederationInvite
 			[string]$inviteeFqdn
     )
 
-    CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
@@ -2430,7 +2416,6 @@ Function Join-VCFFederation
         Throw "JSON File Not Found"
     }
     else {
-        CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
         $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -2498,8 +2483,6 @@ Function Get-VCFNsxtCluster
             [string]$domainId
     )
 
-    # Check the version of SDDC Manager
-    CheckVCFVersion
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -2982,7 +2965,6 @@ Function Get-VCFFederationTask
     )
 
     Try {
-        CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
@@ -3825,8 +3807,6 @@ Function Get-VCFvCenter
       [string]$domainId
   )
 
-  # Check the version of SDDC Manager
-  CheckVCFVersion
   Try {
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -4317,17 +4297,6 @@ Function ResponseException
     }
     else {
         Throw $_
-    }
-}
-
-Function CheckVCFVersion 
-{
-    $vcfManager = Get-VCFManager
-    if (($vcfManager.version.Substring(0,3) -ne "3.9") -and ($vcfManager.version.Substring(0,3) -ne "4.0")) {
-        Write-Host ""
-        Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
-        Write-Host ""
-        Break
     }
 }
 
