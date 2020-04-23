@@ -16,7 +16,7 @@ The Get-VCFRestoreTask cmdlet retrieves the status of the restore task
 ```
 Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753    
 ```
-This example retrieves the backup configuration
+This example shows how to retrieve the status of the restore task by id 
 
 ### Parameters
 
