@@ -1420,7 +1420,7 @@ Function Get-VCFCredentialTask
     	if ( -not $PsBoundParameters.ContainsKey("id")) {
       		$uri = "https://$sddcManager/v1/credentials/tasks"
 	    	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	    	$response
+	    	$response.elements
     	}
     	if ($PsBoundParameters.ContainsKey("id")) {
       		$uri = "https://$sddcManager/v1/credentials/tasks/$id"
