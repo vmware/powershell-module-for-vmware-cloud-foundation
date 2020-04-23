@@ -132,7 +132,7 @@ Function Connect-VCFManager
         }
     }
 }
-Export-ModuleMember -function Connect-VCFManager
+Export-ModuleMember -Function Connect-VCFManager
 
 Function Connect-CloudBuilder
 {
@@ -194,7 +194,7 @@ Function Connect-CloudBuilder
     	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-CloudBuilder cmdlet" -ForegroundColor Red
   	}
 }
-Export-ModuleMember -function Connect-CloudBuilder
+Export-ModuleMember -Function Connect-CloudBuilder
 
 
 ######### Start APIs for managing Application Virtual Networks ##########
@@ -232,7 +232,7 @@ Function Get-VCFApplicationVirtualNetwork
         	[string]$id
   	)
 
-  	CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -1826,7 +1826,7 @@ Function Get-VCFFederation
   	#>
 
   	Try {
-    	CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+    	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/sddc-federation"
@@ -1864,7 +1864,7 @@ Function Set-VCFFederation
   	}
   	else {
     	Try {
-      		CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+      		CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
       		createHeader # Calls createHeader function to set Accept & Authorization
     		checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       		$ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
@@ -1893,7 +1893,7 @@ Function Remove-VCFFederation
     	This example demonstrates how to dismantle the VCF Federation
   	#>
 
-  	CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
   	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	$uri = "https://$sddcManager/v1/sddc-federation"
@@ -2341,7 +2341,7 @@ Function Get-VCFFederationMember
         This example lists all details concerning the VCF Federation members.
     #>
 
-    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+    CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/members"
@@ -2358,7 +2358,7 @@ Function Get-VCFFederationMember
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -function Get-VCFFederationMember
+Export-ModuleMember -Function Get-VCFFederationMember
 
 Function New-VCFFederationInvite
 {
@@ -2380,7 +2380,7 @@ Function New-VCFFederationInvite
 			[string]$inviteeFqdn
     )
 
-    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+    CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
@@ -2430,7 +2430,7 @@ Function Join-VCFFederation
         Throw "JSON File Not Found"
     }
     else {
-        CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+        CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
         $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -2982,7 +2982,7 @@ Function Get-VCFFederationTask
     )
 
     Try {
-        CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+        CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
@@ -3065,7 +3065,7 @@ Function Start-CloudBuilderSDDC
     )
 
     Try {
-        validateJsonInput # Calls Function validateJsonInput to check the JSON file provided exists
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
@@ -3173,7 +3173,7 @@ Function Start-CloudBuilderSDDCValidation
     )
 
     Try {
-        validateJsonInput # Calls Function validateJsonInput to check the JSON file provided exists
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
@@ -4320,7 +4320,7 @@ Function ResponseException
     }
 }
 
-Function CheckVCFVersion
+Function CheckVCFVersion 
 {
     $vcfManager = Get-VCFManager
     if (($vcfManager.version.Substring(0,3) -ne "3.9") -and ($vcfManager.version.Substring(0,3) -ne "4.0")) {
@@ -4414,7 +4414,8 @@ Function Resolve-PSModule
     Return $searchResult
 }
 
-Function validateJsonInput{
+Function validateJsonInput
+{
     if (!(Test-Path $json)) {
         Throw "JSON file provided not found, please try again"
     }
