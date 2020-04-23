@@ -60,7 +60,7 @@ Function Connect-VCFManager
     	.EXAMPLE
     	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
- 
+
         .EXAMPLE
     	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1! -basicAuth
         This example shows how to connect to SDDC Manager using basic auth for restoring backups
@@ -89,7 +89,7 @@ Function Connect-VCFManager
   	}
 
     $Global:sddcManager = $fqdn
-    
+
     if ( -not $PsBoundParameters.ContainsKey("basicAuth")) {
   	    # Validate credentials by executing an API call
   	    $headers = @{"Content-Type" = "application/json"}
@@ -414,10 +414,10 @@ Function Get-VCFRestoreTask
     	The Get-VCFRestoreTask cmdlet retrieves the status of the restore task
 
     	.EXAMPLE
-    	PS C:\> Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753 
+    	PS C:\> Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753
     	This example shows how to retrieve the status of the restore task by id
       #>
-    
+
     Param (
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
@@ -1439,17 +1439,17 @@ Function Get-VCFCredentialTask
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
 
-Function Cancel-VCFCredentialTask
+Function Stop-VCFCredentialTask
 {
   	<#
     	.SYNOPSIS
     	Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
 
     	.DESCRIPTION
-    	The Cancel-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
+    	The Stop-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
 
     	.EXAMPLE
-    	PS C:\> Cancel-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+    	PS C:\> Stop-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
     	This example shows how to cancel a failed rotate or update password task.
   	#>
 
@@ -1475,19 +1475,19 @@ Function Cancel-VCFCredentialTask
     	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
-Export-ModuleMember -Function Cancel-VCFCredentialTask
+Export-ModuleMember -Function Stop-VCFCredentialTask
 
-Function Retry-VCFCredentialTask
+Function Restart-VCFCredentialTask
 {
   	<#
     	.SYNOPSIS
     	Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
 
     	.DESCRIPTION
-    	The Retry-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
+    	The Restart-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
 
     	.EXAMPLE
-    	PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
+    	PS C:\> Restart-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
     	This example shows how to update passwords of a resource type using a json spec
   	#>
 
@@ -1524,7 +1524,7 @@ Function Retry-VCFCredentialTask
     	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
-Export-ModuleMember -Function Retry-VCFCredentialTask
+Export-ModuleMember -Function Restart-VCFCredentialTask
 
 ######### End APIs for managing Credentials ##########
 
@@ -3032,7 +3032,7 @@ Function Get-CloudBuilderSDDC
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
         }
-        elseif ($PsBoundParameters.ContainsKey("id")) { 
+        elseif ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
@@ -3140,7 +3140,7 @@ Function Get-CloudBuilderSDDCValidation
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
         }
-        elseif ($PsBoundParameters.ContainsKey("id")) { 
+        elseif ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
@@ -3461,18 +3461,18 @@ Function Get-VCFTask
 }
 Export-ModuleMember -Function Get-VCFTask
 
-Function Retry-VCFTask
+Function Restart-VCFTask
 {
     <#
         .SYNOPSIS
         Connects to the specified SDDC Manager and retries a previously failed task.
 
         .DESCRIPTION
-        The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
+        The Restart-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
         failed task using the task id.
 
         .EXAMPLE
-        PS C:\> Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+        PS C:\> Restart-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
         This example retries the task based on the task id
     #>
 
@@ -3492,7 +3492,7 @@ Function Retry-VCFTask
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -Function Retry-VCFTask
+Export-ModuleMember -Function Restart-VCFTask
 
 #### End APIs for managing Tasks #####
 
@@ -3969,7 +3969,7 @@ Function Remove-VCFvRSLCM
         This example removes a failed vRealize Suite Lifecycle Manager deployment
     #>
 
-    Try {   
+    Try {
         createHeader # Call createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/vrslcm"
@@ -4320,7 +4320,7 @@ Function ResponseException
     }
 }
 
-Function CheckVCFVersion 
+Function CheckVCFVersion
 {
     $vcfManager = Get-VCFManager
     if (($vcfManager.version.Substring(0,3) -ne "3.9") -and ($vcfManager.version.Substring(0,3) -ne "4.0")) {

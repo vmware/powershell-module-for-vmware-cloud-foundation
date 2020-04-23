@@ -1,20 +1,20 @@
-# Retry-VCFTask
+# Restart-VCFTask
 
 ### Synopsis
 Connects to the specified SDDC Manager and retries a previously failed task.
 
 ### Syntax
 ```
-Retry-VCFTask -id <string>
+Restart-VCFTask -id <string>
 ```
 
 ### Description
-The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously failed task using the task id.
+The Restart-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously failed task using the task id.
 
 ### Examples
 #### Example 1
 ```
-Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+Restart-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
 ```
 This example retries the task based on the task id
 
