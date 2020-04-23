@@ -392,7 +392,7 @@ Function Start-VCFRestore
     )
 
   	Try {
-        createCloudBuilderHeader
+        createBasicAuthHeader
     	$ConfigJson = '{ "backupFile": "'+$backupFile+'", "elements": [ {"resourceType": "SDDC_MANAGER"} ], "encryption": {"passphrase": "'+$passphrase+'"}}'
         $uri = "https://$sddcManager/v1/restores/tasks"
     	$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
@@ -426,7 +426,7 @@ Function Get-VCFRestoreTask
 
     Try {
         if ($PsBoundParameters.ContainsKey("id")) {
-            createCloudBuilderHeader
+            createBasicAuthHeader
             $uri = "https://$sddcManager/v1/restores/tasks/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
@@ -3026,7 +3026,7 @@ Function Get-CloudBuilderSDDC
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls Function createBasicAuthHeader to basic auth
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3066,7 +3066,7 @@ Function Start-CloudBuilderSDDC
 
     Try {
         validateJsonInput # Calls Function validateJsonInput to check the JSON file provided exists
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls Function createBasicAuthHeader to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
         $response
@@ -3098,7 +3098,7 @@ Function Restart-CloudBuilderSDDC
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls Function createBasicAuthHeader to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/$id"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
         $response
@@ -3134,7 +3134,7 @@ Function Get-CloudBuilderSDDCValidation
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls Function createBasicAuthHeader to basic auth
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs/validations"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3174,7 +3174,7 @@ Function Start-CloudBuilderSDDCValidation
 
     Try {
         validateJsonInput # Calls Function validateJsonInput to check the JSON file provided exists
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls Function createBasicAuthHeader to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
         $response
@@ -3206,7 +3206,7 @@ Function Stop-CloudBuilderSDDCValidation
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls Function createBasicAuthHeader to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         $response
@@ -3238,7 +3238,7 @@ Function Restart-CloudBuilderSDDCValidation
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls Function createBasicAuthHeader to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
         $response
@@ -4338,7 +4338,7 @@ Function createHeader
     $Global:headers.Add("Authorization", "Bearer $accessToken")
 }
 
-Function createCloudBuilderHeader
+Function createBasicAuthHeader
 {
     $Global:headers = @{"Accept" = "application/json"}
     $Global:headers.Add("Authorization", "Basic $base64AuthInfo")
