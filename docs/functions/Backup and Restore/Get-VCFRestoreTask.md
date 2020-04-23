@@ -1,7 +1,7 @@
 # Get-VCFRestoreTask
 
 ### Synopsis
-Gets the backup configuration of NSX Manager and SDDC Manager
+Gets the restore task status
 
 ### Syntax
 ```
