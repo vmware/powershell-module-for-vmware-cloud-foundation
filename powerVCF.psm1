@@ -49,7 +49,7 @@ if ($PSEdition -eq 'Desktop') {
 
 Function Connect-VCFManager
 {
-  <#
+    <#
 		.SYNOPSIS
     	Connects to the specified SDDC Manager and requests API access & refresh tokens
 
@@ -59,7 +59,11 @@ Function Connect-VCFManager
 
     	.EXAMPLE
     	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
-    	This example shows how to connect to SDDC Manager to request API access & refresh tokens
+        This example shows how to connect to SDDC Manager to request API access & refresh tokens
+ 
+        .EXAMPLE
+    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1! -basicAuth
+        This example shows how to connect to SDDC Manager using basic auth for restoring backups
   	#>
 
   	Param (
@@ -71,7 +75,10 @@ Function Connect-VCFManager
       		[string]$username,
 		[Parameter (Mandatory=$false)]
       		[ValidateNotNullOrEmpty()]
-      		[string]$password
+            [string]$password,
+        [Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+      		[switch]$basicAuth
   	)
 
   	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
@@ -81,36 +88,51 @@ Function Connect-VCFManager
     	$password = $creds.GetNetworkCredential().password
   	}
 
-  	$Global:sddcManager = $fqdn
+    $Global:sddcManager = $fqdn
+    
+    if ( -not $PsBoundParameters.ContainsKey("basicAuth")) {
+  	    # Validate credentials by executing an API call
+  	    $headers = @{"Content-Type" = "application/json"}
+  	    $uri = "https://$sddcManager/v1/tokens"
+  	    $body = '{"username": "'+$username+'","password": "'+$password+'"}'
 
-  	# Validate credentials by executing an API call
-  	$headers = @{"Content-Type" = "application/json"}
-  	$uri = "https://$sddcManager/v1/tokens"
-  	$body = '{"username": "'+$username+'","password": "'+$password+'"}'
-
-  	Try {
-    	# Checking against the sddc-managers API
-    	# PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
-    	if ($PSEdition -eq 'Core') {
-      		$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck
-      		$Global:accessToken = $response.accessToken
-      		$Global:refreshToken = $response.refreshToken.id
-    	}
-    	else {
-      		$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
-      		$Global:accessToken = $response.accessToken
-      		$Global:refreshToken = $response.refreshToken.id
-    	}
-    	if ($response.accessToken) {
-            Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
-    	}
-  	}
-  	Catch {
-        Write-Host "" $_.Exception.Message -ForegroundColor Red
-    	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
-  	}
+  	    Try {
+    	    # Checking against the sddc-managers API
+    	    # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
+    	    if ($PSEdition -eq 'Core') {
+      	    	$response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck
+      	    	$Global:accessToken = $response.accessToken
+      	    	$Global:refreshToken = $response.refreshToken.id
+    	    }
+    	    else {
+      		    $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
+      		    $Global:accessToken = $response.accessToken
+      		    $Global:refreshToken = $response.refreshToken.id
+    	    }
+    	    if ($response.accessToken) {
+                Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
+    	    }
+  	    }
+  	    Catch {
+            Write-Host "" $_.Exception.Message -ForegroundColor Red
+    	    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+        }
+    }
+    elseif ($PsBoundParameters.ContainsKey("basicAuth")) {
+        Try {
+            # Validate credentials by executing an API call
+            $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
+            $headers = @{"Accept" = "application/json"}
+            $headers.Add("Authorization", "Basic $base64AuthInfo")
+            Write-Host " Successfully Requested New Basic Auth From SDDC Manager:" $sddcManager -ForegroundColor Green
+        }
+        Catch {
+            Write-Host "" $_.Exception.Message -ForegroundColor Red
+    	    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+        }
+    }
 }
-Export-ModuleMember -function Connect-VCFManager
+Export-ModuleMember -Function Connect-VCFManager
 
 Function Connect-CloudBuilder
 {
@@ -172,7 +194,7 @@ Function Connect-CloudBuilder
     	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-CloudBuilder cmdlet" -ForegroundColor Red
   	}
 }
-Export-ModuleMember -function Connect-CloudBuilder
+Export-ModuleMember -Function Connect-CloudBuilder
 
 
 ######### Start APIs for managing Application Virtual Networks ##########
@@ -210,9 +232,9 @@ Function Get-VCFApplicationVirtualNetwork
         	[string]$id
   	)
 
-  	CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+  	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
       		$uri = "https://$sddcManager/v1/avns"
@@ -231,7 +253,7 @@ Function Get-VCFApplicationVirtualNetwork
     	}
   	}
   	Catch {
-   		ResponseException # Call Function ResponseException to get error response from the exception
+   		ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
@@ -261,14 +283,14 @@ Function Get-VCFBackupConfiguration
   #>
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/system/backup-configuration"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.backupLocations
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
@@ -304,7 +326,7 @@ Function Set-VCFBackupConfiguration
         }
     }
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         <# $headers.Add("privileged-username", "$privilegedUsername")
         $headers.Add("privileged-password", "$privilegedPassword") #>
@@ -313,7 +335,7 @@ Function Set-VCFBackupConfiguration
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
@@ -333,7 +355,7 @@ Function Start-VCFBackup
   	#>
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	# this body is fixed for SDDC Manager backups. not worth having it stored on file
     	$ConfigJson = '{"elements" : [{"resourceType" : "SDDC_MANAGER"}]}'
@@ -342,10 +364,79 @@ Function Start-VCFBackup
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   }
 }
 Export-ModuleMember -Function Start-VCFBackup
+
+Function Start-VCFRestore
+{
+  	<#
+    	.SYNOPSIS
+    	Start the SDDC Manager restore
+
+    	.DESCRIPTION
+    	The Start-VCFRestore cmdlet invokes the SDDC Manager restore task
+
+    	.EXAMPLE
+    	PS C:\> Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-2020-04-20-14-37-25.tar.gz" -passphrase "VMw@re1!VMw@re1!"
+    	This example shows how to start the SDDC Manager restore
+  	#>
+      Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$backupFile,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$passphrase
+    )
+
+  	Try {
+        createBasicAuthHeader
+    	$ConfigJson = '{ "backupFile": "'+$backupFile+'", "elements": [ {"resourceType": "SDDC_MANAGER"} ], "encryption": {"passphrase": "'+$passphrase+'"}}'
+        $uri = "https://$sddcManager/v1/restores/tasks"
+    	$response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+    	$response
+  	}
+  	Catch {
+    	ResponseException # Call ResponseException function to get error response from the exception
+  }
+}
+Export-ModuleMember -Function Start-VCFRestore
+
+Function Get-VCFRestoreTask
+{
+  	<#
+    	.SYNOPSIS
+    	Fetch the restores task
+
+    	.DESCRIPTION
+    	The Get-VCFRestoreTask cmdlet retrieves the status of the restore task
+
+    	.EXAMPLE
+    	PS C:\> Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753 
+    	This example shows how to retrieve the status of the restore task by id
+      #>
+    
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        if ($PsBoundParameters.ContainsKey("id")) {
+            createBasicAuthHeader
+            $uri = "https://$sddcManager/v1/restores/tasks/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFRestoreTask
 
 ######### End APIs for managing Backup and Restore ##########
 
@@ -388,7 +479,7 @@ Function Get-VCFBundle
     # Check the version of SDDC Manager
     CheckVCFVersion
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/bundles/$id"
@@ -402,7 +493,7 @@ Function Get-VCFBundle
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFBundle
@@ -429,7 +520,7 @@ Function Request-VCFBundle
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/bundles/$id"
         $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
@@ -437,7 +528,7 @@ Function Request-VCFBundle
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Request-VCFBundle
@@ -463,7 +554,7 @@ Function Start-VCFBundleUpload
             [string]$json
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 
     if (!(Test-Path $json)) {
@@ -479,7 +570,7 @@ Function Start-VCFBundleUpload
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
     }
     Catch {
-        ResponseException # Call the function ResponseException which handles execption messages
+        ResponseException # Call the ResponseException function which handles execption messages
     }
 }
 Export-ModuleMember -Function Start-VCFBundleUpload
@@ -505,7 +596,7 @@ Function Get-VCFCeip
   	#>
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/system/ceip"
@@ -513,7 +604,7 @@ Function Get-VCFCeip
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFCeip
@@ -544,7 +635,7 @@ Function Set-VCFCeip
   	)
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/system/ceip"
     	if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
@@ -560,7 +651,7 @@ Function Set-VCFCeip
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Set-VCFCeip
@@ -605,7 +696,7 @@ Function Get-VCFCertificateAuthority
   	CheckVCFVersion
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	if ($PsBoundParameters.ContainsKey("caType")) {
       		$uri = "https://$sddcManager/v1/certificate-authorities/$caType"
@@ -619,7 +710,7 @@ Function Get-VCFCertificateAuthority
     	}
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthority
@@ -645,14 +736,14 @@ Function Remove-VCFCertificateAuthority
   	)
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/certificate-authorities/$caType"
     	$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Remove-VCFCertificateAuthority
@@ -690,7 +781,7 @@ Function Set-VCFMicrosoftCA
   	CheckVCFVersion
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/certificate-authorities"
     	if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
@@ -700,7 +791,7 @@ Function Set-VCFMicrosoftCA
     	$response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
@@ -730,14 +821,14 @@ Function Get-VCFCertificateCSR
   	)
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/domains/$domainName/csrs"
     	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     	$response.elements
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
@@ -773,7 +864,7 @@ Function Request-VCFCertificateCSR
   	}
   	else {
     	$ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/domains/$domainName/csrs"
     	Try {
@@ -781,7 +872,7 @@ Function Request-VCFCertificateCSR
       		$response
     	}
     	Catch {
-      		ResponseException # Call Function ResponseException to get error response from the exception
+      		ResponseException # Call ResponseException function to get error response from the exception
     	}
   	}
 }
@@ -823,7 +914,7 @@ Function Get-VCFCertificate
 	)
 
   	Try {
-		createHeader # Calls Function createHeader to set Accept & Authorization
+		createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	if ($PsBoundParameters.ContainsKey("resources")) {
       		$uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
@@ -837,7 +928,7 @@ Function Get-VCFCertificate
     	}
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFCertificate
@@ -875,7 +966,7 @@ Function Request-VCFCertificate
   	else {
     	# Reads the requestCsrSpec json file contents into the $ConfigJson variable
     	$ConfigJson = (Get-Content -Raw $json)
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/domains/$domainName/certificates"
     	Try {
@@ -883,7 +974,7 @@ Function Request-VCFCertificate
       		$response
     	}
     	Catch {
-      		ResponseException # Call Function ResponseException to get error response from the exception
+      		ResponseException # Call ResponseException function to get error response from the exception
     	}
   	}
 }
@@ -918,7 +1009,7 @@ Function Set-VCFCertificate
   	}
   	else {
     	$ConfigJson = (Get-Content -Raw $json) # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/domains/$domainName/certificates"
     	Try {
@@ -926,7 +1017,7 @@ Function Set-VCFCertificate
       		$response
     	}
     	Catch {
-      		ResponseException # Call Function ResponseException to get error response from the exception
+      		ResponseException # Call ResponseException function to get error response from the exception
     	}
   	}
 }
@@ -969,7 +1060,7 @@ Function Get-VCFCluster
       	[string]$id
   	)
 
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
@@ -989,7 +1080,7 @@ Function Get-VCFCluster
 		}
 	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFCluster
@@ -1020,7 +1111,7 @@ Function New-VCFCluster
   	}
   	else {
     	$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 		# Validate the provided JSON input specification file
     	$response = Validate-VCFClusterSpec -json $ConfigJson
@@ -1036,7 +1127,7 @@ Function New-VCFCluster
         		$response.elements
       		}
       		Catch {
-        		ResponseException # Call Function ResponseException to get error response from the exception
+        		ResponseException # Call ResponseException function to get error response from the exception
       		}
       	else {
         		Write-Host ""
@@ -1092,7 +1183,7 @@ Function Set-VCFCluster
       		$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
     		}
   	}
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
@@ -1114,7 +1205,7 @@ Function Set-VCFCluster
 					Write-Host ""
         		}
 				Catch {
-          			ResponseException # Call Function ResponseException to get error response from the exception
+          			ResponseException # Call ResponseException function to get error response from the exception
         		}
       		}
       		else {
@@ -1130,7 +1221,7 @@ Function Set-VCFCluster
 		}
 	}
 	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
 	}
 }
 Export-ModuleMember -Function Set-VCFCluster
@@ -1156,7 +1247,7 @@ Function Remove-VCFCluster
       		[string]$id
   	)
 
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	$uri = "https://$sddcManager/v1/clusters/$id"
@@ -1164,7 +1255,7 @@ Function Remove-VCFCluster
     	#TODO: Parse the response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Remove-VCFCluster
@@ -1219,7 +1310,7 @@ Function Get-VCFCredential
   	)
 
   Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     if ($PsBoundParameters.ContainsKey("resourceName")) {
       $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
@@ -1244,7 +1335,7 @@ Function Get-VCFCredential
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException # Call ResponseException function to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFCredential
@@ -1279,14 +1370,14 @@ Function Set-VCFCredential
         		$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
       		}
     	}
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/credentials"
     	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Set-VCFCredential
@@ -1324,7 +1415,7 @@ Function Get-VCFCredentialTask
   	)
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	if ( -not $PsBoundParameters.ContainsKey("id")) {
       		$uri = "https://$sddcManager/v1/credentials/tasks"
@@ -1343,7 +1434,7 @@ Function Get-VCFCredentialTask
     	}
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
@@ -1374,14 +1465,14 @@ Function Cancel-VCFCredentialTask
   	else {
     	Throw "task id to be cancelled is not provided"
   	}
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	$response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Cancel-VCFCredentialTask
@@ -1423,14 +1514,14 @@ Function Retry-VCFCredentialTask
   	else {
     	Throw "task id not provided"
   	}
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls createHeader function to set Accept & Authorization
   	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Retry-VCFCredentialTask
@@ -1456,14 +1547,14 @@ Function Get-VCFDepotCredential
   	#>
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/system/settings/depot"
     	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     	$response.vmwareAccount
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFDepotCredential
@@ -1492,7 +1583,7 @@ Function Set-VCFDepotCredential
   	)
 
   	Try {
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/system/settings/depot"
     	if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
@@ -1503,7 +1594,7 @@ Function Set-VCFDepotCredential
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Set-VCFDepotCredential
@@ -1554,7 +1645,7 @@ Function Get-VCFWorkloadDomain
 
 
   	Try {
-		createHeader # Calls Function createHeader to set Accept & Authorization
+		createHeader # Calls createHeader function to set Accept & Authorization
 		checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 		if ($PsBoundParameters.ContainsKey("name")) {
       		$uri = "https://$sddcManager/v1/domains"
@@ -1578,7 +1669,7 @@ Function Get-VCFWorkloadDomain
     	}
 	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFWorkloadDomain
@@ -1609,7 +1700,7 @@ Function New-VCFWorkloadDomain
   	else {
     	# Read the json file contents into the $ConfigJson variable
     	$ConfigJson = (Get-Content $json)
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 		# Validate the provided JSON input specification file
     	$response = Validate-WorkloadDomainSpec -json $ConfigJson
@@ -1628,7 +1719,7 @@ Function New-VCFWorkloadDomain
         			Write-Host ""
       		}
       		Catch {
-        		ResponseException # Call Function ResponseException to get error response from the exception
+        		ResponseException # Call ResponseException function to get error response from the exception
       		}
     	}
     	else {
@@ -1662,7 +1753,7 @@ Function Set-VCFWorkloadDomain
       		[string]$id
   	)
 
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	$uri = "https://$sddcManager/v1/domains/$id"
@@ -1671,7 +1762,7 @@ Function Set-VCFWorkloadDomain
     	# This API does not return a response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Set-VCFWorkloadDomain
@@ -1697,7 +1788,7 @@ Function Remove-VCFWorkloadDomain
       		[string]$id
   	)
 
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	$uri = "https://$sddcManager/v1/domains/$id"
@@ -1705,7 +1796,7 @@ Function Remove-VCFWorkloadDomain
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
@@ -1735,15 +1826,15 @@ Function Get-VCFFederation
   	#>
 
   	Try {
-    	CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-    	createHeader # Calls Function createHeader to set Accept & Authorization
+    	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
+    	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/sddc-federation"
     	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     	$response
   	}
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Get-VCFFederation
@@ -1773,8 +1864,8 @@ Function Set-VCFFederation
   	}
   	else {
     	Try {
-      		CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-      		createHeader # Calls Function createHeader to set Accept & Authorization
+      		CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
+      		createHeader # Calls createHeader function to set Accept & Authorization
     		checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       		$ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
       		$uri = "https://$sddcManager/v1/sddc-federation"
@@ -1782,7 +1873,7 @@ Function Set-VCFFederation
       		$response
     	}
     	Catch {
-      		ResponseException # Call Function ResponseException to get error response from the exception
+      		ResponseException # Call ResponseException function to get error response from the exception
     	}
   	}
 }
@@ -1802,8 +1893,8 @@ Function Remove-VCFFederation
     	This example demonstrates how to dismantle the VCF Federation
   	#>
 
-  	CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-  	createHeader # Calls Function createHeader to set Accept & Authorization
+  	CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
+  	createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	$uri = "https://$sddcManager/v1/sddc-federation"
   	Try {
@@ -1827,7 +1918,7 @@ Function Remove-VCFFederation
       	$response
     }
   	Catch {
-    	ResponseException # Call Function ResponseException to get error response from the exception
+    	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
 Export-ModuleMember -Function Remove-VCFFederation
@@ -1880,7 +1971,7 @@ Function Get-VCFHost
             [string]$id
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     Try {
         if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
@@ -1905,7 +1996,7 @@ Function Get-VCFHost
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFHost
@@ -1937,7 +2028,7 @@ Function Commission-VCFHost
     else {
         # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
         $ConfigJson = (Get-Content -Raw $json)
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 
         # Validate the provided JSON input specification file
@@ -1961,7 +2052,7 @@ Function Commission-VCFHost
                     Write-Host ""
                 }
                 Catch {
-                    ResponseException # Call Function ResponseException to get error response from the exception
+                    ResponseException # Call ResponseException function to get error response from the exception
                 }
             }
             else {
@@ -2000,7 +2091,7 @@ Function Decommission-VCFHost
     else {
         # Reads the json file contents into the $ConfigJson variable
         $ConfigJson = (Get-Content -Raw $json)
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/hosts"
         Try {
@@ -2008,7 +2099,7 @@ Function Decommission-VCFHost
 			$response
         }
         Catch {
-            ResponseException # Call Function ResponseException to get error response from the exception
+            ResponseException # Call ResponseException function to get error response from the exception
         }
     }
 }
@@ -2073,7 +2164,7 @@ Function Reset-VCFHost
         $vmScript
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Reset-VCFHost
@@ -2125,7 +2216,7 @@ Function Get-VCFLicenseKey
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ($PsBoundParameters.ContainsKey("key")) {
             $uri = "https://$sddcManager/v1/license-keys/$key"
@@ -2149,7 +2240,7 @@ Function Get-VCFLicenseKey
 		}
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
@@ -2179,7 +2270,7 @@ Function New-VCFLicenseKey
     }
     else {
         $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/license-keys"
         Try {
@@ -2190,7 +2281,7 @@ Function New-VCFLicenseKey
             Get-VCFLicenseKey -key $licenseKey
         }
         Catch {
-            ResponseException # Call Function ResponseException to get error response from the exception
+            ResponseException # Call ResponseException function to get error response from the exception
         }
     }
 }
@@ -2218,14 +2309,14 @@ Function Remove-VCFLicenseKey
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/license-keys/$key"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         # This API does not return a response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
@@ -2250,8 +2341,8 @@ Function Get-VCFFederationMember
         This example lists all details concerning the VCF Federation members.
     #>
 
-    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/members"
     Try {
@@ -2264,10 +2355,10 @@ Function Get-VCFFederationMember
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -function Get-VCFFederationMember
+Export-ModuleMember -Function Get-VCFFederationMember
 
 Function New-VCFFederationInvite
 {
@@ -2289,8 +2380,8 @@ Function New-VCFFederationInvite
 			[string]$inviteeFqdn
     )
 
-    CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
     Try {
@@ -2309,7 +2400,7 @@ Function New-VCFFederationInvite
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function New-VCFFederationInvite
@@ -2339,9 +2430,9 @@ Function Join-VCFFederation
         Throw "JSON File Not Found"
     }
     else {
-        CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
+        CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
         $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
 	    $uri = "https://$sddcManager/v1/sddc-federation/members"
         Try {
@@ -2358,7 +2449,7 @@ Function Join-VCFFederation
                 $response
             }
         Catch {
-            ResponseException # Call Function ResponseException to get error response from the exception
+            ResponseException # Call ResponseException function to get error response from the exception
         }
     }
 }
@@ -2410,7 +2501,7 @@ Function Get-VCFNsxtCluster
     # Check the version of SDDC Manager
     CheckVCFVersion
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
             $uri = "https://$sddcManager/v1/nsxt-clusters"
@@ -2429,7 +2520,7 @@ Function Get-VCFNsxtCluster
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
@@ -2471,7 +2562,7 @@ Function Get-VCFNetworkPool
             [string]$id
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     Try {
         if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
@@ -2491,7 +2582,7 @@ Function Get-VCFNetworkPool
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkPool
@@ -2522,7 +2613,7 @@ Function New-VCFNetworkPool
     }
     else {
         $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/network-pools"
         Try {
@@ -2533,7 +2624,7 @@ Function New-VCFNetworkPool
 			Get-VCFNetworkPool -name $poolName
         }
         Catch {
-            ResponseException # Call Function ResponseException to get error response from the exception
+            ResponseException # Call ResponseException function to get error response from the exception
         }
     }
 }
@@ -2559,7 +2650,7 @@ Function Remove-VCFNetworkPool
             [string]$id
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     Try {
         $uri = "https://$sddcManager/v1/network-pools/$id"
@@ -2567,7 +2658,7 @@ Function Remove-VCFNetworkPool
         # This API does not return a response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
@@ -2601,7 +2692,7 @@ Function Get-VCFNetworkIPPool
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/network-pools/$id/networks"
@@ -2615,7 +2706,7 @@ Function Get-VCFNetworkIPPool
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkIPPool
@@ -2651,7 +2742,7 @@ Function Add-VCFNetworkIPPool
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
         $body = '{"end": "'+$ipEnd+'","start": "'+$ipStart+'"}'
@@ -2659,7 +2750,7 @@ Function Add-VCFNetworkIPPool
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Add-VCFNetworkIPPool
@@ -2695,7 +2786,7 @@ Function Remove-VCFNetworkIPPool
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
         $body = '{"end": "'+$ipEnd+'","start": "'+$ipStart+'"}'
@@ -2703,7 +2794,7 @@ Function Remove-VCFNetworkIPPool
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
@@ -2739,7 +2830,7 @@ Function Get-VCFEdgeCluster
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/edge-clusters"
@@ -2753,7 +2844,7 @@ Function Get-VCFEdgeCluster
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFEdgeCluster
@@ -2784,7 +2875,7 @@ Function New-VCFEdgeCluster
     else {
         # Read the json file contents into the $ConfigJson variable
         $ConfigJson = (Get-Content $json)
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         # Validate the provided JSON input specification file
         $response = Validate-EdgeClusterSpec -json $ConfigJson
@@ -2801,7 +2892,7 @@ Function New-VCFEdgeCluster
                 Write-Host ""
             }
             Catch {
-                ResponseException # Call Function ResponseException to get error response from the exception
+                ResponseException # Call ResponseException function to get error response from the exception
             }
         }
         else {
@@ -2845,7 +2936,7 @@ Function Get-VCFPersonality
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/personalities"
@@ -2859,7 +2950,7 @@ Function Get-VCFPersonality
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFPersonality
@@ -2891,15 +2982,15 @@ Function Get-VCFFederationTask
     )
 
     Try {
-        CheckVCFVersion # Calls Function CheckVCFVersion to check VCF Version
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        CheckVCFVersion # Calls CheckVCFVersion function  to check VCF Version
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFFederationTask
@@ -2935,7 +3026,7 @@ Function Get-CloudBuilderSDDC
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -2948,7 +3039,7 @@ Function Get-CloudBuilderSDDC
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDC
@@ -2974,14 +3065,14 @@ Function Start-CloudBuilderSDDC
     )
 
     Try {
-        validateJsonInput # Calls Function validateJsonInput to check the JSON file provided exists
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+        createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Start-CloudBuilderSDDC
@@ -3007,13 +3098,13 @@ Function Restart-CloudBuilderSDDC
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/$id"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDC
@@ -3043,7 +3134,7 @@ Function Get-CloudBuilderSDDCValidation
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs/validations"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3056,7 +3147,7 @@ Function Get-CloudBuilderSDDCValidation
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDCValidation
@@ -3082,14 +3173,14 @@ Function Start-CloudBuilderSDDCValidation
     )
 
     Try {
-        validateJsonInput # Calls Function validateJsonInput to check the JSON file provided exists
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+        createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Start-CloudBuilderSDDCValidation
@@ -3115,13 +3206,13 @@ Function Stop-CloudBuilderSDDCValidation
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Stop-CloudBuilderSDDCValidation
@@ -3147,13 +3238,13 @@ Function Restart-CloudBuilderSDDCValidation
     )
 
     Try {
-        createCloudBuilderHeader # Calls Function createHeader to set Accept & Authorization
+        createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
         $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
@@ -3196,7 +3287,7 @@ Function Get-VCFManager
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/sddc-managers/$id"
@@ -3215,7 +3306,7 @@ Function Get-VCFManager
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFManager
@@ -3246,7 +3337,7 @@ Function Start-PreCheckVCFSystem
             [string]$json
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     if ($PsBoundParameters.ContainsKey("json")) {
         if (!(Test-Path $json)) {
@@ -3265,7 +3356,7 @@ Function Start-PreCheckVCFSystem
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Start-PreCheckVCFSystem
@@ -3290,7 +3381,7 @@ Function Get-PreCheckVCFSystemTask
             [string]$id
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     if ($PsBoundParameters.ContainsKey("id")) {
         $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
@@ -3303,7 +3394,7 @@ Function Get-PreCheckVCFSystemTask
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-PreCheckVCFSystemTask
@@ -3346,7 +3437,7 @@ Function Get-VCFTask
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/tasks/"
@@ -3365,7 +3456,7 @@ Function Get-VCFTask
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFTask
@@ -3392,13 +3483,13 @@ Function Retry-VCFTask
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/tasks/$id"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Retry-VCFTask
@@ -3431,14 +3522,14 @@ Function Get-VCFUpgradable
     #>
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/system/upgradables"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFUpgradable
@@ -3470,14 +3561,14 @@ Function Get-VCFUser
     #>
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/users"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFUser
@@ -3505,7 +3596,7 @@ Function New-VCFUser
             [string]$role
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/users"
     Try {
@@ -3524,7 +3615,7 @@ Function New-VCFUser
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
  }
 Export-ModuleMember -Function New-VCFUser
@@ -3552,7 +3643,7 @@ Function New-VCFServiceUser
             [string]$role
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/users"
     Try {
@@ -3569,7 +3660,7 @@ Function New-VCFServiceUser
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
   }
 Export-ModuleMember -Function New-VCFServiceUser
@@ -3589,14 +3680,14 @@ Function Get-VCFRole
     #>
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/roles"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFRole
@@ -3616,14 +3707,14 @@ Function Get-VCFSsoDomain
     #>
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/sso-domains"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 
@@ -3660,7 +3751,7 @@ Function Get-VCFService
     )
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/vcf-services/$id"
@@ -3674,7 +3765,7 @@ Function Get-VCFService
         }
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFService
@@ -3737,7 +3828,7 @@ Function Get-VCFvCenter
   # Check the version of SDDC Manager
   CheckVCFVersion
   Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
       $uri = "https://$sddcManager/v1/vcenters"
@@ -3756,7 +3847,7 @@ Function Get-VCFvCenter
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException # Call ResponseException function to get error response from the exception
   }
 }
 Export-ModuleMember -Function Get-VCFvCenter
@@ -3782,14 +3873,14 @@ Function Get-VCFvRSLCM
     #>
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
@@ -3810,14 +3901,14 @@ Function Get-VCFvRSLCMEnvironment
     #>
 
     Try {
-        createHeader # Calls Function createHeader to set Accept & Authorization
+        createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/vrslcm/environments"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
@@ -3847,7 +3938,7 @@ Function New-VCFvRSLCM
     }
     else {
         Try {
-          createHeader # Calls Function createHeader to set Accept & Authorization
+          createHeader # Calls createHeader function to set Accept & Authorization
           checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
             # Read the json file contents into the $ConfigJson variable
             $ConfigJson = (Get-Content -Raw $json)
@@ -3856,7 +3947,7 @@ Function New-VCFvRSLCM
             $response
         }
         Catch {
-            # Call Function ResponseException to get error response from the exception
+            # Call ResponseException function to get error response from the exception
             ResponseException
         }
     }
@@ -3878,16 +3969,15 @@ Function Remove-VCFvRSLCM
         This example removes a failed vRealize Suite Lifecycle Manager deployment
     #>
 
-    Try {
-        # Call Function createHeader to set Accept & Authorization
-        createHeader
+    Try {   
+        createHeader # Call createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         $response
     }
     Catch {
-        # Call Function ResponseException to get error response from the exception
+        # Call ResponseException function to get error response from the exception
         ResponseException
     }
 }
@@ -3907,7 +3997,7 @@ Function Validate-CommissionHostSpec
             [object]$json
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/hosts/validations"
     Try {
@@ -3915,7 +4005,7 @@ Function Validate-CommissionHostSpec
         Return $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
   }
 }
 
@@ -3927,7 +4017,7 @@ Function Validate-WorkloadDomainSpec
         [object]$json
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/domains/validations"
     Try {
@@ -3935,7 +4025,7 @@ Function Validate-WorkloadDomainSpec
 	   Return $response
 	}
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 
@@ -3947,14 +4037,14 @@ Function Validate-VCFClusterSpec
             [object]$json
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/clusters/validations"
     Try {
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
     Return $response
 }
@@ -3969,14 +4059,14 @@ Function Validate-VCFUpdateClusterSpec
         [object]$json
   )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
     Try {
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
     Return $response
 }
@@ -3989,14 +4079,14 @@ Function Validate-EdgeClusterSpec
             [object]$json
     )
 
-    createHeader # Calls Function createHeader to set Accept & Authorization
+    createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/edge-clusters/validations"
     Try {
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
     Return $response
 }
@@ -4178,7 +4268,7 @@ Function Invoke-VCFCommand
         $sessionSSH = New-SSHSession -Computer $sddcManager -Credential $vcfCred -AcceptKey
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException # Call ResponseException function to get error response from the exception
     }
     if ($sessionSSH.Connected -eq "True") {
         $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
@@ -4230,7 +4320,7 @@ Function ResponseException
     }
 }
 
-Function CheckVCFVersion
+Function CheckVCFVersion 
 {
     $vcfManager = Get-VCFManager
     if (($vcfManager.version.Substring(0,3) -ne "3.9") -and ($vcfManager.version.Substring(0,3) -ne "4.0")) {
@@ -4247,7 +4337,7 @@ Function createHeader
     $Global:headers.Add("Authorization", "Bearer $accessToken")
 }
 
-Function createCloudBuilderHeader
+Function createBasicAuthHeader
 {
     $Global:headers = @{"Accept" = "application/json"}
     $Global:headers.Add("Authorization", "Basic $base64AuthInfo")
@@ -4324,7 +4414,8 @@ Function Resolve-PSModule
     Return $searchResult
 }
 
-Function validateJsonInput{
+Function validateJsonInput
+{
     if (!(Test-Path $json)) {
         Throw "JSON file provided not found, please try again"
     }
