@@ -1477,17 +1477,17 @@ Function Stop-VCFCredentialTask
 }
 Export-ModuleMember -Function Stop-VCFCredentialTask
 
-Function Retry-VCFCredentialTask
+Function Restart-VCFCredentialTask
 {
   	<#
     	.SYNOPSIS
     	Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
 
     	.DESCRIPTION
-    	The Retry-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
+    	The Restart-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
 
     	.EXAMPLE
-    	PS C:\> Retry-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
+    	PS C:\> Restart-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
     	This example shows how to update passwords of a resource type using a json spec
   	#>
 
@@ -1524,7 +1524,7 @@ Function Retry-VCFCredentialTask
     	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
-Export-ModuleMember -Function Retry-VCFCredentialTask
+Export-ModuleMember -Function Restart-VCFCredentialTask
 
 ######### End APIs for managing Credentials ##########
 
