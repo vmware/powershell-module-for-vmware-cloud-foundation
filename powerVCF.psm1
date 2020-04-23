@@ -3461,18 +3461,18 @@ Function Get-VCFTask
 }
 Export-ModuleMember -Function Get-VCFTask
 
-Function Retry-VCFTask
+Function Restart-VCFTask
 {
     <#
         .SYNOPSIS
         Connects to the specified SDDC Manager and retries a previously failed task.
 
         .DESCRIPTION
-        The Retry-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
+        The Restart-VCFTask cmdlet connects to the specified SDDC Manager and retries a previously
         failed task using the task id.
 
         .EXAMPLE
-        PS C:\> Retry-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+        PS C:\> Restart-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
         This example retries the task based on the task id
     #>
 
@@ -3492,7 +3492,7 @@ Function Retry-VCFTask
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -Function Retry-VCFTask
+Export-ModuleMember -Function Restart-VCFTask
 
 #### End APIs for managing Tasks #####
 
