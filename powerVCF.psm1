@@ -1439,17 +1439,17 @@ Function Get-VCFCredentialTask
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
 
-Function Cancel-VCFCredentialTask
+Function Stop-VCFCredentialTask
 {
   	<#
     	.SYNOPSIS
     	Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
 
     	.DESCRIPTION
-    	The Cancel-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
+    	The Stop-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
 
     	.EXAMPLE
-    	PS C:\> Cancel-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+    	PS C:\> Stop-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
     	This example shows how to cancel a failed rotate or update password task.
   	#>
 
@@ -1475,7 +1475,7 @@ Function Cancel-VCFCredentialTask
     	ResponseException # Call ResponseException function to get error response from the exception
   	}
 }
-Export-ModuleMember -Function Cancel-VCFCredentialTask
+Export-ModuleMember -Function Stop-VCFCredentialTask
 
 Function Retry-VCFCredentialTask
 {
