@@ -1080,11 +1080,10 @@ Function New-VCFCluster
 {
   	<#
     	.SYNOPSIS
-    	Connects to the specified SDDC Manager & creates cluster.
+    	Connects to the specified SDDC Manager and creates a cluster
 
     	.DESCRIPTION
-    	The New-VCFCluster cmdlet connects to the specified SDDC Manager
-    	& creates a cluster in a specified workload domains.
+    	The New-VCFCluster cmdlet connects to the specified SDDC Manager and creates a cluster in a specified workload domains
 
     	.EXAMPLE
     	PS C:\> New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
@@ -2118,70 +2117,6 @@ Function Decommission-VCFHost
     }
 }
 Export-ModuleMember -Function Decommission-VCFHost
-
-Function Reset-VCFHost
-{
-    <#
-        .SYNOPSIS
-        Performs an ESXi host cleanup using the command line SoS utility
-
-        .DESCRIPTION
-        Performs a host cleanup using SoS option --cleanup-host. Valid options for the -dirtyHost parameter are: ALL, <MGMT ESXi IP>
-        Please note:The SoS utility on VCF 3.9 is unable to perform networking host cleanup when the host belongs to an NSX-T cluster.
-        This issue has been resolved on VCF 3.9.1
-
-        .EXAMPLE
-        Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!"-dirtyHost
-        192.168.210.53 This command will perform SoS host cleanup for host 192.168.210.53
-
-        .EXAMPLE
-        Reset-VCFHost -privilegedUsername super-vcf@vsphere.local -privilegedPassword "VMware1!" -sddcManagerRootPassword "VMware1!" -dirtyHost all
-        This command will perform SoS host cleanup for all hosts in need of cleanup in the SDDC Manager database.
-    #>
-
-    Param (
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [String] $privilegedUsername,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [String] $privilegedPassword,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [String] $sddcManagerRootPassword,
-        [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
-            [string]$dirtyHost
-    )
-
-    # Get the full list of PSC credentials
-    $pscCreds = Get-VCFCredential -privilegedUsername $privilegedUsername -privilegedPassword $privilegedPassword -resourceType PSC
-    # From PSC credentials extract the SSO username and password
-    $ssoCreds = $pscCreds.elements | Where-Object {$_.credentialType -eq "SSO"}
-    # Get the list of all VCENTER credentials
-    $vcCreds = Get-VCFCredential $privilegedUsername -privilegedPassword $privilegedPassword -resourceType VCENTER
-    # Find out which VC is the MGMT. This is use to extract the MGMT VC FQDN ($mgmtVC.resourceName)
-    $mgmtVC = $vcCreds.elements.resource | Where-Object {$_.domainName -eq "MGMT"}
-    # Connect to the Management vCenter without displaying the connection
-    Connect-VIServer -Server $mgmtVC.resourceName -User $ssoCreds.username -Password $ssoCreds.password | Out-Null
-    # Get the vm object for sddc-manager
-    $sddcManagerVM = Get-VM -Name "sddc-manager"
-    # The SoS help says to use ALL not sure if it's case sensitive but I'm converting upper case
-    if ($dirtyHost -eq "all") { $dirtyHost = "ALL" }
-    # Build the cmd to run and auto confirm
-    $sshCommand = "echo Y | /opt/vmware/sddc-support/sos --cleanup-host " + $dirtyHost
-    Write-Host ""
-    Write-Host "Executing clean up for host(s): $dirtyHost - This might take a while, please wait..."
-    Write-Host ""
-    Try {
-        $vmScript = Invoke-VMScript -VM $sddcManagerVM -ScriptText $sshCommand -GuestUser root -GuestPassword $sddcManagerRootPassword
-        $vmScript
-    }
-    Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
-    }
-}
-Export-ModuleMember -Function Reset-VCFHost
 
 ######### End APIs for managing Hosts ##########
 
