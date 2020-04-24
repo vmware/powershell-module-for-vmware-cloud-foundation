@@ -3897,7 +3897,10 @@ Function New-VCFvRSLCM
     Param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$json
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
     )
 
     if (!(Test-Path $json)) {
@@ -3908,10 +3911,16 @@ Function New-VCFvRSLCM
             createHeader # Calls createHeader function to set Accept & Authorization
             checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
             validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
-            #$ConfigJson = (Get-Content -Raw $json) # Read the json file contents into the $ConfigJson variable
-            $uri = "https://$sddcManager/v1/vrslcms"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-            $response
+            if ( -not $PsBoundParameters.ContainsKey("validate")) {
+                $uri = "https://$sddcManager/v1/vrslcms"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                $response
+            }
+            elseif ($PsBoundParameters.ContainsKey("validate")) {
+                $uri = "https://$sddcManager/v1/vrslcms/validations"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                $response
+            }
         }
         Catch {
             ResponseException # Call ResponseException function to get error response from the exception
