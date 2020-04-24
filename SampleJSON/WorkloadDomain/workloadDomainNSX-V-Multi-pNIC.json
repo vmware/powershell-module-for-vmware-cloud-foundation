@@ -16,7 +16,7 @@
           "name": "Cluster1",  
           "hostSpecs": [ {  
               "id": "d0693b58-4012-4387-92ed-721cfa709e44",
-              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+              "licenseKey":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
               "hostNetworkSpec": {  
                  "vmNics": [ {  
                      "id": "vmnic0",  
@@ -34,7 +34,7 @@
                }  
             }, {  
               "id": "7006bec4-fccb-49a0-bff6-fd56c807d26a",
-              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+              "licenseKey":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
               "hostNetworkSpec": {  
                  "vmNics": [ {  
                      "id": "vmnic0",  
@@ -52,7 +52,7 @@
                }  
             }, {  
               "id": "cc257a80-e179-4297-bf7e-179a0944bbab",
-              "license":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+              "licenseKey":"AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
               "hostNetworkSpec": {  
                  "vmNics": [ {  
                      "id": "vmnic0",  
