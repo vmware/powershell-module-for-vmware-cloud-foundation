@@ -3267,21 +3267,11 @@ Function Start-VCFSystemPrecheck
             [string]$json
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-        }
-    }
-    else {
-        Throw "json file not found"
-    }
-    $uri = "https://$sddcManager/v1/system/prechecks"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+        $uri = "https://$sddcManager/v1/system/prechecks"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
         $response
     }
@@ -3289,9 +3279,9 @@ Function Start-VCFSystemPrecheck
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -Function Start-PreCheckVCFSystem
+Export-ModuleMember -Function Start-VCFSystemPrecheck
 
-Function Get-PreCheckVCFSystemTask
+Function Get-VCFSystemPrecheckTask
 {
     <#
         .SYNOPSIS
