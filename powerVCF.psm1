@@ -3934,6 +3934,33 @@ Function Remove-VCFvRSLCM
 }
 Export-ModuleMember -Function Remove-VCFvRSLCM
 
+Function Reset-VCFvRSLCM
+{
+    <#
+        .SYNOPSIS
+        Redeploy vRealize Suite Lifecycle Manager
+
+        .DESCRIPTION
+        The Reset-VCFvRSLCM cmdlet redeploys the existing vRealize Suite Lifecycle Manager.
+
+        .EXAMPLE
+        PS C:\> Reset-VCFvRSLCM
+        This example redeploys the vRealize Suite Lifecycle Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vrslcm"
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Reset-VCFvRSLCM
+
 ######### End APIs for managing vRealize Suite Lifecycle Manager ##########
 
 
