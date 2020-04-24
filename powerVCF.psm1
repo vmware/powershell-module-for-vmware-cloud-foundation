@@ -3247,17 +3247,17 @@ Export-ModuleMember -Function Get-VCFManager
 
 ######### Start APIs for managing System Prechecks ##########
 
-Function Start-PreCheckVCFSystem
+Function Start-VCFSystemPrecheck
 {
     <#
         .SYNOPSIS
-        The Start-PreCheckVCFSystem cmdlet performs system level health checks
+        The Start-VCFSystemPrecheck cmdlet performs system level health checks
 
         .DESCRIPTION
-        The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
+        The Start-VCFSystemPrecheck cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
         .EXAMPLE
-        PS C:\> Start-PreCheckVCFSystem -json .\SystemCheck\precheckVCFSystem.json
+        PS C:\> Start-VCFSystemPrecheck -json .\SystemCheck\precheckVCFSystem.json
         This example shows how to perform system level health check
     #>
 
