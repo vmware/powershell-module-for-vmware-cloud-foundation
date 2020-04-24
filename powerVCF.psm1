@@ -1198,8 +1198,9 @@ Function Set-VCFCluster
         		Write-Host ""
       		}
 		}
-		if ($PsBoundParameters.ContainsKey("markForDeletion")) {
-			$ConfigJson = '{"markForDeletion": true}'
+		if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
+            $ConfigJson = '{"markForDeletion": true}'
+            $uri = "https://$sddcManager/v1/clusters/$id/"
 			$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
 		}
 	}
@@ -1234,8 +1235,8 @@ Function Remove-VCFCluster
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
     	$uri = "https://$sddcManager/v1/clusters/$id"
-    	$response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-    	#TODO: Parse the response
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+        $response
   	}
   	Catch {
     	ResponseException # Call ResponseException function to get error response from the exception
