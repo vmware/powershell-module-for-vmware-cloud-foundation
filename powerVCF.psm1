@@ -3288,10 +3288,10 @@ Function Get-VCFSystemPrecheckTask
         Get Precheck Task by ID
 
         .DESCRIPTION
-        The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
+        The Get-VCFSystemPrecheckTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
         .EXAMPLE
-        PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+        PS C:\> Get-VCFSystemPrecheckTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
         This example shows how to retrieve the status of a system level precheck task
     #>
 
@@ -3317,7 +3317,7 @@ Function Get-VCFSystemPrecheckTask
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -Function Get-PreCheckVCFSystemTask
+Export-ModuleMember -Function Get-VCFSystemPrecheckTask
 
 ######### End APIs for managing System Prechecks ##########
 
