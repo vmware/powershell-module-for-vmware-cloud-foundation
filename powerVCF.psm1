@@ -1166,23 +1166,16 @@ Function Set-VCFCluster
       		[switch]$markForDeletion
   	)
 
-  	if ($PsBoundParameters.ContainsKey("json")) {
-    	if (!(Test-Path $json)) {
-      		Throw "JSON File Not Found"
-    	}
-    	else {
-      		$ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-    		}
-  	}
-  	createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   	Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
       		Throw "You must include either -json or -markForDeletion"
     	}
     	if ($PsBoundParameters.ContainsKey("json")) {
+            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
       		# Validate the provided JSON input specification file
-			$response = Validate-VCFUpdateClusterSpec -clusterid $clusterid -json $ConfigJson
+			$response = Validate-VCFUpdateClusterSpec -clusterid $id -json $ConfigJson
 			# the validation API does not currently support polling with a task ID
 			Start-Sleep 5
 			# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
@@ -1190,7 +1183,7 @@ Function Set-VCFCluster
         		Try {
           			Write-Host ""
           			Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
-          			$uri = "https://$sddcManager/v1/clusters/$clusterid/"
+          			$uri = "https://$sddcManager/v1/clusters/$id/"
 					$response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 				Return $response
 					Write-Host ""
@@ -4034,7 +4027,7 @@ Function Validate-VCFUpdateClusterSpec
         [Parameter (Mandatory=$true)]
             [object]$clusterid,
 		[Parameter (Mandatory=$true)]
-        [object]$json
+            [object]$json
   )
 
     createHeader # Calls createHeader function to set Accept & Authorization
