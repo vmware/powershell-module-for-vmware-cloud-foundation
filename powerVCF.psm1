@@ -3852,34 +3852,6 @@ Function Get-VCFvRSLCM
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
 
-Function Get-VCFvRSLCMEnvironment
-{
-    <#
-        .SYNOPSIS
-        Get vRealize Suite Lifecycle Manager environments
-
-        .DESCRIPTION
-        The Get-VCFvRSLCMEnvironment cmdlet gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager
-        environments that are managed by VMware Cloud Foundation.
-
-        .EXAMPLE
-        PS C:\> Get-VCFvRSLCMEnvironment
-        This example list all vRealize Suite Lifecycle Manager environments
-    #>
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vrslcm/environments"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
-    }
-}
-Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
-
 Function New-VCFvRSLCM
 {
     <#
