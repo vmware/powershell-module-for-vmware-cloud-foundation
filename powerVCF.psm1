@@ -3852,34 +3852,6 @@ Function Get-VCFvRSLCM
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
 
-Function Get-VCFvRSLCMEnvironment
-{
-    <#
-        .SYNOPSIS
-        Get vRealize Suite Lifecycle Manager environments
-
-        .DESCRIPTION
-        The Get-VCFvRSLCMEnvironment cmdlet gets all the vRealize products and the corresponding vRealize Suite Lifecycle Manager
-        environments that are managed by VMware Cloud Foundation.
-
-        .EXAMPLE
-        PS C:\> Get-VCFvRSLCMEnvironment
-        This example list all vRealize Suite Lifecycle Manager environments
-    #>
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vrslcm/environments"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
-    }
-}
-Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
-
 Function New-VCFvRSLCM
 {
     <#
@@ -3890,14 +3862,21 @@ Function New-VCFvRSLCM
         The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
 
         .EXAMPLE
-        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
+        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json
         This example deploys vRealize Suite Lifecycle Manager using a supplied json file
+
+        .EXAMPLE
+        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json -validate
+        This example performs validation of vRealize Suite Lifecycle Manager using a supplied json file
     #>
 
     Param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$json
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
     )
 
     if (!(Test-Path $json)) {
@@ -3905,17 +3884,22 @@ Function New-VCFvRSLCM
     }
     else {
         Try {
-          createHeader # Calls createHeader function to set Accept & Authorization
-          checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content -Raw $json)
-            $uri = "https://$sddcManager/v1/vrslcms"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-            $response
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+            if ( -not $PsBoundParameters.ContainsKey("validate")) {
+                $uri = "https://$sddcManager/v1/vrslcms"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                $response
+            }
+            elseif ($PsBoundParameters.ContainsKey("validate")) {
+                $uri = "https://$sddcManager/v1/vrslcms/validations"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                $response
+            }
         }
         Catch {
-            # Call ResponseException function to get error response from the exception
-            ResponseException
+            ResponseException # Call ResponseException function to get error response from the exception
         }
     }
 }
@@ -3949,6 +3933,33 @@ Function Remove-VCFvRSLCM
     }
 }
 Export-ModuleMember -Function Remove-VCFvRSLCM
+
+Function Reset-VCFvRSLCM
+{
+    <#
+        .SYNOPSIS
+        Redeploy vRealize Suite Lifecycle Manager
+
+        .DESCRIPTION
+        The Reset-VCFvRSLCM cmdlet redeploys the existing vRealize Suite Lifecycle Manager
+
+        .EXAMPLE
+        PS C:\> Reset-VCFvRSLCM
+        This example redeploys the vRealize Suite Lifecycle Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vrslcm"
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Reset-VCFvRSLCM
 
 ######### End APIs for managing vRealize Suite Lifecycle Manager ##########
 

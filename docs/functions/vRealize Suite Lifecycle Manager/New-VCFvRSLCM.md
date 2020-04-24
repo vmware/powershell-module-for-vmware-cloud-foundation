@@ -5,7 +5,7 @@ The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager
 
 ### Syntax
 ```
-New-VCFvRSLCM -json <path to json file>
+New-VCFvRSLCM -json <path to json file> -validate
 ```
 
 ### Description
@@ -14,9 +14,16 @@ The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager based on a JSO
 ### Examples
 #### Example 1
 ```
-New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
+New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json 
 ```
 This example deploys vRealize Suite Lifecycle Manager using a supplied json file
+
+#### Example 2
+```
+New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json -validate
+```
+This example performs a validation of vRealize Suite Lifecycle Manager using a supplied json file
+
 
 ### Parameters
 #### -json
@@ -36,7 +43,7 @@ Default value: None
 ```
 {
     "apiPassword": "VMw@re1!",
-    "fqdn": "vrslcmsrv02.sfo01.rainpole.local",
+    "fqdn": "vrslcmsrv01.rainpole.io",
     "networkSpec": {
         "gateway": "172.16.225.1",
         "subnetMask": "255.255.255.0",
@@ -50,7 +57,7 @@ Default value: None
 ```
 {
     "apiPassword": "VMw@re1!",
-    "fqdn": "vrslcmsrv02.sfo01.rainpole.local",
+    "fqdn": "xreg-vrslcm01.rainpole.io",
     "sshPassword": "VMw@re1!"
 }
 ```
