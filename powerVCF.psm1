@@ -3864,6 +3864,10 @@ Function New-VCFvRSLCM
         .EXAMPLE
         PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json
         This example deploys vRealize Suite Lifecycle Manager using a supplied json file
+
+        .EXAMPLE
+        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json -validate
+        This example performs validation of vRealize Suite Lifecycle Manager using a supplied json file
     #>
 
     Param (
