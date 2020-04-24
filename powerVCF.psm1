@@ -1184,10 +1184,9 @@ Function Set-VCFCluster
           			Write-Host ""
           			Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
           			$uri = "https://$sddcManager/v1/clusters/$id/"
-					$response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-				Return $response
-					Write-Host ""
-        		}
+                    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                    $response
+                }
 				Catch {
           			ResponseException # Call ResponseException function to get error response from the exception
         		}
@@ -1243,6 +1242,39 @@ Function Remove-VCFCluster
   	}
 }
 Export-ModuleMember -Function Remove-VCFCluster
+
+Function Get-VCFClusterValidation
+{
+  	<#
+    	.SYNOPSIS
+    	Get the status of the validations for cluster deployment
+
+    	.DESCRIPTION
+    	The Get-VCFClusterValidation cmdlet returns the status of a validation of the json
+
+    	.EXAMPLE
+    	PS C:\> Get-VCFClusterValidation -id 001235d8-3e40-4a5a-8a89-09985dac1434
+    	This example shows how to get the cluster validation task based on the id
+  	#>
+
+  	Param (
+		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      	    [string]$id
+  	)
+
+  	Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      	$uri = "https://$sddcManager/v1/clusters/validations/$id"
+		$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+      	$response
+	}
+  	Catch {
+    	ResponseException # Call ResponseException function to get error response from the exception
+  	}
+}
+Export-ModuleMember -Function Get-VCFClusterValidation
 
 ######### End APIs for managing Clusters ##########
 
