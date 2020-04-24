@@ -1,6 +1,6 @@
 {
     "apiPassword": "VMw@re1!",
-    "fqdn": "vrslcmsrv01.sfo.rainpole.local",
+    "fqdn": "vrslcmsrv01.rainpole.io",
     "networkSpec": {
         "gateway": "172.16.225.1",
         "subnetMask": "255.255.255.0",

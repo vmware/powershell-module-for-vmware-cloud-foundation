@@ -3890,7 +3890,7 @@ Function New-VCFvRSLCM
         The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
 
         .EXAMPLE
-        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-vRSLCM.json
+        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json
         This example deploys vRealize Suite Lifecycle Manager using a supplied json file
     #>
 
@@ -3905,17 +3905,16 @@ Function New-VCFvRSLCM
     }
     else {
         Try {
-          createHeader # Calls createHeader function to set Accept & Authorization
-          checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content -Raw $json)
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+            #$ConfigJson = (Get-Content -Raw $json) # Read the json file contents into the $ConfigJson variable
             $uri = "https://$sddcManager/v1/vrslcms"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
             $response
         }
         Catch {
-            # Call ResponseException function to get error response from the exception
-            ResponseException
+            ResponseException # Call ResponseException function to get error response from the exception
         }
     }
 }
