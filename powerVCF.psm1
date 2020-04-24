@@ -1411,7 +1411,7 @@ Function Get-VCFCredentialTask
     	if ( -not $PsBoundParameters.ContainsKey("id")) {
       		$uri = "https://$sddcManager/v1/credentials/tasks"
 	    	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-	    	$response
+	    	$response.elements
     	}
     	if ($PsBoundParameters.ContainsKey("id")) {
       		$uri = "https://$sddcManager/v1/credentials/tasks/$id"
@@ -2465,11 +2465,6 @@ Function Get-VCFNsxtCluster
         using the ID
 
         .EXAMPLE
-        PS C:\> Get-VCFNsxtCluster -domainId 9a13bde7-bbd7-4d91-95a2-ee0189ffdaf3
-        This example shows how to return the details for all NSX-T Clusters managed by the connected SDDC Manager
-        using the domain ID
-
-        .EXAMPLE
         PS C:\> Get-VCFNsxtCluster | select vipfqdn
         This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
     #>
@@ -2477,10 +2472,7 @@ Function Get-VCFNsxtCluster
     Param (
         [Parameter (Mandatory=$false)]
             [ValidateNotNullOrEmpty()]
-            [string]$id,
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$domainId
+            [string]$id
     )
 
     Try {
@@ -2495,11 +2487,6 @@ Function Get-VCFNsxtCluster
             $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
-        }
-        if ($PsBoundParameters.ContainsKey("domainId")) {
-            $uri = "https://$sddcManager/v1/nsxt-clusters/?domain=$domainId"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
         }
     }
     Catch {
