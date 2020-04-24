@@ -9,7 +9,7 @@ Reset-VCFvRSLCM
 ```
 
 ### Description
-The Reset-VCFvRSLCM cmdlet redeploys the existing vRealize Suite Lifecycle Manage
+The Reset-VCFvRSLCM cmdlet redeploys the existing vRealize Suite Lifecycle Manager
 
 ### Examples
 #### Example 1
