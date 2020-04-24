@@ -3301,15 +3301,10 @@ Function Get-VCFSystemPrecheckTask
             [string]$id
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
-    }
-    else {
-        Throw "task id not provided"
-    }
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
         $response
     }
