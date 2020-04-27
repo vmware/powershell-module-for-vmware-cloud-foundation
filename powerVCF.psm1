@@ -186,7 +186,7 @@ Function Connect-CloudBuilder
       		$response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
     	}
     	if ($response.StatusCode -eq 200) {
-      		Write-Host " Successfully connected to the Cloud Builder Appliance:" $cloudBuilder -ForegroundColor Yellow
+      		Write-Host " Successfully connected to the Cloud Builder Appliance:" $cloudBuilder -ForegroundColor Green
     	}
   	}
   	Catch {
