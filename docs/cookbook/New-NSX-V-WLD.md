@@ -22,7 +22,7 @@ The sequence of events is as follows:
 To establish a session with SDDC Manager run the following
 
 ```powershell
-Connect-VCFManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMw@re1!
+Connect-VCFManager -fqdn sddc-manager.sfo.rainpole.io -username admin -password VMw@re1!
 ```
 ### Create a network pool
 
@@ -90,7 +90,7 @@ For this json you need the network pool name & ID. These were returned when the 
 
 ```json
 [{
-    "fqdn": "sfo01w01esx01.sfo01.rainpole.local",
+    "fqdn": "sfo01w01esx01.sfo.rainpole.io",
     "username": "root",
     "storageType": "VSAN",
     "password": "VMw@re1!",
@@ -98,7 +98,7 @@ For this json you need the network pool name & ID. These were returned when the 
     "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
 },
 {
-    "fqdn": "sfo01w01esx02.sfo01.rainpole.local",
+    "fqdn": "sfo01w01esx02.sfo.rainpole.io",
     "username": "root",
     "storageType": "VSAN",
     "password": "VMw@re1!",
@@ -106,7 +106,7 @@ For this json you need the network pool name & ID. These were returned when the 
     "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
 },
 {
-    "fqdn": "sfo01w01esx03.sfo01.rainpole.local",
+    "fqdn": "sfo01w01esx03.sfo.rainpole.io",
     "username": "root",
     "storageType": "VSAN",
     "password": "VMw@re1!",
@@ -114,7 +114,7 @@ For this json you need the network pool name & ID. These were returned when the 
     "networkPoolId": "afd314f6-f31d-4ad4-8943-0ecb35c044b9"
 },
 {
-    "fqdn": "sfo01w01esx04.sfo01.rainpole.local",
+    "fqdn": "sfo01w01esx04.sfo.rainpole.io",
     "username": "root",
     "storageType": "VSAN",
     "password": "VMw@re1!",
@@ -151,7 +151,7 @@ This returns the ids we need for creating the workload domain. Here is the Workl
         "name" : "sfo01w01vc01",
         "networkDetailsSpec" : {
             "ipAddress" : "172.16.225.64",
-            "dnsName" : "sfo01w01vc01.sfo01.rainpole.local",
+            "dnsName" : "sfo01w01vc01.sfo.rainpole.io",
             "gateway" : "172.16.225.1",
             "subnetMask" : "255.255.255.0"
         },
@@ -233,7 +233,7 @@ This returns the ids we need for creating the workload domain. Here is the Workl
             "name" : "sfo01w01nsx01",
             "networkDetailsSpec" : {
                 "ipAddress" : "172.16.225.66",
-                "dnsName" : "sfo01w01nsx01.sfo01.rainpole.local",
+                "dnsName" : "sfo01w01nsx01.sfo.rainpole.io",
                 "gateway" : "172.16.225.1",
                 "subnetMask" : "255.255.255.0"
             }

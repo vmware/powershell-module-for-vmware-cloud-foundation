@@ -58,11 +58,11 @@ Function Connect-VCFManager
     	It is required once per session before running all other cmdlets
 
     	.EXAMPLE
-    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
+    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.io -username sec-admin@rainpole.io -password VMware1!
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
         .EXAMPLE
-    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1! -basicAuth
+    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
         This example shows how to connect to SDDC Manager using basic auth for restoring backups
   	#>
 
@@ -186,7 +186,7 @@ Function Connect-CloudBuilder
       		$response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
     	}
     	if ($response.StatusCode -eq 200) {
-      		Write-Host " Successfully connected to the Cloud Builder Appliance:" $cloudBuilder -ForegroundColor Yellow
+      		Write-Host " Successfully connected to the Cloud Builder Appliance:" $cloudBuilder -ForegroundColor Green
     	}
   	}
   	Catch {
@@ -752,7 +752,7 @@ Function Set-VCFMicrosoftCA
     	Configures the Microsoft Certificate Authorty on the connected SDDC Manager
 
     	.EXAMPLE
-    	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+    	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
     	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
   	#>
 
@@ -1968,7 +1968,7 @@ Function Get-VCFHost
         This example shows how to get a host by id
 
         .EXAMPLE
-        PS C:\> Get-VCFHost -fqdn sfo01m01esx01.sfo.rainpole.local
+        PS C:\> Get-VCFHost -fqdn sfo01-m01-esx01.sfo.rainpole.io
         This example shows how to get a host by fqdn
     #>
 
@@ -2318,7 +2318,7 @@ Function New-VCFFederationInvite
         The New-VCFFederationInvite cmdlet creates a new invitation for a member to join the existing VCF Federation.
 
         .EXAMPLE
-        PS C:\> New-VCFFederationInvite -inviteeFqdn sddc-manager1.vsphere.local
+        PS C:\> New-VCFFederationInvite -inviteeFqdn lax-vcf01.lax.rainpole.io
         This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
     #>
 

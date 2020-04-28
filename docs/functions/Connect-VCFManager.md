@@ -15,13 +15,13 @@ It is required once per session before running all other cmdlets
 ### Examples
 #### Example 1
 ```
-Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username sec-admin@rainpole.local -password VMware1!
+Connect-VCFManager -fqdn sfo-vcf01.sfo.rainpole.io -username sec-admin@rainpole.io -password VMware1!
 ```
 This example shows how to connect to SDDC Manager
 
 #### Example 2
 ```
-Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.local -username admin -password VMware1! -basicAuth
+Connect-VCFManager -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
 ```
 This example shows how to connect to SDDC Manager using basic auth for restoring backups
 

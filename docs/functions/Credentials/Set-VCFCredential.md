@@ -40,7 +40,7 @@ Accepted Value: Resource FQDN
 {
   "operationType" : "UPDATE",
   "elements" : [ {
-    "resourceName" : "sfo01m01esx02.sfo.rainpole.local",
+    "resourceName" : "sfo01-m01-esx02.sfo.rainpole.io",
     "resourceType" : "ESXI",
     "credentials" : [ {
       "credentialType" : "SSH",
@@ -56,7 +56,7 @@ Accepted Value: Resource FQDN
 {
   "operationType" : "ROTATE",
   "elements" : [ {
-    "resourceName" : "sfo01m01esx02.sfo.rainpole.local",
+    "resourceName" : "sfo01-m01-esx02.sfo.rainpole.io",
     "resourceType" : "ESXI",
     "credentials" : [ {
       "credentialType" : "SSH",

@@ -81,15 +81,15 @@
 		{
 			"networkType": "REGION_SPECIFIC",
 			"subnet": "192.168.31.0/24",
-			"gateway": "192.168.11.1",
+			"gateway": "192.168.31.1",
 			"mtu": "9000",
 			"vlanId": "0",
 			"association": "sfo-m01-dc01"
 		},
 		{
 			"networkType": "X_REGION",
-			"subnet": "192.168.31.0/24",
-			"gateway": "192.168.31.1",
+			"subnet": "192.168.11.0/24",
+			"gateway": "192.168.1.1.1",
 			"mtu": "9000",
 			"vlanId": "0",
 			"association": "sfo-m01-dc01"
