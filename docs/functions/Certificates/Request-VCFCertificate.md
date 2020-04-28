@@ -53,7 +53,7 @@ Default value: None
 {
     "caType": "Microsoft",
     "resources": [ {
-        "fqdn": "sfo01m01nsx01.sfo01.rainpole.io",
+        "fqdn": "sfo01m01nsx01.sfo.rainpole.io",
         "name": "sfo01m01nsx01",
         "resourceId": "c98e10e4-0f1f-4fd3-8e99-104115291a13",
         "type": "NSX_MANAGER"

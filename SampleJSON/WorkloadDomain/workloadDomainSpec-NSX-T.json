@@ -4,7 +4,7 @@
     "name" : "sfo01w01vc01",
     "networkDetailsSpec" : {
       "ipAddress" : "172.16.225.64",
-      "dnsName" : "sfo01w01vc01.sfo01.rainpole.io",
+      "dnsName" : "sfo01w01vc01.sfo.rainpole.io",
       "gateway" : "172.16.225.1",
       "subnetMask" : "255.255.255.0"
     },
@@ -86,7 +86,7 @@
 			"name": "sfo01w01nsx01",
 			"networkDetailsSpec": {
 				"ipAddress": "172.16.225.66",
-				"dnsName": "sfo01w01nsx01.sfo01.rainpole.io",
+				"dnsName": "sfo01w01nsx01.sfo.rainpole.io",
 				"gateway": "172.16.225.1",
 				"subnetMask": "255.255.255.0"
 			}
@@ -95,7 +95,7 @@
 			"name": "sfo01w01nsx02",
 			"networkDetailsSpec": {
 				"ipAddress": "172.16.225.67",
-				"dnsName": "sfo01w01nsx02.sfo01.rainpole.io",
+				"dnsName": "sfo01w01nsx02.sfo.rainpole.io",
 				"gateway": "172.16.225.1",
 				"subnetMask": "255.255.255.0"
 			}
@@ -104,14 +104,14 @@
 			"name": "sfo01w01nsx03",
 			"networkDetailsSpec": {
 				"ipAddress": "172.16.225.68",
-				"dnsName": "sfo01w01nsx03.sfo01.rainpole.io",
+				"dnsName": "sfo01w01nsx03.sfo.rainpole.io",
 				"gateway": "172.16.225.1",
 				"subnetMask": "255.255.255.0"
 			}
 		}
 	],
 	"vip": "172.16.225.69",
-	"vipFqdn": "sfo01w01nsx.sfo01.rainpole.io",
+	"vipFqdn": "sfo01w01nsx.sfo.rainpole.io",
 	"licenseKey": "CCCCC-CCCCC-CCCCC-CCCCC-CCCCC",
 	"nsxManagerAdminPassword": "VMw@re1!VMw@re1!"
 }

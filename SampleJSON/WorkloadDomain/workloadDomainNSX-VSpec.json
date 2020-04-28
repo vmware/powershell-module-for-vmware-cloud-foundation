@@ -4,7 +4,7 @@
     "name" : "sfo01w01vc01",
     "networkDetailsSpec" : {
       "ipAddress" : "172.16.225.64",
-      "dnsName" : "sfo01w01vc01.sfo01.rainpole.io",
+      "dnsName" : "sfo01w01vc01.sfo.rainpole.io",
       "gateway" : "172.16.225.1",
       "subnetMask" : "255.255.255.0"
     },
@@ -77,7 +77,7 @@
       "name" : "sfo01w01nsx01",
       "networkDetailsSpec" : {
         "ipAddress" : "172.16.225.66",
-        "dnsName" : "sfo01w01nsx01.sfo01.rainpole.io",
+        "dnsName" : "sfo01w01nsx01.sfo.rainpole.io",
         "gateway" : "172.16.225.1",
         "subnetMask" : "255.255.255.0"
       }
