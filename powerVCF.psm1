@@ -2809,22 +2809,18 @@ Function New-VCFEdgeCluster
         # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
         if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
             Try {
-                Write-Host ""
-                Write-Host "Task validation completed successfully, invoking Edge Cluster Creation on SDDC Manager" -ForegroundColor Green
+                Write-Host "`n Task validation completed successfully, invoking Edge Cluster Creation on SDDC Manager `n" -ForegroundColor Green
                 $uri = "https://$sddcManager/v1/edge-clusters"
                 $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
                 Return $response
-                Write-Host ""
             }
             Catch {
                 ResponseException # Call ResponseException function to get error response from the exception
             }
         }
         else {
-            Write-Host ""
-            Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+            Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
             Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-            Write-Host ""
         }
     }
 }
@@ -4195,9 +4191,7 @@ Function Invoke-VCFCommand
         # Invoke the SSH stream command
         $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCred.Password
         if ($outInvoke) {
-            Write-Host ""
-            Write-Host "Executing the remote SoS command, output will display when the the run is completed. This might take a while, please wait..."
-            Write-Host ""
+            Write-Host "`n Executing the remote SoS command, output will display when the the run is completed. This might take a while, please wait... `n"
             $stream.Expect($sosEndMessage)
         }
         # distroy the connection previously established
@@ -4205,9 +4199,7 @@ Function Invoke-VCFCommand
         }
     }
     else {
-        Write-Host ""
-        Write-Host "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again." -ForegroundColor Yellow
-        Write-Host ""
+        Write-Host "`n PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again. `n" -ForegroundColor Yellow
     }
 }
 Export-ModuleMember -Function Invoke-VCFCommand
@@ -4223,15 +4215,12 @@ Function ResponseException
     #Get response from the exception
     $response = $_.exception.response
     if ($response) {
-        Write-Host ""
-        Write-Host "Something went wrong, please review the error message" -ForegroundColor Red -BackgroundColor Black
-        Write-Host ""
+        Write-Host "`n Something went wrong, please review the error message `n" -ForegroundColor Red -BackgroundColor Black
         $responseStream = $_.exception.response.GetResponseStream()
         $reader = New-Object system.io.streamreader($responseStream)
         $responseBody = $reader.readtoend()
         $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
         Throw $ErrorString
-        Write-Host ""
     }
     else {
         Throw $_
@@ -4286,10 +4275,9 @@ Function Resolve-PSModule
         # If module is not imported, check if available on disk and try to import
         if (Get-Module -ListAvailable | Where-Object {$_.Name -eq $moduleName}) {
             Try {
-                Write-Host ""
-                Write-Host "Module $moduleName not loaded, importing now please wait..."
+                Write-Host "`n Module $moduleName not loaded, importing now please wait..."
                 Import-Module $moduleName
-                Write-Host "Module $moduleName imported successfully."
+                Write-Host " Module $moduleName imported successfully."
                 $searchResult = "IMPORTED"
             }
             Catch {
@@ -4300,12 +4288,11 @@ Function Resolve-PSModule
             # If module is not imported & not available on disk, try PSGallery then install and import
             if (Find-Module -Name $moduleName | Where-Object {$_.Name -eq $moduleName}) {
                 Try {
-                    Write-Host ""
-                    Write-Host "Module $moduleName was missing, installing now please wait..."
+                    Write-Host "`n Module $moduleName was missing, installing now please wait..."
                     Install-Module -Name $moduleName -Force -Scope CurrentUser
-                    Write-Host "Importing module $moduleName, please wait..."
+                    Write-Host " Importing module $moduleName, please wait..."
                     Import-Module $moduleName
-                    Write-Host "Module $moduleName installed and imported"
+                    Write-Host " Module $moduleName installed and imported"
                     $searchResult = "INSTALLED_IMPORTED"
                 }
                 Catch {
