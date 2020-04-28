@@ -3247,17 +3247,17 @@ Export-ModuleMember -Function Get-VCFManager
 
 ######### Start APIs for managing System Prechecks ##########
 
-Function Start-PreCheckVCFSystem
+Function Start-VCFSystemPrecheck
 {
     <#
         .SYNOPSIS
-        The Start-PreCheckVCFSystem cmdlet performs system level health checks
+        The Start-VCFSystemPrecheck cmdlet performs system level health checks
 
         .DESCRIPTION
-        The Start-PreCheckVCFSystem cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
+        The Start-VCFSystemPrecheck cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
         .EXAMPLE
-        PS C:\> Start-PreCheckVCFSystem -json .\SystemCheck\precheckVCFSystem.json
+        PS C:\> Start-VCFSystemPrecheck -json .\SystemCheck\precheckVCFSystem.json
         This example shows how to perform system level health check
     #>
 
@@ -3267,21 +3267,11 @@ Function Start-PreCheckVCFSystem
             [string]$json
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-        }
-    }
-    else {
-        Throw "json file not found"
-    }
-    $uri = "https://$sddcManager/v1/system/prechecks"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+        $uri = "https://$sddcManager/v1/system/prechecks"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
         $response
     }
@@ -3289,19 +3279,19 @@ Function Start-PreCheckVCFSystem
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -Function Start-PreCheckVCFSystem
+Export-ModuleMember -Function Start-VCFSystemPrecheck
 
-Function Get-PreCheckVCFSystemTask
+Function Get-VCFSystemPrecheckTask
 {
     <#
         .SYNOPSIS
         Get Precheck Task by ID
 
         .DESCRIPTION
-        The Get-PreCheckVCFSystemTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
+        The Get-VCFSystemPrecheckTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
         .EXAMPLE
-        PS C:\> Get-PreCheckVCFSystemTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+        PS C:\> Get-VCFSystemPrecheckTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
         This example shows how to retrieve the status of a system level precheck task
     #>
 
@@ -3311,15 +3301,10 @@ Function Get-PreCheckVCFSystemTask
             [string]$id
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if ($PsBoundParameters.ContainsKey("id")) {
-        $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
-    }
-    else {
-        Throw "task id not provided"
-    }
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
         $response
     }
@@ -3327,7 +3312,7 @@ Function Get-PreCheckVCFSystemTask
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
-Export-ModuleMember -Function Get-PreCheckVCFSystemTask
+Export-ModuleMember -Function Get-VCFSystemPrecheckTask
 
 ######### End APIs for managing System Prechecks ##########
 
