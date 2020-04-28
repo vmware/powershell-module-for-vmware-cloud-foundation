@@ -3727,7 +3727,7 @@ Function Validate-EdgeClusterSpec
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
   $uri = "https://$sddcManager/v1/edge-clusters/validations"
   Try {
-    $response = Invoke-RestMethod -Method POST -ContentType "application/json" -URI $uri -Headers $headers -body $ConfigJson -SkipCertificateCheck
+    $response = Invoke-RestMethod -Method POST -ContentType "application/json" -URI $uri -Headers $headers -body $ConfigJson
 	}
   Catch {
     ResponseException # Call Function ResponseException to get error response from the exception
