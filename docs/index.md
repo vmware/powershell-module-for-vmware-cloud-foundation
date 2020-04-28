@@ -69,7 +69,7 @@ Managing Credentials (password retrieval/update/rotation) requires dual authenti
 ```
 id             : 3fc04947-64c9-4402-8970-be93169140c6
 esxiVersion    : 6.7.0-13981272
-fqdn           : sfo01m01esx01.sfo.rainpole.io
+fqdn           : sfo01-m01-esx01.sfo.rainpole.io
 hardwareVendor : Dell Inc.
 hardwareModel  : PowerEdge R640
 ipAddresses    : {@{ipAddress=172.16.225.101; type=MANAGEMENT}, @{ipAddress=172.16.230.101; type=VSAN},
