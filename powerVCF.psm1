@@ -2018,62 +2018,76 @@ Function Commission-VCFHost
 {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager and commissions a list of hosts.
+        Connects to the specified SDDC Manager and commissions a list of hosts
 
         .DESCRIPTION
-        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts.
+        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts
         Host list spec is provided in a JSON file.
 
         .EXAMPLE
         PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-        This example shows how to commission a list of hosts based on the details provided in the JSON file.
+        This example shows how to commission a list of hosts based on the details provided in the JSON file
+
+        .EXAMPLE
+        PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
+        This example shows how to validate the JSON spec before starting the workflow
     #>
 
     Param (
         [Parameter (Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
+    Try {
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-
-        # Validate the provided JSON input specification file
-        $response = Validate-CommissionHostSpec -json $ConfigJson
-        # Get the task id from the validation function
-        $taskId = $response.id
-        # Keep checking until executionStatus is not IN_PROGRESS
-        Do {
-            $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
-            $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-        }
-        While ($response.executionStatus -eq "IN_PROGRESS")
+        if ( -Not $PsBoundParameters.ContainsKey("validate")) { 
+            $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS") 
             # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Try {
-                    Write-Host ""
-                    Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
-                    $uri = "https://$sddcManager/v1/hosts/"
-                    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-                    Return $response
-                    Write-Host ""
-                }
-                Catch {
-                    ResponseException # Call ResponseException function to get error response from the exception
-                }
+                Write-Host "`n Task validation completed successfully, invoking host(s) commissioning on SDDC Manager `n" -ForegroundColor Green
+                $uri = "https://$sddcManager/v1/hosts/"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                Return $response
             }
             else {
-                Write-Host ""
-                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+                Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
                 Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-                Write-Host ""
             }
+        }
+        elseif ($PsBoundParameters.ContainsKey("validate")) {
+            $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS")
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Host "`n Task validation completed successfully `n" -ForegroundColor Green
+                Return $response
+            }
+            else {
+                Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+            }
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Commission-VCFHost
@@ -3921,10 +3935,10 @@ Function Validate-CommissionHostSpec
             [object]$json
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/hosts/validations"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/hosts/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
         Return $response
     }
