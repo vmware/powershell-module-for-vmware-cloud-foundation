@@ -1,7 +1,7 @@
 # Get-VCFCluster
 
 ### Synopsis
-Connects to the specified SDDC Manager & retrieves a list of clusters.
+Connects to the specified SDDC Manager & retrieves a list of clusters
 
 ### Syntax
 ```
@@ -9,7 +9,7 @@ Get-VCFWorkloadDomain -name <string> -id <string>
 ```
 
 ### Description
-The Get-VCFCluster cmdlet connects to the specified SDDC Manager & retrieves a list of clusters.
+The Get-VCFCluster cmdlet connects to the specified SDDC Manager & retrieves a list of clusters
 
 ### Examples
 #### Example 1
@@ -50,7 +50,7 @@ ID of a specific cluster
 
 ```yaml
 Type: String
-Parameter Sets: Username
+Parameter Sets: (All)
 Aliases:
 
 Required: False

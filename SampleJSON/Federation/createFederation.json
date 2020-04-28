@@ -2,7 +2,7 @@
   "federationName" : "Rainpole",
   "memberJoinDetail" : {
     "role" : "CONTROLLER",
-    "fqdn" : "sfo01mgr01.sddc.local",
+    "fqdn" : "sfo-vcf01.sfo.rainpole.io",
     "siteType" : "DATACENTER",
     "siteName" : "San Francisco",
     "country" : "USA",

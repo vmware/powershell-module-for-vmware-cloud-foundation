@@ -1,10 +1,10 @@
 {
     "controllerFqdn" : "sfo-vcf01.sfo.rainpole.io",
     "joinToken" : "522c566-836b-44c2-bf84-92dcc7e00764",
-    "commonName" : "nyc-vcf01.lax.rainpole.io",
+    "commonName" : "nyc-vcf01.nyc.rainpole.io",
     "memberJoinDetail" : {
       "role" : "MEMBER",
-      "fqdn" : "nyc-vcf01.lax.rainpole.io",
+      "fqdn" : "nyc-vcf01.nyc.rainpole.io",
       "siteType" : "DATACENTER",
       "siteName" : "New York Epic Center",
       "country" : "USA",

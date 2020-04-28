@@ -36,13 +36,13 @@ Default value: None
 ### Sample JSON
 ```json
 [ {
-	"fqdn": "sfo01w01esx01.sfo.rainpole.local"
+	"fqdn": "sfo01w01esx01.sfo.rainpole.io"
 },{
-	"fqdn": "sfo01w01esx02.sfo.rainpole.local"
+	"fqdn": "sfo01w01esx02.sfo.rainpole.io"
 },{
-	"fqdn": "sfo01w01esx03.sfo.rainpole.local"
+	"fqdn": "sfo01w01esx03.sfo.rainpole.io"
 },{
-	"fqdn": "sfo01w01esx04.sfo.rainpole.local"
+	"fqdn": "sfo01w01esx04.sfo.rainpole.io"
 }]
 
 ```

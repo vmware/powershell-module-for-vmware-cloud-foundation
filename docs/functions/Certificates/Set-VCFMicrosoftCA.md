@@ -14,14 +14,14 @@ Configures the Microsoft Certificate Authorty on the connected SDDC Manager
 ### Examples
 #### Example 1
 ```
-Set-VCFMicrosoftCA -serverUrl "https://rainpole.local/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+Set-VCFMicrosoftCA -serverUrl "https://rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
 ```
 This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
 
 ### Parameters
 
 #### -serverUrl
-- URL of the Microsoft CA in quotes. e.g. "https://rainpole.local/certsrv"
+- URL of the Microsoft CA in quotes. e.g. "https://rainpole.io/certsrv"
 
 ```yaml
 Type: String

@@ -56,14 +56,12 @@ All API operations must currently be authenticated using the SDDC Manager admin 
 To create a base64 credential to authenticate each cmdlet you must first run:
 
 ```powershell
-Connect-VCFManager -fqdn sddc-manager.sfo01.rainpole.local -username admin -password VMware1!
+Connect-VCFManager -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1!
 ```
 
 *Note: `-username` & `-password` are optional. If not passed a credential window will be presented.*
 
 Authentication is only valid for the duration of the PowerShell session.
-
-Managing Credentials (password retrieval/update/rotation) requires dual authentication using a privileged username & password. See here for setup instructions: https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.admin.doc_39/GUID-FAB78718-E626-4924-85DC-97536C3DA337.html
 
 ## Examples
 ### Get a list of VCF Hosts
@@ -72,44 +70,49 @@ Managing Credentials (password retrieval/update/rotation) requires dual authenti
 ### Sample Output
 
 ```
-id             : 3fc04947-64c9-4402-8970-be93169140c6
-esxiVersion    : 6.7.0-13981272
-fqdn           : sfo01m01esx01.sfo01.rainpole.local
-hardwareVendor : Dell Inc.
-hardwareModel  : PowerEdge R640
-ipAddresses    : {@{ipAddress=172.16.225.101; type=MANAGEMENT}, @{ipAddress=172.16.230.101; type=VSAN},
-                 @{ipAddress=172.16.226.101; type=VMOTION}}
-cpu            : @{frequencyMHz=61455.61328125; cores=28; cpuCores=System.Object[]}
-memory         : @{totalCapacityMB=261761.34375}
-storage        : @{totalCapacityMB=10988496; disks=System.Object[]}
-domain         : @{id=fbdcf199-c086-43aa-9071-5d53b5c5b99d}
-cluster        : @{id=a511b625-8eb8-417e-85f0-5b47ebb4c0f1}
-status         : ASSIGNED
+id                  : 598519e7-cbba-4a10-801d-d76111f3ce0e
+esxiVersion         : 7.0.0-15843807
+fqdn                : sfo01-m01-esx01.sfo.rainpole.io
+hardwareVendor      : Dell Inc.
+hardwareModel       : PowerEdge R630
+ipAddresses         : {@{ipAddress=172.28.211.101; type=MANAGEMENT}, @{ipAddress=172.28.213.101; type=VSAN},            
+                      @{ipAddress=172.28.212.101; type=VMOTION}}
+cpu                 : @{frequencyMHz=55999.953125; usedFrequencyMHz=11209.0; cores=28; cpuCores=System.Object[]}
+memory              : @{totalCapacityMB=262050.28125; usedCapacityMB=59413.0}
+storage             : @{totalCapacityMB=7325664.0; usedCapacityMB=297924.625; disks=System.Object[]}
+physicalNics        : {@{deviceName=vmnic0; macAddress=24:6e:96:56:10:50}, @{deviceName=vmnic1; macAddress=24:6e:96:56:10:52}, 
+                      @{deviceName=vmnic2; macAddress=24:6e:96:56:10:54}, @{deviceName=vmnic3; macAddress=24:6e:96:56:10:55}}
+domain              : @{id=51cc2d90-13b9-4b62-b443-c1d7c3be0c23}
+networkpool         : @{id=0e06eff5-9fe7-4299-940b-5c8beb3f3ac0; name=sfo-m01-np01}
+cluster             : @{id=cc747835-79bc-4900-8703-f5ef1fa87990}
+status              : ASSIGNED
+bundleRepoDatastore : lcm-bundle-repo
+hybrid              : False
 ```
 
 
 Responses can be filtered like this:
 
 ```powershell
-Get-VCFHost -id 3fc04947-64c9-4402-8970-be93169140c6 | Select esxiVersion
+Get-VCFHost -id 598519e7-cbba-4a10-801d-d76111f3ce0e | Select esxiVersion
 ```
 
 ```
 esxiVersion
 -----------
-6.7.0-13981272
+7.0.0-15843807
 ```
 
 
 Or like this:
 
 ```powershell
-$hostDetail = Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+$hostDetail = Get-VCFHost -id 598519e7-cbba-4a10-801d-d76111f3ce0e
 $hostDetail.esxiVersion
 ```
 
 ```
-6.7.0-13981272
+7.0.0-15843807
 ```
 
 
@@ -117,7 +120,7 @@ $hostDetail.esxiVersion
 For a full list of supported cmdlets run the following
 
 ```powershell
-Get-Command -Module powerVCF
+Get-Command -Module PowerVCF
 ```
 
 All cmdlets support the following
