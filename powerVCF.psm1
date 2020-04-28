@@ -1110,8 +1110,7 @@ Function New-VCFCluster
     	# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     	if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       		Try {
-        		Write-Host ""
-        		Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+        		Write-Host "`n Task validation completed successfully, invoking cluster task on SDDC Manager `n" -ForegroundColor Green
         		$uri = "https://$sddcManager/v1/clusters"
         		$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
         		$response.elements
@@ -1120,10 +1119,8 @@ Function New-VCFCluster
         		ResponseException # Call ResponseException function to get error response from the exception
       		}
       	else {
-        		Write-Host ""
-        		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+        		Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
         		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        		Write-Host ""
       		}
     	}
   	}
@@ -1180,8 +1177,7 @@ Function Set-VCFCluster
 			# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
       		if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
         		Try {
-          			Write-Host ""
-          			Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+          			Write-Host "`n Task validation completed successfully, invoking cluster task on SDDC Manager `n" -ForegroundColor Green
           			$uri = "https://$sddcManager/v1/clusters/$id/"
                     $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
                     $response
@@ -1191,10 +1187,8 @@ Function Set-VCFCluster
         		}
       		}
       		else {
-        		Write-Host ""
-        		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
+        		Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
         		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        		Write-Host ""
       		}
 		}
 		if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
