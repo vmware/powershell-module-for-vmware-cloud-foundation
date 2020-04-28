@@ -62,13 +62,13 @@ Default value: None
     },
     "resources": [
 		{
-			"fqdn": "sfo01mgr01.sfo.rainpole.local",
-			"name": "sfo01mgr01",
+			"fqdn": "sfo-vcf01.sfo.rainpole.io",
+			"name": "sfo-vcf01",
 			"resourceId": "2c10305a-b77d-4f6c-a83e-9ccb803445f1",
 			"type": "SDDC_MANAGER"
 		},{
-			"fqdn": "sfo01m01nsx01.sfo.rainpole.local",
-			"name": "sfo01m01nsx01",
+			"fqdn": "sfo-m01-nsx01.sfo.rainpole.io",
+			"name": "sfo-m01-nsx01",
 			"resourceId": "c98e10e4-0f1f-4fd3-8e99-104115291a13",
 			"type": "NSX_MANAGER"
 		}
