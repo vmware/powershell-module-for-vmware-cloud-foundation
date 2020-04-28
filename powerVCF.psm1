@@ -1710,41 +1710,27 @@ Function New-VCFWorkloadDomain
       		[string]$json
   	)
 
-  	if (!(Test-Path $json)) {
-    	Throw "JSON File Not Found"
-  	}
-  	else {
-    	# Read the json file contents into the $ConfigJson variable
-    	$ConfigJson = (Get-Content $json)
-    	createHeader # Calls createHeader function to set Accept & Authorization
-    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-		# Validate the provided JSON input specification file
-    	$response = Validate-WorkloadDomainSpec -json $ConfigJson
-    	# the validation API does not currently support polling with a task ID
-    	Start-Sleep 5
-    	# Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    	if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-      		Try {
-        		Write-Host ""
-        		Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
-        		$uri = "https://$sddcManager/v1/domains"
-        		$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        		Return $response
-        			Write-Host ""
-        		Return $response
-        			Write-Host ""
-      		}
-      		Catch {
-        		ResponseException # Call ResponseException function to get error response from the exception
-      		}
-    	}
-    	else {
-    		Write-Host ""
-      		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-      		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-      		Write-Host ""
-    	}
-  	}
+    Try {
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $response = Validate-WorkloadDomainSpec -json $ConfigJson # Validate the provided JSON input specification file # the validation API does not currently support polling with a task ID
+        Start-Sleep 5
+        # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+            Write-Host "`n Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager `n" -ForegroundColor Green
+            $uri = "https://$sddcManager/v1/domains"
+            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            Return $response
+        }
+        else {
+            Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+            Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
 
@@ -3952,15 +3938,15 @@ Function Validate-WorkloadDomainSpec
 
 	Param (
         [Parameter (Mandatory=$true)]
-        [object]$json
+            [object]$json
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/domains/validations"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/domains/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-	   Return $response
+	    Return $response
 	}
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
