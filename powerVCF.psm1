@@ -752,7 +752,7 @@ Function Set-VCFMicrosoftCA
     	Configures the Microsoft Certificate Authorty on the connected SDDC Manager
 
     	.EXAMPLE
-    	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+    	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
     	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
   	#>
 
@@ -779,7 +779,7 @@ Function Set-VCFMicrosoftCA
       		Throw "You must enter the mandatory values"
 		}
     	$ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
-    	$response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson # No response from API
   	}
   	Catch {
     	ResponseException # Call ResponseException function to get error response from the exception
@@ -1754,8 +1754,7 @@ Function Set-VCFWorkloadDomain
   	Try {
     	$uri = "https://$sddcManager/v1/domains/$id"
     	$body = '{"markForDeletion": true}'
-    	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body
-    	# This API does not return a response
+    	Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body # This API does not return a response
   	}
   	Catch {
     	ResponseException # Call ResponseException function to get error response from the exception
@@ -2217,7 +2216,7 @@ Function New-VCFLicenseKey
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/license-keys"
         Try {
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
             # This API does not return a response body. Sending GET to validate the License Key creation was successful
             $license = $ConfigJson | ConvertFrom-Json
             $licenseKey = $license.key
@@ -2255,8 +2254,7 @@ Function Remove-VCFLicenseKey
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/license-keys/$key"
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-        # This API does not return a response
+        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -2487,9 +2485,9 @@ Function Get-VCFNetworkPool
             [string]$id
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
             $uri = "https://$sddcManager/v1/network-pools"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -2533,24 +2531,19 @@ Function New-VCFNetworkPool
             [string]$json
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
+    Try {
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/network-pools"
-        Try {
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-			# This API does not return a response body. Sending GET to validate the Network Pool creation was successful
-			$validate = $ConfigJson | ConvertFrom-Json
-			$poolName = $validate.name
-			Get-VCFNetworkPool -name $poolName
-        }
-        Catch {
-            ResponseException # Call ResponseException function to get error response from the exception
-        }
+        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+		# This API does not return a response body. Sending GET to validate the Network Pool creation was successful
+		$validate = $ConfigJson | ConvertFrom-Json
+		$poolName = $validate.name
+		Get-VCFNetworkPool -name $poolName
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function New-VCFNetworkPool
@@ -2575,12 +2568,11 @@ Function Remove-VCFNetworkPool
             [string]$id
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/network-pools/$id"
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-        # This API does not return a response
+        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -4345,6 +4337,8 @@ Function validateJsonInput
     }
     else {
         $Global:ConfigJson = (Get-Content -Raw $json) # Read the json file contents into the $ConfigJson variable
+        Write-Verbose "JSON file found and content has been read into a variable"
+        Write-Verbose $ConfigJson
     }
 }
 
