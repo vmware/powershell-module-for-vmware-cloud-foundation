@@ -3554,7 +3554,7 @@ Function New-VCFServiceUser
             [ValidateNotNullOrEmpty()]
             [string]$user,
         [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
+            [ValidateSet("ADMIN","OPERATOR")]
             [string]$role
     )
 
