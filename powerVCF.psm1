@@ -2025,7 +2025,7 @@ Function Commission-VCFHost
         validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ( -Not $PsBoundParameters.ContainsKey("validate")) { 
+        if ( -Not $PsBoundParameters.ContainsKey("validate")) {
             $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
             $taskId = $response.id # Get the task id from the validation function
             Do {
@@ -2033,7 +2033,7 @@ Function Commission-VCFHost
                 $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
                 $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
             }
-            While ($response.executionStatus -eq "IN_PROGRESS") 
+            While ($response.executionStatus -eq "IN_PROGRESS")
             # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Write-Host "`n Task validation completed successfully, invoking host(s) commissioning on SDDC Manager `n" -ForegroundColor Green
@@ -2805,7 +2805,7 @@ Function New-VCFEdgeCluster
                 $uri = "https://$sddcManager/v1/edge-clusters/validations/$taskId"
                 $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
             }
-            While ($response.executionStatus -eq "IN_PROGRESS") 
+            While ($response.executionStatus -eq "IN_PROGRESS")
             # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Write-Host "`n Task validation completed successfully, invoking NSX-T Edge Cluster Creation on SDDC Manager `n" -ForegroundColor Green
@@ -3518,10 +3518,10 @@ Function New-VCFUser
             [string]$role
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/users"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users"
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
         $domain = $user.split('@')
@@ -3534,7 +3534,7 @@ Function New-VCFUser
           }
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
-        $response
+        $response.elements
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -3561,14 +3561,14 @@ Function New-VCFServiceUser
             [ValidateNotNullOrEmpty()]
             [string]$user,
         [Parameter (Mandatory=$true)]
-            [ValidateNotNullOrEmpty()]
+            [ValidateSet("ADMIN","OPERATOR")]
             [string]$role
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/users"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users"
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
         $body = '[ {
@@ -3579,7 +3579,7 @@ Function New-VCFServiceUser
             }
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
-        $response
+        $response.elements
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -3614,33 +3614,38 @@ Function Get-VCFRole
 }
 Export-ModuleMember -Function Get-VCFRole
 
-Function Get-VCFSsoDomain
+Function Remove-VCFUser
 {
     <#
         .SYNOPSIS
-        Get all SSO domains
+        Deletes a user from SDDC Manager
 
         .DESCRIPTION
-        The Get-VCFSsoDomain cmdlet gets a list of Single Sign-On domains
+        The Remove-VCFUser cmdlet connects to the specified SDDC Manager and deletes a user
 
         .EXAMPLE
-        PS C:\> Get-VCFSsoDomain
-        This example list all Single Sign-On domains
+        PS C:\> Remove-VCFUser -id c769fcc5-fb61-4d05-aa40-9c7786163fb5
+        This example shows how to delete a user
     #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/sso-domains"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
+        $uri = "https://$sddcManager/v1/users/$id"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json
+        $response
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
     }
-}
-
-#Export-ModuleMember -Function Get-VCFSsoDomain
+ }
+Export-ModuleMember -Function Remove-VCFUser
 
 ######### End APIs for managing Users ##########
 
