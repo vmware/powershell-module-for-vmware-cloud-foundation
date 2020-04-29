@@ -3511,10 +3511,10 @@ Function New-VCFUser
             [string]$role
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/users"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users"
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
         $domain = $user.split('@')
@@ -3527,7 +3527,7 @@ Function New-VCFUser
           }
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
-        $response
+        $response.elements
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -3558,10 +3558,10 @@ Function New-VCFServiceUser
             [string]$role
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/users"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users"
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
         $body = '[ {
@@ -3572,7 +3572,7 @@ Function New-VCFServiceUser
             }
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
-        $response
+        $response.elements
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -3632,6 +3632,39 @@ Function Get-VCFSsoDomain
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
+
+Function Remove-VCFUser
+{
+    <#
+        .SYNOPSIS
+        Deletes a user from SDDC Manager
+
+        .DESCRIPTION
+        The Remove-VCFUser cmdlet connects to the specified SDDC Manager and deletes a user
+
+        .EXAMPLE
+        PS C:\> Remove-VCFUser -id c769fcc5-fb61-4d05-aa40-9c7786163fb5
+        This example shows how to delete a user
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users/$id"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json
+        $response
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+ }
+Export-ModuleMember -Function Remove-VCFUser
 
 #Export-ModuleMember -Function Get-VCFSsoDomain
 
