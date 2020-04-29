@@ -3655,8 +3655,6 @@ Function Remove-VCFUser
  }
 Export-ModuleMember -Function Remove-VCFUser
 
-#Export-ModuleMember -Function Get-VCFSsoDomain
-
 ######### End APIs for managing Users ##########
 
 
