@@ -1,14 +1,14 @@
 # PowerVCF
-PowerVCF is a PowerShell Module for interacting with the VMware Cloud Foundation (SDDC Manager) public API.
+PowerVCF is an open source PowerShell Module for interacting with the VMware Cloud Foundation (SDDC Manager & Cloud Builder) public API.
 
 <a href="https://docs.vmware.com/en/VMware-Cloud-Foundation" target="_blank">VMware Cloud Foundation Product Documentation</a>
 
 <a href="https://code.vmware.com/apis/723/vmware-cloud-foundation" target="_blank">VMware Cloud Foundation API Documentation</a>
 
 # Disclaimer
-This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU).
+This is not an officially supported VMware PowerShell Module.
 
-The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. 
+The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCLI and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. 
 
 This version is supported with VMware Cloud Foundation 4.0 and above due to changes in the API auth process.
 
