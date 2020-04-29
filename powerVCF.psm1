@@ -2254,7 +2254,7 @@ Function Remove-VCFLicenseKey
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/license-keys/$key"
-        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response 
+        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -2530,7 +2530,7 @@ Function New-VCFNetworkPool
             [ValidateNotNullOrEmpty()]
             [string]$json
     )
-        
+
     Try {
         validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createHeader # Calls createHeader function to set Accept & Authorization
