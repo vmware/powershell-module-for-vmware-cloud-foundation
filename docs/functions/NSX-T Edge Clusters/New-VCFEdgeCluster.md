@@ -19,6 +19,12 @@ New-VCFEdgeCluster -json .\SampleJSON\EdgeClusters\edgeClusterSpec.json
 ```
 This example shows how to create an NSX-T edge Cluster
 
+#### Example 2
+```
+New-VCFEdgeCluster -json .\SampleJSON\EdgeClusters\edgeClusterSpec.json -validate
+```
+This example shows how to validate the JSON spec for Edge Cluster creation
+
 ### Parameters
 
 #### -json

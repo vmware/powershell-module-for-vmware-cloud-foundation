@@ -110,12 +110,12 @@ Function Connect-VCFManager
       		    $Global:refreshToken = $response.refreshToken.id
     	    }
     	    if ($response.accessToken) {
-                Write-Host " Successfully Requested New API Token From SDDC Manager:" $sddcManager -ForegroundColor Green
+                Write-Host "`n Successfully Requested New API Token From SDDC Manager:" $sddcManager `n -ForegroundColor Green
     	    }
   	    }
   	    Catch {
-            Write-Host "" $_.Exception.Message -ForegroundColor Red
-    	    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+            Write-Host "`n Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet`n" -ForegroundColor Red
+            Write-Host "" $_.Exception.Message `n -ForegroundColor Red
         }
     }
     elseif ($PsBoundParameters.ContainsKey("basicAuth")) {
@@ -124,11 +124,11 @@ Function Connect-VCFManager
             $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
             $headers = @{"Accept" = "application/json"}
             $headers.Add("Authorization", "Basic $base64AuthInfo")
-            Write-Host " Successfully Requested New Basic Auth From SDDC Manager:" $sddcManager -ForegroundColor Green
+            Write-Host "`n Successfully Requested New Basic Auth From SDDC Manager:" $sddcManager `n -ForegroundColor Green
         }
         Catch {
-            Write-Host "" $_.Exception.Message -ForegroundColor Red
-    	    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+            Write-Host "`n Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet`n" -ForegroundColor Red
+            Write-Host "" $_.Exception.Message `n -ForegroundColor Red
         }
     }
 }
@@ -186,12 +186,12 @@ Function Connect-CloudBuilder
       		$response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
     	}
     	if ($response.StatusCode -eq 200) {
-      		Write-Host " Successfully connected to the Cloud Builder Appliance:" $cloudBuilder -ForegroundColor Green
+      		Write-Host "`n Successfully connected to the Cloud Builder Appliance:" $cloudBuilder `n -ForegroundColor Green
     	}
   	}
   	Catch {
-    	Write-Host "" $_.Exception.Message -ForegroundColor Red
-    	Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-CloudBuilder cmdlet" -ForegroundColor Red
+        Write-Host "`n Credentials provided did not return a valid API response (expected 200). Retry Connect-CloudBuilder cmdlet`n" -ForegroundColor Red
+        Write-Host "" $_.Exception.Message `n -ForegroundColor Red
   	}
 }
 Export-ModuleMember -Function Connect-CloudBuilder
@@ -1110,8 +1110,7 @@ Function New-VCFCluster
     	# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     	if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       		Try {
-        		Write-Host ""
-        		Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+        		Write-Host "`n Task validation completed successfully, invoking cluster task on SDDC Manager `n" -ForegroundColor Green
         		$uri = "https://$sddcManager/v1/clusters"
         		$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
         		$response.elements
@@ -1120,10 +1119,8 @@ Function New-VCFCluster
         		ResponseException # Call ResponseException function to get error response from the exception
       		}
       	else {
-        		Write-Host ""
-        		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-        		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        		Write-Host ""
+        		Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+        		Write-Host $response.validationChecks.errorResponse.message `n -ForegroundColor Yellow
       		}
     	}
   	}
@@ -1180,8 +1177,7 @@ Function Set-VCFCluster
 			# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
       		if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
         		Try {
-          			Write-Host ""
-          			Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+          			Write-Host "`n Task validation completed successfully, invoking cluster task on SDDC Manager `n" -ForegroundColor Green
           			$uri = "https://$sddcManager/v1/clusters/$id/"
                     $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
                     $response
@@ -1191,10 +1187,8 @@ Function Set-VCFCluster
         		}
       		}
       		else {
-        		Write-Host ""
-        		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-        		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        		Write-Host ""
+        		Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+        		Write-Host " "$response.validationChecks.errorResponse.message `n -ForegroundColor Yellow
       		}
 		}
 		if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
@@ -1710,41 +1704,27 @@ Function New-VCFWorkloadDomain
       		[string]$json
   	)
 
-  	if (!(Test-Path $json)) {
-    	Throw "JSON File Not Found"
-  	}
-  	else {
-    	# Read the json file contents into the $ConfigJson variable
-    	$ConfigJson = (Get-Content $json)
-    	createHeader # Calls createHeader function to set Accept & Authorization
-    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-		# Validate the provided JSON input specification file
-    	$response = Validate-WorkloadDomainSpec -json $ConfigJson
-    	# the validation API does not currently support polling with a task ID
-    	Start-Sleep 5
-    	# Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    	if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-      		Try {
-        		Write-Host ""
-        		Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
-        		$uri = "https://$sddcManager/v1/domains"
-        		$response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        		Return $response
-        			Write-Host ""
-        		Return $response
-        			Write-Host ""
-      		}
-      		Catch {
-        		ResponseException # Call ResponseException function to get error response from the exception
-      		}
-    	}
-    	else {
-    		Write-Host ""
-      		Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-      		Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-      		Write-Host ""
-    	}
-  	}
+    Try {
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $response = Validate-WorkloadDomainSpec -json $ConfigJson # Validate the provided JSON input specification file # the validation API does not currently support polling with a task ID
+        Start-Sleep 5
+        # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+            Write-Host "`n Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager `n" -ForegroundColor Green
+            $uri = "https://$sddcManager/v1/domains"
+            $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            Return $response
+        }
+        else {
+            Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+            Write-Host $response.validationChecks.errorResponse.message `n -ForegroundColor Yellow
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
 
@@ -2018,62 +1998,76 @@ Function Commission-VCFHost
 {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager and commissions a list of hosts.
+        Connects to the specified SDDC Manager and commissions a list of hosts
 
         .DESCRIPTION
-        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts.
+        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts
         Host list spec is provided in a JSON file.
 
         .EXAMPLE
         PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-        This example shows how to commission a list of hosts based on the details provided in the JSON file.
+        This example shows how to commission a list of hosts based on the details provided in the JSON file
+
+        .EXAMPLE
+        PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
+        This example shows how to validate the JSON spec before starting the workflow
     #>
 
     Param (
         [Parameter (Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
+    Try {
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-
-        # Validate the provided JSON input specification file
-        $response = Validate-CommissionHostSpec -json $ConfigJson
-        # Get the task id from the validation function
-        $taskId = $response.id
-        # Keep checking until executionStatus is not IN_PROGRESS
-        Do {
-            $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
-            $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-        }
-        While ($response.executionStatus -eq "IN_PROGRESS")
+        if ( -Not $PsBoundParameters.ContainsKey("validate")) { 
+            $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS") 
             # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Try {
-                    Write-Host ""
-                    Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
-                    $uri = "https://$sddcManager/v1/hosts/"
-                    $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-                    Return $response
-                    Write-Host ""
-                }
-                Catch {
-                    ResponseException # Call ResponseException function to get error response from the exception
-                }
+                Write-Host "`n Task validation completed successfully, invoking host(s) commissioning on SDDC Manager `n" -ForegroundColor Green
+                $uri = "https://$sddcManager/v1/hosts/"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                Return $response
             }
             else {
-                Write-Host ""
-                Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-                Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-                Write-Host ""
+                Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+                Write-Host " "$response.validationChecks.errorResponse.message `n -ForegroundColor Yellow
             }
+        }
+        elseif ($PsBoundParameters.ContainsKey("validate")) {
+            $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS")
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Host "`n Task validation completed successfully `n" -ForegroundColor Green
+                Return $response
+            }
+            else {
+                Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+                Write-Host " "$response.validationChecks.errorResponse.message `n -ForegroundColor Yellow
+            }
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Commission-VCFHost
@@ -2792,46 +2786,67 @@ Function New-VCFEdgeCluster
         .EXAMPLE
         PS C:\> New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json
         This example shows how to create an NSX-T edge cluster from a json spec
+
+        .EXAMPLE
+        PS C:\> New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json -validate
+        This example shows how to validate the JSON spec for Edge Cluster creation
     #>
 
 	Param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$json
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Read the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
+    Try {
+        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        # Validate the provided JSON input specification file
-        $response = Validate-EdgeClusterSpec -json $ConfigJson
-        # the validation API does not currently support polling with a task ID
-        Start-Sleep 5
-        # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-            Try {
-                Write-Host ""
-                Write-Host "Task validation completed successfully, invoking Edge Cluster Creation on SDDC Manager" -ForegroundColor Green
+        if ( -Not $PsBoundParameters.ContainsKey("validate")) {
+            $response = Validate-EdgeClusterSpec -json $ConfigJson # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/edge-clusters/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS") 
+            # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Host "`n Task validation completed successfully, invoking NSX-T Edge Cluster Creation on SDDC Manager `n" -ForegroundColor Green
                 $uri = "https://$sddcManager/v1/edge-clusters"
                 $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
                 Return $response
-                Write-Host ""
             }
-            Catch {
-                ResponseException # Call ResponseException function to get error response from the exception
+            else {
+                Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+                Write-Host $response.validationChecks.errorResponse.message `n -ForegroundColor Yellow
             }
         }
-        else {
-            Write-Host ""
-            Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-            Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-            Write-Host ""
+        elseif ($PsBoundParameters.ContainsKey("validate")) {
+            $response = Validate-EdgeClusterSpec -json $ConfigJson # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/edge-clusters/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS")
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Host "`n Task validation completed successfully `n" -ForegroundColor Green
+                Return $response
+            }
+            else {
+                Write-Host "`n The validation task commpleted the run with the following problems: `n" -ForegroundColor Yellow
+                Write-Host " "$response.validationChecks.errorResponse.message `n -ForegroundColor Yellow
+            }
         }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
@@ -3954,10 +3969,10 @@ Function Validate-CommissionHostSpec
             [object]$json
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/hosts/validations"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/hosts/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
         Return $response
     }
@@ -3971,15 +3986,15 @@ Function Validate-WorkloadDomainSpec
 
 	Param (
         [Parameter (Mandatory=$true)]
-        [object]$json
+            [object]$json
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/domains/validations"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/domains/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
-	   Return $response
+	    Return $response
 	}
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -4036,10 +4051,10 @@ Function Validate-EdgeClusterSpec
             [object]$json
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/edge-clusters/validations"
     Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/edge-clusters/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
     Catch {
@@ -4052,7 +4067,7 @@ Function checkVCFToken
 {
     $expiryDetails = Get-JWTDetail $accessToken
     if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
-        Write-Host "API Access Token Expired. Requesting a new access token with current refresh token" -ForegroundColor Cyan
+        Write-Host "`n API Access Token Expired. Requesting a new access token with current refresh token `n" -ForegroundColor Cyan
         $headers = @{"Accept" = "application/json"}
         $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
@@ -4186,7 +4201,7 @@ Function Invoke-VCFCommand
         $sudoPrompt = "[sudo] password for vcf"
         # validate if the SDDC Manager vcf password parameter is passed, if not prompt the user and then build vcfCreds PSCredential object
         if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
-            Write-Host "Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
+            Write-Host " Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
             $vcfSecuredPassword = Read-Host -AsSecureString
             $vcfCred = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
         }
@@ -4198,7 +4213,7 @@ Function Invoke-VCFCommand
         }
         # validate if the SDDC Manager root password parameter is passed, if not prompt the user and then build rootCreds PSCredential object
     if ( -not $PsBoundParameters.ContainsKey("rootPassword") ) {
-        Write-Host "Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
+        Write-Host " Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
         $rootSecuredPassword = Read-Host -AsSecureString
         $rootCred = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
     }
@@ -4234,9 +4249,7 @@ Function Invoke-VCFCommand
         # Invoke the SSH stream command
         $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCred.Password
         if ($outInvoke) {
-            Write-Host ""
-            Write-Host "Executing the remote SoS command, output will display when the the run is completed. This might take a while, please wait..."
-            Write-Host ""
+            Write-Host "`n Executing the remote SoS command, output will display when the the run is completed. This might take a while, please wait... `n"
             $stream.Expect($sosEndMessage)
         }
         # distroy the connection previously established
@@ -4244,9 +4257,7 @@ Function Invoke-VCFCommand
         }
     }
     else {
-        Write-Host ""
-        Write-Host "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again." -ForegroundColor Yellow
-        Write-Host ""
+        Write-Host "`n PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again. `n" -ForegroundColor Yellow
     }
 }
 Export-ModuleMember -Function Invoke-VCFCommand
@@ -4262,15 +4273,12 @@ Function ResponseException
     #Get response from the exception
     $response = $_.exception.response
     if ($response) {
-        Write-Host ""
-        Write-Host "Something went wrong, please review the error message" -ForegroundColor Red -BackgroundColor Black
-        Write-Host ""
+        Write-Host "`n Something went wrong, please review the error message `n" -ForegroundColor Red -BackgroundColor Black
         $responseStream = $_.exception.response.GetResponseStream()
         $reader = New-Object system.io.streamreader($responseStream)
         $responseBody = $reader.readtoend()
         $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
         Throw $ErrorString
-        Write-Host ""
     }
     else {
         Throw $_
@@ -4325,10 +4333,9 @@ Function Resolve-PSModule
         # If module is not imported, check if available on disk and try to import
         if (Get-Module -ListAvailable | Where-Object {$_.Name -eq $moduleName}) {
             Try {
-                Write-Host ""
-                Write-Host "Module $moduleName not loaded, importing now please wait..."
+                 "`n Module $moduleName not loaded, importing now please wait..."
                 Import-Module $moduleName
-                Write-Host "Module $moduleName imported successfully."
+                Write-Host " Module $moduleName imported successfully."
                 $searchResult = "IMPORTED"
             }
             Catch {
@@ -4339,12 +4346,11 @@ Function Resolve-PSModule
             # If module is not imported & not available on disk, try PSGallery then install and import
             if (Find-Module -Name $moduleName | Where-Object {$_.Name -eq $moduleName}) {
                 Try {
-                    Write-Host ""
-                    Write-Host "Module $moduleName was missing, installing now please wait..."
+                    Write-Host "`n Module $moduleName was missing, installing now please wait..."
                     Install-Module -Name $moduleName -Force -Scope CurrentUser
-                    Write-Host "Importing module $moduleName, please wait..."
+                    Write-Host " Importing module $moduleName, please wait..."
                     Import-Module $moduleName
-                    Write-Host "Module $moduleName installed and imported"
+                    Write-Host " Module $moduleName installed and imported"
                     $searchResult = "INSTALLED_IMPORTED"
                 }
                 Catch {
