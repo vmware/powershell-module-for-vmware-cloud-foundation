@@ -4034,13 +4034,13 @@ Function checkVCFToken
         Break
     }
     else {
-    $expiryDetails = Get-JWTDetail $accessToken
-    if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
-        Write-Host "`n API Access Token Expired. Requesting a new access token with current refresh token `n" -ForegroundColor Cyan
-        $headers = @{"Accept" = "application/json"}
-        $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
-        $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
-        $Global:accessToken = $response
+    	$expiryDetails = Get-JWTDetail $accessToken
+    	if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
+       	    Write-Host "`n API Access Token Expired. Requesting a new access token with current refresh token `n" -ForegroundColor Cyan
+            $headers = @{"Accept" = "application/json"}
+            $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
+            $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
+            $Global:accessToken = $response
         }
     }
 }
