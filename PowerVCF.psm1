@@ -4029,6 +4029,11 @@ Function Validate-EdgeClusterSpec
 
 Function checkVCFToken
 {
+    if (!$accessToken) {
+        Write-Host "`n API Access Token Required. Request an Access Token by running Connect-VCFManager `n" -ForegroundColor Cyan
+        Break
+    }
+    else {
     $expiryDetails = Get-JWTDetail $accessToken
     if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
         Write-Host "`n API Access Token Expired. Requesting a new access token with current refresh token `n" -ForegroundColor Cyan
@@ -4036,6 +4041,7 @@ Function checkVCFToken
         $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
         $Global:accessToken = $response
+        }
     }
 }
 
