@@ -2033,7 +2033,7 @@ Function Commission-VCFHost
                 $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
                 $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
             }
-            While ($response.executionStatus -eq "IN_PROGRESS")
+            While ($response.executionStatus -eq "IkN_PROGRESS")
             # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Write-Host "`n Task validation completed successfully, invoking host(s) commissioning on SDDC Manager `n" -ForegroundColor Green
@@ -3646,6 +3646,56 @@ Function Remove-VCFUser
     }
  }
 Export-ModuleMember -Function Remove-VCFUser
+
+Function New-VCFGroup
+{
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and adds a new group.
+
+        .DESCRIPTION
+        The New-VCFGroup cmdlet connects to the specified SDDC Manager and adds a new group with a specified role.
+
+        .EXAMPLE
+        PS C:\> New-VCFGroup -group vcf-group -domain rainpole.io -role ADMIN
+        This example shows how to add a new group with a specified role
+    #> 
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$group,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domain,
+        [Parameter (Mandatory=$true)]
+            [ValidateSet("ADMIN","OPERATOR")]
+            [string]$role
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users"
+        #Get the Role ID
+        $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
+        #$domain = $user.split('@')
+        $body = '[{
+          "name" : "'+$group+'",
+          "domain" : "'+$domain.ToUpper()+'",
+          "type" : "GROUP",
+          "role" : {
+            "id" : "'+$roleID+'"
+          }
+        }]'
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+ }
+Export-ModuleMember -Function New-VCFGroup
 
 ######### End APIs for managing Users ##########
 
