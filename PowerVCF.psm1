@@ -3462,6 +3462,34 @@ Export-ModuleMember -Function Get-VCFUpgradable
 
 ######### Start APIs for managing Upgrades ##########
 
+Function Get-VCFUpgrade
+{
+    <#
+        .SYNOPSIS
+        Get the Upgrade
+
+        .DESCRIPTION
+        Fetches the list of Upgradables in the System. Only one Upgradable becomes AVAILABLE for Upgrade.
+        The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
+
+        .EXAMPLE
+        PS C:\> Get-VCFUpgradable
+        This example shows how to retrieve the list of upgradables in the system
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/upgrades"
+        $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFUpgrade
+
 ######### End APIs for managing Upgrades ##########
 
 
