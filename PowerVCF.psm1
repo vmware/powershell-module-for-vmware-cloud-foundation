@@ -2033,7 +2033,7 @@ Function Commission-VCFHost
                 $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
                 $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
             }
-            While ($response.executionStatus -eq "IkN_PROGRESS")
+            While ($response.executionStatus -eq "IN_PROGRESS")
             # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Write-Host "`n Task validation completed successfully, invoking host(s) commissioning on SDDC Manager `n" -ForegroundColor Green
