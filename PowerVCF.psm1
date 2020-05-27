@@ -3448,7 +3448,7 @@ Function Get-VCFUpgradable
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/system/upgradables"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-        $response
+        $response.elements
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
