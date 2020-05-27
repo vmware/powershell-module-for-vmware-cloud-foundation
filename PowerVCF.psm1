@@ -3469,12 +3469,11 @@ Function Get-VCFUpgrade
         Get the Upgrade
 
         .DESCRIPTION
-        Fetches the list of Upgradables in the System. Only one Upgradable becomes AVAILABLE for Upgrade.
-        The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
+        The Get-VCFUpgrade cmdlet retrives a list of upgradable resources in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFUpgradable
-        This example shows how to retrieve the list of upgradables in the system
+        PS C:\> Get-VCFUpgrade
+        This example shows how to retrieve the list of upgradable resources in the system
     #>
 
     Try {
@@ -3482,13 +3481,47 @@ Function Get-VCFUpgrade
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/upgrades"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-        $response.elements
+        $response
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
     }
 }
 Export-ModuleMember -Function Get-VCFUpgrade
+
+Function Start-VCFUpgrade
+{
+    <#
+        .SYNOPSIS
+        Schedule/Trigger Upgrade of a Resource
+
+        .DESCRIPTION
+        The Start-VCFUpgrade cmdlet triggers an upgrade of a resource in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> VCFUpgrade -json .\Upgrade\upgradespec.json
+        This example invokes an upgrade in SDDC Manager
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    createHeader # Calls createHeader function to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+    $uri = "https://$sddcManager/v1/upgrades"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
+        $response
+    }
+    Catch {
+        ResponseException # Call the ResponseException function which handles execption messages
+    }
+}
+Export-ModuleMember -Function Start-VCFUpgrade
 
 ######### End APIs for managing Upgrades ##########
 
