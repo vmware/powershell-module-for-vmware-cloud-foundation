@@ -36,6 +36,12 @@ Get-VCFUser -type SERVICE
 ```
 This example list all service users in SDDC Manager
 
+#### Example 5
+```
+Get-VCFUser -domain rainpole.io
+```
+This example list all users and groups based on the authentication domain provided in SDDC Manager
+
 ### Parameters
 
 #### -type
@@ -50,6 +56,20 @@ Required: True
 Position: Named
 Default value: None
 Supported Value: USER, GROUP, SERVICE
+```
+
+#### -domain
+- The authentication domian
+
+```yaml
+Type: string
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Supported Value: Any
 ```
 
 ### Notes

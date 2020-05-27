@@ -3492,12 +3492,19 @@ Function Get-VCFUser
         .EXAMPLE
         PS C:\> Get-VCFUser -type SERVICE
         This example list all service users in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFUser -domain rainpole.io
+        This example list all users and groups based on the authentication domain provided in SDDC Manager
     #>
 
     Param (
         [Parameter (Mandatory=$false)]
             [ValidateSet("USER","GROUP","SERVICE")]
-            [string]$type
+            [string]$type,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domain
     )
 
     Try {
@@ -3507,6 +3514,9 @@ Function Get-VCFUser
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         if ($PsBoundParameters.ContainsKey("type")) {
             $response.elements | Where {$_.type -eq $type}
+        }
+        elseif ($PsBoundParameters.ContainsKey("domain")) {
+            $response.elements | Where {$_.domain -eq $domain}
         }
         else {
             $response.elements
