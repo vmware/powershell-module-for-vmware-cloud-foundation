@@ -3476,12 +3476,25 @@ Function Get-VCFUpgrade
         This example shows how to retrieve the list of upgradable resources in the system
     #>
 
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/upgrades"
-        $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-        $response
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/upgrades"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        } 
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/upgrades/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
