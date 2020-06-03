@@ -3475,19 +3475,52 @@ Function Get-VCFUser
         Get all Users
 
         .DESCRIPTION
-        The Get-VCFUser cmdlet gets a list of users in SDDC Manager
+        The Get-VCFUser cmdlet gets a list of users, groups and service users in SDDC Manager
 
         .EXAMPLE
         PS C:\> Get-VCFUser
+        This example list all users, groups and service users in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFUser -type USER
         This example list all users in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFUser -type GROUP
+        This example list all groups in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFUser -type SERVICE
+        This example list all service users in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFUser -domain rainpole.io
+        This example list all users and groups based on the authentication domain provided in SDDC Manager
     #>
+
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateSet("USER","GROUP","SERVICE")]
+            [string]$type,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domain
+    )
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/users"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
+        if ($PsBoundParameters.ContainsKey("type")) {
+            $response.elements | Where {$_.type -eq $type}
+        }
+        elseif ($PsBoundParameters.ContainsKey("domain")) {
+            $response.elements | Where {$_.domain -eq $domain}
+        }
+        else {
+            $response.elements
+        }
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -3646,6 +3679,56 @@ Function Remove-VCFUser
     }
  }
 Export-ModuleMember -Function Remove-VCFUser
+
+Function New-VCFGroup
+{
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and adds a new group
+
+        .DESCRIPTION
+        The New-VCFGroup cmdlet connects to the specified SDDC Manager and adds a new group with a specified role
+
+        .EXAMPLE
+        PS C:\> New-VCFGroup -group ug-vcf-group -domain rainpole.io -role ADMIN
+        This example shows how to add a new group with a specified role
+    #> 
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$group,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domain,
+        [Parameter (Mandatory=$true)]
+            [ValidateSet("ADMIN","OPERATOR")]
+            [string]$role
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/users"
+        #Get the Role ID
+        $roleID = Get-VCFRole | Where-object {$_.name -eq $role} | Select-Object -ExpandProperty id
+        #$domain = $user.split('@')
+        $body = '[{
+          "name" : "'+$group+'",
+          "domain" : "'+$domain.ToUpper()+'",
+          "type" : "GROUP",
+          "role" : {
+            "id" : "'+$roleID+'"
+          }
+        }]'
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
+        $response.elements
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+ }
+Export-ModuleMember -Function New-VCFGroup
 
 ######### End APIs for managing Users ##########
 
