@@ -3026,19 +3026,34 @@ Function Restart-CloudBuilderSDDC
         .EXAMPLE
         PS C:\> Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
         This example retries a deployment on Cloud Builder based on the ID
+
+        .EXAMPLE
+        PS C:\> Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31 -json .\SampleJSON\SDDC\SddcSpec.json
+        This example retries a deployment on Cloud Builder based on the ID with an updated JSON file
     #>
 
     Param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$id
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
     )
 
     Try {
         createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
-        $uri = "https://$cloudBuilder/v1/sddcs/$id"
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
-        $response
+        if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("json"))) {
+            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+            $uri = "https://$cloudBuilder/v1/sddcs/$id"
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        elseif ($PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("json"))) {
+            $uri = "https://$cloudBuilder/v1/sddcs/$id"
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
+            $response
+        }
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception

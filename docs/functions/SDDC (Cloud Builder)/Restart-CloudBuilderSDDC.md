@@ -18,6 +18,12 @@ Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
 ```
 This example retries a deployment on Cloud Builder based on the ID
 
+#### Example 2
+```
+Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31 -json .\SampleJSON\SDDC\SddcSpec.json
+```
+This example retries a deployment on Cloud Builder based on the ID with an updated JSON file
+
 ### Parameters
 
 #### -id
