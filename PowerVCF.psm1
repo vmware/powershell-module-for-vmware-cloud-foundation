@@ -4317,7 +4317,6 @@ Function ResponseException
     #Get response from the exception
     $response = $_.exception.response
     if ($response) {
-        #Write-Host "`n Something went wrong, please review the error message `n" -ForegroundColor Red -BackgroundColor Black
         $responseStream = $_.exception.response.GetResponseStream()
         $reader = New-Object system.io.streamreader($responseStream)
         $responseBody = $reader.readtoend()
