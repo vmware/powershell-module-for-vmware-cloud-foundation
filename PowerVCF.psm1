@@ -3875,6 +3875,60 @@ Export-ModuleMember -Function Get-VCFService
 
 ######### Start APIs for managing DNS & NTP Configuration ##########
 
+Function Get-VCFConfigurationDNS
+{
+    <#
+        .SYNOPSIS
+        Gets the current DNS Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationDNS cmdlet retrieves the DNS configuration of the connected SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationDNS
+        This example shows how to get the DNS configuration of the connected SDDC Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/dns-configuration"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.dnsServers
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationDNS
+
+Function Get-VCFConfigurationNTP
+{
+    <#
+        .SYNOPSIS
+        Gets the current NTP Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationNTP cmdlet retrieves the NTP configuration of the connected SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationNTP
+        This example shows how to get the NTP configuration of the connected SDDC Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/ntp-configuration"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.ntpServers
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationNTP
+
 ######### End APIs for managing DNS & NTP Configuration ##########
 
 
