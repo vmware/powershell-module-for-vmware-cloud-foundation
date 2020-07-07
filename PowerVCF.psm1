@@ -47,22 +47,22 @@ if ($PSEdition -eq 'Desktop') {
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
-Function Connect-VCFManager
+Function Request-VCFToken
 {
     <#
 		.SYNOPSIS
     	Connects to the specified SDDC Manager and requests API access & refresh tokens
 
     	.DESCRIPTION
-    	The Connect-VCFManager cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
+    	The Request-VCFToken cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
     	It is required once per session before running all other cmdlets
 
     	.EXAMPLE
-    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.io -username sec-admin@rainpole.io -password VMware1!
+    	PS C:\> Request-VCFToken -fqdn sfo01vcf01.sfo.rainpole.io -username sec-admin@rainpole.io -password VMware1!
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
         .EXAMPLE
-    	PS C:\> Connect-VCFManager -fqdn sfo01vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
+    	PS C:\> Request-VCFToken -fqdn sfo01vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
         This example shows how to connect to SDDC Manager using basic auth for restoring backups
   	#>
 
@@ -81,12 +81,14 @@ Function Connect-VCFManager
       		[switch]$basicAuth
   	)
 
-  	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
+  	If ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
    		# Request Credentials
     	$creds = Get-Credential
     	$username = $creds.UserName.ToString()
     	$password = $creds.GetNetworkCredential().password
-  	}
+    }
+    
+    If ($MyInvocation.InvocationName -eq "Connect-VCFManager") {Write-Warning "Connect-VCFManager is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Request-VCFToken. Please refactor to Request-VCFToken at earliest opportunity."}
 
     $Global:sddcManager = $fqdn
 
@@ -130,7 +132,8 @@ Function Connect-VCFManager
         }
     }
 }
-Export-ModuleMember -Function Connect-VCFManager
+New-Alias -name Connect-VCFManager -Value Request-VCFToken
+Export-ModuleMember -Alias Connect-VCFManager -Function Request-VCFToken
 
 Function Connect-CloudBuilder
 {
@@ -159,7 +162,7 @@ Function Connect-CloudBuilder
       		[string]$password
   	)
 
-  	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("username"))) {
+  	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
     	# Request Credentials
     	$creds = Get-Credential
     	$username = $creds.UserName.ToString()
@@ -249,7 +252,7 @@ Function Get-VCFApplicationVirtualNetwork
     	}
   	}
   	Catch {
-   		ResponseException # Call ResponseException function to get error response from the exception
+   		$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
@@ -286,7 +289,7 @@ Function Get-VCFBackupConfiguration
         $response.backupLocations
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
@@ -331,7 +334,7 @@ Function Set-VCFBackupConfiguration
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
@@ -360,7 +363,7 @@ Function Start-VCFBackup
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   }
 }
 Export-ModuleMember -Function Start-VCFBackup
@@ -395,7 +398,7 @@ Function Start-VCFRestore
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   }
 }
 Export-ModuleMember -Function Start-VCFRestore
@@ -429,7 +432,7 @@ Function Get-VCFRestoreTask
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFRestoreTask
@@ -487,7 +490,7 @@ Function Get-VCFBundle
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFBundle
@@ -522,7 +525,7 @@ Function Request-VCFBundle
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Request-VCFBundle
@@ -598,7 +601,7 @@ Function Get-VCFCeip
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFCeip
@@ -645,7 +648,7 @@ Function Set-VCFCeip
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Set-VCFCeip
@@ -701,7 +704,7 @@ Function Get-VCFCertificateAuthority
     	}
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthority
@@ -734,7 +737,7 @@ Function Remove-VCFCertificateAuthority
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Remove-VCFCertificateAuthority
@@ -779,7 +782,7 @@ Function Set-VCFMicrosoftCA
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson # No response from API
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
@@ -816,7 +819,7 @@ Function Get-VCFCertificateCSR
     	$response.elements
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
@@ -860,7 +863,7 @@ Function Request-VCFCertificateCSR
       		$response
     	}
     	Catch {
-      		ResponseException # Call ResponseException function to get error response from the exception
+      		$errorString = ResponseException; Write-Error $errorString
     	}
   	}
 }
@@ -916,7 +919,7 @@ Function Get-VCFCertificate
     	}
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFCertificate
@@ -962,7 +965,7 @@ Function Request-VCFCertificate
       		$response
     	}
     	Catch {
-      		ResponseException # Call ResponseException function to get error response from the exception
+      		$errorString = ResponseException; Write-Error $errorString
     	}
   	}
 }
@@ -1005,7 +1008,7 @@ Function Set-VCFCertificate
       		$response
     	}
     	Catch {
-      		ResponseException # Call ResponseException function to get error response from the exception
+      		$errorString = ResponseException; Write-Error $errorString
     	}
   	}
 }
@@ -1068,7 +1071,7 @@ Function Get-VCFCluster
 		}
 	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFCluster
@@ -1113,7 +1116,7 @@ Function New-VCFCluster
         		$response.elements
       		}
       		Catch {
-        		ResponseException # Call ResponseException function to get error response from the exception
+        		$errorString = ResponseException; Write-Error $errorString
       		}
       	else {
         		Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
@@ -1179,7 +1182,7 @@ Function Set-VCFCluster
                     $response
                 }
 				Catch {
-          			ResponseException # Call ResponseException function to get error response from the exception
+          			$errorString = ResponseException; Write-Error $errorString
         		}
       		}
       		else {
@@ -1193,7 +1196,7 @@ Function Set-VCFCluster
 		}
 	}
 	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
 	}
 }
 Export-ModuleMember -Function Set-VCFCluster
@@ -1227,7 +1230,7 @@ Function Remove-VCFCluster
         $response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Remove-VCFCluster
@@ -1260,7 +1263,7 @@ Function Get-VCFClusterValidation
       	$response
 	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFClusterValidation
@@ -1340,7 +1343,7 @@ Function Get-VCFCredential
     }
   }
   Catch {
-    ResponseException # Call ResponseException function to get error response from the exception
+    $errorString = ResponseException; Write-Error $errorString
   }
 }
 Export-ModuleMember -Function Get-VCFCredential
@@ -1382,7 +1385,7 @@ Function Set-VCFCredential
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Set-VCFCredential
@@ -1439,7 +1442,7 @@ Function Get-VCFCredentialTask
     	}
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
@@ -1477,7 +1480,7 @@ Function Stop-VCFCredentialTask
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Stop-VCFCredentialTask
@@ -1526,7 +1529,7 @@ Function Restart-VCFCredentialTask
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Restart-VCFCredentialTask
@@ -1559,7 +1562,7 @@ Function Get-VCFDepotCredential
     	$response.vmwareAccount
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFDepotCredential
@@ -1599,7 +1602,7 @@ Function Set-VCFDepotCredential
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Set-VCFDepotCredential
@@ -1674,7 +1677,7 @@ Function Get-VCFWorkloadDomain
     	}
 	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   }
 }
 Export-ModuleMember -Function Get-VCFWorkloadDomain
@@ -1718,7 +1721,7 @@ Function New-VCFWorkloadDomain
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
@@ -1752,7 +1755,7 @@ Function Set-VCFWorkloadDomain
     	Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body # This API does not return a response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Set-VCFWorkloadDomain
@@ -1786,7 +1789,7 @@ Function Remove-VCFWorkloadDomain
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
@@ -1823,7 +1826,7 @@ Function Get-VCFFederation
     	$response
   	}
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Get-VCFFederation
@@ -1861,7 +1864,7 @@ Function Set-VCFFederation
       		$response
     	}
     	Catch {
-      		ResponseException # Call ResponseException function to get error response from the exception
+      		$errorString = ResponseException; Write-Error $errorString
     	}
   	}
 }
@@ -1905,7 +1908,7 @@ Function Remove-VCFFederation
       	$response
     }
   	Catch {
-    	ResponseException # Call ResponseException function to get error response from the exception
+    	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Remove-VCFFederation
@@ -1983,27 +1986,27 @@ Function Get-VCFHost
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFHost
 
-Function Commission-VCFHost
+Function New-VCFCommissionedHost
 {
     <#
         .SYNOPSIS
         Connects to the specified SDDC Manager and commissions a list of hosts
 
         .DESCRIPTION
-        The Commission-VCFHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts
+        The New-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts
         Host list spec is provided in a JSON file.
 
         .EXAMPLE
-        PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
+        PS C:\> New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json
         This example shows how to commission a list of hosts based on the details provided in the JSON file
 
         .EXAMPLE
-        PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
+        PS C:\> New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
         This example shows how to validate the JSON spec before starting the workflow
     #>
 
@@ -2015,6 +2018,8 @@ Function Commission-VCFHost
             [ValidateNotNullOrEmpty()]
             [switch]$validate
     )
+
+    If ($MyInvocation.InvocationName -eq "Commission-VCFHost") {Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity."}
 
     Try {
         validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
@@ -2059,22 +2064,23 @@ Function Commission-VCFHost
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
-Export-ModuleMember -Function Commission-VCFHost
+New-Alias -name Commission-VCFHost -Value New-VCFCommissionedHost
+Export-ModuleMember -Alias Commission-VCFHost -Function New-VCFCommissionedHost
 
-Function Decommission-VCFHost
+Function Remove-VCFCommissionedHost
 {
     <#
         .SYNOPSIS
         Connects to the specified SDDC Manager and decommissions a list of hosts. Host list is provided in a JSON file.
 
         .DESCRIPTION
-        The Decommission-VCFHost cmdlet connects to the specified SDDC Manager and decommissions a list of hosts.
+        The Remove-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and decommissions a list of hosts.
 
         .EXAMPLE
-        PS C:\> Decommission-VCFHost -json .\Host\decommissionHostSpec.json
+        PS C:\> Remove-VCFCommissionedHost -json .\Host\decommissionHostSpec.json
         This example shows how to decommission a set of hosts based on the details provided in the JSON file.
     #>
 
@@ -2083,6 +2089,8 @@ Function Decommission-VCFHost
             [ValidateNotNullOrEmpty()]
             [string]$json
     )
+
+    If ($MyInvocation.InvocationName -eq "Decommission-VCFHost") {Write-Warning "Decommission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Remove-VCFCommissionedHost. Please refactor to Remove-VCFCommissionedHost at earliest opportunity."}
 
     if (!(Test-Path $json)) {
         Throw "JSON File Not Found"
@@ -2098,11 +2106,12 @@ Function Decommission-VCFHost
 			$response
         }
         Catch {
-            ResponseException # Call ResponseException function to get error response from the exception
+            $errorString = ResponseException; Write-Error $errorString
         }
     }
 }
-Export-ModuleMember -Function Decommission-VCFHost
+New-Alias -name Decommission-VCFHost -value Remove-VCFCommissionedHost
+Export-ModuleMember -Alias Decommission-VCFHost -Function Remove-VCFCommissionedHost
 
 ######### End APIs for managing Hosts ##########
 
@@ -2175,7 +2184,7 @@ Function Get-VCFLicenseKey
 		}
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
@@ -2216,7 +2225,7 @@ Function New-VCFLicenseKey
             Get-VCFLicenseKey -key $licenseKey
         }
         Catch {
-            ResponseException # Call ResponseException function to get error response from the exception
+            $errorString = ResponseException; Write-Error $errorString
         }
     }
 }
@@ -2250,7 +2259,7 @@ Function Remove-VCFLicenseKey
         Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
@@ -2288,7 +2297,7 @@ Function Get-VCFFederationMember
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFFederationMember
@@ -2332,7 +2341,7 @@ Function New-VCFFederationInvite
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function New-VCFFederationInvite
@@ -2380,7 +2389,7 @@ Function Join-VCFFederation
                 $response
             }
         Catch {
-            ResponseException # Call ResponseException function to get error response from the exception
+            $errorString = ResponseException; Write-Error $errorString
         }
     }
 }
@@ -2436,7 +2445,7 @@ Function Get-VCFNsxtCluster
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
@@ -2498,7 +2507,7 @@ Function Get-VCFNetworkPool
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkPool
@@ -2536,7 +2545,7 @@ Function New-VCFNetworkPool
 		Get-VCFNetworkPool -name $poolName
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function New-VCFNetworkPool
@@ -2568,7 +2577,7 @@ Function Remove-VCFNetworkPool
         Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
@@ -2616,7 +2625,7 @@ Function Get-VCFNetworkIPPool
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkIPPool
@@ -2660,7 +2669,7 @@ Function Add-VCFNetworkIPPool
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Add-VCFNetworkIPPool
@@ -2704,7 +2713,7 @@ Function Remove-VCFNetworkIPPool
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
@@ -2754,7 +2763,7 @@ Function Get-VCFEdgeCluster
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFEdgeCluster
@@ -2829,7 +2838,7 @@ Function New-VCFEdgeCluster
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
@@ -2879,7 +2888,7 @@ Function Get-VCFPersonality
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFPersonality
@@ -2918,7 +2927,7 @@ Function Get-VCFFederationTask
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFFederationTask
@@ -2967,7 +2976,7 @@ Function Get-CloudBuilderSDDC
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDC
@@ -3000,7 +3009,7 @@ Function Start-CloudBuilderSDDC
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Start-CloudBuilderSDDC
@@ -3047,7 +3056,7 @@ Function Restart-CloudBuilderSDDC
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDC
@@ -3090,7 +3099,7 @@ Function Get-CloudBuilderSDDCValidation
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDCValidation
@@ -3123,7 +3132,7 @@ Function Start-CloudBuilderSDDCValidation
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Start-CloudBuilderSDDCValidation
@@ -3155,7 +3164,7 @@ Function Stop-CloudBuilderSDDCValidation
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Stop-CloudBuilderSDDCValidation
@@ -3187,7 +3196,7 @@ Function Restart-CloudBuilderSDDCValidation
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
@@ -3249,7 +3258,7 @@ Function Get-VCFManager
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFManager
@@ -3288,7 +3297,7 @@ Function Start-VCFSystemPrecheck
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Start-VCFSystemPrecheck
@@ -3321,7 +3330,7 @@ Function Get-VCFSystemPrecheckTask
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFSystemPrecheckTask
@@ -3383,7 +3392,7 @@ Function Get-VCFTask
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFTask
@@ -3416,7 +3425,7 @@ Function Restart-VCFTask
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Restart-VCFTask
@@ -3456,7 +3465,7 @@ Function Get-VCFUpgradable
         $response.elements
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFUpgradable
@@ -3502,7 +3511,7 @@ Function Get-VCFUpgrade
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFUpgrade
@@ -3602,7 +3611,7 @@ Function Get-VCFUser
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFUser
@@ -3649,7 +3658,7 @@ Function New-VCFUser
         $response.elements
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
  }
 Export-ModuleMember -Function New-VCFUser
@@ -3694,7 +3703,7 @@ Function New-VCFServiceUser
         $response.elements
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
   }
 Export-ModuleMember -Function New-VCFServiceUser
@@ -3721,7 +3730,7 @@ Function Get-VCFRole
         $response.elements
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFRole
@@ -3754,7 +3763,7 @@ Function Remove-VCFUser
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
  }
 Export-ModuleMember -Function Remove-VCFUser
@@ -3804,7 +3813,7 @@ Function New-VCFGroup
         $response.elements
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
  }
 Export-ModuleMember -Function New-VCFGroup
@@ -3854,7 +3863,7 @@ Function Get-VCFService
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFService
@@ -3934,7 +3943,7 @@ Function Get-VCFvCenter
     }
   }
   Catch {
-    ResponseException # Call ResponseException function to get error response from the exception
+    $errorString = ResponseException; Write-Error $errorString
   }
 }
 Export-ModuleMember -Function Get-VCFvCenter
@@ -3967,7 +3976,7 @@ Function Get-VCFvRSLCM
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
@@ -4019,7 +4028,7 @@ Function New-VCFvRSLCM
             }
         }
         Catch {
-            ResponseException # Call ResponseException function to get error response from the exception
+            $errorString = ResponseException; Write-Error $errorString
         }
     }
 }
@@ -4076,7 +4085,7 @@ Function Reset-VCFvRSLCM
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Reset-VCFvRSLCM
@@ -4103,7 +4112,7 @@ Function Validate-CommissionHostSpec
         Return $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
   }
 }
 
@@ -4123,7 +4132,7 @@ Function Validate-WorkloadDomainSpec
 	    Return $response
 	}
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 
@@ -4142,7 +4151,7 @@ Function Validate-VCFClusterSpec
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
     Return $response
 }
@@ -4164,7 +4173,7 @@ Function Validate-VCFUpdateClusterSpec
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
     Return $response
 }
@@ -4184,7 +4193,7 @@ Function Validate-EdgeClusterSpec
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
 	}
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
     Return $response
 }
@@ -4192,7 +4201,7 @@ Function Validate-EdgeClusterSpec
 Function checkVCFToken
 {
     if (!$accessToken) {
-        Write-Error "API Access Token Required. Request an Access Token by running Connect-VCFManager"
+        Write-Error "API Access Token Required. Request an Access Token by running Request-VCFToken"
         Break
     }
     else {
@@ -4372,7 +4381,7 @@ Function Invoke-VCFCommand
         $sessionSSH = New-SSHSession -Computer $sddcManager -Credential $vcfCred -AcceptKey
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
     if ($sessionSSH.Connected -eq "True") {
         $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
@@ -4408,12 +4417,12 @@ Function ResponseException
         $responseStream = $_.exception.response.GetResponseStream()
         $reader = New-Object system.io.streamreader($responseStream)
         $responseBody = $reader.readtoend()
-        $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-        Write-Error $ErrorString
+        $errorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
     }
     else {
         Throw $_
     }
+    Return $errorString
 }
 
 Function createHeader
