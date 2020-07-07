@@ -4014,6 +4014,91 @@ Function Get-VCFConfigurationNTP
 }
 Export-ModuleMember -Function Get-VCFConfigurationNTP
 
+Function Get-VCFConfigurationNTPValidation
+{
+    <#
+        .SYNOPSIS
+        Get the status of the validation of the input for the NTP Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationNTPValidation cmdlet retrieves the status of the validation of the NTP Configuration
+        JSON
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationNTPValidation
+        This example shows how to get the status of the validation of the NTP Configuration
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/ntp-configuration/validations/$id"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationNTPValidation
+
+Function Set-VCFConfigurationNTP
+{
+    <#
+        .SYNOPSIS
+        Configures NTP for all systems
+
+        .DESCRIPTION
+        The Set-VCFConfigurationNTP cmdlet configures the NTP Server for all systems managed by SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationNTP -json $jsonSpec
+        This example shows how to configure the NTP Servers for all systems managed by SDDC Manager using a variable
+
+       .EXAMPLE
+        PS C:\> Set-VCFConfigurationNTP (Get-Content -Raw .\ntpSpec.json)
+        This example shows how to configure the NTP Servers for all systems managed by SDDC Manager using a JSON file
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationNTP -json $jsonSpec -validate
+        This example shows how to validate the NTP configuration only
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("validate")) {
+            $uri = "https://$sddcManager/v1/system/ntp-configuration/validations"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/system/ntp-configuration"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Set-VCFConfigurationNTP
+
 ######### End APIs for managing DNS & NTP Configuration ##########
 
 
