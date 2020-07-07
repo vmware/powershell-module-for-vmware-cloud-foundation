@@ -3017,19 +3017,34 @@ Function Restart-CloudBuilderSDDC
         .EXAMPLE
         PS C:\> Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
         This example retries a deployment on Cloud Builder based on the ID
+
+        .EXAMPLE
+        PS C:\> Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31 -json .\SampleJSON\SDDC\SddcSpec.json
+        This example retries a deployment on Cloud Builder based on the ID with an updated JSON file
     #>
 
     Param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$id
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
     )
 
     Try {
         createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
-        $uri = "https://$cloudBuilder/v1/sddcs/$id"
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
-        $response
+        if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("json"))) {
+            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+            $uri = "https://$cloudBuilder/v1/sddcs/$id"
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        elseif ($PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("json"))) {
+            $uri = "https://$cloudBuilder/v1/sddcs/$id"
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
+            $response
+        }
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -3268,9 +3283,8 @@ Function Start-VCFSystemPrecheck
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         $uri = "https://$sddcManager/v1/system/prechecks"
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
         $response
     }
     Catch {
@@ -3439,7 +3453,7 @@ Function Get-VCFUpgradable
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/system/upgradables"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
-        $response
+        $response.elements
     }
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
@@ -3452,6 +3466,80 @@ Export-ModuleMember -Function Get-VCFUpgradable
 
 
 ######### Start APIs for managing Upgrades ##########
+
+Function Get-VCFUpgrade
+{
+    <#
+        .SYNOPSIS
+        Get the Upgrade
+
+        .DESCRIPTION
+        The Get-VCFUpgrade cmdlet retrives a list of upgradable resources in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFUpgrade
+        This example shows how to retrieve the list of upgradable resources in the system
+    #>
+
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/upgrades"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        } 
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/upgrades/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFUpgrade
+
+Function Start-VCFUpgrade
+{
+    <#
+        .SYNOPSIS
+        Schedule/Trigger Upgrade of a Resource
+
+        .DESCRIPTION
+        The Start-VCFUpgrade cmdlet triggers an upgrade of a resource in SDDC Manager
+
+        .EXAMPLE
+        PS C:\> VCFUpgrade -json .\Upgrade\upgradespec.json
+        This example invokes an upgrade in SDDC Manager
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json
+    )
+
+    createHeader # Calls createHeader function to set Accept & Authorization
+    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    #validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+    $uri = "https://$sddcManager/v1/upgrades"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $json
+        $response
+    }
+    Catch {
+        ResponseException # Call the ResponseException function which handles execption messages
+    }
+}
+Export-ModuleMember -Function Start-VCFUpgrade
 
 ######### End APIs for managing Upgrades ##########
 

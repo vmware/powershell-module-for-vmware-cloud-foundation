@@ -1,0 +1,10 @@
+{
+  "bundleId": "6b5d5a0e-5bdc-4679-82c3-860bd660ea83",
+  "parallelUpgrade": true,
+  "resourceType": "DOMAIN",
+  "resourceUpgradeSpecs": [ {
+      "resourceId": "565d2fc3-00a3-4f25-b868-2d25db933614",
+      "shutdownVms": false,
+      "upgradeNow": true
+  } ]
+}
