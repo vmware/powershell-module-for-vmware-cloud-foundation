@@ -3521,7 +3521,7 @@ Function Start-VCFUpgrade
         This example invokes an upgrade in SDDC Manager using a variable
 
         .EXAMPLE
-        PS C:\> Start-VCFUpgrade -json (Get-Content -Raw .\sddcManagerUpgrade.json)
+        PS C:\> Start-VCFUpgrade -json (Get-Content -Raw .\upgradeDomain.json)
         This example invokes an upgrade in SDDC Manager by passing a JSON file
 
     #>
@@ -3901,6 +3901,91 @@ Function Get-VCFConfigurationDNS
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationDNS
+
+Function Get-VCFConfigurationDNSValidation
+{
+    <#
+        .SYNOPSIS
+        Get the status of the validation of the input for the DNS Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationDNSValidation cmdlet retrieves the status of the validation of the DNS Configuration
+        JSON
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationDNSValidation
+        This example shows how to get the status of the validation of the DNS Configuration
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/dns-configuration/validations/$id"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationDNSValidation
+
+Function Set-VCFConfigurationDNS
+{
+    <#
+        .SYNOPSIS
+        Configures DNS for all systems
+
+        .DESCRIPTION
+        The Set-VCFConfigurationDNS cmdlet configures the DNS Server for all systems managed by SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationDNS -json $jsonSpec
+        This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a variable
+
+       .EXAMPLE
+        PS C:\> Set-VCFConfigurationDNS (Get-Content -Raw .\dnsSpec.json)
+        This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a JSON file
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationDNS -json $jsonSpec -validate
+        This example shows how to validate the DNS configuration only
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("validate")) {
+            $uri = "https://$sddcManager/v1/system/dns-configuration/validations"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/system/dns-configuration"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+    }
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
+    }
+}
+Export-ModuleMember -Function Set-VCFConfigurationDNS
 
 Function Get-VCFConfigurationNTP
 {
