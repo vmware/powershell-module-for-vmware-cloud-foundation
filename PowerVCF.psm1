@@ -3502,7 +3502,7 @@ Function Get-VCFUpgrade
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/upgrades"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
+            $response.elements
         } 
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/upgrades/$id"
