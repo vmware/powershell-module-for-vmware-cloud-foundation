@@ -3517,8 +3517,13 @@ Function Start-VCFUpgrade
         The Start-VCFUpgrade cmdlet triggers an upgrade of a resource in SDDC Manager
 
         .EXAMPLE
-        PS C:\> VCFUpgrade -json .\Upgrade\upgradespec.json
-        This example invokes an upgrade in SDDC Manager
+        PS C:\> Start-VCFUpgrade -json $jsonSpec
+        This example invokes an upgrade in SDDC Manager using a variable
+
+        .EXAMPLE
+        PS C:\> Start-VCFUpgrade -json (Get-Content -Raw .\sddcManagerUpgrade.json)
+        This example invokes an upgrade in SDDC Manager by passing a JSON file
+
     #>
 
     Param (
@@ -3529,10 +3534,9 @@ Function Start-VCFUpgrade
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    #validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
     $uri = "https://$sddcManager/v1/upgrades"
     Try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $json
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
         $response
     }
     Catch {
@@ -3756,7 +3760,7 @@ Function Remove-VCFUser
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
     }
- }
+}
 Export-ModuleMember -Function Remove-VCFUser
 
 Function New-VCFGroup
@@ -3806,7 +3810,7 @@ Function New-VCFGroup
     Catch {
         ResponseException # Call ResponseException function to get error response from the exception
     }
- }
+}
 Export-ModuleMember -Function New-VCFGroup
 
 ######### End APIs for managing Users ##########
@@ -3905,37 +3909,37 @@ Function Get-VCFvCenter
     This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
   #>
 
-  Param (
-		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainId
-  )
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domainId
+    )
 
-  Try {
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
-      $uri = "https://$sddcManager/v1/vcenters"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+            $uri = "https://$sddcManager/v1/vcenters"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/vcenters/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("domainId")) {
+            $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
     }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/vcenters/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
+    Catch {
+        ResponseException # Call ResponseException function to get error response from the exception
     }
-    if ($PsBoundParameters.ContainsKey("domainId")) {
-      $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    ResponseException # Call ResponseException function to get error response from the exception
-  }
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
