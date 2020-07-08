@@ -305,7 +305,7 @@ Function Set-VCFBackupConfiguration
       backing up NSX and SDDC Manager
 
       .EXAMPLE
-      PS C:\> Set-VCFBackupConfiguration -json .\SampleJSON\Backup\backupConfiguration.json
+      PS C:\> Set-VCFBackupConfiguration -json (Get-Content -Raw .\SampleJSON\Backup\backupConfiguration.json)
       This example shows how to update the backup configuration
   #>
 
@@ -315,22 +315,12 @@ Function Set-VCFBackupConfiguration
             [string]$json
     )
 
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content -Raw $json)
-        }
-    }
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        <# $headers.Add("privileged-username", "$privilegedUsername")
-        $headers.Add("privileged-password", "$privilegedPassword") #>
+ 
         $uri = "https://$sddcManager/v1/system/backup-configuration"
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $json
         $response
     }
     Catch {
