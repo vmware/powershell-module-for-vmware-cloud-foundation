@@ -1,0 +1,5 @@
+$ntpSpec = '{
+    "ntpServers": [ {
+        "ipAddress": "ntp.sfo.rainpole.io"
+    } ]
+}'

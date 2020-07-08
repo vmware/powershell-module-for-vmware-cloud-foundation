@@ -3526,8 +3526,13 @@ Function Start-VCFUpgrade
         The Start-VCFUpgrade cmdlet triggers an upgrade of a resource in SDDC Manager
 
         .EXAMPLE
-        PS C:\> VCFUpgrade -json .\Upgrade\upgradespec.json
-        This example invokes an upgrade in SDDC Manager
+        PS C:\> Start-VCFUpgrade -json $jsonSpec
+        This example invokes an upgrade in SDDC Manager using a variable
+
+        .EXAMPLE
+        PS C:\> Start-VCFUpgrade -json (Get-Content -Raw .\upgradeDomain.json)
+        This example invokes an upgrade in SDDC Manager by passing a JSON file
+
     #>
 
     Param (
@@ -3538,14 +3543,13 @@ Function Start-VCFUpgrade
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    #validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
     $uri = "https://$sddcManager/v1/upgrades"
     Try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $json
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
         $response
     }
     Catch {
-        ResponseException # Call the ResponseException function which handles execption messages
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Start-VCFUpgrade
@@ -3765,7 +3769,7 @@ Function Remove-VCFUser
     Catch {
         $errorString = ResponseException; Write-Error $errorString
     }
- }
+}
 Export-ModuleMember -Function Remove-VCFUser
 
 Function New-VCFGroup
@@ -3815,7 +3819,7 @@ Function New-VCFGroup
     Catch {
         $errorString = ResponseException; Write-Error $errorString
     }
- }
+}
 Export-ModuleMember -Function New-VCFGroup
 
 ######### End APIs for managing Users ##########
@@ -3880,6 +3884,230 @@ Export-ModuleMember -Function Get-VCFService
 
 ######### Start APIs for managing DNS & NTP Configuration ##########
 
+Function Get-VCFConfigurationDNS
+{
+    <#
+        .SYNOPSIS
+        Gets the current DNS Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationDNS cmdlet retrieves the DNS configuration of the connected SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationDNS
+        This example shows how to get the DNS configuration of the connected SDDC Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/dns-configuration"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.dnsServers
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationDNS
+
+Function Get-VCFConfigurationDNSValidation
+{
+    <#
+        .SYNOPSIS
+        Get the status of the validation of the input for the DNS Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationDNSValidation cmdlet retrieves the status of the validation of the DNS Configuration
+        JSON
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationDNSValidation
+        This example shows how to get the status of the validation of the DNS Configuration
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/dns-configuration/validations/$id"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationDNSValidation
+
+Function Set-VCFConfigurationDNS
+{
+    <#
+        .SYNOPSIS
+        Configures DNS for all systems
+
+        .DESCRIPTION
+        The Set-VCFConfigurationDNS cmdlet configures the DNS Server for all systems managed by SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationDNS -json $jsonSpec
+        This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a variable
+
+       .EXAMPLE
+        PS C:\> Set-VCFConfigurationDNS (Get-Content -Raw .\dnsSpec.json)
+        This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a JSON file
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationDNS -json $jsonSpec -validate
+        This example shows how to validate the DNS configuration only
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("validate")) {
+            $uri = "https://$sddcManager/v1/system/dns-configuration/validations"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/system/dns-configuration"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Set-VCFConfigurationDNS
+
+Function Get-VCFConfigurationNTP
+{
+    <#
+        .SYNOPSIS
+        Gets the current NTP Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationNTP cmdlet retrieves the NTP configuration of the connected SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationNTP
+        This example shows how to get the NTP configuration of the connected SDDC Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/ntp-configuration"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.ntpServers
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationNTP
+
+Function Get-VCFConfigurationNTPValidation
+{
+    <#
+        .SYNOPSIS
+        Get the status of the validation of the input for the NTP Configuration
+
+        .DESCRIPTION
+        The Get-VCFConfigurationNTPValidation cmdlet retrieves the status of the validation of the NTP Configuration
+        JSON
+
+        .EXAMPLE
+        PS C:\> Get-VCFConfigurationNTPValidation
+        This example shows how to get the status of the validation of the NTP Configuration
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/system/ntp-configuration/validations/$id"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFConfigurationNTPValidation
+
+Function Set-VCFConfigurationNTP
+{
+    <#
+        .SYNOPSIS
+        Configures NTP for all systems
+
+        .DESCRIPTION
+        The Set-VCFConfigurationNTP cmdlet configures the NTP Server for all systems managed by SDDC Manager
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationNTP -json $jsonSpec
+        This example shows how to configure the NTP Servers for all systems managed by SDDC Manager using a variable
+
+       .EXAMPLE
+        PS C:\> Set-VCFConfigurationNTP (Get-Content -Raw .\ntpSpec.json)
+        This example shows how to configure the NTP Servers for all systems managed by SDDC Manager using a JSON file
+
+        .EXAMPLE
+        PS C:\> Set-VCFConfigurationNTP -json $jsonSpec -validate
+        This example shows how to validate the NTP configuration only
+    #>
+
+    Param (
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$json,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [switch]$validate
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("validate")) {
+            $uri = "https://$sddcManager/v1/system/ntp-configuration/validations"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/system/ntp-configuration"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Set-VCFConfigurationNTP
+
 ######### End APIs for managing DNS & NTP Configuration ##########
 
 
@@ -3914,37 +4142,37 @@ Function Get-VCFvCenter
     This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
   #>
 
-  Param (
-		[Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$domainId
-  )
+    Param (
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$id,
+        [Parameter (Mandatory=$false)]
+            [ValidateNotNullOrEmpty()]
+            [string]$domainId
+    )
 
-  Try {
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
-      $uri = "https://$sddcManager/v1/vcenters"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+            $uri = "https://$sddcManager/v1/vcenters"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/vcenters/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("domainId")) {
+            $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
     }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/vcenters/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
     }
-    if ($PsBoundParameters.ContainsKey("domainId")) {
-      $uri = "https://$sddcManager/v1/vcenters/?domain=$domainId"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-  }
-  Catch {
-    $errorString = ResponseException; Write-Error $errorString
-  }
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
