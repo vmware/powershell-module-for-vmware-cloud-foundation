@@ -3549,7 +3549,7 @@ Function Start-VCFUpgrade
         $response
     }
     Catch {
-        ResponseException # Call the ResponseException function which handles execption messages
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Start-VCFUpgrade
@@ -3906,7 +3906,7 @@ Function Get-VCFConfigurationDNS
         $response.dnsServers
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationDNS
@@ -3940,7 +3940,7 @@ Function Get-VCFConfigurationDNSValidation
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationDNSValidation
@@ -3991,7 +3991,7 @@ Function Set-VCFConfigurationDNS
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Set-VCFConfigurationDNS
@@ -4018,7 +4018,7 @@ Function Get-VCFConfigurationNTP
         $response.ntpServers
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationNTP
@@ -4052,7 +4052,7 @@ Function Get-VCFConfigurationNTPValidation
         $response
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationNTPValidation
@@ -4103,7 +4103,7 @@ Function Set-VCFConfigurationNTP
         }
     }
     Catch {
-        ResponseException # Call ResponseException function to get error response from the exception
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Set-VCFConfigurationNTP
