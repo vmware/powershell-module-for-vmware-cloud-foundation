@@ -15,11 +15,13 @@ This version is supported with VMware Cloud Foundation 4.0 and above due to chan
 ## Contributors
 If you would like to contribute please get in touch! Current contributors listed below.
 
-Brian O'Connell - VMware HCI BU Staff Architect \[[Twitter](https://twitter.com/LifeOfBrianOC)\] \[[Blog](https://LifeOfBrianOC.com)\]
+Brian O'Connell - VMware CPBU Staff Architect \[[Twitter](https://twitter.com/LifeOfBrianOC)\] \[[Blog](https://LifeOfBrianOC.com)\]
 
-Gary Blake - VMware HCI BU Staff II Architect \[[Twitter](https://twitter.com/GaryJBlake)\] \[[Blog](https://my-cloudy-world.com/)\]
+Gary Blake - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/GaryJBlake)\] \[[Blog](https://my-cloudy-world.com/)\]
 
 Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
+
+Ken Gould - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/feardamhan)\] \[[Blog](https://feardamhan.com/)\]
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
@@ -27,9 +29,9 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 ## Supported Platforms
 This version has been tested using vSAN Ready Nodes. VMware Cloud Foundation on VxRail has not been fully tested, The following cmdlets will not work with VxRail as the workflow is different due to the use of VxRail Manager. _Other cmdlets may work subject to testing._
 
-`Commission-VCFHost`
+`New-VCFCommissionedHost`
 
-`Decommission-VCFHost`
+`Remove-VCFCommissionedHost`
 
 All Network pool actions
 
