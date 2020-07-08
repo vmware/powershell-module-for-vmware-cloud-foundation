@@ -58,11 +58,11 @@ Function Request-VCFToken
     	It is required once per session before running all other cmdlets
 
     	.EXAMPLE
-    	PS C:\> Request-VCFToken -fqdn sfo01vcf01.sfo.rainpole.io -username sec-admin@rainpole.io -password VMware1!
+    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMware1!
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
         .EXAMPLE
-    	PS C:\> Request-VCFToken -fqdn sfo01vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
+    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
         This example shows how to connect to SDDC Manager using basic auth for restoring backups
   	#>
 
