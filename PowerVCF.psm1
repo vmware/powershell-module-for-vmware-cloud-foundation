@@ -585,7 +585,6 @@ Function Get-VCFCeip
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/system/ceip"
     	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     	$response
@@ -603,8 +602,8 @@ Function Set-VCFCeip
     	Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
 
     	.DESCRIPTION
-    	The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
-    	and the components managed (vCenter Server, vSAN and NSX Manager)
+        The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected 
+        SDDC Manager and the components managed (vCenter Server, vSAN and NSX Manager)
 
     	.EXAMPLE
     	PS C:\> Set-VCFCeip -ceipSetting DISABLE
@@ -617,24 +616,16 @@ Function Set-VCFCeip
 
 	Param (
 		[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
+      		[ValidateSet("ENABLE","DISABLE")]
       		[string]$ceipSetting
   	)
 
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    	$uri = "https://$sddcManager/v1/system/ceip"
-    	if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
-      		Throw "You must define ENABLE or DISABLE as an input"
-		}
-    	if ($ceipSetting -eq "ENABLE") {
-      		$ConfigJson = '{"status": "ENABLE"}'
-    	}
-    	if ($ceipSetting -eq "DISABLE") {
-			$ConfigJson = '{"status": "DISABLE"}'
-    	}
-    	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $uri = "https://$sddcManager/v1/system/ceip"
+        $json = '{"status": "'+$ceipSetting+'"}'
+    	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $json
     	$response
   	}
   	Catch {
@@ -758,24 +749,69 @@ Function Set-VCFMicrosoftCA
       		[string]$password,
     	[Parameter (Mandatory=$true)]
       		[ValidateNotNullOrEmpty()]
-      	[string]$templateName
+      	    [string]$templateName
   	)
 
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    	$uri = "https://$sddcManager/v1/certificate-authorities"
-    	if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
-      		Throw "You must enter the mandatory values"
-		}
-    	$ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
-        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson # No response from API
+    	$json = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
+        $uri = "https://$sddcManager/v1/certificate-authorities"
+        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
   	}
   	Catch {
     	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
+
+Function Set-VCFOpenSSLCA
+{
+  	<#
+    	.SYNOPSIS
+    	Configures the OpenSSL Certificate Authority
+
+    	.DESCRIPTION
+    	Configures the OpenSSL Certificate Authorty on the connected SDDC Manager
+
+    	.EXAMPLE
+    	PS C:\> Set-VCFOpenSSLCA -commonName sddcManager -organization Rainpole -organizationUnit Support -locality "Palo Alto" -state CA -country US
+    	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+  	#>
+
+  	Param (
+   		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$commonName,
+		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$organization,
+		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$organizationUnit,
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+            [string]$locality,
+        [Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+            [string]$state,
+        [Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      	    [string]$country
+  	)
+
+  	Try {
+    	createHeader # Calls createHeader function to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$GLobal:json = '{"openSSLCertificateAuthoritySpec": {"commonName": "'+$commonName+'","organization": "'+$organization+'","organizationUnit": "'+$organizationUnit+'","locality": "'+$locality+'","state": "'+$state+'","country": "'+$country+'"}}'
+        $uri = "https://$sddcManager/v1/certificate-authorities"
+        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
+  	}
+  	Catch {
+    	$errorString = ResponseException; Write-Error $errorString
+  	}
+}
+Export-ModuleMember -Function Set-VCFOpenSSLCA
 
 Function Get-VCFCertificateCSR
 {
