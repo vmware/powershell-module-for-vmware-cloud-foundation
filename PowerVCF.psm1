@@ -1867,8 +1867,12 @@ Function Set-VCFFederation
     	The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
 
     	.EXAMPLE
-    	PS C:\> Set-VCFFederation -json createFederation.json
-    	This example shows how to create a fedration using the json file
+    	PS C:\> Set-VCFFederation -json $jsonSpec
+        This example shows how to create a fedration using the using a variable
+        
+        .EXAMPLE
+        PS C:\> Set-VCFFederation -json (Get-Content -Raw .\federationSpec.json)
+        This example shows how to create a fedration using the using a JSON file
   	#>
 
   	Param (
@@ -1876,23 +1880,17 @@ Function Set-VCFFederation
       		[ValidateNotNullOrEmpty()]
       		[string]$json
   	)
-
-  	if (!(Test-Path $json)) {
-    	Throw "JSON File Not Found"
-  	}
-  	else {
-    	Try {
-      		createHeader # Calls createHeader function to set Accept & Authorization
-    		checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      		$ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
-      		$uri = "https://$sddcManager/v1/sddc-federation"
-      		$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-      		$response
-    	}
-    	Catch {
-      		$errorString = ResponseException; Write-Error $errorString
-    	}
-  	}
+    
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      	$uri = "https://$sddcManager/v1/sddc-federation"
+      	$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+      	$response
+    }
+    Catch {
+      	$errorString = ResponseException; Write-Error $errorString
+    }
 }
 Export-ModuleMember -Function Set-VCFFederation
 
@@ -3985,7 +3983,7 @@ Function Set-VCFConfigurationDNS
         This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a variable
 
        .EXAMPLE
-        PS C:\> Set-VCFConfigurationDNS (Get-Content -Raw .\dnsSpec.json)
+        PS C:\> Set-VCFConfigurationDNS -json (Get-Content -Raw .\dnsSpec.json)
         This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a JSON file
 
         .EXAMPLE
