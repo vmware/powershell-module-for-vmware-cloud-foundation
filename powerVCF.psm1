@@ -324,11 +324,11 @@ Function Reset-VCFHost {
   # Get the full list of PSC credentials
   $pscCreds = Get-VCFCredential -privilegedUsername $privilegedUsername -privilegedPassword $privilegedPassword -resourceType PSC
   # From PSC credentials extract the SSO username and password
-  $ssoCreds = $pscCreds.elements | Where-Object {$_.credentialType -eq "SSO"}
+  $ssoCreds = $pscCreds | Where-Object {$_.credentialType -eq "SSO"}
   # Get the list of all VCENTER credentials
   $vcCreds = Get-VCFCredential $privilegedUsername -privilegedPassword $privilegedPassword -resourceType VCENTER
   # Find out which VC is the MGMT. This is use to extract the MGMT VC FQDN ($mgmtVC.resourceName)
-  $mgmtVC = $vcCreds.elements.resource | Where-Object {$_.domainName -eq "MGMT"}
+  $mgmtVC = $vcCreds.resource | Where-Object {$_.domainName -eq "MGMT"}
   # Connect to the Management vCenter without displaying the connection
   Connect-VIServer -Server $mgmtVC.resourceName -User $ssoCreds.username -Password $ssoCreds.password | Out-Null
   # Get the vm object for sddc-manager
