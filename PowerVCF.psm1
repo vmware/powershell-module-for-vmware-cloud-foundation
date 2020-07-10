@@ -2161,9 +2161,9 @@ Function Get-VCFLicenseKey
         This example shows how to get a specified License key
 
         .EXAMPLE
-        PS C:\> Get-VCFLicenseKey -productType "VCENTER,VSAN"
+        PS C:\> Get-VCFLicenseKey -productType VCENTER
         This example shows how to get a License Key by product type
-        Supported Product Types: SDDC_MANAGER, VCENTER, VSAN, ESXI, VRA, VROPS, NSXT
+        Supported Product Types: SDDC_MANAGER, VCENTER, VSAN, ESXI, NSXT
 
         .EXAMPLE
         PS C:\> Get-VCFLicenseKey -status EXPIRED
@@ -2176,10 +2176,10 @@ Function Get-VCFLicenseKey
             [ValidateNotNullOrEmpty()]
             [string]$key,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
+            [ValidateSet("VCENTER","VSAN","ESXI","NSXT","SDDC_MANAGER")]
             [string]$productType,
 		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
+            [ValidateSet("EXPIRED","ACTIVE","NEVER_EXPIRES")]
             [string]$status
     )
 
