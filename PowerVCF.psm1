@@ -803,7 +803,7 @@ Function Set-VCFOpenSSLCA
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    	$GLobal:json = '{"openSSLCertificateAuthoritySpec": {"commonName": "'+$commonName+'","organization": "'+$organization+'","organizationUnit": "'+$organizationUnit+'","locality": "'+$locality+'","state": "'+$state+'","country": "'+$country+'"}}'
+    	$json = '{"openSSLCertificateAuthoritySpec": {"commonName": "'+$commonName+'","organization": "'+$organization+'","organizationUnit": "'+$organizationUnit+'","locality": "'+$locality+'","state": "'+$state+'","country": "'+$country+'"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
   	}
