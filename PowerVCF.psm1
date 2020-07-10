@@ -2223,34 +2223,32 @@ Function New-VCFLicenseKey
         The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
 
         .EXAMPLE
-        PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
-        This example shows how to add a new License Key
+        PS C:\> New-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" -productType VCENTER -description "vCenter License"
+        This example shows how to add a new License key to SDDC Manager
     #>
 
     Param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [string]$json
+            [string]$key,
+        [Parameter (Mandatory=$true)]
+            [ValidateSet("VCENTER","VSAN","ESXI","NSXT","SDDC_MANAGER")]
+            [string]$productType,
+        [Parameter (Mandatory=$true)]
+            [ValidateNotNullOrEmpty()]
+            [string]$description
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
+    Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $json = '{ "key" : "'+$key+'", "productType" : "'+$productType+'", "description" : "'+$description+'" }'
         $uri = "https://$sddcManager/v1/license-keys"
-        Try {
-            Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-            # This API does not return a response body. Sending GET to validate the License Key creation was successful
-            $license = $ConfigJson | ConvertFrom-Json
-            $licenseKey = $license.key
-            Get-VCFLicenseKey -key $licenseKey
-        }
-        Catch {
-            $errorString = ResponseException; Write-Error $errorString
-        }
+        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json # This API does not return a response
+        Get-VCFLicenseKey -key $key
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function New-VCFLicenseKey
