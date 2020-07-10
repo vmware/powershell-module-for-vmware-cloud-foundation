@@ -1,14 +1,14 @@
 {
     "backupLocations": [ {
-        "directoryPath": "/nfs/vmware/vcf/nfs-mount/backup",
-        "password": "VMware123!",
+        "directoryPath": "/backups",
+        "password": "VMw@re1!",
         "port": 22,
         "protocol": "SFTP",
-        "server": "192.168.110.55",
-        "sshFingerprint": "SHA256:/VAp2bVvHlUeYv9qnSgqpVtx8kOQr9JoKhJiFnWW9sw",
-        "username": "backup"
+        "server": "172.20.11.60",
+        "sshFingerprint": "<!!SSH-FINGERPRINT!!>",
+        "username": "svc-vcf-bck"
     } ],
     "encryption": {
-        "passphrase": "VMware123!"
+        "passphrase": "VMw@re1!VMw@re1!"
     }
 }

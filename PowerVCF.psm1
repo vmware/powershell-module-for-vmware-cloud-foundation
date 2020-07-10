@@ -58,11 +58,11 @@ Function Request-VCFToken
     	It is required once per session before running all other cmdlets
 
     	.EXAMPLE
-    	PS C:\> Request-VCFToken -fqdn sfo01vcf01.sfo.rainpole.io -username sec-admin@rainpole.io -password VMware1!
+    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMware1!
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
         .EXAMPLE
-    	PS C:\> Request-VCFToken -fqdn sfo01vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
+    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
         This example shows how to connect to SDDC Manager using basic auth for restoring backups
   	#>
 
@@ -305,7 +305,7 @@ Function Set-VCFBackupConfiguration
       backing up NSX and SDDC Manager
 
       .EXAMPLE
-      PS C:\> Set-VCFBackupConfiguration -json .\SampleJSON\Backup\backupConfiguration.json
+      PS C:\> Set-VCFBackupConfiguration -json (Get-Content -Raw .\SampleJSON\Backup\backupConfiguration.json)
       This example shows how to update the backup configuration
   #>
 
@@ -315,22 +315,12 @@ Function Set-VCFBackupConfiguration
             [string]$json
     )
 
-    if ($PsBoundParameters.ContainsKey("json")) {
-        if (!(Test-Path $json)) {
-            Throw "JSON File Not Found"
-        }
-        else {
-            # Read the json file contents into the $ConfigJson variable
-            $ConfigJson = (Get-Content -Raw $json)
-        }
-    }
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        <# $headers.Add("privileged-username", "$privilegedUsername")
-        $headers.Add("privileged-password", "$privilegedPassword") #>
+ 
         $uri = "https://$sddcManager/v1/system/backup-configuration"
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $json
         $response
     }
     Catch {
@@ -595,7 +585,6 @@ Function Get-VCFCeip
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/system/ceip"
     	$response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
     	$response
@@ -613,8 +602,8 @@ Function Set-VCFCeip
     	Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
 
     	.DESCRIPTION
-    	The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
-    	and the components managed (vCenter Server, vSAN and NSX Manager)
+        The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected 
+        SDDC Manager and the components managed (vCenter Server, vSAN and NSX Manager)
 
     	.EXAMPLE
     	PS C:\> Set-VCFCeip -ceipSetting DISABLE
@@ -627,24 +616,16 @@ Function Set-VCFCeip
 
 	Param (
 		[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
+      		[ValidateSet("ENABLE","DISABLE")]
       		[string]$ceipSetting
   	)
 
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    	$uri = "https://$sddcManager/v1/system/ceip"
-    	if ( -not $PsBoundParameters.ContainsKey("ceipsetting")) {
-      		Throw "You must define ENABLE or DISABLE as an input"
-		}
-    	if ($ceipSetting -eq "ENABLE") {
-      		$ConfigJson = '{"status": "ENABLE"}'
-    	}
-    	if ($ceipSetting -eq "DISABLE") {
-			$ConfigJson = '{"status": "DISABLE"}'
-    	}
-    	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        $uri = "https://$sddcManager/v1/system/ceip"
+        $json = '{"status": "'+$ceipSetting+'"}'
+    	$response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $json
     	$response
   	}
   	Catch {
@@ -768,24 +749,69 @@ Function Set-VCFMicrosoftCA
       		[string]$password,
     	[Parameter (Mandatory=$true)]
       		[ValidateNotNullOrEmpty()]
-      	[string]$templateName
+      	    [string]$templateName
   	)
 
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    	$uri = "https://$sddcManager/v1/certificate-authorities"
-    	if ( -not $PsBoundParameters.ContainsKey("serverUrl") -and ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password") -and ( -not $PsBoundParameters.ContainsKey("templateName"))))){
-      		Throw "You must enter the mandatory values"
-		}
-    	$ConfigJson = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
-        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson # No response from API
+    	$json = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
+        $uri = "https://$sddcManager/v1/certificate-authorities"
+        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
   	}
   	Catch {
     	$errorString = ResponseException; Write-Error $errorString
   	}
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
+
+Function Set-VCFOpenSSLCA
+{
+  	<#
+    	.SYNOPSIS
+    	Configures the OpenSSL Certificate Authority
+
+    	.DESCRIPTION
+    	Configures the OpenSSL Certificate Authorty on the connected SDDC Manager
+
+    	.EXAMPLE
+    	PS C:\> Set-VCFOpenSSLCA -commonName sddcManager -organization Rainpole -organizationUnit Support -locality "Palo Alto" -state CA -country US
+    	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+  	#>
+
+  	Param (
+   		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$commonName,
+		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$organization,
+		[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      		[string]$organizationUnit,
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+            [string]$locality,
+        [Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+            [string]$state,
+        [Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+      	    [string]$country
+  	)
+
+  	Try {
+    	createHeader # Calls createHeader function to set Accept & Authorization
+    	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    	$json = '{"openSSLCertificateAuthoritySpec": {"commonName": "'+$commonName+'","organization": "'+$organization+'","organizationUnit": "'+$organizationUnit+'","locality": "'+$locality+'","state": "'+$state+'","country": "'+$country+'"}}'
+        $uri = "https://$sddcManager/v1/certificate-authorities"
+        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
+  	}
+  	Catch {
+    	$errorString = ResponseException; Write-Error $errorString
+  	}
+}
+Export-ModuleMember -Function Set-VCFOpenSSLCA
 
 Function Get-VCFCertificateCSR
 {
@@ -1841,8 +1867,12 @@ Function Set-VCFFederation
     	The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
 
     	.EXAMPLE
-    	PS C:\> Set-VCFFederation -json createFederation.json
-    	This example shows how to create a fedration using the json file
+    	PS C:\> Set-VCFFederation -json $jsonSpec
+        This example shows how to create a fedration using the using a variable
+        
+        .EXAMPLE
+        PS C:\> Set-VCFFederation -json (Get-Content -Raw .\federationSpec.json)
+        This example shows how to create a fedration using the using a JSON file
   	#>
 
   	Param (
@@ -1850,23 +1880,17 @@ Function Set-VCFFederation
       		[ValidateNotNullOrEmpty()]
       		[string]$json
   	)
-
-  	if (!(Test-Path $json)) {
-    	Throw "JSON File Not Found"
-  	}
-  	else {
-    	Try {
-      		createHeader # Calls createHeader function to set Accept & Authorization
-    		checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-      		$ConfigJson = (Get-Content -Raw $json) # Reads the json file contents into the $ConfigJson variable
-      		$uri = "https://$sddcManager/v1/sddc-federation"
-      		$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-      		$response
-    	}
-    	Catch {
-      		$errorString = ResponseException; Write-Error $errorString
-    	}
-  	}
+    
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+      	$uri = "https://$sddcManager/v1/sddc-federation"
+      	$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+      	$response
+    }
+    Catch {
+      	$errorString = ResponseException; Write-Error $errorString
+    }
 }
 Export-ModuleMember -Function Set-VCFFederation
 
@@ -3959,7 +3983,7 @@ Function Set-VCFConfigurationDNS
         This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a variable
 
        .EXAMPLE
-        PS C:\> Set-VCFConfigurationDNS (Get-Content -Raw .\dnsSpec.json)
+        PS C:\> Set-VCFConfigurationDNS -json (Get-Content -Raw .\dnsSpec.json)
         This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a JSON file
 
         .EXAMPLE
