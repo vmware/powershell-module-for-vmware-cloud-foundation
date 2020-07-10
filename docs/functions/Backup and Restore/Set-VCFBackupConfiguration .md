@@ -38,7 +38,7 @@ Default value: None
 {
     "backupLocations": [
         {
-            "directoryPath": "/tmp/backups",
+            "directoryPath": "/backups",
             "password": "VMw@re1!",
             "port": 22,
             "protocol": "SFTP",
