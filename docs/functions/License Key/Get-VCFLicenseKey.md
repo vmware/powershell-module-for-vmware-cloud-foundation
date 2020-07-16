@@ -5,7 +5,7 @@ Connects to the specified SDDC Manager and retrieves a list of License keys.
 
 ### Syntax
 ```
-Get-VCFLicenseKey -key <string> -productType <string> -status <string>
+Get-VCFLicenseKey -key <string> -productType <list> -status <string>
 ```
 
 ### Description
@@ -26,10 +26,10 @@ This example shows how to get a specified License key
 
 #### Example 3
 ```
-Get-VCFLicenseKey -productType "VCENTER,VSAN"
+Get-VCFLicenseKey -productType VCENTER
 ```
 This example shows how to get a License Key by product type
-Supported Product Types: SDDC_MANAGER, VCENTER, NSXV, VSAN, ESXI, VRA, VROPS, NSXT
+Supported Product Types: SDDC_MANAGER, VCENTER, VSAN, ESXI, NSXT
 
 #### Example 4
 ```
@@ -64,7 +64,7 @@ Aliases:
 Required: False
 Position: Named
 Default value: None
-Accepted Value: SDDC_MANAGER,VCENTER,NSXV,VSAN,ESXI,VRA,VROPS,NSXT
+Accepted Value: SDDC_MANAGER,VCENTER,VSAN,ESXI,NSXT
 ```
 
 #### -status

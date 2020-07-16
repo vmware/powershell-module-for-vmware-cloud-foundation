@@ -5,7 +5,7 @@ Connects to the specified SDDC Manager and adds a new License Key.
 
 ### Syntax
 ```
-New-VCFLicenseKey -json <path to JSON file>
+New-VCFLicenseKey -key <string> -productType <string> -description <string>
 ```
 
 ### Description
@@ -14,14 +14,14 @@ The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a n
 ### Examples
 #### Example 1
 ```
-New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
+New-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" -productType VCENTER -description "vCenter License"
 ```
-This example shows how to add a new License Key
+This example shows how to add a new License key to SDDC Manager
 
 ### Parameters
 
-#### -json
-- Path to the JSON file
+#### -key
+- License Key
 
 ```yaml
 Type: String
@@ -33,56 +33,31 @@ Position: Named
 Default value: None
 ```
 
-### Sample JSON
-```json
-{
-  "key" : "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
-  "productType" : "NSXV",
-  "description" : "NSX-V license key"
-}
+#### -productType
+- Product Type
 
-{
-  "key" : "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB",
-  "productType" : "NSXT",
-  "description" : "NSX-T license key"
-}
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
 
-{
-  "key" : "CCCCC-CCCCC-CCCCC-CCCCC-CCCCC",
-  "productType" : "VSAN",
-  "description" : "vSAN license key"
-}
+Required: False
+Position: Named
+Default value: None
+Accepted Value: SDDC_MANAGER,VCENTER,VSAN,ESXI,NSXT
+```
 
-{
-  "key" : "DDDDD-DDDDD-DDDDD-DDDDD-DDDDD",
-  "productType" : "SDDC_MANAGER",
-  "description" : "SDDC Manager license key"
-}
+#### -description
+- Description for the key
 
-{
-  "key" : "EEEEE-EEEEE-EEEEE-EEEEE-EEEEE",
-  "productType" : "VCENTER",
-  "description" : "vCenter license key"
-}
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
 
-{
-  "key" : "FFFFF-FFFFF-FFFFF-FFFFF-FFFFF",
-  "productType" : "ESXI",
-  "description" : "ESXi license key"
-}
-
-{
-  "key" : "GGGGG-GGGGG-GGGGG-GGGGG-GGGGG",
-  "productType" : "VRA",
-  "description" : "vRA license key"
-}
-
-{
-  "key" : "HHHHH-HHHHH-HHHHH-HHHHH-HHHHH",
-  "productType" : "VROPS",
-  "description" : "vROPS license key"
-}
-
+Required: True
+Position: Named
+Default value: None
 ```
 
 ### Notes
