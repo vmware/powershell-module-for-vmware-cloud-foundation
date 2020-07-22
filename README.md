@@ -30,14 +30,14 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 - **NEW** `Get-VCFConfigurationDNS` gets current DNS Config
 - **NEW** `Get-VCFConfigurationNTP` gets current NTP Config
 - **NEW** `Start-VCFUpgrade` Trigger an upgrade
-- **Updated** `Get-VCFUser` updated with input value of -type (USER, GROUP, SERVICE)
-- **Updated** `Get-VCFUser` updated with input value of -domain to retrieve all accounts by domain
-- **Updated** `Get-VCFUpgradable` updated Output format
-- **Updated** `Restart-CloudBuilderSDDC` updated with support for a retry with updated JSON spec
-- **Updated** `Commission-VCFHost` to `New-VCFCommissionedHost`. Commission-VCFHost will still work for backwards compatability for a period of time.
-- **Updated** `Decommission-VCFHost` to `Remove-VCFCommissionedHost`. Decommission-VCFHost will still work for backwards compatability for a period of time.
-- **Updated** `Connect-VCFManager` to `Request-VCFToken`. Connect-VCFManager will still work for backwards compatability for a period of time.
-- **Updated** Tweaked all cmdlets to use correct standard output and error streams.
+- **UPDATED** `Get-VCFUser` updated with input value of -type (USER, GROUP, SERVICE)
+- **UPDATED** `Get-VCFUser` updated with input value of -domain to retrieve all accounts by domain
+- **UPDATED** `Get-VCFUpgradable` updated Output format
+- **UPDATED** `Restart-CloudBuilderSDDC` updated with support for a retry with updated JSON spec
+- **UPDATED** `Commission-VCFHost` to `New-VCFCommissionedHost`. Commission-VCFHost will still work for backwards compatability for a period of time.
+- **UPDATED** `Decommission-VCFHost` to `Remove-VCFCommissionedHost`. Decommission-VCFHost will still work for backwards compatability for a period of time.
+- **UPDATED** `Connect-VCFManager` to `Request-VCFToken`. Connect-VCFManager will still work for backwards compatability for a period of time.
+- **UPDATED** Tweaked all cmdlets to use correct standard output and error streams.
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
