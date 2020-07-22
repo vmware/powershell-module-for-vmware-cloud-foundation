@@ -25,10 +25,19 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 
 ## What's New
 
-- Updated Commission-VCFHost to New-VCFCommissionedHost. Commission-VCFHost will still work for backwards compatability for a period of time.
-- Updated Decommission-VCFHost to Remove-VCFCommissionedHost. Decommission-VCFHost will still work for backwards compatability for a period of time.
-- Updated Connect-VCFManager to Request-VCFToken. Connect-VCFManager will still work for backwards compatability for a period of time.
-- Tweaked all cmdlets to use correct standard output and error streams.
+- **NEW** `New-VCFGroup` cmdlet to add a group with a role to SDDC Manager
+- **NEW** `Get-VCFUpgrade` fetches the list of upgradable components  in the System
+- **NEW** `Get-VCFConfigurationDNS` gets current DNS Config
+- **NEW** `Get-VCFConfigurationNTP` gets current NTP Config
+- **NEW** `Start-VCFUpgrade` Trigger an upgrade
+- **Updated** `Get-VCFUser` updated with input value of -type (USER, GROUP, SERVICE)
+- **Updated** `Get-VCFUser` updated with input value of -domain to retrieve all accounts by domain
+- **Updated** `Get-VCFUpgradable` updated Output format
+- **Updated** `Restart-CloudBuilderSDDC` updated with support for a retry with updated JSON spec
+- **Updated** `Commission-VCFHost` to `New-VCFCommissionedHost`. Commission-VCFHost will still work for backwards compatability for a period of time.
+- **Updated** `Decommission-VCFHost` to `Remove-VCFCommissionedHost`. Decommission-VCFHost will still work for backwards compatability for a period of time.
+- **Updated** `Connect-VCFManager` to `Request-VCFToken`. Connect-VCFManager will still work for backwards compatability for a period of time.
+- **Updated** Tweaked all cmdlets to use correct standard output and error streams.
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
