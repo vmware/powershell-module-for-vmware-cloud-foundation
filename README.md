@@ -26,7 +26,8 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 ## What's New
 
 - Updated Commission-VCFHost to New-VCFCommissionedHost. Commission-VCFHost will still work for backwards compatability for a period of time.
-- Updated Decommission-VCFHost to Remove-VCFCommissionedHost. Deommission-VCFHost will still work for backwards compatability for a period of time.
+- Updated Decommission-VCFHost to Remove-VCFCommissionedHost. Decommission-VCFHost will still work for backwards compatability for a period of time.
+- Updated Connect-VCFManager to Request-VCFToken. Connect-VCFManager will still work for backwards compatability for a period of time.
 - Tweaked all cmdlets to use correct standard output and error streams.
 
 ## Documentation
