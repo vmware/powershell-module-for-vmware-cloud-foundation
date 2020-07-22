@@ -19,9 +19,9 @@ Brian O'Connell - VMware CPBU Staff Architect \[[Twitter](https://twitter.com/Li
 
 Gary Blake - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/GaryJBlake)\] \[[Blog](https://my-cloudy-world.com/)\]
 
-Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
-
 Ken Gould - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/feardamhan)\] \[[Blog](https://feardamhan.com/)\]
+
+Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
 
 ## What's New
 
