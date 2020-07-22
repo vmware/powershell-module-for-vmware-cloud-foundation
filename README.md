@@ -23,6 +23,12 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 
 Ken Gould - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/feardamhan)\] \[[Blog](https://feardamhan.com/)\]
 
+## What's New
+
+- Updated Commission-VCFHost to New-VCFCommissionedHost. Commission-VCFHost will still work for backwards compatability for a period of time.
+- Updated Decommission-VCFHost to Remove-VCFCommissionedHost. Deommission-VCFHost will still work for backwards compatability for a period of time.
+- Tweaked all cmdlets to use correct standard output and error streams.
+
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
 
