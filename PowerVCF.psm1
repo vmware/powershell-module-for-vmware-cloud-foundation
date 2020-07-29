@@ -1884,9 +1884,8 @@ Function Set-VCFFederation
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
       	$uri = "https://$sddcManager/v1/sddc-federation"
-      	$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+      	$response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
       	$response
     }
     Catch {
