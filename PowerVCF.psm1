@@ -1335,7 +1335,7 @@ Function Get-VCFCredential
       		[ValidateNotNullOrEmpty()]
       		[string]$resourceName,
     	[Parameter (Mandatory=$false)]
-      		[ValidateSet("VCENTER", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE")]
+      		[ValidateSet("VCENTER", "PSC", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE", "VRSLCM", "WSA", "VROPS", "VRLI", "VRA")]
         	[ValidateNotNullOrEmpty()]
         	[string]$resourceType,
     	[Parameter (Mandatory=$false)]
@@ -4342,6 +4342,129 @@ Export-ModuleMember -Function Reset-VCFvRSLCM
 
 ######### End APIs for managing vRealize Suite Lifecycle Manager ##########
 
+######### Start APIs for managing vRealize Operations Manager ##########
+
+Function Get-VCFvROPs
+{
+    <#
+        .SYNOPSIS
+        Get the existing vRealize Operations Manager
+
+        .DESCRIPTION
+        The Get-VCFvROPs cmdlet gets the complete information about the existing vRealize Operations Manager.
+
+        .EXAMPLE
+        PS C:\> Get-VCFvROPs
+        This example list all details concerning the vRealize Operations Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vropses"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFvROPs
+
+######### End APIs for managing vRealize Operations Manager ##########
+
+######### Start APIs for managing Workspace ONE Access ##########
+
+Function Get-VCFWSA
+{
+    <#
+        .SYNOPSIS
+        Get the existing Workspace ONE Access
+
+        .DESCRIPTION
+        The Get-VCFWSA cmdlet gets the complete information about the existing Workspace ONE Access.
+
+        .EXAMPLE
+        PS C:\> Get-VCFWSA
+        This example list all details concerning Workspace ONE Access
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/wsas"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFWSA
+
+######### End APIs for managing Workspace ONE Access ##########
+
+######### Start APIs for managing vRealize Automation ##########
+
+Function Get-VCFvRA
+{
+    <#
+        .SYNOPSIS
+        Get the existing vRealize Automation
+
+        .DESCRIPTION
+        The Get-VCFvRA cmdlet gets the complete information about the existing vRealize Automation.
+
+        .EXAMPLE
+        PS C:\> Get-VCFvRA
+        This example list all details concerning the vRealize Automation
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vropses"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFvRA
+
+######### End APIs for managing vRealize Automation ##########
+
+######### Start APIs for managing vRealize Log Insight ##########
+
+Function Get-VCFvRLI
+{
+    <#
+        .SYNOPSIS
+        Get the existing vRealize Log Insight
+
+        .DESCRIPTION
+        The Get-VCFvRLI cmdlet gets the complete information about the existing vRealize Log Insight.
+
+        .EXAMPLE
+        PS C:\> Get-VCFvRLI
+        This example list all details concerning the vRealize Log Insight
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vrlis"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Get-VCFvRLI
+
+######### End APIs for managing vRealize Log Insight ##########
 
 
 ######## Start APIs for managing Validations ########
