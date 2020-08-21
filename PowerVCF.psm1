@@ -4356,20 +4356,85 @@ Function Get-VCFvROPs
         .EXAMPLE
         PS C:\> Get-VCFvROPs
         This example list all details concerning the vRealize Operations Manager
+
+        .EXAMPLE
+        PS C:\> Get-VCFvROPs -domains
+        This example lists all workload domains connected to vRealize Operations Manager
     #>
+
+    Param (
+    	[Parameter (Mandatory=$false)]
+      		[ValidateNotNullOrEmpty()]
+            [switch]$domains
+    )
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vropses"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
+        if ($PsBoundParameters.ContainsKey("domains")) {
+            $uri = "https://$sddcManager/v1/vrops/domains"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/vropses"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response    
+        }
     }
     Catch {
         $errorString = ResponseException; Write-Error $errorString
     }
 }
 Export-ModuleMember -Function Get-VCFvROPs
+
+Function Set-VCFvROPs
+{
+    <#
+        .SYNOPSIS
+        Connect or disconnect Workload Domains to vRealize Operations Manager
+
+        .DESCRIPTION
+        The Set-VCFvROPs cmdlet connects or disconnects Workload Domains to vRealize Operations Manager.
+
+        .EXAMPLE
+        PS C:\> Set-VCFvROPs -domain <domain-id> -ENABLED
+        This example connects a Workload Domain to vRealize Operations Manager
+
+        .EXAMPLE
+        PS C:\> Set-VCFvROPs -domain <domain-id> -DISABLED
+        This example disconnects a Workload Domain from vRealize Operations Manager
+    #>
+
+    Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+            [string]$domain,
+        [Parameter (Mandatory=$true)]
+            [ValidateSet("ENABLED", "DISABLED")]
+            [ValidateNotNullOrEmpty()]
+            [string]$status
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("domains")) {
+            $uri = "https://$sddcManager/v1/vrops/domains"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/vropses"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response    
+        }
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Set-VCFvROPs
 
 ######### End APIs for managing vRealize Operations Manager ##########
 
