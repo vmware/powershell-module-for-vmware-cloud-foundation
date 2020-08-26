@@ -531,8 +531,12 @@ Function Start-VCFBundleUpload
         Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool
 
         .EXAMPLE
-        PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
-        This example invokes the upload of a bundle onto SDDC Manager
+        PS C:\> Start-VCFBundleUpload -json $jsonSpec
+        This example invokes the upload of a bundle onto SDDC Manager using a variable
+
+               .EXAMPLE
+        PS C:\> Start-VCFBundleUpload -json (Get-Content -Raw .\upgradeDomain.json)
+        This example invokes the upload of a bundle onto SDDC Manager by passing a JSON file
     #>
 
     Param (
@@ -543,18 +547,10 @@ Function Start-VCFBundleUpload
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Read the json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content $json)
-    }
-
     $uri = "https://$sddcManager/v1/bundles"
     Try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $json
+        $response
     }
     Catch {
         ResponseException # Call the ResponseException function which handles execption messages
