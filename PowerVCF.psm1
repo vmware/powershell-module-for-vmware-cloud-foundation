@@ -2330,28 +2330,32 @@ Function New-VCFFederationInvite
         The New-VCFFederationInvite cmdlet creates a new invitation for a member to join the existing VCF Federation.
 
         .EXAMPLE
-        PS C:\> New-VCFFederationInvite -inviteeFqdn lax-vcf01.lax.rainpole.io
+        PS C:\> New-VCFFederationInvite -inviteeFqdn lax-vcf01.lax.rainpole.io -inviteeRole MEMBER
         This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
     #>
 
     Param (
 	    [Parameter (Mandatory=$true)]
 		    [ValidateNotNullOrEmpty()]
-			[string]$inviteeFqdn
+            [string]$inviteeFqdn,
+        [Parameter (Mandatory=$true)]
+            [ValidateSet("MEMBER","CONTROLLER")]
+            [String]$inviteeRole
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
     Try {
-        $sddcMemberRole = Get-VCFFederationMembers
+        $sddcMemberRole = Get-VCFFederationMember
         if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
             Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
         }
         else {
             $inviteeDetails = @{
-            inviteeRole = 'MEMBER'
+            inviteeRole = $inviteeRole
             inviteeFqdn = $inviteeFqdn
+
         }
         $ConfigJson = $inviteeDetails | ConvertTo-Json
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
