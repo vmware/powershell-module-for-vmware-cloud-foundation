@@ -4231,9 +4231,9 @@ Function Get-VCFvRSLCM
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vrslcm"
+        $uri = "https://$sddcManager/v1/vrslcms"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
+        $response.elements
     }
     Catch {
         $errorString = ResponseException; Write-Error $errorString
