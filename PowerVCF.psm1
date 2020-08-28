@@ -4420,10 +4420,9 @@ Function Set-VCFvROPs
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $body = '{"domainId": "'+$domainId+'","status": "'+$status+'"}'
-            $uri = "https://$sddcManager/v1/vrops/domains"
-            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
-            $response
-        }
+        $uri = "https://$sddcManager/v1/vrops/domains"
+        $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
+        $response
     }
     Catch {
         $errorString = ResponseException; Write-Error $errorString
@@ -4483,7 +4482,7 @@ Function Get-VCFvRA
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vropses"
+        $uri = "https://$sddcManager/v1/vras"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
     }
@@ -4556,10 +4555,9 @@ Function Set-VCFvRLI
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $body = '{"domainId": "'+$domainId+'","status": "'+$status+'"}'
-            $uri = "https://$sddcManager/v1/vrli/domains"
-            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
-            $response
-        }
+        $uri = "https://$sddcManager/v1/vrli/domains"
+        $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
+        $response
     }
     Catch {
         $errorString = ResponseException; Write-Error $errorString
