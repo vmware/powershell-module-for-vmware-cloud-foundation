@@ -4398,18 +4398,18 @@ Function Set-VCFvROPs
         The Set-VCFvROPs cmdlet connects or disconnects Workload Domains to vRealize Operations Manager.
 
         .EXAMPLE
-        PS C:\> Set-VCFvROPs -domain <domain-id> -ENABLED
+        PS C:\> Set-VCFvROPs -domainId <domain-id> -status ENABLED
         This example connects a Workload Domain to vRealize Operations Manager
 
         .EXAMPLE
-        PS C:\> Set-VCFvROPs -domain <domain-id> -DISABLED
+        PS C:\> Set-VCFvROPs -domainId <domain-id> -status DISABLED
         This example disconnects a Workload Domain from vRealize Operations Manager
     #>
 
     Param (
     	[Parameter (Mandatory=$true)]
       		[ValidateNotNullOrEmpty()]
-            [string]$domain,
+            [string]$domainId,
         [Parameter (Mandatory=$true)]
             [ValidateSet("ENABLED", "DISABLED")]
             [ValidateNotNullOrEmpty()]
@@ -4419,15 +4419,10 @@ Function Set-VCFvROPs
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ($PsBoundParameters.ContainsKey("domains")) {
+        $body = '{"domainId": "'+$domainId+'","status": "'+$status+'"}'
             $uri = "https://$sddcManager/v1/vrops/domains"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
             $response
-        }
-        else {
-            $uri = "https://$sddcManager/v1/vropses"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response    
         }
     }
     Catch {
@@ -4528,6 +4523,49 @@ Function Get-VCFvRLI
     }
 }
 Export-ModuleMember -Function Get-VCFvRLI
+
+Function Set-VCFvRLI
+{
+    <#
+        .SYNOPSIS
+        Connect or disconnect Workload Domains to vRealize Log Insight
+
+        .DESCRIPTION
+        The Set-VCFvRLI cmdlet connects or disconnects Workload Domains to vRealize Log Insight
+
+        .EXAMPLE
+        PS C:\> Set-VCFvRLI -domainId <domain-id> -status ENABLED
+        This example connects a Workload Domain to vRealize Log Insight
+
+        .EXAMPLE
+        PS C:\> Set-VCFvRLI -domainId <domain-id> -status DISABLED
+        This example disconnects a Workload Domain from vRealize Log Insight
+    #>
+
+    Param (
+    	[Parameter (Mandatory=$true)]
+      		[ValidateNotNullOrEmpty()]
+            [string]$domainId,
+        [Parameter (Mandatory=$true)]
+            [ValidateSet("ENABLED", "DISABLED")]
+            [ValidateNotNullOrEmpty()]
+            [string]$status
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $body = '{"domainId": "'+$domainId+'","status": "'+$status+'"}'
+            $uri = "https://$sddcManager/v1/vrli/domains"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
+            $response
+        }
+    }
+    Catch {
+        $errorString = ResponseException; Write-Error $errorString
+    }
+}
+Export-ModuleMember -Function Set-VCFvRLI
 
 ######### End APIs for managing vRealize Log Insight ##########
 
