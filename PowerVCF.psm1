@@ -2311,7 +2311,7 @@ Function Get-VCFFederationMember
             Throw "Failed to get members, no Federation found."
         }
         else {
-            $response
+            $response.memberDetail
         }
     }
     Catch {
