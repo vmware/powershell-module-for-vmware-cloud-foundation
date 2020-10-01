@@ -50,6 +50,7 @@ Aliases:
 Required: True
 Position: Named
 Default value: None
+Accepted value: ENABLED, DISABLED
 ```
 
 
