@@ -5,6 +5,9 @@ PowerVCF is a PowerShell Module for interacting with the VMware Cloud Foundation
 
 <a href="https://code.vmware.com/apis/723/vmware-cloud-foundation" target="_blank">VMware Cloud Foundation API Documentation</a>
 
+## Compatibility
+This branch is compatible with VMware Cloud Foundation 3.x starting at 3.8. For VMware Cloud Foundation 4.x please use the latest release-2.x branch as the API authentication changed.
+
 # Disclaimer
 This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU).
 
