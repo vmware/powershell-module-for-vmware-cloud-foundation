@@ -21,7 +21,7 @@ ModuleVersion = '2.2.0'
 GUID = '08e28c56-f231-4a2c-8906-dee337cf99b9'
 
 # Author of this module
-Author = 'Brian O Connell'
+Author = 'Brian O Connell & Gary Blake'
 
 # Description of the functionality provided by this module
 Description = 'PowerShell Module for the VMware Cloud Foundation 4.x API.'
@@ -34,6 +34,12 @@ Description = 'PowerShell Module for the VMware Cloud Foundation 4.x API.'
 
 # Minimum version of the Windows PowerShell host required by this module
 # PowerShellHostVersion = ''
+
+# Modules that must be imported into the global environment prior to importing this module
+# RequiredModules = @('')
+
+# Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
+# NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = '*'
