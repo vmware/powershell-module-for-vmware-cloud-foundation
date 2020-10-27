@@ -5008,11 +5008,11 @@ Function validateJsonInput
 
 ######### Start Useful Script Functions ##########
 
-Function Start-SetupLogFile
+Function Start-SetupLogFile ($path)
 {
     $filetimeStamp = Get-Date -Format "MM-dd-yyyy_hh_mm_ss"   
-    $Global:logFile  = $PSScriptRoot+'\logs\'+$scriptName+'-'+$filetimeStamp+'.log'
-    $logFolder = $PSScriptRoot+'\logs'
+    $Global:logFile  = $path+'\logs\'+$scriptName+'-'+$filetimeStamp+'.log'
+    $logFolder = $path+'\logs'
     $logFolderExists = Test-Path $logFolder
     if (!$logFolderExists) {
         New-Item -ItemType Directory -Path $logFolder | Out-Null
