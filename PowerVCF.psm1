@@ -3145,7 +3145,7 @@ Function Start-CloudBuilderSDDCValidation
             [ValidateNotNullOrEmpty()]
             [String]$json,
         [Parameter (Mandatory=$false)]
-            [ValidateSet("JSON_SPEC_VALIDATION","LICENSE_KEY_VALIDATION","TIME_SYNC_VALIDATION","NETWORK_IP_POOLS_VALIDATION","NETWORK_CONFIG_VALIDATION","MANAGEMENT_NETWORKS_VALIDATION","ESXI_VERSION_VALIDATION","ESXI_HOST_READINESS_VALIDATION","PASSWORDS_VALIDATION","HOST_IP_DNS_VALIDATION","IP_RESOLUTION_VALIDATION","CLOUDBUILDER_READY_VALIDATION","VSAN_AVAILABILITY_VALIDATION","NSXT_NETWORKS_VALIDATION")]
+            [ValidateSet("JSON_SPEC_VALIDATION","LICENSE_KEY_VALIDATION","TIME_SYNC_VALIDATION","NETWORK_IP_POOLS_VALIDATION","NETWORK_CONFIG_VALIDATION","MANAGEMENT_NETWORKS_VALIDATION","ESXI_VERSION_VALIDATION","ESXI_HOST_READINESS_VALIDATION","PASSWORDS_VALIDATION","HOST_IP_DNS_VALIDATION","CLOUDBUILDER_READY_VALIDATION","VSAN_AVAILABILITY_VALIDATION","NSXT_NETWORKS_VALIDATION","AVN_NETWORKS_VALIDATION")]
             [String]$validation
     )
 
@@ -5003,3 +5003,70 @@ Function validateJsonInput
 }
 
 ######### End Utility Functions (not exported) ##########
+
+
+
+######### Start Useful Script Functions ##########
+
+Function Start-SetupLogFile ($path, $scriptName)
+{
+    $filetimeStamp = Get-Date -Format "MM-dd-yyyy_hh_mm_ss"   
+    $Global:logFile  = $path+'\logs\'+$scriptName+'-'+$filetimeStamp+'.log'
+    $logFolder = $path+'\logs'
+    $logFolderExists = Test-Path $logFolder
+    if (!$logFolderExists) {
+        New-Item -ItemType Directory -Path $logFolder | Out-Null
+    }
+    New-Item -type File -Path $logFile | Out-Null
+	$logContent = '['+$filetimeStamp+'] Beginning of Log File'
+	Add-Content -Path $logFile $logContent | Out-Null
+}
+Export-ModuleMember -Function Start-SetupLogFile
+
+Function Write-LogMessage 
+{
+    Param (
+        [Parameter(Mandatory=$true)]
+            [String]$message,
+        [Parameter(Mandatory=$false)]
+            [String]$colour,
+        [Parameter(Mandatory=$false)]
+            [string]$skipNewLine
+    )
+
+    If (!$colour) {
+        $colour = "Cyan"
+    }
+
+    $timeStamp = Get-Date -Format "MM-dd-yyyy_HH:mm:ss"
+
+    Write-Host -NoNewline -ForegroundColor White " [$timeStamp]"
+    If ($skipNewLine) {
+        Write-Host -NoNewline -ForegroundColor $colour " $message"        
+    }
+    else {
+        Write-Host -ForegroundColor $colour " $message" 
+    }
+    $logContent = '['+$timeStamp+'] '+$message
+	Add-Content -path $logFile $logContent
+}
+Export-ModuleMember -Function Write-LogMessage
+
+
+Function Debug-CatchWriter
+{
+	Param (
+        [Parameter(Mandatory=$true)]
+            [PSObject]$object
+    )
+
+    $lineNumber = $object.InvocationInfo.ScriptLineNumber
+	$lineText = $object.InvocationInfo.Line.trim()
+	$errorMessage = $object.Exception.Message
+	Write-LogMessage -message " Error at Script Line $lineNumber" -colour Red
+	Write-LogMessage -message " Relevant Command: $lineText" -colour Red
+	Write-LogMessage -message " Error Message: $errorMessage" -colour Red
+}
+Export-ModuleMember -Function Debug-CatchWriter
+
+######### End Useful Script Functions ##########
