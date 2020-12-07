@@ -62,30 +62,66 @@ Function Request-VCFToken
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
         .EXAMPLE
+    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -Credential (Get-Credential)
+        This example shows how to connect to SDDC Manager to request API access & refresh tokens           
+
+        .EXAMPLE
     	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
         This example shows how to connect to SDDC Manager using basic auth for restoring backups
+
+        .EXAMPLE
+    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -Credential (Get-Credential) -basicAuth
+        This example shows how to connect to SDDC Manager using basic auth for restoring backups        
+     
   	#>
 
   	Param (
-    	[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$fqdn,
-		[Parameter (Mandatory=$false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
-		[Parameter (Mandatory=$false)]
-      		[ValidateNotNullOrEmpty()]
-            [string]$password,
-        [Parameter (Mandatory=$false)]
-      		[ValidateNotNullOrEmpty()]
-      		[switch]$basicAuth
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+    	[Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]
+        [ValidateNotNullOrEmpty()]
+        [string]$Fqdn,
+
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+      	[ValidateNotNullOrEmpty()]
+      	[string]$UserName,
+        
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+        [ValidateNotNullOrEmpty()]
+        [Object]$Password,
+
+        [Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]
+        [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]$Credential,        
+
+        [Parameter (Mandatory=$false, ParameterSetName = 'UserNameAndPasswordSet')]        
+        [Parameter (Mandatory=$false, ParameterSetName = 'PSCredentialSet')]        
+        [ValidateNotNullOrEmpty()]
+        [switch]$basicAuth
   	)
 
-  	If ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
-   		# Request Credentials
-    	$creds = Get-Credential
-    	$username = $creds.UserName.ToString()
-    	$password = $creds.GetNetworkCredential().password
+      try {
+        if ($PSCmdlet.ParameterSetName -eq 'UserNameAndPasswordSet') {
+            $user = $UserName
+
+            if ($Password -isnot [SecureString]) {
+                if ($Password -isnot [System.String]) {
+                    throw 'Password should either be a String or (preferrably) a SecureString'
+                }
+                else {
+                    $decryptedPassword = $Password
+                }
+            } 
+            else {
+                $decryptedPassword = [Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password))
+            }
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq 'PSCredentialSet') {
+            $user = $Credential.UserName
+            $decryptedPassword = $Credential.GetNetworkCredential().Password
+        }
+    }
+    catch {
+        $PSCmdlet.ThrowTerminatingError($_)
     }
     
     If ($MyInvocation.InvocationName -eq "Connect-VCFManager") {Write-Warning "Connect-VCFManager is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Request-VCFToken. Please refactor to Request-VCFToken at earliest opportunity."}
@@ -96,7 +132,7 @@ Function Request-VCFToken
   	    # Validate credentials by executing an API call
   	    $headers = @{"Content-Type" = "application/json"}
   	    $uri = "https://$sddcManager/v1/tokens"
-  	    $body = '{"username": "'+$username+'","password": "'+$password+'"}'
+  	    $body = '{"username": "'+$user+'","password": "'+$decryptedPassword+'"}'
 
   	    Try {
     	    # Checking against the sddc-managers API
@@ -122,7 +158,7 @@ Function Request-VCFToken
     elseif ($PsBoundParameters.ContainsKey("basicAuth")) {
         Try {
             # Validate credentials by executing an API call
-            $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
+            $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$decryptedPassword))) # Create Basic Authentication Encoded Credentials
             $headers = @{"Accept" = "application/json"}
             $headers.Add("Authorization", "Basic $base64AuthInfo")
             Write-Output "Successfully Requested New Basic Auth From SDDC Manager: $sddcManager"
@@ -147,30 +183,59 @@ Function Connect-CloudBuilder
 
     	.EXAMPLE
     	PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
-    	This example shows how to connect to the Cloud Builder applaince
+        This example shows how to connect to the Cloud Builder applaince
+        
+    	.EXAMPLE
+    	PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -Credential (Get-Credential)
+    	This example shows how to connect to the Cloud Builder applaince        
   	#>
 
   	Param (
-    	[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$fqdn,
-    	[Parameter (Mandatory=$false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
-    	[Parameter (Mandatory=$false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$password
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+    	[Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]
+        [ValidateNotNullOrEmpty()]
+        [string]$Fqdn,
+
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+      	[ValidateNotNullOrEmpty()]
+      	[string]$UserName,
+        
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+        [ValidateNotNullOrEmpty()]
+        [Object]$Password,
+
+        [Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]            
+        [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]$Credential
   	)
 
-  	if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
-    	# Request Credentials
-    	$creds = Get-Credential
-    	$username = $creds.UserName.ToString()
-    	$password = $creds.GetNetworkCredential().password
-  	}
+      try {
+        if ($PSCmdlet.ParameterSetName -eq 'UserNameAndPasswordSet') {
+            $user = $UserName
+
+            if ($Password -isnot [SecureString]) {
+                if ($Password -isnot [System.String]) {
+                    throw 'Password should either be a String or (preferrably) a SecureString'
+                }
+                else {
+                    $decryptedPassword = $Password
+                }
+            } 
+            else {
+                $decryptedPassword = [Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password))
+            }
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq 'PSCredentialSet') {
+            $user = $Credential.UserName
+            $decryptedPassword = $Credential.GetNetworkCredential().Password
+        }
+    }
+    catch {
+        $PSCmdlet.ThrowTerminatingError($_)
+    }
 
   	$Global:cloudBuilder = $fqdn
-  	$Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username,$password))) # Create Basic Authentication Encoded Credentials
+  	$Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user,$decryptedPassword))) # Create Basic Authentication Encoded Credentials
 
   	# Validate credentials by executing an API call
   	$headers = @{"Accept" = "application/json"}
@@ -531,12 +596,8 @@ Function Start-VCFBundleUpload
         Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool
 
         .EXAMPLE
-        PS C:\> Start-VCFBundleUpload -json $jsonSpec
-        This example invokes the upload of a bundle onto SDDC Manager using a variable
-
-               .EXAMPLE
-        PS C:\> Start-VCFBundleUpload -json (Get-Content -Raw .\upgradeDomain.json)
-        This example invokes the upload of a bundle onto SDDC Manager by passing a JSON file
+        PS C:\> Start-VCFBundleUpload -json .\Bundle\bundlespec.json
+        This example invokes the upload of a bundle onto SDDC Manager
     #>
 
     Param (
@@ -547,10 +608,18 @@ Function Start-VCFBundleUpload
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Read the json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content $json)
+    }
+
     $uri = "https://$sddcManager/v1/bundles"
     Try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $json
-        $response
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
     }
     Catch {
         ResponseException # Call the ResponseException function which handles execption messages
@@ -730,28 +799,66 @@ Function Set-VCFMicrosoftCA
 
     	.EXAMPLE
     	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
-    	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+        This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+        
+    	.EXAMPLE
+    	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -Credential (Get-Credential) -templateName VMware
+    	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager        
   	#>
 
   	Param (
-   		[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$serverUrl,
-		[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
-		[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$password,
-    	[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      	    [string]$templateName
-  	)
+        [Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]            
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+      	[ValidateNotNullOrEmpty()]
+        [string]$serverUrl,
+              
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+        [ValidateNotNullOrEmpty()]
+        [string]$UserName,
+            
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+        [ValidateNotNullOrEmpty()]
+        [Object]$Password,
+    
+        [Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]            
+        [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]$Credential,        
+              
+        [Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]            
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+      	[ValidateNotNullOrEmpty()]
+      	[String]$templateName
+      )
+      
+      try {
+        if ($PSCmdlet.ParameterSetName -eq 'UserNameAndPasswordSet') {
+            $user = $UserName
+
+            if ($Password -isnot [SecureString]) {
+                if ($Password -isnot [System.String]) {
+                    throw 'Password should either be a String or (preferrably) a SecureString'
+                }
+                else {
+                    $decryptedPassword = $Password
+                }
+            } 
+            else {
+                $decryptedPassword = [Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password))
+            }
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq 'PSCredentialSet') {
+            $user = $Credential.UserName
+            $decryptedPassword = $Credential.GetNetworkCredential().Password
+        }
+    }
+    catch {
+        $PSCmdlet.ThrowTerminatingError($_)
+    }      
 
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    	$json = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$password+'","serverUrl": "'+$serverUrl+'","username": "'+$username+'","templateName": "'+$templateName+'"}}'
+    	$json = '{"microsoftCertificateAuthoritySpec": {"secret": "'+$decryptedPassword+'","serverUrl": "'+$serverUrl+'","username": "'+$user+'","templateName": "'+$templateName+'"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
   	}
@@ -1331,7 +1438,7 @@ Function Get-VCFCredential
       		[ValidateNotNullOrEmpty()]
       		[string]$resourceName,
     	[Parameter (Mandatory=$false)]
-      		[ValidateSet("VCENTER", "PSC", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE", "VRSLCM", "WSA", "VROPS", "VRLI", "VRA")]
+      		[ValidateSet("VCENTER", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE")]
         	[ValidateNotNullOrEmpty()]
         	[string]$resourceType,
     	[Parameter (Mandatory=$false)]
@@ -1600,26 +1707,58 @@ Function Set-VCFDepotCredential
 
     	.EXAMPLE
     	PS C:\> Set-VCFDepotCredential -username "user@yourdomain.com" -password "VMware1!"
-    	This example sets the credentials that have been configured for the depot.
+        This example sets the credentials that have been configured for the depot.
+        
+    	.EXAMPLE
+    	PS C:\> Set-VCFDepotCredential -Credential (Get-Credential)
+    	This example sets the credentials that have been configured for the depot.        
   	#>
 
   	Param (
-    	[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
-		[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$password
-  	)
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+      	[ValidateNotNullOrEmpty()]
+      	[string]$UserName,
+        
+        [Parameter (Mandatory=$true, ParameterSetName = 'UserNameAndPasswordSet')]
+        [ValidateNotNullOrEmpty()]
+        [Object]$Password,
+
+        [Parameter (Mandatory=$true, ParameterSetName = 'PSCredentialSet')]            
+        [System.Management.Automation.PSCredential]
+        [System.Management.Automation.Credential()]$Credential
+      )
+      
+      try {
+        if ($PSCmdlet.ParameterSetName -eq 'UserNameAndPasswordSet') {
+            $user = $UserName
+
+            if ($Password -isnot [SecureString]) {
+                if ($Password -isnot [System.String]) {
+                    throw 'Password should either be a String or (preferrably) a SecureString'
+                }
+                else {
+                    $decryptedPassword = $Password
+                }
+            } 
+            else {
+                $decryptedPassword = [Runtime.InteropServices.Marshal]::PtrToStringBSTR([Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password))
+            }
+        }
+        elseif ($PSCmdlet.ParameterSetName -eq 'PSCredentialSet') {
+            $user = $Credential.UserName
+            $decryptedPassword = $Credential.GetNetworkCredential().Password
+        }
+    }
+    catch {
+        $PSCmdlet.ThrowTerminatingError($_)
+    }      
 
   	Try {
     	createHeader # Calls createHeader function to set Accept & Authorization
     	checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     	$uri = "https://$sddcManager/v1/system/settings/depot"
-    	if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
-      		Throw "You must enter a username and password"
-		}
-    	$ConfigJson = '{"vmwareAccount": {"username": "'+$username+'","password": "'+$password+'"}}'
+
+    	$ConfigJson = '{"vmwareAccount": {"username": "'+$user+'","password": "'+$decryptedPassword+'"}}'
     	$response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
     	$response
   	}
@@ -2311,7 +2450,7 @@ Function Get-VCFFederationMember
             Throw "Failed to get members, no Federation found."
         }
         else {
-            $response.memberDetail
+            $response
         }
     }
     Catch {
@@ -2330,32 +2469,28 @@ Function New-VCFFederationInvite
         The New-VCFFederationInvite cmdlet creates a new invitation for a member to join the existing VCF Federation.
 
         .EXAMPLE
-        PS C:\> New-VCFFederationInvite -inviteeFqdn lax-vcf01.lax.rainpole.io -inviteeRole MEMBER
+        PS C:\> New-VCFFederationInvite -inviteeFqdn lax-vcf01.lax.rainpole.io
         This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
     #>
 
     Param (
 	    [Parameter (Mandatory=$true)]
 		    [ValidateNotNullOrEmpty()]
-            [string]$inviteeFqdn,
-        [Parameter (Mandatory=$true)]
-            [ValidateSet("MEMBER","CONTROLLER")]
-            [String]$inviteeRole
+			[string]$inviteeFqdn
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
     Try {
-        $sddcMemberRole = Get-VCFFederationMember
+        $sddcMemberRole = Get-VCFFederationMembers
         if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
             Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
         }
         else {
             $inviteeDetails = @{
-            inviteeRole = $inviteeRole
+            inviteeRole = 'MEMBER'
             inviteeFqdn = $inviteeFqdn
-
         }
         $ConfigJson = $inviteeDetails | ConvertTo-Json
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
@@ -3143,25 +3278,15 @@ Function Start-CloudBuilderSDDCValidation
     Param (
         [Parameter (Mandatory=$true)]
             [ValidateNotNullOrEmpty()]
-            [String]$json,
-        [Parameter (Mandatory=$false)]
-            [ValidateSet("JSON_SPEC_VALIDATION","LICENSE_KEY_VALIDATION","TIME_SYNC_VALIDATION","NETWORK_IP_POOLS_VALIDATION","NETWORK_CONFIG_VALIDATION","MANAGEMENT_NETWORKS_VALIDATION","ESXI_VERSION_VALIDATION","ESXI_HOST_READINESS_VALIDATION","PASSWORDS_VALIDATION","HOST_IP_DNS_VALIDATION","CLOUDBUILDER_READY_VALIDATION","VSAN_AVAILABILITY_VALIDATION","NSXT_NETWORKS_VALIDATION","AVN_NETWORKS_VALIDATION")]
-            [String]$validation
+            [string]$json
     )
 
     Try {
         validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
         createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
-        if (-not $PsBoundParameters.ContainsKey("validation")) {
-            $uri = "https://$cloudBuilder/v1/sddcs/validations"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-            $response
-        }
-        if ($PsBoundParameters.ContainsKey("validation")) {
-            $uri = "https://$cloudBuilder/v1/sddcs/validations?name=$validation"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-            $response
-        }
+        $uri = "https://$cloudBuilder/v1/sddcs/validations"
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+        $response
     }
     Catch {
         $errorString = ResponseException; Write-Error $errorString
@@ -4231,9 +4356,9 @@ Function Get-VCFvRSLCM
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vrslcms"
+        $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
+        $response
     }
     Catch {
         $errorString = ResponseException; Write-Error $errorString
@@ -4352,230 +4477,6 @@ Export-ModuleMember -Function Reset-VCFvRSLCM
 
 ######### End APIs for managing vRealize Suite Lifecycle Manager ##########
 
-######### Start APIs for managing vRealize Operations Manager ##########
-
-Function Get-VCFvROPs
-{
-    <#
-        .SYNOPSIS
-        Get the existing vRealize Operations Manager
-
-        .DESCRIPTION
-        The Get-VCFvROPs cmdlet gets the complete information about the existing vRealize Operations Manager.
-
-        .EXAMPLE
-        PS C:\> Get-VCFvROPs
-        This example list all details concerning the vRealize Operations Manager
-
-        .EXAMPLE
-        PS C:\> Get-VCFvROPs -domains
-        This example lists all workload domains connected to vRealize Operations Manager
-    #>
-
-    Param (
-    	[Parameter (Mandatory=$false)]
-      		[ValidateNotNullOrEmpty()]
-            [switch]$domains
-    )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ($PsBoundParameters.ContainsKey("domains")) {
-            $uri = "https://$sddcManager/v1/vrops/domains"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
-        }
-        else {
-            $uri = "https://$sddcManager/v1/vropses"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response    
-        }
-    }
-    Catch {
-        $errorString = ResponseException; Write-Error $errorString
-    }
-}
-Export-ModuleMember -Function Get-VCFvROPs
-
-Function Set-VCFvROPs
-{
-    <#
-        .SYNOPSIS
-        Connect or disconnect Workload Domains to vRealize Operations Manager
-
-        .DESCRIPTION
-        The Set-VCFvROPs cmdlet connects or disconnects Workload Domains to vRealize Operations Manager.
-
-        .EXAMPLE
-        PS C:\> Set-VCFvROPs -domainId <domain-id> -status ENABLED
-        This example connects a Workload Domain to vRealize Operations Manager
-
-        .EXAMPLE
-        PS C:\> Set-VCFvROPs -domainId <domain-id> -status DISABLED
-        This example disconnects a Workload Domain from vRealize Operations Manager
-    #>
-
-    Param (
-    	[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-            [string]$domainId,
-        [Parameter (Mandatory=$true)]
-            [ValidateSet("ENABLED", "DISABLED")]
-            [ValidateNotNullOrEmpty()]
-            [string]$status
-    )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $body = '{"domainId": "'+$domainId+'","status": "'+$status+'"}'
-        $uri = "https://$sddcManager/v1/vrops/domains"
-        $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
-        $response
-    }
-    Catch {
-        $errorString = ResponseException; Write-Error $errorString
-    }
-}
-Export-ModuleMember -Function Set-VCFvROPs
-
-######### End APIs for managing vRealize Operations Manager ##########
-
-######### Start APIs for managing Workspace ONE Access ##########
-
-Function Get-VCFWSA
-{
-    <#
-        .SYNOPSIS
-        Get the existing Workspace ONE Access
-
-        .DESCRIPTION
-        The Get-VCFWSA cmdlet gets the complete information about the existing Workspace ONE Access.
-
-        .EXAMPLE
-        PS C:\> Get-VCFWSA
-        This example list all details concerning Workspace ONE Access
-    #>
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/wsas"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    Catch {
-        $errorString = ResponseException; Write-Error $errorString
-    }
-}
-Export-ModuleMember -Function Get-VCFWSA
-
-######### End APIs for managing Workspace ONE Access ##########
-
-######### Start APIs for managing vRealize Automation ##########
-
-Function Get-VCFvRA
-{
-    <#
-        .SYNOPSIS
-        Get the existing vRealize Automation
-
-        .DESCRIPTION
-        The Get-VCFvRA cmdlet gets the complete information about the existing vRealize Automation.
-
-        .EXAMPLE
-        PS C:\> Get-VCFvRA
-        This example list all details concerning the vRealize Automation
-    #>
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vras"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    Catch {
-        $errorString = ResponseException; Write-Error $errorString
-    }
-}
-Export-ModuleMember -Function Get-VCFvRA
-
-######### End APIs for managing vRealize Automation ##########
-
-######### Start APIs for managing vRealize Log Insight ##########
-
-Function Get-VCFvRLI
-{
-    <#
-        .SYNOPSIS
-        Get the existing vRealize Log Insight
-
-        .DESCRIPTION
-        The Get-VCFvRLI cmdlet gets the complete information about the existing vRealize Log Insight.
-
-        .EXAMPLE
-        PS C:\> Get-VCFvRLI
-        This example list all details concerning the vRealize Log Insight
-    #>
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vrlis"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
-    }
-    Catch {
-        $errorString = ResponseException; Write-Error $errorString
-    }
-}
-Export-ModuleMember -Function Get-VCFvRLI
-
-Function Set-VCFvRLI
-{
-    <#
-        .SYNOPSIS
-        Connect or disconnect Workload Domains to vRealize Log Insight
-
-        .DESCRIPTION
-        The Set-VCFvRLI cmdlet connects or disconnects Workload Domains to vRealize Log Insight
-
-        .EXAMPLE
-        PS C:\> Set-VCFvRLI -domainId <domain-id> -status ENABLED
-        This example connects a Workload Domain to vRealize Log Insight
-
-        .EXAMPLE
-        PS C:\> Set-VCFvRLI -domainId <domain-id> -status DISABLED
-        This example disconnects a Workload Domain from vRealize Log Insight
-    #>
-
-    Param (
-    	[Parameter (Mandatory=$true)]
-      		[ValidateNotNullOrEmpty()]
-            [string]$domainId,
-        [Parameter (Mandatory=$true)]
-            [ValidateSet("ENABLED", "DISABLED")]
-            [ValidateNotNullOrEmpty()]
-            [string]$status
-    )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $body = '{"domainId": "'+$domainId+'","status": "'+$status+'"}'
-        $uri = "https://$sddcManager/v1/vrli/domains"
-        $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
-        $response
-    }
-    Catch {
-        $errorString = ResponseException; Write-Error $errorString
-    }
-}
-Export-ModuleMember -Function Set-VCFvRLI
-
-######### End APIs for managing vRealize Log Insight ##########
 
 
 ######## Start APIs for managing Validations ########
@@ -5003,70 +4904,3 @@ Function validateJsonInput
 }
 
 ######### End Utility Functions (not exported) ##########
-
-
-
-######### Start Useful Script Functions ##########
-
-Function Start-SetupLogFile ($path, $scriptName)
-{
-    $filetimeStamp = Get-Date -Format "MM-dd-yyyy_hh_mm_ss"   
-    $Global:logFile  = $path+'\logs\'+$scriptName+'-'+$filetimeStamp+'.log'
-    $logFolder = $path+'\logs'
-    $logFolderExists = Test-Path $logFolder
-    if (!$logFolderExists) {
-        New-Item -ItemType Directory -Path $logFolder | Out-Null
-    }
-    New-Item -type File -Path $logFile | Out-Null
-	$logContent = '['+$filetimeStamp+'] Beginning of Log File'
-	Add-Content -Path $logFile $logContent | Out-Null
-}
-Export-ModuleMember -Function Start-SetupLogFile
-
-Function Write-LogMessage 
-{
-    Param (
-        [Parameter(Mandatory=$true)]
-            [String]$message,
-        [Parameter(Mandatory=$false)]
-            [String]$colour,
-        [Parameter(Mandatory=$false)]
-            [string]$skipNewLine
-    )
-
-    If (!$colour) {
-        $colour = "Cyan"
-    }
-
-    $timeStamp = Get-Date -Format "MM-dd-yyyy_HH:mm:ss"
-
-    Write-Host -NoNewline -ForegroundColor White " [$timeStamp]"
-    If ($skipNewLine) {
-        Write-Host -NoNewline -ForegroundColor $colour " $message"        
-    }
-    else {
-        Write-Host -ForegroundColor $colour " $message" 
-    }
-    $logContent = '['+$timeStamp+'] '+$message
-	Add-Content -path $logFile $logContent
-}
-Export-ModuleMember -Function Write-LogMessage
-
-
-Function Debug-CatchWriter
-{
-	Param (
-        [Parameter(Mandatory=$true)]
-            [PSObject]$object
-    )
-
-    $lineNumber = $object.InvocationInfo.ScriptLineNumber
-	$lineText = $object.InvocationInfo.Line.trim()
-	$errorMessage = $object.Exception.Message
-	Write-LogMessage -message " Error at Script Line $lineNumber" -colour Red
-	Write-LogMessage -message " Relevant Command: $lineText" -colour Red
-	Write-LogMessage -message " Error Message: $errorMessage" -colour Red
-}
-Export-ModuleMember -Function Debug-CatchWriter
-
-######### End Useful Script Functions ##########
