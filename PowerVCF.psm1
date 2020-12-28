@@ -1939,8 +1939,7 @@ Export-ModuleMember -Function Remove-VCFFederation
 
 ######### Start APIs for managing Hosts ##########
 
-Function Get-VCFHost
-{
+Function Get-VCFHost {
     <#
         .SYNOPSIS
         Connects to the specified SDDC Manager and retrieves a list of hosts.
@@ -1970,15 +1969,15 @@ Function Get-VCFHost
     #>
 
     Param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$fqdn,
-		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$Status,
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
+        [Parameter (Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$fqdn,
+        [Parameter (Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$Status,
+        [Parameter (Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1992,7 +1991,7 @@ Function Get-VCFHost
         if ($PsBoundParameters.ContainsKey("fqdn")) {
             $uri = "https://$sddcManager/v1/hosts"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements | Where-Object {$_.fqdn -eq $fqdn}
+            $response.elements | Where-Object { $_.fqdn -eq $fqdn }
         }
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/hosts/$id"
