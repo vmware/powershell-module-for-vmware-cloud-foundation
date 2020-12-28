@@ -1973,7 +1973,7 @@ Function Get-VCFHost {
         [ValidateNotNullOrEmpty()]
         [string]$fqdn,
         [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateSet('ASSIGNED', 'UNASSIGNED_USEABLE', 'UNASSIGNED_UNUSEABLE')]
         [string]$Status,
         [Parameter (Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
