@@ -5,7 +5,7 @@ Validate SDDC specification before creation
 
 ### Syntax
 ```
-Start-CloudBuilderSDDCValidation -json <json file>
+Start-CloudBuilderSDDCValidation -json <json file> -validation <module>
 ```
 
 ### Description
@@ -17,6 +17,12 @@ The Start-CloudBuilderSDDCValidation cmdlet performs validation of the SddcSpec.
 Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json
 ```
 This example starts the validation of the SddcSpec.json
+
+#### Example 2
+```
+Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json -validation LICENSE_KEY_VALIDATION
+```
+This example starts the validation of the License Key items only based on the SddcSpec.json json
 
 ### Parameters
 
@@ -366,13 +372,8 @@ Default value: None
 		]
 	},
 	"pscSpecs": [{
-		"pscId": "psc-1",
-		"vcenterId": "vcenter-1",
 		"pscSsoSpec": {
-			"ssoSiteName": "sfo-m01",
-			"ssoDomainPassword": "VMw@re1!",
-			"ssoDomain": "vsphere.local",
-			"isJoinSsoDomain": false
+			"ssoDomain": "vsphere.local"
 		},
 		"adminUserSsoPassword": "VMw@re1!"
 	}],
@@ -397,7 +398,6 @@ Default value: None
 			},
 			"hostname": "sfo01-m01-esx01",
 			"vSwitch": "vSwitch0",
-			"serverId": "host-0",
 			"association": "sfo-m01-dc01"
 		},
 		{
@@ -413,7 +413,6 @@ Default value: None
 			},
 			"hostname": "sfo01-m01-esx02",
 			"vSwitch": "vSwitch0",
-			"serverId": "host-1",
 			"association": "sfo-m01-dc01"
 		},
 		{
@@ -429,7 +428,6 @@ Default value: None
 			},
 			"hostname": "sfo01-m01-esx03",
 			"vSwitch": "vSwitch0",
-			"serverId": "host-2",
 			"association": "sfo-m01-dc01"
 		},
 		{
@@ -445,11 +443,24 @@ Default value: None
 			},
 			"hostname": "sfo01-m01-esx04",
 			"vSwitch": "vSwitch0",
-			"serverId": "host-3",
 			"association": "sfo-m01-dc01"
 		}
 	]
 }
+```
+
+#### -validation
+- Trigger provided validation module
+
+```yaml
+Type: JSON
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: Named
+Default value: None
+Support value: JSON_SPEC_VALIDATION, LICENSE_KEY_VALIDATION, TIME_SYNC_VALIDATION, NETWORK_IP_POOLS_VALIDATION, NETWORK_CONFIG_VALIDATION, MANAGEMENT_NETWORKS_VALIDATION, ESXI_VERSION_VALIDATION, ESXI_HOST_READINESS_VALIDATION, PASSWORDS_VALIDATION, HOST_IP_DNS_VALIDATION, CLOUDBUILDER_READY_VALIDATION, VSAN_AVAILABILITY_VALIDATION, NSXT_NETWORKS_VALIDATION, AVN_NETWORKS_VALIDATION, SECURE_PLATFORM_AUDIT
 ```
 
 ### Notes

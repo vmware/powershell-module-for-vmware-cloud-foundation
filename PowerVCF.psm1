@@ -3138,6 +3138,10 @@ Function Start-CloudBuilderSDDCValidation
         .EXAMPLE
         PS C:\> Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json
         This example starts the validation of the SddcSpec.json
+
+        .EXAMPLE
+        PS C:\> Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json -validation LICENSE_KEY_VALIDATION
+        This example starts the validation of the License Key items only based on the SddcSpec.json json
     #>
 
     Param (
@@ -3145,7 +3149,7 @@ Function Start-CloudBuilderSDDCValidation
             [ValidateNotNullOrEmpty()]
             [String]$json,
         [Parameter (Mandatory=$false)]
-            [ValidateSet("JSON_SPEC_VALIDATION","LICENSE_KEY_VALIDATION","TIME_SYNC_VALIDATION","NETWORK_IP_POOLS_VALIDATION","NETWORK_CONFIG_VALIDATION","MANAGEMENT_NETWORKS_VALIDATION","ESXI_VERSION_VALIDATION","ESXI_HOST_READINESS_VALIDATION","PASSWORDS_VALIDATION","HOST_IP_DNS_VALIDATION","CLOUDBUILDER_READY_VALIDATION","VSAN_AVAILABILITY_VALIDATION","NSXT_NETWORKS_VALIDATION","AVN_NETWORKS_VALIDATION")]
+            [ValidateSet("JSON_SPEC_VALIDATION","LICENSE_KEY_VALIDATION","TIME_SYNC_VALIDATION","NETWORK_IP_POOLS_VALIDATION","NETWORK_CONFIG_VALIDATION","MANAGEMENT_NETWORKS_VALIDATION","ESXI_VERSION_VALIDATION","ESXI_HOST_READINESS_VALIDATION","PASSWORDS_VALIDATION","HOST_IP_DNS_VALIDATION","CLOUDBUILDER_READY_VALIDATION","VSAN_AVAILABILITY_VALIDATION","NSXT_NETWORKS_VALIDATION","AVN_NETWORKS_VALIDATION","SECURE_PLATFORM_AUDIT")]
             [String]$validation
     )
 
