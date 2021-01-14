@@ -3830,7 +3830,7 @@ Function New-VCFGroup
             [ValidateNotNullOrEmpty()]
             [string]$domain,
         [Parameter (Mandatory=$true)]
-            [ValidateSet("ADMIN","OPERATOR")]
+            [ValidateSet("ADMIN","OPERATOR","VIEWER")]
             [string]$role
     )
 

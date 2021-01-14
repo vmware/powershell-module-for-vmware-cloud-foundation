@@ -47,7 +47,7 @@ Default value: None
 ```
 
 #### -role
-- Currently supported roles: ADMIN, OPERATOR
+- Currently supported roles: ADMIN, OPERATOR, VIEWER
 
 ```yaml
 Type: string
@@ -57,7 +57,7 @@ Aliases:
 Required: True
 Position: Named
 Default value: None
-Supported Value: ADMIN, OPERATOR
+Supported Value: ADMIN, OPERATOR, VIEWER
 ```
 
 ### Notes
