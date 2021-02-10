@@ -1939,8 +1939,7 @@ Export-ModuleMember -Function Remove-VCFFederation
 
 ######### Start APIs for managing Hosts ##########
 
-Function Get-VCFHost
-{
+Function Get-VCFHost {
     <#
         .SYNOPSIS
         Connects to the specified SDDC Manager and retrieves a list of hosts.
@@ -1969,41 +1968,52 @@ Function Get-VCFHost
         This example shows how to get a host by fqdn
     #>
 
+    [CmdletBinding(DefaultParametersetname = "Default")]
     Param (
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$fqdn,
-		[Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$Status,
-        [Parameter (Mandatory=$false)]
-            [ValidateNotNullOrEmpty()]
-            [string]$id
+        [Parameter (Mandatory = $false, ParameterSetName = "fqdn")]
+        [ValidateNotNullOrEmpty()]
+        [string]$fqdn,
+        [Parameter (Mandatory = $false, ParameterSetName = "status")]
+        [ValidateSet('ASSIGNED', 'UNASSIGNED_USEABLE', 'UNASSIGNED_UNUSEABLE', IgnoreCase = $false)]
+        [string]$Status,
+        [Parameter (Mandatory = $false, ParameterSetName = "id")]
+        [ValidateNotNullOrEmpty()]
+        [string]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
     Try {
-        if ( -not $PsBoundParameters.ContainsKey("status") -and ( -not $PsBoundParameters.ContainsKey("id")) -and ( -not $PsBoundParameters.ContainsKey("fqdn"))) {
-            $uri = "https://$sddcManager/v1/hosts"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
+
+        $uri = "https://$sddcManager/v1/hosts"
+
+        switch ( $PSCmdlet.ParameterSetName ) {
+            "id" {
+                #Add id to uri
+                $uri += "/$id"
+            }
+            "status" {
+                #Add status to uri
+                $uri += "?status=$status"
+            }
         }
-        if ($PsBoundParameters.ContainsKey("fqdn")) {
-            $uri = "https://$sddcManager/v1/hosts"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements | Where-Object {$_.fqdn -eq $fqdn}
+
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+
+        switch ( $PSCmdlet.ParameterSetName ) {
+            "id" {
+                #When there is a id, it is directly the result...
+                $response
+            }
+            "fqdn" {
+                #When there is a fqdn, search on response
+                $response.elements | Where-Object { $_.fqdn -eq $fqdn }
+            }
+            default {
+                $response.elements
+            }
         }
-        if ($PsBoundParameters.ContainsKey("id")) {
-            $uri = "https://$sddcManager/v1/hosts/$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
-        }
-        if ($PsBoundParameters.ContainsKey("status")) {
-            $uri = "https://$sddcManager/v1/hosts?status=$status"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
+
     }
     Catch {
         $errorString = ResponseException; Write-Error $errorString
