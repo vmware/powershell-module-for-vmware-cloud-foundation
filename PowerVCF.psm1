@@ -31,16 +31,16 @@ if ($PSEdition -eq 'Desktop') {
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
     add-type @"
-	using System.Net;
+    using System.Net;
     using System.Security.Cryptography.X509Certificates;
     public class TrustAllCertificatePolicy : ICertificatePolicy {
         public TrustAllCertificatePolicy() {}
-		public bool CheckValidationResult(
+        public bool CheckValidationResult(
             ServicePoint sPoint, X509Certificate certificate,
             WebRequest wRequest, int certificateProblem) {
             return true;
         }
-	}
+    }
 "@
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
@@ -49,35 +49,35 @@ if ($PSEdition -eq 'Desktop') {
 
 Function Request-VCFToken {
     <#
-		.SYNOPSIS
-    	Connects to the specified SDDC Manager and requests API access & refresh tokens
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and requests API access & refresh tokens
 
-    	.DESCRIPTION
-    	The Request-VCFToken cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
-    	It is required once per session before running all other cmdlets
+        .DESCRIPTION
+        The Request-VCFToken cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
+        It is required once per session before running all other cmdlets
 
-    	.EXAMPLE
-    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMware1!
+        .EXAMPLE
+        PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMware1!
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
         .EXAMPLE
-    	PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
+        PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
         This example shows how to connect to SDDC Manager using basic auth for restoring backups
-  	#>
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$fqdn,
+        [ValidateNotNullOrEmpty()]
+        [string]$fqdn,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
+        [ValidateNotNullOrEmpty()]
+        [string]$username,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$password,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[switch]$basicAuth
+        [ValidateNotNullOrEmpty()]
+        [switch]$basicAuth
     )
 
     If ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
@@ -136,28 +136,28 @@ Export-ModuleMember -Alias Connect-VCFManager -Function Request-VCFToken
 
 Function Connect-CloudBuilder {
     <#
-    	.SYNOPSIS
-    	Connects to the specified Cloud Builder and stores the credentials in a base64 string
+        .SYNOPSIS
+        Connects to the specified Cloud Builder and stores the credentials in a base64 string
 
-    	.DESCRIPTION
-    	The Connect-CloudBuilder cmdlet connects to the specified Cloud Builder and stores the credentials
-    	in a base64 string. It is required once per session before running all other cmdlets
+        .DESCRIPTION
+        The Connect-CloudBuilder cmdlet connects to the specified Cloud Builder and stores the credentials
+        in a base64 string. It is required once per session before running all other cmdlets
 
-    	.EXAMPLE
-    	PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
-    	This example shows how to connect to the Cloud Builder applaince
-  	#>
+        .EXAMPLE
+        PS C:\> Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
+        This example shows how to connect to the Cloud Builder applaince
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$fqdn,
+        [ValidateNotNullOrEmpty()]
+        [string]$fqdn,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
+        [ValidateNotNullOrEmpty()]
+        [string]$username,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$password
+        [ValidateNotNullOrEmpty()]
+        [string]$password
     )
 
     if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
@@ -199,24 +199,24 @@ Export-ModuleMember -Function Connect-CloudBuilder
 
 Function Get-VCFApplicationVirtualNetwork {
     <#
-  		.SYNOPSIS
-  		Retrieves all Application Virtual Networks
+          .SYNOPSIS
+          Retrieves all Application Virtual Networks
 
-  		.DESCRIPTION
-  		The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
-    	- regionType supports REGION_A, REGION_B, X_REGION
+          .DESCRIPTION
+          The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
+        - regionType supports REGION_A, REGION_B, X_REGION
 
-  		.EXAMPLE
-  		PS C:\> Get-VCFApplicationVirtualNetwork
-  		This example demonstrates how to retrieve a list of Application Virtual Networks
+          .EXAMPLE
+          PS C:\> Get-VCFApplicationVirtualNetwork
+          This example demonstrates how to retrieve a list of Application Virtual Networks
 
-  		.EXAMPLE
-  		PS C:\> Get-VCFApplicationVirtualNetwork -regionType REGION_A
-  		This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
+          .EXAMPLE
+          PS C:\> Get-VCFApplicationVirtualNetwork -regionType REGION_A
+          This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
 
-  		.EXAMPLE
-  		PS C:\> Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
-  		This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
+          .EXAMPLE
+          PS C:\> Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
+          This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
   #>
 
     Param (
@@ -326,16 +326,16 @@ Export-ModuleMember -Function Set-VCFBackupConfiguration
 
 Function Start-VCFBackup {
     <#
-    	.SYNOPSIS
-    	Start the SDDC Manager backup
+        .SYNOPSIS
+        Start the SDDC Manager backup
 
-    	.DESCRIPTION
-    	The Start-VCFBackup cmdlet invokes the SDDC Manager backup task
+        .DESCRIPTION
+        The Start-VCFBackup cmdlet invokes the SDDC Manager backup task
 
-    	.EXAMPLE
-    	PS C:\> Start-VCFBackup
-    	This example shows how to start the SDDC Manager backup
-  	#>
+        .EXAMPLE
+        PS C:\> Start-VCFBackup
+        This example shows how to start the SDDC Manager backup
+      #>
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
@@ -354,16 +354,16 @@ Export-ModuleMember -Function Start-VCFBackup
 
 Function Start-VCFRestore {
     <#
-    	.SYNOPSIS
-    	Start the SDDC Manager restore
+        .SYNOPSIS
+        Start the SDDC Manager restore
 
-    	.DESCRIPTION
-    	The Start-VCFRestore cmdlet invokes the SDDC Manager restore task
+        .DESCRIPTION
+        The Start-VCFRestore cmdlet invokes the SDDC Manager restore task
 
-    	.EXAMPLE
-    	PS C:\> Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-2020-04-20-14-37-25.tar.gz" -passphrase "VMw@re1!VMw@re1!"
-    	This example shows how to start the SDDC Manager restore
-  	#>
+        .EXAMPLE
+        PS C:\> Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-2020-04-20-14-37-25.tar.gz" -passphrase "VMw@re1!VMw@re1!"
+        This example shows how to start the SDDC Manager restore
+      #>
     Param (
         [Parameter (Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -388,15 +388,15 @@ Export-ModuleMember -Function Start-VCFRestore
 
 Function Get-VCFRestoreTask {
     <#
-    	.SYNOPSIS
-    	Fetch the restores task
+        .SYNOPSIS
+        Fetch the restores task
 
-    	.DESCRIPTION
-    	The Get-VCFRestoreTask cmdlet retrieves the status of the restore task
+        .DESCRIPTION
+        The Get-VCFRestoreTask cmdlet retrieves the status of the restore task
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753
-    	This example shows how to retrieve the status of the restore task by id
+        .EXAMPLE
+        PS C:\> Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753
+        This example shows how to retrieve the status of the restore task by id
       #>
 
     Param (
@@ -555,16 +555,16 @@ Export-ModuleMember -Function Start-VCFBundleUpload
 
 Function Get-VCFCeip {
     <#
-    	.SYNOPSIS
-    	Retrieves the current setting for CEIP of the connected SDDC Manager
+        .SYNOPSIS
+        Retrieves the current setting for CEIP of the connected SDDC Manager
 
-    	.DESCRIPTION
-    	The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
+        .DESCRIPTION
+        The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCeip
-    	This example shows how to get the current setting of CEIP
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFCeip
+        This example shows how to get the current setting of CEIP
+      #>
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
@@ -581,26 +581,26 @@ Export-ModuleMember -Function Get-VCFCeip
 
 Function Set-VCFCeip {
     <#
-    	.SYNOPSIS
-    	Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
+        .SYNOPSIS
+        Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
 
-    	.DESCRIPTION
+        .DESCRIPTION
         The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected
         SDDC Manager and the components managed (vCenter Server, vSAN and NSX Manager)
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFCeip -ceipSetting DISABLE
-    	This example shows how to DISABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
+        .EXAMPLE
+        PS C:\> Set-VCFCeip -ceipSetting DISABLE
+        This example shows how to DISABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFCeip -ceipSetting ENABLE
-    	This example shows how to ENABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFCeip -ceipSetting ENABLE
+        This example shows how to ENABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateSet("ENABLE", "DISABLE")]
-      		[string]$ceipSetting
+        [ValidateSet("ENABLE", "DISABLE")]
+        [string]$ceipSetting
     )
 
     Try {
@@ -625,31 +625,31 @@ Export-ModuleMember -Function Set-VCFCeip
 
 Function Get-VCFCertificateAuthority {
     <#
-    	.SYNOPSIS
-    	Get certificate authorities information
+        .SYNOPSIS
+        Get certificate authorities information
 
-    	.DESCRIPTION
-    	The Get-VCFCertificateAuthority cmdlet retrieves the certificate authorities information for the connected SDDC Manager
+        .DESCRIPTION
+        The Get-VCFCertificateAuthority cmdlet retrieves the certificate authorities information for the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificateAuthority
-    	This example shows how to get the certificate authority configuration from the connected SDDC Manager
+        .EXAMPLE
+        PS C:\> Get-VCFCertificateAuthority
+        This example shows how to get the certificate authority configuration from the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificateAuthority | ConvertTo-Json
-    	This example shows how to get the certificate authority configuration from the connected SDDC Manager
-    	and output to Json format
+        .EXAMPLE
+        PS C:\> Get-VCFCertificateAuthority | ConvertTo-Json
+        This example shows how to get the certificate authority configuration from the connected SDDC Manager
+        and output to Json format
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificateAuthority -caType Microsoft
-    	This example shows how to get the certificate authority configuration for a Microsoft Certificate Authority from the
-    	connected SDDC Manager
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFCertificateAuthority -caType Microsoft
+        This example shows how to get the certificate authority configuration for a Microsoft Certificate Authority from the
+        connected SDDC Manager
+      #>
 
     Param (
         [Parameter (Mandatory = $false)]
-      		[ValidateSet("OpenSSL", "Microsoft")]
-      		[String] $caType
+        [ValidateSet("OpenSSL", "Microsoft")]
+        [String] $caType
     )
 
     Try {
@@ -674,21 +674,21 @@ Export-ModuleMember -Function Get-VCFCertificateAuthority
 
 Function Remove-VCFCertificateAuthority {
     <#
-    	.SYNOPSIS
-    	Deletes certificate authority configuration
+        .SYNOPSIS
+        Deletes certificate authority configuration
 
-    	.DESCRIPTION
-    	The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from the connected SDDC Manager
+        .DESCRIPTION
+        The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Remove-VCFCertificateAuthority
-    	This example removes the Micosoft certificate authority configuration from the connected SDDC Manager
-  	#>
+        .EXAMPLE
+        PS C:\> Remove-VCFCertificateAuthority
+        This example removes the Micosoft certificate authority configuration from the connected SDDC Manager
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateSet("OpenSSL", "Microsoft")]
-      		[String] $caType
+        [ValidateSet("OpenSSL", "Microsoft")]
+        [String] $caType
     )
 
     Try {
@@ -706,29 +706,29 @@ Export-ModuleMember -Function Remove-VCFCertificateAuthority
 
 Function Set-VCFMicrosoftCA {
     <#
-    	.SYNOPSIS
-    	Configures a Microsoft Certificate Authority
+        .SYNOPSIS
+        Configures a Microsoft Certificate Authority
 
-    	.DESCRIPTION
-    	Configures the Microsoft Certificate Authorty on the connected SDDC Manager
+        .DESCRIPTION
+        Configures the Microsoft Certificate Authorty on the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
-    	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFMicrosoftCA -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+        This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$serverUrl,
+        [ValidateNotNullOrEmpty()]
+        [string]$serverUrl,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
+        [ValidateNotNullOrEmpty()]
+        [string]$username,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$password,
+        [ValidateNotNullOrEmpty()]
+        [string]$password,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$templateName
     )
 
@@ -747,35 +747,35 @@ Export-ModuleMember -Function Set-VCFMicrosoftCA
 
 Function Set-VCFOpenSSLCA {
     <#
-    	.SYNOPSIS
-    	Configures the OpenSSL Certificate Authority
+        .SYNOPSIS
+        Configures the OpenSSL Certificate Authority
 
-    	.DESCRIPTION
-    	Configures the OpenSSL Certificate Authorty on the connected SDDC Manager
+        .DESCRIPTION
+        Configures the OpenSSL Certificate Authorty on the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFOpenSSLCA -commonName sddcManager -organization Rainpole -organizationUnit Support -locality "Palo Alto" -state CA -country US
-    	This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFOpenSSLCA -commonName sddcManager -organization Rainpole -organizationUnit Support -locality "Palo Alto" -state CA -country US
+        This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$commonName,
+        [ValidateNotNullOrEmpty()]
+        [string]$commonName,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$organization,
+        [ValidateNotNullOrEmpty()]
+        [string]$organization,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$organizationUnit,
+        [ValidateNotNullOrEmpty()]
+        [string]$organizationUnit,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$locality,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$state,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$country
     )
 
@@ -794,25 +794,25 @@ Export-ModuleMember -Function Set-VCFOpenSSLCA
 
 Function Get-VCFCertificateCSR {
     <#
-    	.SYNOPSIS
-    	Get available CSR(s)
+        .SYNOPSIS
+        Get available CSR(s)
 
-    	.DESCRIPTION
-    	The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
+        .DESCRIPTION
+        The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificateCSRs -domainName MGMT
-    	This example gets a list of CSRs and displays the output
+        .EXAMPLE
+        PS C:\> Get-VCFCertificateCSRs -domainName MGMT
+        This example gets a list of CSRs and displays the output
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
-    	This example gets a list of CSRs and displays them in JSON format
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFCertificateCSRs -domainName MGMT | ConvertTo-Json
+        This example gets a list of CSRs and displays them in JSON format
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$domainName
+        [ValidateNotNullOrEmpty()]
+        [string]$domainName
     )
 
     Try {
@@ -830,26 +830,26 @@ Export-ModuleMember -Function Get-VCFCertificateCSR
 
 Function Request-VCFCertificateCSR {
     <#
-    	.SYNOPSIS
-    	Generate CSR(s)
+        .SYNOPSIS
+        Generate CSR(s)
 
-    	.DESCRIPTION
-    	The Request-VCFCertificateCSR generates CSR(s) for the selected resource(s) in the domain
-    	- Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
-      	VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+        .DESCRIPTION
+        The Request-VCFCertificateCSR generates CSR(s) for the selected resource(s) in the domain
+        - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
+          VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
 
-    	.EXAMPLE
-    	PS C:\> Request-VCFCertificateCSR -domainName MGMT -json .\requestCsrSpec.json
-    	This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
-      	the domain called MGMT
-  	#>
+        .EXAMPLE
+        PS C:\> Request-VCFCertificateCSR -domainName MGMT -json .\requestCsrSpec.json
+        This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
+          the domain called MGMT
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json,
+        [ValidateNotNullOrEmpty()]
+        [string]$json,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$domainName
     )
 
@@ -874,35 +874,35 @@ Export-ModuleMember -Function Request-VCFCertificateCSR
 
 Function Get-VCFCertificate {
     <#
-    	.SYNOPSIS
-    	Get latest generated certificate(s) in a domain
+        .SYNOPSIS
+        Get latest generated certificate(s) in a domain
 
-    	.DESCRIPTION
-    	The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
+        .DESCRIPTION
+        The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificate -domainName sfo-m01
-    	This example gets a list of certificates that have been generated
+        .EXAMPLE
+        PS C:\> Get-VCFCertificate -domainName sfo-m01
+        This example gets a list of certificates that have been generated
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificate -domainName sfo-m01 | ConvertTo-Json
-    	This example gets a list of certificates and displays them in JSON format
+        .EXAMPLE
+        PS C:\> Get-VCFCertificate -domainName sfo-m01 | ConvertTo-Json
+        This example gets a list of certificates and displays them in JSON format
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificate -domainName sfo-m01 | Select issuedTo
-    	This example gets a list of endpoint names where certificates have been issued
+        .EXAMPLE
+        PS C:\> Get-VCFCertificate -domainName sfo-m01 | Select issuedTo
+        This example gets a list of endpoint names where certificates have been issued
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCertificate -domainName sfo-m01 -resources
-    	This example gets the certificates of all resources in the domain
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFCertificate -domainName sfo-m01 -resources
+        This example gets the certificates of all resources in the domain
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$domainName,
+        [ValidateNotNullOrEmpty()]
+        [string]$domainName,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [switch]$resources
     )
 
@@ -928,28 +928,28 @@ Export-ModuleMember -Function Get-VCFCertificate
 
 Function Request-VCFCertificate {
     <#
-    	.SYNOPSIS
-    	Generate certificate(s) for the selected resource(s) in a domain
+        .SYNOPSIS
+        Generate certificate(s) for the selected resource(s) in a domain
 
-    	.DESCRIPTION
-    	The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a domain.
-    	CA must be configured and CSR must be generated beforehand
-    	- Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS,
-      	VRSLCM, VXRAIL_MANAGER
+        .DESCRIPTION
+        The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a domain.
+        CA must be configured and CSR must be generated beforehand
+        - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS,
+          VRSLCM, VXRAIL_MANAGER
 
-    	.EXAMPLE
-    	PS C:\> Request-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
-    	This example requests the generation of the Certificates based on the entries within the requestCertificateSpec.json file
-    	for resources within the domain called MGMT
-  	#>
+        .EXAMPLE
+        PS C:\> Request-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+        This example requests the generation of the Certificates based on the entries within the requestCertificateSpec.json file
+        for resources within the domain called MGMT
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json,
+        [ValidateNotNullOrEmpty()]
+        [string]$json,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$domainName
+        [ValidateNotNullOrEmpty()]
+        [string]$domainName
     )
 
     if (!(Test-Path $json)) {
@@ -974,25 +974,25 @@ Export-ModuleMember -Function Request-VCFCertificate
 
 Function Set-VCFCertificate {
     <#
-    	.SYNOPSIS
-    	Replace certificate(s) for the selected resource(s) in a domain
+        .SYNOPSIS
+        Replace certificate(s) for the selected resource(s) in a domain
 
-    	.DESCRIPTION
-    	The Set-VCFCertificate cmdlet replaces certificate(s) for the selected resource(s) in a domain
+        .DESCRIPTION
+        The Set-VCFCertificate cmdlet replaces certificate(s) for the selected resource(s) in a domain
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
-    	This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
-    	for resources within the domain called MGMT
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
+        This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
+        for resources within the domain called MGMT
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json,
+        [ValidateNotNullOrEmpty()]
+        [string]$json,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$domainName
+        [ValidateNotNullOrEmpty()]
+        [string]$domainName
     )
 
     if (!(Test-Path $json)) {
@@ -1022,31 +1022,31 @@ Export-ModuleMember -Function Set-VCFCertificate
 
 Function Get-VCFCluster {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager & retrieves a list of clusters.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & retrieves a list of clusters.
 
-    	.DESCRIPTION
-    	The Get-VCFCluster cmdlet connects to the specified SDDC Manager & retrieves a list of clusters.
+        .DESCRIPTION
+        The Get-VCFCluster cmdlet connects to the specified SDDC Manager & retrieves a list of clusters.
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCluster
-    	This example shows how to get a list of all clusters
+        .EXAMPLE
+        PS C:\> Get-VCFCluster
+        This example shows how to get a list of all clusters
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCluster -name wld01-cl01
-    	This example shows how to get a cluster by name
+        .EXAMPLE
+        PS C:\> Get-VCFCluster -name wld01-cl01
+        This example shows how to get a cluster by name
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    	This example shows how to get a cluster by id
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+        This example shows how to get a cluster by id
+      #>
 
     Param (
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$name,
+        [ValidateNotNullOrEmpty()]
+        [string]$name,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$id
     )
 
@@ -1077,21 +1077,21 @@ Export-ModuleMember -Function Get-VCFCluster
 
 Function New-VCFCluster {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager and creates a cluster
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and creates a cluster
 
-    	.DESCRIPTION
-    	The New-VCFCluster cmdlet connects to the specified SDDC Manager and creates a cluster in a specified workload domains
+        .DESCRIPTION
+        The New-VCFCluster cmdlet connects to the specified SDDC Manager and creates a cluster in a specified workload domains
 
-    	.EXAMPLE
-    	PS C:\> New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
-    	This example shows how to create a cluster in a Workload Domain from a json spec
-  	#>
+        .EXAMPLE
+        PS C:\> New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
+        This example shows how to create a cluster in a Workload Domain from a json spec
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json
+        [ValidateNotNullOrEmpty()]
+        [string]$json
     )
 
     if (!(Test-Path $json)) {
@@ -1126,36 +1126,36 @@ Export-ModuleMember -Function New-VCFCluster
 
 Function Set-VCFCluster {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager & expands or compacts a cluster.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & expands or compacts a cluster.
 
-    	.DESCRIPTION
-		The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or
-		removing a host(s). A cluster can also be marked for deletion
+        .DESCRIPTION
+        The Set-VCFCluster cmdlet connects to the specified SDDC Manager & expands or compacts a cluster by adding or
+        removing a host(s). A cluster can also be marked for deletion
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterExpansionSpec.json
-    	This example shows how to expand a cluster by adding a host(s)
+        .EXAMPLE
+        PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterExpansionSpec.json
+        This example shows how to expand a cluster by adding a host(s)
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterCompactionSpec.json
-    	This example shows how to compact a cluster by removing a host(s)
+        .EXAMPLE
+        PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterCompactionSpec.json
+        This example shows how to compact a cluster by removing a host(s)
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -markForDeletion
-    	This example shows how to mark a cluster for deletion
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -markForDeletion
+        This example shows how to mark a cluster for deletion
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id,
+        [ValidateNotNullOrEmpty()]
+        [string]$id,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json,
+        [ValidateNotNullOrEmpty()]
+        [string]$json,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[switch]$markForDeletion
+        [ValidateNotNullOrEmpty()]
+        [switch]$markForDeletion
     )
 
     Try {
@@ -1200,22 +1200,22 @@ Export-ModuleMember -Function Set-VCFCluster
 
 Function Remove-VCFCluster {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager & deletes a cluster.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & deletes a cluster.
 
-    	.DESCRIPTION
-    	Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
-    	The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster.
+        .DESCRIPTION
+        Before a cluster can be deleted it must first be marked for deletion. See Set-VCFCluster
+        The Remove-VCFCluster cmdlet connects to the specified SDDC Manager & deletes a cluster.
 
-    	.EXAMPLE
-    	PS C:\> Remove-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1
-    	This example shows how to delete a cluster
-  	#>
+        .EXAMPLE
+        PS C:\> Remove-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1
+        This example shows how to delete a cluster
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id
+        [ValidateNotNullOrEmpty()]
+        [string]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1233,20 +1233,20 @@ Export-ModuleMember -Function Remove-VCFCluster
 
 Function Get-VCFClusterValidation {
     <#
-    	.SYNOPSIS
-    	Get the status of the validations for cluster deployment
+        .SYNOPSIS
+        Get the status of the validations for cluster deployment
 
-    	.DESCRIPTION
-    	The Get-VCFClusterValidation cmdlet returns the status of a validation of the json
+        .DESCRIPTION
+        The Get-VCFClusterValidation cmdlet returns the status of a validation of the json
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFClusterValidation -id 001235d8-3e40-4a5a-8a89-09985dac1434
-    	This example shows how to get the cluster validation task based on the id
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFClusterValidation -id 001235d8-3e40-4a5a-8a89-09985dac1434
+        This example shows how to get the cluster validation task based on the id
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$id
     )
 
@@ -1271,39 +1271,39 @@ Export-ModuleMember -Function Get-VCFClusterValidation
 
 Function Get-VCFCredential {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager and retrieves a list of credentials.
-    	Supported resource types are: VCENTER, ESXI, NSXT_MANAGER, NSXT_EDGE, BACKUP
-    	Please note: if you are requesting credentials by resource type then the resource name parameter (if
-    	passed) will be ignored (they are mutually exclusive)
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves a list of credentials.
+        Supported resource types are: VCENTER, ESXI, NSXT_MANAGER, NSXT_EDGE, BACKUP
+        Please note: if you are requesting credentials by resource type then the resource name parameter (if
+        passed) will be ignored (they are mutually exclusive)
 
-    	.DESCRIPTION
-    	The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
-    	Authenticated user must have ADMIN role.
+        .DESCRIPTION
+        The Get-VCFCredential cmdlet connects to the specified SDDC Manager and retrieves a list of credentials.
+        Authenticated user must have ADMIN role.
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCredential
-    	This example shows how to get a list of credentials
+        .EXAMPLE
+        PS C:\> Get-VCFCredential
+        This example shows how to get a list of credentials
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCredential -resourceType VCENTER
-    	This example shows how to get a list of VCENTER credentials
+        .EXAMPLE
+        PS C:\> Get-VCFCredential -resourceType VCENTER
+        This example shows how to get a list of VCENTER credentials
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
+        .EXAMPLE
+        PS C:\> Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
         This example shows how to get the credential for a specific resourceName (FQDN)
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
-    	This example shows how to get the credential using the id
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFCredential -id 3c4acbd6-34e5-4281-ad19-a49cb7a5a275
+        This example shows how to get the credential using the id
+      #>
 
     Param (
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$resourceName,
+        [ValidateNotNullOrEmpty()]
+        [string]$resourceName,
         [Parameter (Mandatory = $false)]
-      		[ValidateSet("VCENTER", "PSC", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE", "VRSLCM", "WSA", "VROPS", "VRLI", "VRA")]
+        [ValidateSet("VCENTER", "PSC", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE", "VRSLCM", "WSA", "VROPS", "VRLI", "VRA")]
         [ValidateNotNullOrEmpty()]
         [string]$resourceType,
         [Parameter (Mandatory = $false)]
@@ -1344,22 +1344,22 @@ Export-ModuleMember -Function Get-VCFCredential
 
 Function Set-VCFCredential {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager and updates a credential.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and updates a credential.
 
-    	.DESCRIPTION
-    	The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
-    	Credentials can be updated with a specified password(s) or rotated using system generated password(s).
+        .DESCRIPTION
+        The Set-VCFCredential cmdlet connects to the specified SDDC Manager and updates a credential.
+        Credentials can be updated with a specified password(s) or rotated using system generated password(s).
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFCredential -json .\Credential\updateCredentialSpec.json
-    	This example shows how to update a credential using a json spec
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFCredential -json .\Credential\updateCredentialSpec.json
+        This example shows how to update a credential using a json spec
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json
+        [ValidateNotNullOrEmpty()]
+        [string]$json
     )
 
     Try {
@@ -1385,33 +1385,33 @@ Export-ModuleMember -Function Set-VCFCredential
 
 Function Get-VCFCredentialTask {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves a list of credential tasks in reverse chronological order.
 
-    	.DESCRIPTION
-    	The Get-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retrieves a list of
-    	credential tasks in reverse chronological order.
+        .DESCRIPTION
+        The Get-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retrieves a list of
+        credential tasks in reverse chronological order.
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCredentialTask
-    	This example shows how to get a list of all credentials tasks
+        .EXAMPLE
+        PS C:\> Get-VCFCredentialTask
+        This example shows how to get a list of all credentials tasks
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3
-    	This example shows how to get the credential tasks for a specific task id
+        .EXAMPLE
+        PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3
+        This example shows how to get the credential tasks for a specific task id
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
-    	This example shows how to get resource credentials (for e.g. ESXI) for a credential task id
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
+        This example shows how to get resource credentials (for e.g. ESXI) for a credential task id
+      #>
 
     Param (
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id,
+        [ValidateNotNullOrEmpty()]
+        [string]$id,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[switch]$resourceCredentials
+        [ValidateNotNullOrEmpty()]
+        [switch]$resourceCredentials
     )
 
     Try {
@@ -1441,21 +1441,21 @@ Export-ModuleMember -Function Get-VCFCredentialTask
 
 Function Stop-VCFCredentialTask {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and cancels a failed update or rotate passwords task.
 
-    	.DESCRIPTION
-    	The Stop-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
+        .DESCRIPTION
+        The Stop-VCFCredentialTask cmdlet connects to the specified SDDC Manager and cancles a failed update or rotate passwords task.
 
-    	.EXAMPLE
-    	PS C:\> Stop-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
-    	This example shows how to cancel a failed rotate or update password task.
-  	#>
+        .EXAMPLE
+        PS C:\> Stop-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+        This example shows how to cancel a failed rotate or update password task.
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id
+        [ValidateNotNullOrEmpty()]
+        [string]$id
     )
 
     if ($PsBoundParameters.ContainsKey("id")) {
@@ -1478,24 +1478,24 @@ Export-ModuleMember -Function Stop-VCFCredentialTask
 
 Function Restart-VCFCredentialTask {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retry a failed rotate/update passwords task
 
-    	.DESCRIPTION
-    	The Restart-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
+        .DESCRIPTION
+        The Restart-VCFCredentialTask cmdlet connects to the specified SDDC Manager and retry a failed rotate/update password task
 
-    	.EXAMPLE
-    	PS C:\> Restart-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
-    	This example shows how to update passwords of a resource type using a json spec
-  	#>
+        .EXAMPLE
+        PS C:\> Restart-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
+        This example shows how to update passwords of a resource type using a json spec
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id,
+        [ValidateNotNullOrEmpty()]
+        [string]$id,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json
+        [ValidateNotNullOrEmpty()]
+        [string]$json
     )
 
     if ($PsBoundParameters.ContainsKey("json")) {
@@ -1532,16 +1532,16 @@ Export-ModuleMember -Function Restart-VCFCredentialTask
 
 Function Get-VCFDepotCredential {
     <#
-    	.SYNOPSIS
-    	Get Depot Settings
+        .SYNOPSIS
+        Get Depot Settings
 
-    	.DESCRIPTION
-    	Retrieves the configuration for the depot of the connected SDDC Manager
+        .DESCRIPTION
+        Retrieves the configuration for the depot of the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFDepotCredential
-    	This example shows credentials that have been configured for the depot.
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFDepotCredential
+        This example shows credentials that have been configured for the depot.
+      #>
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
@@ -1558,24 +1558,24 @@ Export-ModuleMember -Function Get-VCFDepotCredential
 
 Function Set-VCFDepotCredential {
     <#
-    	.SYNOPSIS
-    	Update the Depot Settings
+        .SYNOPSIS
+        Update the Depot Settings
 
-    	.DESCRIPTION
-    	Update the configuration for the depot of the connected SDDC Manager
+        .DESCRIPTION
+        Update the configuration for the depot of the connected SDDC Manager
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFDepotCredential -username "user@yourdomain.com" -password "VMware1!"
-    	This example sets the credentials that have been configured for the depot.
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFDepotCredential -username "user@yourdomain.com" -password "VMware1!"
+        This example sets the credentials that have been configured for the depot.
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$username,
+        [ValidateNotNullOrEmpty()]
+        [string]$username,
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$password
+        [ValidateNotNullOrEmpty()]
+        [string]$password
     )
 
     Try {
@@ -1603,39 +1603,39 @@ Export-ModuleMember -Function Set-VCFDepotCredential
 
 Function Get-VCFWorkloadDomain {
     <#
-   		.SYNOPSIS
-    	Connects to the specified SDDC Manager & retrieves a list of workload domains.
+           .SYNOPSIS
+        Connects to the specified SDDC Manager & retrieves a list of workload domains.
 
-    	.DESCRIPTION
-    	The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & retrieves a list of workload domains.
+        .DESCRIPTION
+        The Get-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & retrieves a list of workload domains.
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFWorkloadDomain
-    	This example shows how to get a list of Workload Domains
+        .EXAMPLE
+        PS C:\> Get-VCFWorkloadDomain
+        This example shows how to get a list of Workload Domains
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFWorkloadDomain -name WLD01
-    	This example shows how to get a Workload Domain by name
+        .EXAMPLE
+        PS C:\> Get-VCFWorkloadDomain -name WLD01
+        This example shows how to get a Workload Domain by name
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
-    	This example shows how to get a Workload Domain by id
+        .EXAMPLE
+        PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
+        This example shows how to get a Workload Domain by id
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints | ConvertTo-Json
-    	This example shows how to get endpoints of a Workload Domain by its id and displays the output in Json format
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFWorkloadDomain -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -endpoints | ConvertTo-Json
+        This example shows how to get endpoints of a Workload Domain by its id and displays the output in Json format
+      #>
 
     Param (
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$name,
+        [ValidateNotNullOrEmpty()]
+        [string]$name,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id,
+        [ValidateNotNullOrEmpty()]
+        [string]$id,
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
-      		[switch]$endpoints
+        [ValidateNotNullOrEmpty()]
+        [switch]$endpoints
     )
 
 
@@ -1671,21 +1671,21 @@ Export-ModuleMember -Function Get-VCFWorkloadDomain
 
 Function New-VCFWorkloadDomain {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager & creates a workload domain.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & creates a workload domain.
 
-    	.DESCRIPTION
-    	The New-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & creates a workload domain.
+        .DESCRIPTION
+        The New-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & creates a workload domain.
 
-    	.EXAMPLE
-    	PS C:\> New-VCFWorkloadDomain -json .\WorkloadDomain\workloadDomainSpec.json
-    	This example shows how to create a Workload Domain from a json spec
-  	#>
+        .EXAMPLE
+        PS C:\> New-VCFWorkloadDomain -json .\WorkloadDomain\workloadDomainSpec.json
+        This example shows how to create a Workload Domain from a json spec
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json
+        [ValidateNotNullOrEmpty()]
+        [string]$json
     )
 
     Try {
@@ -1714,22 +1714,22 @@ Export-ModuleMember -Function New-VCFWorkloadDomain
 
 Function Set-VCFWorkloadDomain {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager & marks a workload domain for deletion.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & marks a workload domain for deletion.
 
-    	.DESCRIPTION
-    	Before a workload domain can be deleted it must first be marked for deletion.
-    	The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & marks a workload domain for deletion.
+        .DESCRIPTION
+        Before a workload domain can be deleted it must first be marked for deletion.
+        The Set-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & marks a workload domain for deletion.
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-    	This example shows how to mark a workload domain for deletion
-  	#>
+        .EXAMPLE
+        PS C:\> Set-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
+        This example shows how to mark a workload domain for deletion
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id
+        [ValidateNotNullOrEmpty()]
+        [string]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1747,22 +1747,22 @@ Export-ModuleMember -Function Set-VCFWorkloadDomain
 
 Function Remove-VCFWorkloadDomain {
     <#
-    	.SYNOPSIS
-    	Connects to the specified SDDC Manager & deletes a workload domain.
+        .SYNOPSIS
+        Connects to the specified SDDC Manager & deletes a workload domain.
 
-    	.DESCRIPTION
-    	Before a workload domain can be deleted it must first be marked for deletion. See Set-VCFWorkloadDomain
-    	The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & deletes a workload domain.
+        .DESCRIPTION
+        Before a workload domain can be deleted it must first be marked for deletion. See Set-VCFWorkloadDomain
+        The Remove-VCFWorkloadDomain cmdlet connects to the specified SDDC Manager & deletes a workload domain.
 
-   		.EXAMPLE
-    	PS C:\> Remove-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
-    	This example shows how to delete a workload domain
-  	#>
+           .EXAMPLE
+        PS C:\> Remove-VCFWorkloadDomain -id fbdcf199-c086-43aa-9071-5d53b5c5b99d
+        This example shows how to delete a workload domain
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$id
+        [ValidateNotNullOrEmpty()]
+        [string]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1786,20 +1786,20 @@ Export-ModuleMember -Function Remove-VCFWorkloadDomain
 
 Function Get-VCFFederation {
     <#
-    	.SYNOPSIS
-    	Get information on existing Federation
+        .SYNOPSIS
+        Get information on existing Federation
 
-    	.DESCRIPTION
-    	The Get-VCFFederation cmdlet gets the complete information about the existing VCF Federation
+        .DESCRIPTION
+        The Get-VCFFederation cmdlet gets the complete information about the existing VCF Federation
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFFederation
-    	This example list all details concerning the VCF Federation
+        .EXAMPLE
+        PS C:\> Get-VCFFederation
+        This example list all details concerning the VCF Federation
 
-    	.EXAMPLE
-    	PS C:\> Get-VCFFederation | ConvertTo-Json
-    	This example list all details concerning the VCF Federation and outputs them in Json format
-  	#>
+        .EXAMPLE
+        PS C:\> Get-VCFFederation | ConvertTo-Json
+        This example list all details concerning the VCF Federation and outputs them in Json format
+      #>
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
@@ -1816,25 +1816,25 @@ Export-ModuleMember -Function Get-VCFFederation
 
 Function Set-VCFFederation {
     <#
-    	.SYNOPSIS
-    	Bootstrap a VMware Cloud Foundation to form a federation
+        .SYNOPSIS
+        Bootstrap a VMware Cloud Foundation to form a federation
 
-    	.DESCRIPTION
-    	The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
+        .DESCRIPTION
+        The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
 
-    	.EXAMPLE
-    	PS C:\> Set-VCFFederation -json $jsonSpec
+        .EXAMPLE
+        PS C:\> Set-VCFFederation -json $jsonSpec
         This example shows how to create a fedration using the using a variable
 
         .EXAMPLE
         PS C:\> Set-VCFFederation -json (Get-Content -Raw .\federationSpec.json)
         This example shows how to create a fedration using the using a JSON file
-  	#>
+      #>
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
-      		[string]$json
+        [ValidateNotNullOrEmpty()]
+        [string]$json
     )
 
     Try {
@@ -1852,16 +1852,16 @@ Export-ModuleMember -Function Set-VCFFederation
 
 Function Remove-VCFFederation {
     <#
-    	.SYNOPSIS
-    	Remove VCF Federation
+        .SYNOPSIS
+        Remove VCF Federation
 
-    	.DESCRIPTION
-    	A function that ensures VCF Federation is empty and completely dismantles it.
+        .DESCRIPTION
+        A function that ensures VCF Federation is empty and completely dismantles it.
 
-    	.EXAMPLE
-    	PS C:\> Remove-VCFFederation
-    	This example demonstrates how to dismantle the VCF Federation
-  	#>
+        .EXAMPLE
+        PS C:\> Remove-VCFFederation
+        This example demonstrates how to dismantle the VCF Federation
+      #>
 
     createHeader # Calls createHeader function to set Accept & Authorization
     checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -4294,7 +4294,7 @@ Function Get-VCFvROPs {
 
     Param (
         [Parameter (Mandatory = $false)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [switch]$domains
     )
 
@@ -4337,7 +4337,7 @@ Function Set-VCFvROPs {
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$domainId,
         [Parameter (Mandatory = $true)]
         [ValidateSet("ENABLED", "DISABLED")]
@@ -4468,7 +4468,7 @@ Function Set-VCFvRLI {
 
     Param (
         [Parameter (Mandatory = $true)]
-      		[ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty()]
         [string]$domainId,
         [Parameter (Mandatory = $true)]
         [ValidateSet("ENABLED", "DISABLED")]
@@ -4600,7 +4600,7 @@ Function checkVCFToken {
     else {
         $expiryDetails = Get-JWTDetail $accessToken
         if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
-       	    Write-Output "API Access Token Expired. Requesting a new access token with current refresh token"
+            Write-Output "API Access Token Expired. Requesting a new access token with current refresh token"
             $headers = @{"Accept" = "application/json" }
             $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
             $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
