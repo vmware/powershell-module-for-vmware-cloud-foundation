@@ -57,78 +57,51 @@ Function Request-VCFToken {
         It is required once per session before running all other cmdlets
 
         .EXAMPLE
-        PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMware1!
+        PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMw@re1!
         This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
         .EXAMPLE
-        PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
-        This example shows how to connect to SDDC Manager using basic auth for restoring backups
+        PS C:\> Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password VMw@re1!VMw@re1!
+        This example shows how to connect to SDDC Manager using local account admin@local
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$fqdn,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$username,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$password,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$basicAuth
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$fqdn,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$password
     )
 
-    If ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
-        # Request Credentials
-        $creds = Get-Credential
+    if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
+        $creds = Get-Credential # Request Credentials
         $username = $creds.UserName.ToString()
         $password = $creds.GetNetworkCredential().password
     }
 
-    If ($MyInvocation.InvocationName -eq "Connect-VCFManager") { Write-Warning "Connect-VCFManager is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Request-VCFToken. Please refactor to Request-VCFToken at earliest opportunity." }
+    if ($MyInvocation.InvocationName -eq "Connect-VCFManager") { Write-Warning "Connect-VCFManager is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Request-VCFToken. Please refactor to Request-VCFToken at earliest opportunity." }
 
     $Global:sddcManager = $fqdn
+    $headers = @{"Content-Type" = "application/json" }
+    $uri = "https://$sddcManager/v1/tokens" # Set URI for executing an API call to validate authentication
+    $body = '{"username": "' + $username + '","password": "' + $password + '"}'
 
-    if ( -not $PsBoundParameters.ContainsKey("basicAuth")) {
-        # Validate credentials by executing an API call
-        $headers = @{"Content-Type" = "application/json" }
-        $uri = "https://$sddcManager/v1/tokens"
-        $body = '{"username": "' + $username + '","password": "' + $password + '"}'
-
-        Try {
-            # Checking against the sddc-managers API
-            # PS Core has -SkipCertificateCheck implemented, PowerShell 5.x does not
-            if ($PSEdition -eq 'Core') {
-                $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck
-                $Global:accessToken = $response.accessToken
-                $Global:refreshToken = $response.refreshToken.id
-            }
-            else {
-                $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
-                $Global:accessToken = $response.accessToken
-                $Global:refreshToken = $response.refreshToken.id
-            }
-            if ($response.accessToken) {
-                Write-Output "Successfully Requested New API Token From SDDC Manager: $sddcManager"
-            }
+    Try {
+        # Checking authentication with SDDC Manager
+        if ($PSEdition -eq 'Core') {
+            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck # PS Core has -SkipCertificateCheck implemented
+            $Global:accessToken = $response.accessToken
+            $Global:refreshToken = $response.refreshToken.id
         }
-        Catch {
-            Write-Error $_.Exception.Message
+        else {
+            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
+            $Global:accessToken = $response.accessToken
+            $Global:refreshToken = $response.refreshToken.id
+        }
+        if ($response.accessToken) {
+            Write-Output "Successfully Requested New API Token From SDDC Manager: $sddcManager"
         }
     }
-    elseif ($PsBoundParameters.ContainsKey("basicAuth")) {
-        Try {
-            # Validate credentials by executing an API call
-            $Global:base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username, $password))) # Create Basic Authentication Encoded Credentials
-            $headers = @{"Accept" = "application/json" }
-            $headers.Add("Authorization", "Basic $base64AuthInfo")
-            Write-Output "Successfully Requested New Basic Auth From SDDC Manager: $sddcManager"
-        }
-        Catch {
-            Write-Error $_.Exception.Message
-        }
+    Catch {
+        Write-Error $_.Exception.Message
     }
 }
 New-Alias -name Connect-VCFManager -Value Request-VCFToken
