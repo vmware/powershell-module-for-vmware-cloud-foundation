@@ -184,13 +184,8 @@ Function Get-VCFApplicationVirtualNetwork {
   #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateSet("REGION_A", "REGION_B", "X_REGION")]
-        [ValidateNotNullOrEmpty()]
-        [string]$regionType,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateSet("REGION_A", "REGION_B", "X_REGION")] [ValidateNotNullOrEmpty()] [String]$regionType,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -207,16 +202,59 @@ Function Get-VCFApplicationVirtualNetwork {
             $response
         }
         if ($PsBoundParameters.ContainsKey("id")) {
-            $uri = "https://$sddcManager/internal/avns/$id"
+            #$uri = "https://$sddcManager/internal/avns/$id"
+            $uri = "https://$sddcManager/inventory/avns/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        Write-Error $_.Exception.Message
     }
 }
 Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
+
+Function Add-VCFApplicationVirtualNetwork {
+    <#
+          .SYNOPSIS
+          Creates Application Virtual Networks
+
+          .DESCRIPTION
+          The Add-VCFApplicationVirtualNetwork cmdlet creates Application Virtual Networks in SDDC Manager and NSX-T Data Center
+
+          .EXAMPLE
+          PS C:\> Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\SampleJSON\Application Virtual Network\avnOPverlaySpec.json)
+          This example demonstrates how to deploy the Application Virtual Networks using the JSON spec supplied
+
+          .EXAMPLE
+          PS C:\> Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\SampleJSON\Application Virtual Network\avnOverlaySpec.json) -validate
+          This example demonstrates how to validate the Application Virtual Networks JSON spec supplied
+  #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("validate")) {
+            $uri = "https://$sddcManager/v1/avns/validations"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/avns"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+    }
+    Catch {
+        Write-Error $_.Exception.Message
+    }
+}
+Export-ModuleMember -Function Add-VCFApplicationVirtualNetwork
 
 ######### End APIs for managing Application Virtual Networks ##########
 
