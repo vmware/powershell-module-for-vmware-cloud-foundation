@@ -307,9 +307,7 @@ Function Set-VCFBackupConfiguration {
   #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -366,13 +364,10 @@ Function Start-VCFRestore {
         PS C:\> Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-2020-04-20-14-37-25.tar.gz" -passphrase "VMw@re1!VMw@re1!"
         This example shows how to start the SDDC Manager restore
       #>
+
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$backupFile,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$passphrase
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$backupFile,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$passphrase
     )
 
     Try {
@@ -402,9 +397,7 @@ Function Get-VCFRestoreTask {
       #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
