@@ -447,8 +447,7 @@ Function Get-VCFBundle {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [string]$id
+        [Parameter (Mandatory = $false)] [String]$id
     )
 
     Try {
@@ -486,9 +485,7 @@ Function Request-VCFBundle {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -524,9 +521,7 @@ Function Start-VCFBundleUpload {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
