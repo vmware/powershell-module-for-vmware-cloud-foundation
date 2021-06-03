@@ -1437,6 +1437,8 @@ Function Set-VCFCredential {
     }
   }
   createHeader # Calls Function createHeader to set Accept & Authorization
+  $headers.Add("privileged-username", "$privilegedUsername")
+  $headers.Add("privileged-password", "$privilegedPassword")
   $uri = "https://$sddcManager/v1/credentials"
   Try {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
