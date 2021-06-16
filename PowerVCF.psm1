@@ -588,9 +588,7 @@ Function Set-VCFCeip {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("ENABLE", "DISABLE")]
-        [string]$ceipSetting
+        [Parameter (Mandatory = $true)] [ValidateSet("ENABLE", "DISABLE")] [String]$ceipSetting
     )
 
     Try {
