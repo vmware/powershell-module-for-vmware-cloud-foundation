@@ -833,12 +833,8 @@ Function Request-VCFCertificateCSR {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainName
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
     if (!(Test-Path $json)) {
