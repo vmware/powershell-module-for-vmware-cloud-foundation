@@ -4910,37 +4910,33 @@ Export-ModuleMember -Function Start-SetupLogFile
 
 Function Write-LogMessage {
     Param (
-        [Parameter(Mandatory = $true)]
-        [String]$message,
-        [Parameter(Mandatory = $false)]
-        [String]$colour,
-        [Parameter(Mandatory = $false)]
-        [string]$skipNewLine
+        [Parameter (Mandatory = $true)] [AllowEmptyString()] [String]$Message,
+        [Parameter (Mandatory = $false)] [ValidateSet("INFO", "ERROR", "WARNING", "EXCEPTION")] [String]$type,
+        [Parameter (Mandatory = $false)] [String]$Colour,
+        [Parameter (Mandatory = $false)] [string]$Skipnewline
     )
 
-    If (!$colour) {
-        $colour = "Cyan"
+    if (!$Colour) {
+        $Colour = "White"
     }
 
     $timeStamp = Get-Date -Format "MM-dd-yyyy_HH:mm:ss"
 
-    Write-Host -NoNewline -ForegroundColor White " [$timeStamp]"
-    If ($skipNewLine) {
-        Write-Host -NoNewline -ForegroundColor $colour " $message"
+    Write-Host -NoNewline -ForegroundColor White " [$timestamp]"
+    if ($Skipnewline) {
+        Write-Host -NoNewline -ForegroundColor $Colour " $type $Message"        
     }
     else {
-        Write-Host -ForegroundColor $colour " $message"
+        Write-Host -ForegroundColor $colour " $Type $Message" 
     }
-    $logContent = '[' + $timeStamp + '] ' + $message
-    Add-Content -path $logFile $logContent
+    $logContent = '[' + $timeStamp + '] ' + $Type + ' ' + $Message
+    Add-Content -Path $logFile $logContent
 }
 Export-ModuleMember -Function Write-LogMessage
 
-
 Function Debug-CatchWriter {
     Param (
-        [Parameter(Mandatory = $true)]
-        [PSObject]$object
+        [Parameter (Mandatory = $true)] [PSObject]$object
     )
 
     $lineNumber = $object.InvocationInfo.ScriptLineNumber
