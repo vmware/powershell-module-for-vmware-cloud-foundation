@@ -635,9 +635,7 @@ Function Get-VCFCertificateAuthority {
       #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateSet("OpenSSL", "Microsoft")]
-        [String] $caType
+        [Parameter (Mandatory = $false)] [ValidateSet("OpenSSL", "Microsoft")] [String] $caType
     )
 
     Try {
@@ -674,9 +672,7 @@ Function Remove-VCFCertificateAuthority {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("OpenSSL", "Microsoft")]
-        [String] $caType
+        [Parameter (Mandatory = $true)] [ValidateSet("OpenSSL", "Microsoft")] [String] $caType
     )
 
     Try {
@@ -747,24 +743,12 @@ Function Set-VCFOpenSSLCA {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$commonName,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$organization,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$organizationUnit,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$locality,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$state,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$country
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$commonName,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$organization,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$organizationUnit,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$locality,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$state,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$country
     )
 
     Try {
@@ -798,9 +782,7 @@ Function Get-VCFCertificateCSR {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainName
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
     Try {
@@ -882,12 +864,8 @@ Function Get-VCFCertificate {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainName,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$resources
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$resources
     )
 
     Try {
@@ -928,12 +906,8 @@ Function Request-VCFCertificate {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainName
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
     if (!(Test-Path $json)) {
@@ -971,12 +945,8 @@ Function Set-VCFCertificate {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainName
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
     if (!(Test-Path $json)) {
@@ -1026,12 +996,8 @@ Function Get-VCFCluster {
       #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$name,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1073,9 +1039,7 @@ Function New-VCFCluster {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     if (!(Test-Path $json)) {
@@ -1131,15 +1095,9 @@ Function Set-VCFCluster {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$markForDeletion
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$markForDeletion
     )
 
     Try {
@@ -1197,9 +1155,7 @@ Function Remove-VCFCluster {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1229,9 +1185,7 @@ Function Get-VCFClusterValidation {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -1283,16 +1237,9 @@ Function Get-VCFCredential {
       #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$resourceName,
-        [Parameter (Mandatory = $false)]
-        [ValidateSet("VCENTER", "PSC", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE", "VRSLCM", "WSA", "VROPS", "VRLI", "VRA")]
-        [ValidateNotNullOrEmpty()]
-        [string]$resourceType,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$resourceName,
+        [Parameter (Mandatory = $false)] [ValidateSet("VCENTER", "PSC", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE", "VRSLCM", "WSA", "VROPS", "VRLI", "VRA")] [ValidateNotNullOrEmpty()] [String]$resourceType,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -1341,9 +1288,7 @@ Function Set-VCFCredential {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -1390,12 +1335,8 @@ Function Get-VCFCredentialTask {
       #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$resourceCredentials
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$resourceCredentials
     )
 
     Try {
@@ -1437,9 +1378,7 @@ Function Stop-VCFCredentialTask {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     if ($PsBoundParameters.ContainsKey("id")) {
@@ -1474,12 +1413,8 @@ Function Restart-VCFCredentialTask {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     if ($PsBoundParameters.ContainsKey("json")) {
@@ -1554,12 +1489,8 @@ Function Set-VCFDepotCredential {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$username,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$password
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password
     )
 
     Try {
@@ -1611,17 +1542,10 @@ Function Get-VCFWorkloadDomain {
       #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$name,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$endpoints
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$endpoints
     )
-
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
@@ -1667,9 +1591,7 @@ Function New-VCFWorkloadDomain {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -1711,9 +1633,7 @@ Function Set-VCFWorkloadDomain {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1744,9 +1664,7 @@ Function Remove-VCFWorkloadDomain {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1816,9 +1734,7 @@ Function Set-VCFFederation {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -1913,15 +1829,9 @@ Function Get-VCFHost {
 
     [CmdletBinding(DefaultParametersetname = "Default")]
     Param (
-        [Parameter (Mandatory = $false, ParameterSetName = "fqdn")]
-        [ValidateNotNullOrEmpty()]
-        [string]$fqdn,
-        [Parameter (Mandatory = $false, ParameterSetName = "status")]
-        [ValidateSet('ASSIGNED', 'UNASSIGNED_USEABLE', 'UNASSIGNED_UNUSEABLE', IgnoreCase = $false)]
-        [string]$Status,
-        [Parameter (Mandatory = $false, ParameterSetName = "id")]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false, ParameterSetName = "fqdn")] [ValidateNotNullOrEmpty()] [String]$fqdn,
+        [Parameter (Mandatory = $false, ParameterSetName = "status")] [ValidateSet('ASSIGNED', 'UNASSIGNED_USEABLE', 'UNASSIGNED_UNUSEABLE', IgnoreCase = $false)] [String]$Status,
+        [Parameter (Mandatory = $false, ParameterSetName = "id")] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1930,7 +1840,7 @@ Function Get-VCFHost {
 
         $uri = "https://$sddcManager/v1/hosts"
 
-        switch ( $PSCmdlet.ParameterSetName ) {
+        Switch ( $PSCmdlet.ParameterSetName ) {
             "id" {
                 #Add id to uri
                 $uri += "/$id"
@@ -1943,7 +1853,7 @@ Function Get-VCFHost {
 
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
 
-        switch ( $PSCmdlet.ParameterSetName ) {
+        Switch ( $PSCmdlet.ParameterSetName ) {
             "id" {
                 #When there is a id, it is directly the result...
                 $response
@@ -1952,7 +1862,7 @@ Function Get-VCFHost {
                 #When there is a fqdn, search on response
                 $response.elements | Where-Object { $_.fqdn -eq $fqdn }
             }
-            default {
+            Default {
                 $response.elements
             }
         }
@@ -1983,15 +1893,11 @@ Function New-VCFCommissionedHost {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$validate
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
 
-    If ($MyInvocation.InvocationName -eq "Commission-VCFHost") { Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity." }
+    if ($MyInvocation.InvocationName -eq "Commission-VCFHost") { Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity." }
 
     Try {
         validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
@@ -2056,9 +1962,7 @@ Function Remove-VCFCommissionedHost {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     If ($MyInvocation.InvocationName -eq "Decommission-VCFHost") { Write-Warning "Decommission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Remove-VCFCommissionedHost. Please refactor to Remove-VCFCommissionedHost at earliest opportunity." }
@@ -2118,15 +2022,9 @@ Function Get-VCFLicenseKey {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$key,
-        [Parameter (Mandatory = $false)]
-        [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER")]
-        [string]$productType,
-        [Parameter (Mandatory = $false)]
-        [ValidateSet("EXPIRED", "ACTIVE", "NEVER_EXPIRES")]
-        [string]$status
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$key,
+        [Parameter (Mandatory = $false)] [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER")] [String]$productType,
+        [Parameter (Mandatory = $false)] [ValidateSet("EXPIRED", "ACTIVE", "NEVER_EXPIRES")] [String]$status
     )
 
     Try {
@@ -2173,15 +2071,9 @@ Function New-VCFLicenseKey {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$key,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER")]
-        [string]$productType,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$description
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key,
+        [Parameter (Mandatory = $true)] [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER")] [String]$productType,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$description
     )
 
     Try {
@@ -2213,9 +2105,7 @@ Function Remove-VCFLicenseKey {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$key
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key
     )
 
     Try {
@@ -2281,12 +2171,8 @@ Function New-VCFFederationInvite {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$inviteeFqdn,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("MEMBER", "CONTROLLER")]
-        [String]$inviteeRole
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$inviteeFqdn,
+        [Parameter (Mandatory = $true)] [ValidateSet("MEMBER", "CONTROLLER")] [String]$inviteeRole
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -2329,9 +2215,7 @@ Function Join-VCFFederation {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     if (!(Test-Path $json)) {
@@ -2391,9 +2275,7 @@ Function Get-VCFNsxtCluster {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -2444,12 +2326,8 @@ Function Get-VCFNetworkPool {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$name,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -2492,9 +2370,7 @@ Function New-VCFNetworkPool {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -2528,9 +2404,7 @@ Function Remove-VCFNetworkPool {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -2564,12 +2438,8 @@ Function Get-VCFNetworkIPPool {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$networkid
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$networkid
     )
 
     Try {
@@ -2607,18 +2477,10 @@ Function Add-VCFNetworkIPPool {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$networkid,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$ipStart,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$ipEnd
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$networkid,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$ipStart,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$ipEnd
     )
 
     Try {
@@ -2650,18 +2512,10 @@ Function Remove-VCFNetworkIPPool {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$networkid,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$ipStart,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$ipEnd
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$networkid,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$ipStart,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$ipEnd
     )
 
     Try {
@@ -2702,9 +2556,7 @@ Function Get-VCFEdgeCluster {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -2745,12 +2597,8 @@ Function New-VCFEdgeCluster {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$validate
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
 
     Try {
@@ -2825,9 +2673,7 @@ Function Get-VCFPersonality {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -2870,9 +2716,7 @@ Function Get-VCFFederationTask {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -2912,9 +2756,7 @@ Function Get-CloudBuilderSDDC {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -2950,9 +2792,7 @@ Function Start-CloudBuilderSDDC {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -2986,12 +2826,8 @@ Function Restart-CloudBuilderSDDC {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -3032,9 +2868,7 @@ Function Get-CloudBuilderSDDCValidation {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3074,12 +2908,8 @@ Function Start-CloudBuilderSDDCValidation {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [String]$json,
-        [Parameter (Mandatory = $false)]
-        [ValidateSet("JSON_SPEC_VALIDATION", "LICENSE_KEY_VALIDATION", "TIME_SYNC_VALIDATION", "NETWORK_IP_POOLS_VALIDATION", "NETWORK_CONFIG_VALIDATION", "MANAGEMENT_NETWORKS_VALIDATION", "ESXI_VERSION_VALIDATION", "ESXI_HOST_READINESS_VALIDATION", "PASSWORDS_VALIDATION", "HOST_IP_DNS_VALIDATION", "CLOUDBUILDER_READY_VALIDATION", "VSAN_AVAILABILITY_VALIDATION", "NSXT_NETWORKS_VALIDATION", "AVN_NETWORKS_VALIDATION", "SECURE_PLATFORM_AUDIT")]
-        [String]$validation
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateSet("JSON_SPEC_VALIDATION", "LICENSE_KEY_VALIDATION", "TIME_SYNC_VALIDATION", "NETWORK_IP_POOLS_VALIDATION", "NETWORK_CONFIG_VALIDATION", "MANAGEMENT_NETWORKS_VALIDATION", "ESXI_VERSION_VALIDATION", "ESXI_HOST_READINESS_VALIDATION", "PASSWORDS_VALIDATION", "HOST_IP_DNS_VALIDATION", "CLOUDBUILDER_READY_VALIDATION", "VSAN_AVAILABILITY_VALIDATION", "NSXT_NETWORKS_VALIDATION", "AVN_NETWORKS_VALIDATION", "SECURE_PLATFORM_AUDIT")] [String]$validation
     )
 
     Try {
@@ -3116,9 +2946,7 @@ Function Stop-CloudBuilderSDDCValidation {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3147,9 +2975,7 @@ Function Restart-CloudBuilderSDDCValidation {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3192,12 +3018,8 @@ Function Get-VCFManager {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainId
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainId
     )
 
     Try {
@@ -3245,9 +3067,7 @@ Function Start-VCFSystemPrecheck {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
@@ -3277,9 +3097,7 @@ Function Get-VCFSystemPrecheckTask {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3323,12 +3141,8 @@ Function Get-VCFTask {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$status
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$status
     )
 
     Try {
@@ -3371,9 +3185,7 @@ Function Restart-VCFTask {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3447,9 +3259,7 @@ Function Get-VCFUpgrade {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3491,9 +3301,7 @@ Function Start-VCFUpgrade {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -3545,12 +3353,8 @@ Function Get-VCFUser {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateSet("USER", "GROUP", "SERVICE")]
-        [string]$type,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domain
+        [Parameter (Mandatory = $false)] [ValidateSet("USER", "GROUP", "SERVICE")] [String]$type,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domain
     )
 
     Try {
@@ -3559,10 +3363,10 @@ Function Get-VCFUser {
         $uri = "https://$sddcManager/v1/users"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         if ($PsBoundParameters.ContainsKey("type")) {
-            $response.elements | Where { $_.type -eq $type }
+            $response.elements | Where-Object { $_.type -eq $type }
         }
         elseif ($PsBoundParameters.ContainsKey("domain")) {
-            $response.elements | Where { $_.domain -eq $domain }
+            $response.elements | Where-Object { $_.domain -eq $domain }
         }
         else {
             $response.elements
@@ -3588,12 +3392,8 @@ Function New-VCFUser {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$user,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("ADMIN", "OPERATOR")]
-        [string]$role
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$user,
+        [Parameter (Mandatory = $true)] [ValidateSet("ADMIN", "OPERATOR", "VIEWER")] [String]$role
     )
 
     Try {
@@ -3634,12 +3434,8 @@ Function New-VCFServiceUser {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$user,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("ADMIN", "OPERATOR")]
-        [string]$role
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$user,
+        [Parameter (Mandatory = $true)] [ValidateSet("ADMIN", "OPERATOR", "VIEWER")] [String]$role
     )
 
     Try {
@@ -3704,9 +3500,7 @@ Function Remove-VCFUser {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3736,15 +3530,9 @@ Function New-VCFGroup {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$group,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domain,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("ADMIN", "OPERATOR", "VIEWER")]
-        [string]$role
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$group,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domain,
+        [Parameter (Mandatory = $true)] [ValidateSet("ADMIN", "OPERATOR", "VIEWER")] [String]$role
     )
 
     Try {
@@ -3795,9 +3583,7 @@ Function Get-VCFService {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3873,9 +3659,7 @@ Function Get-VCFConfigurationDNSValidation {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -3913,12 +3697,8 @@ Function Set-VCFConfigurationDNS {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$validate
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
 
     Try {
@@ -3982,9 +3762,7 @@ Function Get-VCFConfigurationNTPValidation {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
     Try {
@@ -4022,12 +3800,8 @@ Function Set-VCFConfigurationNTP {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$validate
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
 
     Try {
@@ -4084,12 +3858,8 @@ Function Get-VCFvCenter {
   #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$id,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainId
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainId
     )
 
     Try {
@@ -4167,12 +3937,8 @@ Function New-VCFvRSLCM {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$json,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$validate
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
 
     if (!(Test-Path $json)) {
@@ -4277,9 +4043,7 @@ Function Get-VCFvROPs {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [switch]$domains
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$domains
     )
 
     Try {
@@ -4320,13 +4084,8 @@ Function Set-VCFvROPs {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainId,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("ENABLED", "DISABLED")]
-        [ValidateNotNullOrEmpty()]
-        [string]$status
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainId,
+        [Parameter (Mandatory = $true)] [ValidateSet("ENABLED", "DISABLED")] [ValidateNotNullOrEmpty()] [String]$status
     )
 
     Try {
@@ -4451,13 +4210,8 @@ Function Set-VCFvRLI {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$domainId,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("ENABLED", "DISABLED")]
-        [ValidateNotNullOrEmpty()]
-        [string]$status
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainId,
+        [Parameter (Mandatory = $true)] [ValidateSet("ENABLED", "DISABLED")] [ValidateNotNullOrEmpty()] [String]$status
     )
 
     Try {
@@ -4482,8 +4236,7 @@ Export-ModuleMember -Function Set-VCFvRLI
 Function Validate-CommissionHostSpec {
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [object]$json
+        [Parameter (Mandatory = $true)] [object]$json
     )
 
     Try {
@@ -4501,8 +4254,7 @@ Function Validate-CommissionHostSpec {
 Function Validate-WorkloadDomainSpec {
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [object]$json
+        [Parameter (Mandatory = $true)] [object]$json
     )
 
     Try {
@@ -4520,8 +4272,7 @@ Function Validate-WorkloadDomainSpec {
 Function Validate-VCFClusterSpec {
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [object]$json
+        [Parameter (Mandatory = $true)] [object]$json
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -4539,10 +4290,8 @@ Function Validate-VCFClusterSpec {
 Function Validate-VCFUpdateClusterSpec {
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [object]$clusterid,
-        [Parameter (Mandatory = $true)]
-        [object]$json
+        [Parameter (Mandatory = $true)] [object]$clusterid,
+        [Parameter (Mandatory = $true)] [object]$json
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -4560,8 +4309,7 @@ Function Validate-VCFUpdateClusterSpec {
 Function Validate-EdgeClusterSpec {
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [object]$json
+        [Parameter (Mandatory = $true)] [object]$json
     )
 
     Try {
@@ -4597,8 +4345,7 @@ Function Get-JWTDetail {
     [cmdletbinding()]
 
     Param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)]
-        [string]$token
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)] [String]$token
     )
 
     <#
@@ -4700,15 +4447,9 @@ Function Invoke-VCFCommand {
     #>
 
     Param (
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [String] $vcfPassword,
-        [Parameter (Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [String] $rootPassword,
-        [Parameter (Mandatory = $true)]
-        [ValidateSet("general-health", "compute-health", "ntp-health", "password-health", "get-vcf-summary", "get-inventory-info", "get-host-ips", "get-vcf-services-summary")]
-        [String] $sosOption
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String] $vcfPassword,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String] $rootPassword,
+        [Parameter (Mandatory = $true)] [ValidateSet("general-health", "compute-health", "ntp-health", "password-health", "get-vcf-summary", "get-inventory-info", "get-host-ips", "get-vcf-services-summary")] [String] $sosOption
     )
 
     $poshSSH = Resolve-PSModule -moduleName "Posh-SSH" # POSH module is required, if not present skipping
@@ -4831,9 +4572,7 @@ Function Resolve-PSModule {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$moduleName
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$moduleName
     )
 
     # check if module is imported into the current session
@@ -4913,7 +4652,7 @@ Function Write-LogMessage {
         [Parameter (Mandatory = $true)] [AllowEmptyString()] [String]$Message,
         [Parameter (Mandatory = $false)] [ValidateSet("INFO", "ERROR", "WARNING", "EXCEPTION")] [String]$type,
         [Parameter (Mandatory = $false)] [String]$Colour,
-        [Parameter (Mandatory = $false)] [string]$Skipnewline
+        [Parameter (Mandatory = $false)] [String]$Skipnewline
     )
 
     if (!$Colour) {
