@@ -25,6 +25,7 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 
 ## What's New
 
+<<<<<<< Updated upstream
 - **NEW** `New-VCFGroup` cmdlet to add a group with a role to SDDC Manager
 - **NEW** `Get-VCFUpgrade` fetches the list of upgradable components  in the System
 - **NEW** `Get-VCFConfigurationDNS` gets current DNS Config
@@ -38,6 +39,10 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 - **UPDATED** `Decommission-VCFHost` to `Remove-VCFCommissionedHost`. Decommission-VCFHost will still work for backwards compatability for a period of time.
 - **UPDATED** `Connect-VCFManager` to `Request-VCFToken`. Connect-VCFManager will still work for backwards compatability for a period of time.
 - **UPDATED** Tweaked all cmdlets to use correct standard output and error streams.
+=======
+- **NEW** `Add-VCFApplicationVirtualNetwork` cmdlet to add Application Virtual Networks (NSX segments)
+- **UPDATED** `ResponseException` updated the internal error handling function for Core 7.x
+>>>>>>> Stashed changes
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
@@ -55,7 +60,7 @@ New/Set/Remove Workload domains
 
 
 ## Installing the module
-Tested in Windows PowerShell 5.x & PowerShell Core 6.x
+Tested in Windows PowerShell 5.x & PowerShell Core 6.x / 7.x
 
 To install the module from the PowerShell Gallery Open PowerShell as Administrator and run the following
 
@@ -89,7 +94,7 @@ Authentication is only valid for the duration of the PowerShell session.
 
 ```
 id                  : 598519e7-cbba-4a10-801d-d76111f3ce0e
-esxiVersion         : 7.0.0-15843807
+esxiVersion         : 7.0.2-17867351
 fqdn                : sfo01-m01-esx01.sfo.rainpole.io
 hardwareVendor      : Dell Inc.
 hardwareModel       : PowerEdge R630
@@ -118,9 +123,8 @@ Get-VCFHost -id 598519e7-cbba-4a10-801d-d76111f3ce0e | Select esxiVersion
 ```
 esxiVersion
 -----------
-7.0.0-15843807
+7.0.2-17867351
 ```
-
 
 Or like this:
 
@@ -130,7 +134,7 @@ $hostDetail.esxiVersion
 ```
 
 ```
-7.0.0-15843807
+7.0.2-17867351
 ```
 
 
