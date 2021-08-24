@@ -25,24 +25,8 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 
 ## What's New
 
-<<<<<<< Updated upstream
-- **NEW** `New-VCFGroup` cmdlet to add a group with a role to SDDC Manager
-- **NEW** `Get-VCFUpgrade` fetches the list of upgradable components  in the System
-- **NEW** `Get-VCFConfigurationDNS` gets current DNS Config
-- **NEW** `Get-VCFConfigurationNTP` gets current NTP Config
-- **NEW** `Start-VCFUpgrade` Trigger an upgrade
-- **UPDATED** `Get-VCFUser` updated with input value of -type (USER, GROUP, SERVICE)
-- **UPDATED** `Get-VCFUser` updated with input value of -domain to retrieve all accounts by domain
-- **UPDATED** `Get-VCFUpgradable` updated Output format
-- **UPDATED** `Restart-CloudBuilderSDDC` updated with support for a retry with updated JSON spec
-- **UPDATED** `Commission-VCFHost` to `New-VCFCommissionedHost`. Commission-VCFHost will still work for backwards compatability for a period of time.
-- **UPDATED** `Decommission-VCFHost` to `Remove-VCFCommissionedHost`. Decommission-VCFHost will still work for backwards compatability for a period of time.
-- **UPDATED** `Connect-VCFManager` to `Request-VCFToken`. Connect-VCFManager will still work for backwards compatability for a period of time.
-- **UPDATED** Tweaked all cmdlets to use correct standard output and error streams.
-=======
 - **NEW** `Add-VCFApplicationVirtualNetwork` cmdlet to add Application Virtual Networks (NSX segments)
 - **UPDATED** `ResponseException` updated the internal error handling function for Core 7.x
->>>>>>> Stashed changes
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
