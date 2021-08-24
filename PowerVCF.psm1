@@ -101,7 +101,7 @@ Function Request-VCFToken {
         }
     }
     Catch {
-        Write-Error $_.Exception.Message
+        ResponseException -object $_
     }
 }
 New-Alias -name Connect-VCFManager -Value Request-VCFToken
@@ -4526,18 +4526,15 @@ Export-ModuleMember -Function Invoke-VCFCommand
 ######### Start Utility Functions (not exported) ##########
 
 Function ResponseException {
-    #Get response from the exception
-    $response = $_.exception.response
-    if ($response) {
-        $responseStream = $_.exception.response.GetResponseStream()
-        $reader = New-Object system.io.streamreader($responseStream)
-        $responseBody = $reader.readtoend()
-        $errorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-    }
-    else {
-        Throw $_
-    }
-    Return $errorString
+    Param (
+        [Parameter (Mandatory = $true)] [PSObject]$object
+    )
+
+    Write-Host "Script File:       $($object.InvocationInfo.ScriptName) Line: $($object.InvocationInfo.ScriptLineNumber)" -ForegroundColor Red
+    Write-Host "Relevant Command:  $($object.InvocationInfo.Line.trim())" -ForegroundColor Red
+    Write-Host "Target Uri:         $($object.TargetObject.RequestUri.AbsoluteUri)" -ForegroundColor Red
+    Write-Host "Exception Message: $($object.Exception.Message)" -ForegroundColor Red
+    Write-Host "Error Message:     $($object.ErrorDetails.Message)" -ForegroundColor Red
 }
 
 Function createHeader {
