@@ -153,7 +153,7 @@ Function Connect-CloudBuilder {
         }
     }
     Catch {
-        Write-Error $_.Exception.Message
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Connect-CloudBuilder
@@ -209,7 +209,7 @@ Function Get-VCFApplicationVirtualNetwork {
         }
     }
     Catch {
-        Write-Error $_.Exception.Message
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
@@ -251,7 +251,7 @@ Function Add-VCFApplicationVirtualNetwork {
         }
     }
     Catch {
-        Write-Error $_.Exception.Message
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Add-VCFApplicationVirtualNetwork
@@ -287,7 +287,7 @@ Function Get-VCFBackupConfiguration {
         $response.backupLocations
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
@@ -319,7 +319,7 @@ Function Set-VCFBackupConfiguration {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
@@ -347,7 +347,7 @@ Function Start-VCFBackup {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Start-VCFBackup
@@ -378,7 +378,7 @@ Function Start-VCFRestore {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Start-VCFRestore
@@ -409,7 +409,7 @@ Function Get-VCFRestoreTask {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFRestoreTask
@@ -465,7 +465,7 @@ Function Get-VCFBundle {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFBundle
@@ -497,7 +497,7 @@ Function Request-VCFBundle {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Request-VCFBundle
@@ -532,7 +532,7 @@ Function Start-VCFBundleUpload {
         $response
     }
     Catch {
-        ResponseException # Call the ResponseException function which handles execption messages
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Start-VCFBundleUpload
@@ -564,7 +564,7 @@ Function Get-VCFCeip {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCeip
@@ -600,7 +600,7 @@ Function Set-VCFCeip {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFCeip
@@ -653,7 +653,7 @@ Function Get-VCFCertificateAuthority {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthority
@@ -683,7 +683,7 @@ Function Remove-VCFCertificateAuthority {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFCertificateAuthority
@@ -702,18 +702,10 @@ Function Set-VCFMicrosoftCA {
       #>
 
     Param (
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$serverUrl,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$username,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$password,
-        [Parameter (Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$templateName
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$serverUrl,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$templateName
     )
 
     Try {
@@ -724,7 +716,7 @@ Function Set-VCFMicrosoftCA {
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
@@ -759,7 +751,7 @@ Function Set-VCFOpenSSLCA {
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFOpenSSLCA
@@ -793,7 +785,7 @@ Function Get-VCFCertificateCSR {
         $response.elements
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
@@ -832,7 +824,7 @@ Function Request-VCFCertificateCSR {
             $response
         }
         Catch {
-            $errorString = ResponseException; Write-Error $errorString
+            ResponseException -object $_
         }
     }
 }
@@ -883,7 +875,7 @@ Function Get-VCFCertificate {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCertificate
@@ -924,7 +916,7 @@ Function Request-VCFCertificate {
             $response
         }
         Catch {
-            $errorString = ResponseException; Write-Error $errorString
+            ResponseException -object $_
         }
     }
 }
@@ -962,7 +954,7 @@ Function Set-VCFCertificate {
             $response
         }
         Catch {
-            $errorString = ResponseException; Write-Error $errorString
+            ResponseException -object $_
         }
     }
 }
@@ -1020,7 +1012,7 @@ Function Get-VCFCluster {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCluster
@@ -1062,7 +1054,7 @@ Function New-VCFCluster {
                 $response.elements
             }
             Catch {
-                $errorString = ResponseException; Write-Error $errorString
+                ResponseException -object $_
             }
             else {
                 Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
@@ -1121,7 +1113,7 @@ Function Set-VCFCluster {
                     $response
                 }
                 Catch {
-                    $errorString = ResponseException; Write-Error $errorString
+                    ResponseException -object $_
                 }
             }
             else {
@@ -1135,7 +1127,7 @@ Function Set-VCFCluster {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFCluster
@@ -1166,7 +1158,7 @@ Function Remove-VCFCluster {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFCluster
@@ -1196,7 +1188,7 @@ Function Get-VCFClusterValidation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFClusterValidation
@@ -1268,7 +1260,7 @@ Function Get-VCFCredential {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCredential
@@ -1307,7 +1299,7 @@ Function Set-VCFCredential {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFCredential
@@ -1359,7 +1351,7 @@ Function Get-VCFCredentialTask {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
@@ -1394,7 +1386,7 @@ Function Stop-VCFCredentialTask {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Stop-VCFCredentialTask
@@ -1438,7 +1430,7 @@ Function Restart-VCFCredentialTask {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Restart-VCFCredentialTask
@@ -1470,7 +1462,7 @@ Function Get-VCFDepotCredential {
         $response.vmwareAccount
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFDepotCredential
@@ -1505,7 +1497,7 @@ Function Set-VCFDepotCredential {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFDepotCredential
@@ -1572,7 +1564,7 @@ Function Get-VCFWorkloadDomain {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFWorkloadDomain
@@ -1613,7 +1605,7 @@ Function New-VCFWorkloadDomain {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFWorkloadDomain
@@ -1644,7 +1636,7 @@ Function Set-VCFWorkloadDomain {
         Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body # This API does not return a response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFWorkloadDomain
@@ -1675,7 +1667,7 @@ Function Remove-VCFWorkloadDomain {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
@@ -1711,7 +1703,7 @@ Function Get-VCFFederation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFFederation
@@ -1745,7 +1737,7 @@ Function Set-VCFFederation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFFederation
@@ -1787,7 +1779,7 @@ Function Remove-VCFFederation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFFederation
@@ -1869,7 +1861,7 @@ Function Get-VCFHost {
 
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFHost
@@ -1942,7 +1934,7 @@ Function New-VCFCommissionedHost {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 New-Alias -name Commission-VCFHost -Value New-VCFCommissionedHost
@@ -1981,7 +1973,7 @@ Function Remove-VCFCommissionedHost {
             $response
         }
         Catch {
-            $errorString = ResponseException; Write-Error $errorString
+            ResponseException -object $_
         }
     }
 }
@@ -2052,7 +2044,7 @@ Function Get-VCFLicenseKey {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
@@ -2085,7 +2077,7 @@ Function New-VCFLicenseKey {
         Get-VCFLicenseKey -key $key
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFLicenseKey
@@ -2115,7 +2107,7 @@ Function Remove-VCFLicenseKey {
         Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
@@ -2152,7 +2144,7 @@ Function Get-VCFFederationMember {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFFederationMember
@@ -2195,7 +2187,7 @@ Function New-VCFFederationInvite {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFFederationInvite
@@ -2240,7 +2232,7 @@ Function Join-VCFFederation {
             $response
         }
         Catch {
-            $errorString = ResponseException; Write-Error $errorString
+            ResponseException -object $_
         }
     }
 }
@@ -2293,7 +2285,7 @@ Function Get-VCFNsxtCluster {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
@@ -2350,7 +2342,7 @@ Function Get-VCFNetworkPool {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkPool
@@ -2385,7 +2377,7 @@ Function New-VCFNetworkPool {
         Get-VCFNetworkPool -name $poolName
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFNetworkPool
@@ -2414,7 +2406,7 @@ Function Remove-VCFNetworkPool {
         Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
@@ -2457,7 +2449,7 @@ Function Get-VCFNetworkIPPool {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFNetworkIPPool
@@ -2492,7 +2484,7 @@ Function Add-VCFNetworkIPPool {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Add-VCFNetworkIPPool
@@ -2527,7 +2519,7 @@ Function Remove-VCFNetworkIPPool {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
@@ -2574,7 +2566,7 @@ Function Get-VCFEdgeCluster {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFEdgeCluster
@@ -2644,7 +2636,7 @@ Function New-VCFEdgeCluster {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
@@ -2691,7 +2683,7 @@ Function Get-VCFPersonality {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFPersonality
@@ -2727,7 +2719,7 @@ Function Get-VCFFederationTask {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFFederationTask
@@ -2773,7 +2765,7 @@ Function Get-CloudBuilderSDDC {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDC
@@ -2803,7 +2795,7 @@ Function Start-CloudBuilderSDDC {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Start-CloudBuilderSDDC
@@ -2845,7 +2837,7 @@ Function Restart-CloudBuilderSDDC {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDC
@@ -2885,7 +2877,7 @@ Function Get-CloudBuilderSDDCValidation {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDCValidation
@@ -2927,7 +2919,7 @@ Function Start-CloudBuilderSDDCValidation {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Start-CloudBuilderSDDCValidation
@@ -2956,7 +2948,7 @@ Function Stop-CloudBuilderSDDCValidation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Stop-CloudBuilderSDDCValidation
@@ -2985,7 +2977,7 @@ Function Restart-CloudBuilderSDDCValidation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
@@ -3042,7 +3034,7 @@ Function Get-VCFManager {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFManager
@@ -3078,7 +3070,7 @@ Function Start-VCFSystemPrecheck {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Start-VCFSystemPrecheck
@@ -3108,7 +3100,7 @@ Function Get-VCFSystemPrecheckTask {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFSystemPrecheckTask
@@ -3165,7 +3157,7 @@ Function Get-VCFTask {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFTask
@@ -3195,7 +3187,7 @@ Function Restart-VCFTask {
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Restart-VCFTask
@@ -3234,7 +3226,7 @@ Function Get-VCFUpgradable {
         $response.elements
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFUpgradable
@@ -3277,7 +3269,7 @@ Function Get-VCFUpgrade {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFUpgrade
@@ -3312,7 +3304,7 @@ Function Start-VCFUpgrade {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Start-VCFUpgrade
@@ -3373,7 +3365,7 @@ Function Get-VCFUser {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFUser
@@ -3415,7 +3407,7 @@ Function New-VCFUser {
         $response.elements
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFUser
@@ -3455,7 +3447,7 @@ Function New-VCFServiceUser {
         $response.elements
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFServiceUser
@@ -3481,7 +3473,7 @@ Function Get-VCFRole {
         $response.elements
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFRole
@@ -3511,7 +3503,7 @@ Function Remove-VCFUser {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFUser
@@ -3554,7 +3546,7 @@ Function New-VCFGroup {
         $response.elements
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function New-VCFGroup
@@ -3601,7 +3593,7 @@ Function Get-VCFService {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFService
@@ -3639,7 +3631,7 @@ Function Get-VCFConfigurationDNS {
         $response.dnsServers
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationDNS
@@ -3670,7 +3662,7 @@ Function Get-VCFConfigurationDNSValidation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationDNSValidation
@@ -3716,7 +3708,7 @@ Function Set-VCFConfigurationDNS {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFConfigurationDNS
@@ -3742,7 +3734,7 @@ Function Get-VCFConfigurationNTP {
         $response.ntpServers
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationNTP
@@ -3773,7 +3765,7 @@ Function Get-VCFConfigurationNTPValidation {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFConfigurationNTPValidation
@@ -3819,7 +3811,7 @@ Function Set-VCFConfigurationNTP {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFConfigurationNTP
@@ -3882,7 +3874,7 @@ Function Get-VCFvCenter {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFvCenter
@@ -3914,7 +3906,7 @@ Function Get-VCFvRSLCM {
         $response.elements
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
@@ -3961,7 +3953,7 @@ Function New-VCFvRSLCM {
             }
         }
         Catch {
-            $errorString = ResponseException; Write-Error $errorString
+            ResponseException -object $_
         }
     }
 }
@@ -3989,8 +3981,7 @@ Function Remove-VCFvRSLCM {
         $response
     }
     Catch {
-        # Call ResponseException function to get error response from the exception
-        ResponseException
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFvRSLCM
@@ -4016,7 +4007,7 @@ Function Reset-VCFvRSLCM {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Reset-VCFvRSLCM
@@ -4061,7 +4052,7 @@ Function Get-VCFvROPs {
         }
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFvROPs
@@ -4097,7 +4088,7 @@ Function Set-VCFvROPs {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFvROPs
@@ -4127,7 +4118,7 @@ Function Get-VCFWSA {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFWSA
@@ -4157,7 +4148,7 @@ Function Get-VCFvRA {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFvRA
@@ -4187,7 +4178,7 @@ Function Get-VCFvRLI {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFvRLI
@@ -4223,7 +4214,7 @@ Function Set-VCFvRLI {
         $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFvRLI
@@ -4247,7 +4238,7 @@ Function Validate-CommissionHostSpec {
         Return $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 
@@ -4265,7 +4256,7 @@ Function Validate-WorkloadDomainSpec {
         Return $response
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
 }
 
@@ -4282,7 +4273,7 @@ Function Validate-VCFClusterSpec {
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
     Return $response
 }
@@ -4301,7 +4292,7 @@ Function Validate-VCFUpdateClusterSpec {
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
     Return $response
 }
@@ -4319,7 +4310,7 @@ Function Validate-EdgeClusterSpec {
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     }
     Catch {
-        $errorString = ResponseException; Write-Error $errorString
+        ResponseException -object $_
     }
     Return $response
 }

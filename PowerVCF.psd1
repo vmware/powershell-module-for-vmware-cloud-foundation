@@ -18,7 +18,7 @@ ModuleVersion = '2.1.3'
 # CompatiblePSEditions = @()
 
 # ID used to uniquely identify this module
-GUID = '08e28c56-f231-4a2c-8906-dee337cf99b8'
+GUID = '08e28c56-f231-4a8c-8906-dee337cf99c8'
 
 # Author of this module
 Author = 'Brian O Connell & Gary Blake'
@@ -51,4 +51,3 @@ CmdletsToExport = '*'
 VariablesToExport = '*'
 
 }
-
