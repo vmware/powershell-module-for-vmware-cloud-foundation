@@ -6,16 +6,16 @@ PowerVCF is a PowerShell Module for interacting with the VMware Cloud Foundation
 <a href="https://code.vmware.com/apis/723/vmware-cloud-foundation" target="_blank">VMware Cloud Foundation API Documentation</a>
 
 # Disclaimer
-This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware HCI Business Unit (HCIBU).
+This is not an officially supported VMware PowerShell Module. It was initially developed and maintained by Brian O'Connell who is a Staff Architect in the VMware Cloud Platform Business Unit (CPBU).
 
-The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. It has been developed against VMware Cloud Foundation 3.9 and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
+The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCli and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. It has been developed against VMware Cloud Foundation 4.x and best efforts will be made to validate all cmdlets against future VMware Cloud Foundation versions but no promises!
 
 ## Contributors
 If you would like to contribute please get in touch! Current contributors listed below.
 
-Brian O'Connell - VMware HCI BU Staff Architect \[[Twitter](https://twitter.com/LifeOfBrianOC)\] \[[Blog](https://LifeOfBrianOC.com)\]
+Brian O'Connell - VMware CPBU Staff Architect \[[Twitter](https://twitter.com/LifeOfBrianOC)\] \[[Blog](https://LifeOfBrianOC.com)\]
 
-Gary Blake - VMware HCI BU Staff II Architect \[[Twitter](https://twitter.com/GaryJBlake)\] \[[Blog](https://my-cloudy-world.com/)\]
+Gary Blake - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/GaryJBlake)\] \[[Blog](https://my-cloudy-world.com/)\]
 
 Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
 
@@ -47,18 +47,17 @@ Import-Module .\PowerVCF
 ```
 
 ## Getting Started
-All API operations must currently be authenticated using the SDDC Manager admin account.
-To create a base64 credential to authenticate each cmdlet you must first run:
+All API operations must authenticated using the SDDC Manager admin@local account or a vSphere Single-Sign On user with ADMIN access to SDDC Manager.
+To authenticate and request a token which is used for subsequent requests must first run:
 
 ```powershell
-Connect-VCFManager -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1!
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password VMw@re1!VMw@re1!
 ```
 
 *Note: `-username` & `-password` are optional. If not passed a credential window will be presented.*
 
 Authentication is only valid for the duration of the PowerShell session.
 
-Managing Credentials (password retrieval/update/rotation) requires dual authentication using a privileged username & password. See here for setup instructions: https://docs.vmware.com/en/VMware-Cloud-Foundation/3.9/com.vmware.vcf.admin.doc_39/GUID-FAB78718-E626-4924-85DC-97536C3DA337.html
 
 ## Examples
 ### Get a list of VCF Hosts
@@ -67,44 +66,49 @@ Managing Credentials (password retrieval/update/rotation) requires dual authenti
 ### Sample Output
 
 ```
-id             : 3fc04947-64c9-4402-8970-be93169140c6
-esxiVersion    : 6.7.0-13981272
-fqdn           : sfo01-m01-esx01.sfo.rainpole.io
-hardwareVendor : Dell Inc.
-hardwareModel  : PowerEdge R640
-ipAddresses    : {@{ipAddress=172.16.225.101; type=MANAGEMENT}, @{ipAddress=172.16.230.101; type=VSAN},
-                 @{ipAddress=172.16.226.101; type=VMOTION}}
-cpu            : @{frequencyMHz=61455.61328125; cores=28; cpuCores=System.Object[]}
-memory         : @{totalCapacityMB=261761.34375}
-storage        : @{totalCapacityMB=10988496; disks=System.Object[]}
-domain         : @{id=fbdcf199-c086-43aa-9071-5d53b5c5b99d}
-cluster        : @{id=a511b625-8eb8-417e-85f0-5b47ebb4c0f1}
-status         : ASSIGNED
+id                  : c63899b9-22d2-4c7c-bb68-42bc2507b6ef
+esxiVersion         : 7.0.2-17630552
+fqdn                : sfo01-m01-esx01.sfo.rainpole.io
+hardwareVendor      : Dell Inc.
+hardwareModel       : PowerEdge R630
+isPrimary           : False
+ipAddresses         : {@{ipAddress=172.18.110.101; type=MANAGEMENT}, @{ipAddress=172.18.112.101; type=VSAN}, @{ipAddress=172.18.111.101; type=VMOTION}}
+cpu                 : @{frequencyMHz=55999.953125; usedFrequencyMHz=1233.0; cores=28; cpuCores=System.Object[]}
+memory              : @{totalCapacityMB=262048.28125; usedCapacityMB=57775.0}
+storage             : @{totalCapacityMB=7325664.0; usedCapacityMB=301736.625; disks=System.Object[]}
+physicalNics        : {@{deviceName=vmnic0; macAddress=24:6e:96:56:05:f8; speed=0}, @{deviceName=vmnic1; macAddress=24:6e:96:56:05:fa; speed=0}, @{deviceName=vmnic2; macAddress=24:6e:96:56:05:fc;
+                      speed=0}, @{deviceName=vmnic3; macAddress=24:6e:96:56:05:fd; speed=0}}
+domain              : @{id=20870784-3eb6-4708-bff9-f51ce487a922}
+networkpool         : @{id=a58c7224-d42e-4a07-9ab8-14082b235eda; name=sfo-m01-np01}
+cluster             : @{id=7269e189-6b91-41fd-b859-559d6df39a69}
+status              : ASSIGNED
+bundleRepoDatastore : lcm-bundle-repo
+hybrid              : False
 ```
 
 
 Responses can be filtered like this:
 
 ```powershell
-Get-VCFHost -id 3fc04947-64c9-4402-8970-be93169140c6 | Select esxiVersion
+Get-VCFHost -id c63899b9-22d2-4c7c-bb68-42bc2507b6ef | Select esxiVersion
 ```
 
 ```
 esxiVersion
 -----------
-6.7.0-13981272
+7.0.2-17630552
 ```
 
 
 Or like this:
 
 ```powershell
-$hostDetail = Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+$hostDetail = Get-VCFHost -id c63899b9-22d2-4c7c-bb68-42bc2507b6ef
 $hostDetail.esxiVersion
 ```
 
 ```
-6.7.0-13981272
+7.0.2-17630552
 ```
 
 
@@ -112,7 +116,7 @@ $hostDetail.esxiVersion
 For a full list of supported cmdlets run the following
 
 ```powershell
-Get-Command -Module powerVCF
+Get-Command -Module PowerVCF
 ```
 
 All cmdlets support the following

@@ -25,7 +25,8 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 
 ## What's New
 
-- **NEW** `Add-VCFApplicationVirtualNetwork` cmdlet to add AVNs to the management domain
+- **NEW** `Add-VCFApplicationVirtualNetwork` cmdlet to add Application Virtual Networks (NSX segments)
+- **UPDATED** `ResponseException` updated the internal error handling function for Core 7.x
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
@@ -43,7 +44,7 @@ New/Set/Remove Workload domains
 
 
 ## Installing the module
-Tested in Windows PowerShell 5.x & PowerShell Core 6.x
+Tested in Windows PowerShell 5.x & PowerShell Core 6.x / 7.x
 
 To install the module from the PowerShell Gallery Open PowerShell as Administrator and run the following
 
@@ -77,7 +78,7 @@ Authentication is only valid for the duration of the PowerShell session.
 
 ```
 id                  : 598519e7-cbba-4a10-801d-d76111f3ce0e
-esxiVersion         : 7.0.0-15843807
+esxiVersion         : 7.0.2-17867351
 fqdn                : sfo01-m01-esx01.sfo.rainpole.io
 hardwareVendor      : Dell Inc.
 hardwareModel       : PowerEdge R630
@@ -106,9 +107,8 @@ Get-VCFHost -id 598519e7-cbba-4a10-801d-d76111f3ce0e | Select esxiVersion
 ```
 esxiVersion
 -----------
-7.0.0-15843807
+7.0.2-17867351
 ```
-
 
 Or like this:
 
@@ -118,7 +118,7 @@ $hostDetail.esxiVersion
 ```
 
 ```
-7.0.0-15843807
+7.0.2-17867351
 ```
 
 

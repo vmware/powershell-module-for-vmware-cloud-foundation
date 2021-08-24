@@ -5,7 +5,7 @@ Connects to the specified SDDC Manager and requests API access & refresh tokens
 
 ### Syntax
 ```
-Request-VCFToken -fqdn <String> -Username <String> -Password <String> -basicAuth <switch>
+Request-VCFToken -fqdn <String> -Username <String> -Password <String>
 ```
 
 ### Description
@@ -15,15 +15,15 @@ It is required once per session before running all other cmdlets
 ### Examples
 #### Example 1
 ```
-Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMware1!
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMw@re1!
 ```
 This example shows how to connect to SDDC Manager to request API access & refresh tokens
 
 #### Example 2
 ```
-Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1! -basicAuth
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password VMw@re1!VMw@re1!
 ```
-This example shows how to connect to SDDC Manager using basic auth for restoring backups
+This example shows how to connect to SDDC Manager using local account admin@local
 
 ### Parameters
 
