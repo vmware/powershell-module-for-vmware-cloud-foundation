@@ -1,9 +1,9 @@
 {
    "edgeClusterName":"sfo-m01-ec01",
    "edgeClusterType":"NSX-T",
-   "edgeRootPassword":"VMw@re1!VMw@re1!",
-   "edgeAdminPassword":"VMw@re1!VMw@re1!",
-   "edgeAuditPassword":"VMw@re1!VMw@re1!",
+   "edgeRootPassword":"VMw@re1!VMw@re1!!",
+   "edgeAdminPassword":"VMw@re1!VMw@re1!!",
+   "edgeAuditPassword":"VMw@re1!VMw@re1!!",
    "edgeFormFactor":"MEDIUM",
    "tier0ServicesHighAvailability":"ACTIVE_ACTIVE",
    "mtu":9000,
