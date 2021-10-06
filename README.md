@@ -26,6 +26,7 @@ Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Tw
 ## What's New
 
 - **UPDATED** `Get-VCFTask` updated to correctly handle passing a task status
+- **NEW** `edgeClusterSpecAVN.json` sample JSON added for creating an edge cluster to support AVN in VCF 4.3+
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
