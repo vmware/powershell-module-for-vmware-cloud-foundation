@@ -1,3 +1,6 @@
+![](https://img.shields.io/powershellgallery/v/PowerVCF?style=for-the-badge)
+![](https://img.shields.io/powershellgallery/dt/PowerVCF?style=for-the-badge)
+
 # PowerVCF
 PowerVCF is an open source PowerShell Module for interacting with the VMware Cloud Foundation (SDDC Manager & Cloud Builder) public API.
 
