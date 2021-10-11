@@ -13,23 +13,23 @@ This is not an officially supported VMware PowerShell Module.
 
 The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCLI and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general. It is provided without warranty and should not be used in a production environment without thoroughly testing first. 
 
-This version is supported with VMware Cloud Foundation 4.0 and above due to changes in the API auth process.
+This version is supported with VMware Cloud Foundation 4.x and above due to changes in the API auth process.
 
 ## Contributors
 If you would like to contribute please get in touch! Current contributors listed below.
 
-Brian O'Connell - VMware CPBU Staff Architect \[[Twitter](https://twitter.com/LifeOfBrianOC)\] \[[Blog](https://LifeOfBrianOC.com)\]
+Brian O'Connell - VMware CIBG Staff Architect \[[Twitter](https://twitter.com/LifeOfBrianOC)\] \[[Blog](https://LifeOfBrianOC.com)\]
 
-Gary Blake - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/GaryJBlake)\] \[[Blog](https://my-cloudy-world.com/)\]
+Gary Blake - VMware CIBG Senior Staff Architect \[[Twitter](https://twitter.com/GaryJBlake)\] \[[Blog](https://my-cloudy-world.com/)\]
 
-Ken Gould - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/feardamhan)\] \[[Blog](https://feardamhan.com/)\]
+Ken Gould - VMware CIBG Staff II Architect \[[Twitter](https://twitter.com/feardamhan)\] \[[Blog](https://feardamhan.com/)\]
 
 Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
 
 ## What's New
 
-- **NEW** `Add-VCFApplicationVirtualNetwork` cmdlet to add Application Virtual Networks (NSX segments)
-- **UPDATED** `ResponseException` updated the internal error handling function for Core 7.x
+- **UPDATED** `Get-VCFTask` updated to correctly handle passing a task status
+- **NEW** `edgeClusterSpecAVN.json` sample JSON added for creating an edge cluster to support AVN in VCF 4.3+
 
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
@@ -66,7 +66,7 @@ All API operations must currently be authenticated using the SDDC Manager admin 
 To create a base64 credential to authenticate each cmdlet you must first run:
 
 ```powershell
-Connect-VCFManager -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1!
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMware1!
 ```
 
 *Note: `-username` & `-password` are optional. If not passed a credential window will be presented.*
