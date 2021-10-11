@@ -30,6 +30,7 @@ if ($PSEdition -eq 'Desktop') {
 # Enable communication with self signed certs when using Windows Powershell
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
+If (!("TrustAllCertificatePolicy" -as [type])) {
 add-type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
@@ -42,6 +43,7 @@ add-type @"
         }
     }
 "@
+}
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
 
