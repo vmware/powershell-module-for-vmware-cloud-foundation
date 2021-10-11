@@ -100,12 +100,11 @@ Function Connect-VCFManager {
       $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
     }
     if ($response.StatusCode -eq 200) {
-      Write-Host " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+      Write-Output " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
     }
   }
   Catch {
-    Write-Host "" $_.Exception.Message -ForegroundColor Red
-    Write-Host " Credentials provided did not return a valid API response (expected 200). Retry Connect-VCFManager cmdlet" -ForegroundColor Red
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -function Connect-VCFManager
@@ -178,7 +177,7 @@ Function Get-VCFHost {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFHost
@@ -226,22 +225,17 @@ Function Commission-VCFHost {
     # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       Try {
-        Write-Host ""
-        Write-Host "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
+        Write-Output "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
         $uri = "https://$sddcManager/v1/hosts/"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
         Return $response
-        Write-Host ""
       }
       Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
       }
     }
     else {
-      Write-Host ""
-      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-      Write-Host ""
+      Write-Error "`n The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
     }
   }
 }
@@ -283,7 +277,7 @@ Function Decommission-VCFHost {
 			$response
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -339,15 +333,13 @@ Function Reset-VCFHost {
   if ($dirtyHost -eq "all") { $dirtyHost = "ALL" }
     # Build the cmd to run and auto confirm
     $sshCommand = "echo Y | /opt/vmware/sddc-support/sos --cleanup-host " + $dirtyHost
-    Write-Host ""
-    Write-Host "Executing clean up for host(s): $dirtyHost - This might take a while, please wait..."
-    Write-Host ""
+    Write-Output "Executing clean up for host(s): $dirtyHost - This might take a while, please wait..."
     Try {
       $vmScript = Invoke-VMScript -VM $sddcManagerVM -ScriptText $sshCommand -GuestUser root -GuestPassword $sddcManagerRootPassword
       $vmScript
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Reset-VCFHost
@@ -419,7 +411,7 @@ Function Get-VCFWorkloadDomain {
     }
 	}
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFWorkloadDomain
@@ -458,24 +450,16 @@ Function New-VCFWorkloadDomain {
     # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       Try {
-        Write-Host ""
-        Write-Host "Task validation completed successfully, invoking Workload Domain Creation on SDDC Manager" -ForegroundColor Green
+        Write-Output "Task validation completed successfully. Invoking Workload Domain Creation on SDDC Manager"
         $uri = "https://$sddcManager/v1/domains"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-        Return $response
-        Write-Host ""
-        Return $response
-        Write-Host ""
-      }
+        Return $response      }
       Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
       }
     }
     else {
-      Write-Host ""
-      Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-      Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-      Write-Host ""
+      Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)" 
     }
   }
 }
@@ -510,7 +494,7 @@ Function Set-VCFWorkloadDomain {
     # This API does not return a response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Set-VCFWorkloadDomain
@@ -544,7 +528,7 @@ Function Remove-VCFWorkloadDomain {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
@@ -604,7 +588,7 @@ Function Get-VCFCluster {
 		}
 	}
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFCluster
@@ -642,20 +626,16 @@ Function New-VCFCluster {
     # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
     if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
       Try {
-        Write-Host ""
-        Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+        Write-Output "Task validation completed successfully, invoking cluster task on SDDC Manager"
         $uri = "https://$sddcManager/v1/clusters"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
         $response.elements
       }
       Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
       }
       else {
-        Write-Host ""
-        Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-        Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        Write-Host ""
+        Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
       }
     }
   }
@@ -718,22 +698,17 @@ Function Set-VCFCluster {
 			# Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
       if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
         Try {
-          Write-Host ""
-          Write-Host "Task validation completed successfully, invoking cluster task on SDDC Manager" -ForegroundColor Green
+          Write-Output "`Task validation completed successfully. Invoking cluster task on SDDC Manager"
           $uri = "https://$sddcManager/v1/clusters/$clusterid/"
 					$response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
 					Return $response
-					Write-Host ""
         }
 				Catch {
-          ResponseException # Call Function ResponseException to get error response from the exception
+          ResponseException -object $_
         }
       }
       else {
-        Write-Host ""
-        Write-Host "The validation task commpleted the run with the following problems:" -ForegroundColor Yellow
-        Write-Host $response.validationChecks.errorResponse.message  -ForegroundColor Yellow
-        Write-Host ""
+        Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
       }
 		}
 		if ($PsBoundParameters.ContainsKey("markForDeletion")) {
@@ -742,7 +717,7 @@ Function Set-VCFCluster {
 		}
 	}
 	Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
 	}
 }
 Export-ModuleMember -Function Set-VCFCluster
@@ -774,7 +749,7 @@ Function Remove-VCFCluster {
     #TODO: Parse the response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Remove-VCFCluster
@@ -834,7 +809,7 @@ Function Get-VCFNetworkPool {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFNetworkPool
@@ -874,7 +849,7 @@ Function New-VCFNetworkPool {
 			Get-VCFNetworkPool -name $poolName
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -906,7 +881,7 @@ Function Remove-VCFNetworkPool {
     # This API does not return a response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Remove-VCFNetworkPool
@@ -952,7 +927,7 @@ Function Get-VCFNetworkIPPool {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFNetworkIPPool
@@ -994,7 +969,7 @@ Function Add-VCFNetworkIPPool {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Add-VCFNetworkIPPool
@@ -1036,7 +1011,7 @@ Function Remove-VCFNetworkIPPool {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
@@ -1109,7 +1084,7 @@ Function Get-VCFLicenseKey {
 		}
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFLicenseKey
@@ -1148,7 +1123,7 @@ Function New-VCFLicenseKey {
 			Get-VCFLicenseKey -key $licenseKey
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -1181,7 +1156,7 @@ Function Remove-VCFLicenseKey {
     # This API does not return a response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
@@ -1240,7 +1215,7 @@ Function Get-VCFTask {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFTask
@@ -1271,7 +1246,7 @@ Function Retry-VCFTask {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Retry-VCFTask
@@ -1330,7 +1305,7 @@ Function Get-VCFCredentialTask {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFCredentialTask
@@ -1399,7 +1374,7 @@ Function Get-VCFCredential {
         $response.elements
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCredential
@@ -1447,7 +1422,7 @@ Function Set-VCFCredential {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Set-VCFCredential
@@ -1488,7 +1463,7 @@ Function Cancel-VCFCredentialTask {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Cancel-VCFCredentialTask
@@ -1551,7 +1526,7 @@ Function Retry-VCFCredentialTask {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Retry-VCFCredentialTask
@@ -1585,7 +1560,7 @@ Function Validate-CommissionHostSpec {
     Return $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 
@@ -1613,7 +1588,7 @@ Function Validate-WorkloadDomainSpec {
 	   return $response
 	}
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 
@@ -1640,7 +1615,7 @@ Function Validate-VCFClusterSpec {
     $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
 	}
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
   Return $response
 }
@@ -1670,7 +1645,7 @@ Function Validate-VCFUpdateClusterSpec {
     $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $body
 	}
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
   Return $response
 }
@@ -1700,7 +1675,7 @@ Function Get-VCFCeip {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFCeip
@@ -1745,7 +1720,7 @@ Function Set-VCFCeip {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Set-VCFCeip
@@ -1779,7 +1754,7 @@ Function Get-VCFBackupConfiguration {
         $response.backupLocations
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFBackupConfiguration
@@ -1829,7 +1804,7 @@ Function Set-VCFBackupConfiguration {
         $response
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
@@ -1862,7 +1837,7 @@ Function Start-VCFBackup {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Start-VCFBackup
@@ -1919,7 +1894,7 @@ Function Get-VCFBundle {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFBundle
@@ -1951,7 +1926,7 @@ Function Request-VCFBundle {
     $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Request-VCFBundle
@@ -1980,7 +1955,7 @@ Function Get-VCFUpgradables {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFUpgradables
@@ -2025,8 +2000,7 @@ Function Start-UploadVCFBundle {
       $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $ConfigJson
   }
   catch {
-    # Call the function ResponseException which handles execption messages
-    ResponseException
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Start-UploadVCFBundle
@@ -2065,7 +2039,7 @@ Function Get-VCFCertificateAuthConfiguration {
     $response.elements
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthConfiguration
@@ -2111,7 +2085,7 @@ Function Set-VCFMicrosoftCA {
     $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Set-VCFMicrosoftCA
@@ -2146,7 +2120,7 @@ Function Get-VCFCertificateCSR {
         $response.elements
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCertificateCSR
@@ -2188,7 +2162,7 @@ Function Request-VCFCertificateCSR {
       $response
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -2227,7 +2201,7 @@ Function Get-VCFCertificate {
         $response.elements
     }
     Catch {
-        ResponseException # Call Function ResponseException to get error response from the exception
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Get-VCFCertificate
@@ -2271,7 +2245,7 @@ Function Request-VCFCertificate {
       $response
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -2312,7 +2286,7 @@ Function Set-VCFCertificate {
       $response
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -2343,7 +2317,7 @@ Function Get-VCFDepotCredentials {
     $response.vmwareAccount
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFDepotCredentials
@@ -2381,7 +2355,7 @@ Function Set-VCFDepotCredentials {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Set-VCFDepotCredentials
@@ -2427,7 +2401,7 @@ Function Start-PreCheckVCFSystem {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Start-PreCheckVCFSystem
@@ -2468,7 +2442,7 @@ Function Get-PreCheckVCFSystemTask {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-PreCheckVCFSystemTask
@@ -2527,7 +2501,7 @@ Function Get-VCFManager {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFManager
@@ -2569,7 +2543,7 @@ Function Get-VCFService {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFService
@@ -2631,7 +2605,7 @@ Function Get-VCFvCenter {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFvCenter
@@ -2694,7 +2668,7 @@ Function Get-VCFPsc {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFPsc
@@ -2755,7 +2729,7 @@ Function Get-VCFNsxvManager {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFNsxvManager
@@ -2817,7 +2791,7 @@ Function Get-VCFNsxtCluster {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
@@ -2846,7 +2820,7 @@ Function Get-VCFvRLI {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFvRLI
@@ -2888,7 +2862,7 @@ Function Invoke-VCFCommand {
     $sudoPrompt = "[sudo] password for vcf"
   # validate if the SDDC Manager vcf password parameter is passed, if not prompt the user and then build vcfCreds PSCredential object
   if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
-    Write-Host "Please provide the SDDC Manager vcf user password:" -ForegroundColor Green
+    Write-Output "Please provide the SDDC Manager vcf user password:"
     $vcfSecuredPassword = Read-Host -AsSecureString
     $vcfCred = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
   }
@@ -2900,7 +2874,7 @@ Function Invoke-VCFCommand {
   }
   # validate if the SDDC Manager root password parameter is passed, if not prompt the user and then build rootCreds PSCredential object
   if ( -not $PsBoundParameters.ContainsKey("rootPassword") ) {
-    Write-Host "Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
+    Write-Output "Please provide the root credential to execute elevated commands in SDDC Manager:" -ForegroundColor Green
     $rootSecuredPassword = Read-Host -AsSecureString
     $rootCred = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
   }
@@ -2926,7 +2900,7 @@ Function Invoke-VCFCommand {
     $sessionSSH = New-SSHSession -Computer $sddcManager -Credential $vcfCred -AcceptKey
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
   if ($sessionSSH.Connected -eq "True") {
     $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
@@ -2935,20 +2909,14 @@ Function Invoke-VCFCommand {
     # Invoke the SSH stream command
     $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCred.Password
     if ($outInvoke) {
-      Write-Host ""
-      Write-Host "Executing the remote SoS command, output will display when the the run is completed. This might take a while, please wait..."
-      Write-Host ""
-      $stream.Expect($sosEndMessage)
+      Write-Output "Executing the remote SoS command, output will display when the the run is completed. This might take a while, please wait..."      $stream.Expect($sosEndMessage)
     }
     # distroy the connection previously established
     Remove-SSHSession -SessionId $sessionSSH.SessionId | Out-Null
     }
   }
   else {
-    Write-Host ""
-    Write-Host "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again." -ForegroundColor Yellow
-    Write-Host ""
-  }
+    Write-Error "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to execute this cmdlet, please install the module and try again."  }
 }
 Export-ModuleMember -Function Invoke-VCFCommand
 
@@ -2975,7 +2943,7 @@ Function Get-VCFvRSLCM {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFvRSLCM
@@ -3000,7 +2968,7 @@ Function Get-VCFvRSLCMEnvironment {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFvRSLCMEnvironment
@@ -3039,8 +3007,7 @@ Function New-VCFvRSLCM {
             $response
         }
         Catch {
-            # Call Function ResponseException to get error response from the exception
-            ResponseException
+          ResponseException -object $_
         }
     }
 }   
@@ -3069,8 +3036,7 @@ Function Remove-VCFvRSLCM {
         $response
     }
     Catch {
-        # Call Function ResponseException to get error response from the exception
-        ResponseException
+      ResponseException -object $_
     }
 }   
 Export-ModuleMember -Function Remove-VCFvRSLCM
@@ -3121,7 +3087,7 @@ Function Get-VCFvROPs {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFvROPs
@@ -3158,7 +3124,7 @@ Function Get-VCFFederation {
     $response
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFFederation
@@ -3195,7 +3161,7 @@ Function Set-VCFFederation {
       $response
     }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -3238,7 +3204,7 @@ Function Remove-VCFFederation {
       $response
     }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Remove-VCFFederation
@@ -3281,7 +3247,7 @@ Function New-VCFFederationInvite {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -Function New-VCFFederationInvite
@@ -3312,7 +3278,7 @@ Function Get-VCFFederationMembers {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
 Export-ModuleMember -function Get-VCFFederationMembers
@@ -3358,7 +3324,7 @@ Function Join-VCFFederation {
         $response
       }
     Catch {
-      ResponseException # Call Function ResponseException to get error response from the exception
+      ResponseException -object $_
     }
   }
 }
@@ -3421,7 +3387,7 @@ Function Get-VCFApplicationVirtualNetwork {
     }
   }
   Catch {
-    ResponseException # Call Function ResponseException to get error response from the exception
+    ResponseException -object $_
   }
 }
   Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
@@ -3432,30 +3398,21 @@ Function Get-VCFApplicationVirtualNetwork {
 ######### Start Utility Functions (not exported) ##########
 
 Function ResponseException {
-  #Get response from the exception
-  $response = $_.exception.response
-  if ($response) {
-    Write-Host ""
-    Write-Host "Oops something went wrong, please check your API call" -ForegroundColor Red -BackgroundColor Black
-    Write-Host ""
-    $responseStream = $_.exception.response.GetResponseStream()
-    $reader = New-Object system.io.streamreader($responseStream)
-    $responseBody = $reader.readtoend()
-    $ErrorString = "Exception occured calling invoke-restmethod. $($response.StatusCode.value__) : $($response.StatusDescription) : Response Body: $($responseBody)"
-    Throw $ErrorString
-    Write-Host ""
-  }
-  else {
-    Throw $_
-  }
+  Param (
+      [Parameter (Mandatory = $true)] [PSObject]$object
+  )
+
+  Write-Host "Script File:       $($object.InvocationInfo.ScriptName) Line: $($object.InvocationInfo.ScriptLineNumber)" -ForegroundColor Red
+  Write-Host "Relevant Command:  $($object.InvocationInfo.Line.trim())" -ForegroundColor Red
+  Write-Host "Target Uri:         $($object.TargetObject.RequestUri.AbsoluteUri)" -ForegroundColor Red
+  Write-Host "Exception Message: $($object.Exception.Message)" -ForegroundColor Red
+  Write-Host "Error Message:     $($object.ErrorDetails.Message)" -ForegroundColor Red
 }
 
 Function CheckVCFVersion {
   $vcfManager = Get-VCFManager
   if ($vcfManager.version.Substring(0,3) -eq "3.8") {
-    Write-Host ""
-    Write-Host "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
-    Write-Host ""
+    Write-Output "This cmdlet is only supported in VCF 3.9 or later" -ForegroundColor Magenta
     break
   }
 }
@@ -3500,10 +3457,9 @@ Function Resolve-PSModule {
     # If module is not imported, check if available on disk and try to import
     if (Get-Module -ListAvailable | Where-Object {$_.Name -eq $moduleName}) {
       Try {
-        Write-Host ""
-        Write-Host "Module $moduleName not loaded, importing now please wait..."
+        Write-Output "Module $moduleName not loaded, importing now please wait..."
         Import-Module $moduleName
-        Write-Host "Module $moduleName imported successfully."
+        Write-Output "Module $moduleName imported successfully."
         $searchResult = "IMPORTED"
       }
       Catch {
@@ -3514,12 +3470,11 @@ Function Resolve-PSModule {
       # If module is not imported & not available on disk, try PSGallery then install and import
       if (Find-Module -Name $moduleName | Where-Object {$_.Name -eq $moduleName}) {
       Try {
-        Write-Host ""
-        Write-Host "Module $moduleName was missing, installing now please wait..."
+        Write-Output "Module $moduleName was missing, installing now please wait..."
         Install-Module -Name $moduleName -Force -Scope CurrentUser
-        Write-Host "Importing module $moduleName, please wait..."
+        Write-Output "Importing module $moduleName, please wait..."
         Import-Module $moduleName
-        Write-Host "Module $moduleName installed and imported"
+        Write-Output "Module $moduleName installed and imported"
         $searchResult = "INSTALLED_IMPORTED"
       }
       Catch {
