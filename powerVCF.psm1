@@ -100,7 +100,7 @@ Function Connect-VCFManager {
       $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
     }
     if ($response.StatusCode -eq 200) {
-      Write-Output " Successfully connected to SDDC Manager:" $sddcManager -ForegroundColor Yellow
+      Write-Output " Successfully connected to SDDC Manager: $sddcManager"
     }
   }
   Catch {
