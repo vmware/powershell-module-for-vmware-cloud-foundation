@@ -3494,6 +3494,17 @@ Return $searchResult
 
 ## Backported Cmdlets
 
+Function validateJsonInput {
+  if (!(Test-Path $json)) {
+      Throw "JSON file provided not found, please try again"
+  }
+  else {
+      $Global:ConfigJson = (Get-Content -Raw $json) # Read the json file contents into the $ConfigJson variable
+      Write-Verbose "JSON file found and content has been read into a variable"
+      Write-Verbose $ConfigJson
+  }
+}
+
 Function Start-CloudBuilderSDDCValidation {
   <#
       .SYNOPSIS
@@ -3599,7 +3610,7 @@ Function Start-CloudBuilderSDDCValidation {
   )
 
   Try {
-      validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+      #validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
       createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
       if (-not $PsBoundParameters.ContainsKey("validation")) {
           $uri = "https://$cloudBuilder/v1/sddcs/validations"
