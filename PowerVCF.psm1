@@ -4580,7 +4580,7 @@ Function Resolve-PSModule {
         # If module is not imported, check if available on disk and try to import
         if (Get-Module -ListAvailable | Where-Object { $_.Name -eq $moduleName }) {
             Try {
-                "`n Module $moduleName not loaded, importing now please wait..."
+                Write-Output "`n Module $moduleName not loaded, importing now please wait..."
                 Import-Module $moduleName
                 Write-Output "Module $moduleName imported successfully."
                 $searchResult = "IMPORTED"
