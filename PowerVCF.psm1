@@ -3134,13 +3134,13 @@ Function Get-VCFTask {
 
     Param (
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
-        [Parameter (Mandatory = $false)] [ValidateSet("SUCCESSFUL", "FAILED")] [String]$status
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$status
     )
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ( -not $PsBoundParameters.ContainsKey("id") -and ( -not $PsBoundParameters.ContainsKey("status"))) {
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/tasks/"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
@@ -3151,7 +3151,7 @@ Function Get-VCFTask {
             $response
         }
         if ($PsBoundParameters.ContainsKey("status")) {
-            $uri = "https://$sddcManager/v1/tasks/"
+            $uri = "https://$sddcManager/v1/tasks/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements | Where-Object { $_.status -eq $status }
         }
