@@ -3147,7 +3147,7 @@ Function Get-VCFTask {
         }
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/tasks/$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers}
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
         }
         if ($PsBoundParameters.ContainsKey("status")) {
