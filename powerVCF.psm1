@@ -3505,6 +3505,11 @@ Function validateJsonInput {
   }
 }
 
+Function createBasicAuthHeader {
+  $Global:headers = @{"Accept" = "application/json" }
+  $Global:headers.Add("Authorization", "Basic $base64AuthInfo")
+}
+
 Function Start-CloudBuilderSDDCValidation {
   <#
       .SYNOPSIS
