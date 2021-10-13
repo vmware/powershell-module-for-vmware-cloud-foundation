@@ -3592,48 +3592,6 @@ Function Get-CloudBuilderSDDCValidation {
 }
 Export-ModuleMember -Function Get-CloudBuilderSDDCValidation
 
-Function Start-CloudBuilderSDDCValidation {
-  <#
-      .SYNOPSIS
-      Validate SDDC specification before creation
-
-      .DESCRIPTION
-      The Start-CloudBuilderSDDCValidation cmdlet performs validation of the SddcSpec.json provided
-
-      .EXAMPLE
-      PS C:\> Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json
-      This example starts the validation of the SddcSpec.json
-
-      .EXAMPLE
-      PS C:\> Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json -validation LICENSE_KEY_VALIDATION
-      This example starts the validation of the License Key items only based on the SddcSpec.json json
-  #>
-
-  Param (
-      [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
-      [Parameter (Mandatory = $false)] [ValidateSet("JSON_SPEC_VALIDATION", "LICENSE_KEY_VALIDATION", "TIME_SYNC_VALIDATION", "NETWORK_IP_POOLS_VALIDATION", "NETWORK_CONFIG_VALIDATION", "MANAGEMENT_NETWORKS_VALIDATION", "ESXI_VERSION_VALIDATION", "ESXI_HOST_READINESS_VALIDATION", "PASSWORDS_VALIDATION", "HOST_IP_DNS_VALIDATION", "CLOUDBUILDER_READY_VALIDATION", "VSAN_AVAILABILITY_VALIDATION", "NSXT_NETWORKS_VALIDATION", "AVN_NETWORKS_VALIDATION", "SECURE_PLATFORM_AUDIT")] [String]$validation
-  )
-
-  Try {
-      #validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
-      createBasicAuthHeader # Calls createBasicAuthHeader Function to basic auth
-      if (-not $PsBoundParameters.ContainsKey("validation")) {
-          $uri = "https://$cloudBuilder/v1/sddcs/validations"
-          $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-          $response
-      }
-      if ($PsBoundParameters.ContainsKey("validation")) {
-          $uri = "https://$cloudBuilder/v1/sddcs/validations?name=$validation"
-          $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-          $response
-      }
-  }
-  Catch {
-      ResponseException -object $_
-  }
-}
-Export-ModuleMember -Function Start-CloudBuilderSDDCValidation
-
 Function Get-CloudBuilderSDDC {
   <#
       .SYNOPSIS
