@@ -3662,7 +3662,6 @@ Function Get-VCFCertificateAuthority {
 
   Try {
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       if ($PsBoundParameters.ContainsKey("caType")) {
           $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
           $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3699,7 +3698,6 @@ Function Remove-VCFCertificateAuthority {
 
   Try {
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
       $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
       $response
@@ -3732,7 +3730,6 @@ Function Set-VCFMicrosoftCA {
 
   Try {
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       $json = '{"microsoftCertificateAuthoritySpec": {"secret": "' + $password + '","serverUrl": "' + $serverUrl + '","username": "' + $username + '","templateName": "' + $templateName + '"}}'
       $uri = "https://$sddcManager/v1/certificate-authorities"
       Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
@@ -3767,7 +3764,6 @@ Function Set-VCFOpenSSLCA {
 
   Try {
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       $json = '{"openSSLCertificateAuthoritySpec": {"commonName": "' + $commonName + '","organization": "' + $organization + '","organizationUnit": "' + $organizationUnit + '","locality": "' + $locality + '","state": "' + $state + '","country": "' + $country + '"}}'
       $uri = "https://$sddcManager/v1/certificate-authorities"
       Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
@@ -3801,7 +3797,6 @@ Function Get-VCFCertificateCSR {
 
   Try {
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
       $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
       $response.elements
@@ -3839,7 +3834,6 @@ Function Request-VCFCertificateCSR {
   else {
       $ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
       Try {
           $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
@@ -3884,7 +3878,6 @@ Function Get-VCFCertificate {
 
   Try {
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       if ($PsBoundParameters.ContainsKey("resources")) {
           $uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
           $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3931,7 +3924,6 @@ Function Request-VCFCertificate {
       # Reads the requestCsrSpec json file contents into the $ConfigJson variable
       $ConfigJson = (Get-Content -Raw $json)
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
       Try {
           $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
@@ -3969,7 +3961,6 @@ Function Set-VCFCertificate {
   else {
       $ConfigJson = (Get-Content -Raw $json) # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
       createHeader # Calls createHeader function to set Accept & Authorization
-      checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
       $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
       Try {
           $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
