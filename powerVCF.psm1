@@ -1556,6 +1556,9 @@ Function Validate-CommissionHostSpec {
 	$body += [pscustomobject]@{
             hostCommissionSpecs = $json
         } | ConvertTo-Json
+
+  [TODO]
+  $body | out-file f:\test.json      
 	# Remove the redundant ETS-supplied .Count property if it exists
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
