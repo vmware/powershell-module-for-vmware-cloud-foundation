@@ -2322,7 +2322,7 @@ Function Get-VCFDepotCredential {
 }
 Export-ModuleMember -Function Get-VCFDepotCredential
 
-Function Set-VCFDepotCredentials {
+Function Set-VCFDepotCredential {
 <#
   .SYNOPSIS
   Update the Depot Settings
@@ -2331,7 +2331,7 @@ Function Set-VCFDepotCredentials {
   Update the configuration for the depot of the connected SDDC Manager
 
   .EXAMPLE
-  PS C:\> Set-VCFDepotCredentials -username "user@yourdomain.com" -password "VMware1!"
+  PS C:\> Set-VCFDepotCredential -username "user@yourdomain.com" -password "VMware1!"
   This example sets the credentials that have been configured for the depot.
 #>
 
@@ -2358,7 +2358,7 @@ Function Set-VCFDepotCredentials {
     ResponseException -object $_
   }
 }
-Export-ModuleMember -Function Set-VCFDepotCredentials
+Export-ModuleMember -Function Set-VCFDepotCredential
 
 ######### End Depot Configuration Operations ##########
 
