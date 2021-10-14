@@ -2297,7 +2297,7 @@ Export-ModuleMember -Function Set-VCFCertificate
 
 ######### Start Depot Configuration Operations ##########
 
-Function Get-VCFDepotCredentials {
+Function Get-VCFDepotCredential {
 <#
   .SYNOPSIS
   Get Depot Settings
@@ -2306,7 +2306,7 @@ Function Get-VCFDepotCredentials {
   Retrieves the configuration for the depot of the connected SDDC Manager
 
   .EXAMPLE
-  PS C:\> Get-VCFDepotCredentials
+  PS C:\> Get-VCFDepotCredential
   This example shows credentials that have been configured for the depot.
 #>
 
@@ -2320,7 +2320,7 @@ Function Get-VCFDepotCredentials {
     ResponseException -object $_
   }
 }
-Export-ModuleMember -Function Get-VCFDepotCredentials
+Export-ModuleMember -Function Get-VCFDepotCredential
 
 Function Set-VCFDepotCredentials {
 <#
