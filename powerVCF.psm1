@@ -241,6 +241,9 @@ Function Commission-VCFHost {
 }
 Export-ModuleMember -Function Commission-VCFHost
 
+New-Alias -name New-VCFCommissionedHost -Value Commission-VCFHost
+Export-ModuleMember -Alias New-VCFCommissionedHost -Function Commission-VCFHost
+
 Function Decommission-VCFHost {
 <#
   .SYNOPSIS
