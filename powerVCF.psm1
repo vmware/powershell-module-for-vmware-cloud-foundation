@@ -1377,7 +1377,8 @@ Function Get-VCFCredential {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFCredential
+New-Alias -name Get-VCFCredentials -Value Get-VCFCredential
+Export-ModuleMember -Alias Get-VCFCredentials -Function Get-VCFCredential
 
 Function Set-VCFCredential {
 <#
@@ -1425,7 +1426,8 @@ Function Set-VCFCredential {
     ResponseException -object $_
   }
 }
-Export-ModuleMember -Function Set-VCFCredential
+New-Alias -name Set-VCFCredentials -Value Set-VCFCredential
+Export-ModuleMember -Alias Set-VCFCredentials -Function Set-VCFCredential
 
 ######### End Credential Operations ##########
 
