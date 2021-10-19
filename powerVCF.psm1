@@ -1586,6 +1586,7 @@ Function Validate-WorkloadDomainSpec {
             domainCreationSpec = $json
         } | ConvertTo-Json -Depth 10
 	# Remove the redundant ETS-supplied .Count property if it exists
+  $body | out-file F:\3xwldforvalidation.json
 	if (Get-TypeData System.Array) {
 		Remove-TypeData System.Array
 	}
