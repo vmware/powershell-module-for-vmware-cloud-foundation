@@ -212,6 +212,8 @@ Function New-VCFCommissionedHost {
       createHeader # Calls createHeader function to set Accept & Authorization
       if ( -Not $PsBoundParameters.ContainsKey("validate")) {
           $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
+          $response
+          Pause
           $taskId = $response.id # Get the task id from the validation function
           Do {
               # Keep checking until executionStatus is not IN_PROGRESS
