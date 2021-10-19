@@ -182,67 +182,78 @@ Function Get-VCFHost {
 }
 Export-ModuleMember -Function Get-VCFHost
 
-Function Commission-VCFHost {
-<#
-  .SYNOPSIS
-  Connects to the specified SDDC Manager and commissions a list of hosts.
+Function New-VCFCommissionedHost {
+  <#
+      .SYNOPSIS
+      Connects to the specified SDDC Manager and commissions a list of hosts
 
-  .DESCRIPTION
-  The Commission-VCFHost cmdlet connects to the specified SDDC Manager
-  and commissions a list of hosts. Host list spec is provided in a JSON file.
+      .DESCRIPTION
+      The New-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts
+      Host list spec is provided in a JSON file.
 
-  .EXAMPLE
-  PS C:\> Commission-VCFHost -json .\Host\commissionHosts\commissionHostSpec.json
-  This example shows how to commission a list of hosts based on the details
-  provided in the JSON file.
-#>
+      .EXAMPLE
+      PS C:\> New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json
+      This example shows how to commission a list of hosts based on the details provided in the JSON file
+
+      .EXAMPLE
+      PS C:\> New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
+      This example shows how to validate the JSON spec before starting the workflow
+  #>
 
   Param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
+      [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+      [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
   )
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    # Reads the commissionHostsJSON json file contents into the $ConfigJson variable
-    $ConfigJson = (Get-Content -Raw $json)
-    $headers = @{"Accept" = "application/json"}
-    $headers.Add("Authorization", "Basic $base64AuthInfo")
+  if ($MyInvocation.InvocationName -eq "Commission-VCFHost") { Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity." }
 
-    # Validate the provided JSON input specification file
-    $response = Validate-CommissionHostSpec -json $ConfigJson
-    # Get the task id from the validation function
-    $taskId = $response.id
-    # Keep checking until executionStatus is not IN_PROGRESS
-    Do {
-      $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
-      $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-    }
-    While ($response.executionStatus -eq "IN_PROGRESS")
-    # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-    if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-      Try {
-        Write-Output "Task validation completed successfully, invoking host(s) commissioning on SDDC Manager" -ForegroundColor Green
-        $uri = "https://$sddcManager/v1/hosts/"
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-        Return $response
+  Try {
+      validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+      createHeader # Calls createHeader function to set Accept & Authorization
+      if ( -Not $PsBoundParameters.ContainsKey("validate")) {
+          $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
+          $taskId = $response.id # Get the task id from the validation function
+          Do {
+              # Keep checking until executionStatus is not IN_PROGRESS
+              $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+              $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+          }
+          While ($response.executionStatus -eq "IN_PROGRESS")
+          # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+          if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+              Write-Output "Task validation completed successfully. Invoking host(s) commissioning on SDDC Manager"
+              $uri = "https://$sddcManager/v1/hosts/"
+              $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+              Return $response
+          }
+          else {
+              Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+          }
       }
-      Catch {
-        ResponseException -object $_
+      elseif ($PsBoundParameters.ContainsKey("validate")) {
+          $response = Validate-CommissionHostSpec -json $ConfigJson # Validate the provided JSON input specification file
+          $taskId = $response.id # Get the task id from the validation function
+          Do {
+              # Keep checking until executionStatus is not IN_PROGRESS
+              $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+              $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+          }
+          While ($response.executionStatus -eq "IN_PROGRESS")
+          if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+              Write-Output "Task validation completed successfully"
+              Return $response
+          }
+          else {
+              Write-Error "`n The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+          }
       }
-    }
-    else {
-      Write-Error "`n The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
-    }
+  }
+  Catch {
+      ResponseException -object $_
   }
 }
-Export-ModuleMember -Function Commission-VCFHost
-
-New-Alias -name New-VCFCommissionedHost -Value Commission-VCFHost
-Export-ModuleMember -Alias New-VCFCommissionedHost -Function Commission-VCFHost
+New-Alias -name Commission-VCFHost -Value New-VCFCommissionedHost
+Export-ModuleMember -Alias Commission-VCFHost -Function New-VCFCommissionedHost
 
 Function Decommission-VCFHost {
 <#
