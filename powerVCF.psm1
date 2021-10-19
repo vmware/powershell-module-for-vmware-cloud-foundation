@@ -1170,55 +1170,58 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 ######### Start Task Operations ##########
 
 Function Get-VCFTask {
-<#
-  .SYNOPSIS
-  Connects to the specified SDDC Manager and retrieves a list of tasks.
+  <#
+      .SYNOPSIS
+      Connects to the specified SDDC Manager and retrieves a list of tasks.
 
-  .DESCRIPTION
-  The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
+      .DESCRIPTION
+      The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
 
-  .EXAMPLE
-	PS C:\> Get-VCFTask
-  This example shows how to get all tasks
+      .EXAMPLE
+      PS C:\> Get-VCFTask
+      This example shows how to get all tasks
 
-	.EXAMPLE
-	PS C:\> Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
-  This example shows how to get a task by id
+      .EXAMPLE
+      PS C:\> Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+      This example shows how to get a task by id
 
-  .EXAMPLE
-	PS C:\> Get-VCFTask -status SUCCESSFUL
-  This example shows how to get all tasks with a status of SUCCESSFUL
-#>
+      .EXAMPLE
+      PS C:\> Get-VCFTask -status SUCCESSFUL
+      This example shows how to get all tasks with a status of SUCCESSFUL
+  #>
 
   Param (
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$id,
-    [Parameter (Mandatory=$false)]
-      [ValidateNotNullOrEmpty()]
-      [string]$status
+      [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+      [Parameter (Mandatory = $false)] [ValidateSet("SUCCESSFUL", "FAILED")] [String]$status
   )
 
   Try {
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    if ( -not $PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/tasks/"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements
-    }
-    if ($PsBoundParameters.ContainsKey("id")) {
-      $uri = "https://$sddcManager/v1/tasks/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response
-    }
-    if ($PsBoundParameters.ContainsKey("status")) {
-      $uri = "https://$sddcManager/v1/tasks/$id"
-      $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-      $response.elements | Where-Object {$_.status -eq $status}
-    }
+      createHeader # Calls createHeader function to set Accept & Authorization
+      if ( -not $PsBoundParameters.ContainsKey("id") -and ( -not $PsBoundParameters.ContainsKey("status"))) {
+          $uri = "https://$sddcManager/v1/tasks/"
+          $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+          $response.elements
+      }
+      if ($PsBoundParameters.ContainsKey("id")) {
+          $uri = "https://$sddcManager/v1/tasks/$id"
+          Try {
+          $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+          }
+          catch {
+              if ($_.Exception.Message -eq "The remote server returned an error: (404) Not Found.") {
+                  Write-Output "Task ID Not Found"
+              }
+          }
+          $response
+      }
+      elseif ($PsBoundParameters.ContainsKey("status")) {
+          $uri = "https://$sddcManager/v1/tasks/"
+          $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+          $response.elements | Where-Object { $_.status -eq $status }
+      }
   }
   Catch {
-    ResponseException -object $_
+      ResponseException -object $_
   }
 }
 Export-ModuleMember -Function Get-VCFTask
