@@ -1093,42 +1093,34 @@ Function Get-VCFLicenseKey {
 Export-ModuleMember -Function Get-VCFLicenseKey
 
 Function New-VCFLicenseKey {
-<#
-  .SYNOPSIS
-  Connects to the specified SDDC Manager and adds a new License Key.
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and adds a new License Key.
 
-  .DESCRIPTION
-  The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
+        .DESCRIPTION
+        The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
 
-  .EXAMPLE
-  PS C:\> New-VCFLicenseKey -json .\LicenseKey\addLicenseKeySpec.json
-  This example shows how to add a new License Key
-#>
+        .EXAMPLE
+        PS C:\> New-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" -productType VCENTER -description "vCenter License"
+        This example shows how to add a new License key to SDDC Manager
+    #>
 
-  param (
-    [Parameter (Mandatory=$true)]
-      [ValidateNotNullOrEmpty()]
-      [string]$json
-  )
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key,
+        [Parameter (Mandatory = $true)] [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER","NSXV")] [String]$productType,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$description
+    )
 
-  if (!(Test-Path $json)) {
-    Throw "JSON File Not Found"
-  }
-  else {
-    $ConfigJson = (Get-Content $json) # Read the createNetworkPool json file contents into the $ConfigJson variable
-    createHeader # Calls Function createHeader to set Accept & Authorization
-    $uri = "https://$sddcManager/v1/license-keys"
     Try {
-      $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
-			# This API does not return a response body. Sending GET to validate the License Key creation was successful
-			$license = $ConfigJson | ConvertFrom-Json
-			$licenseKey = $license.key
-			Get-VCFLicenseKey -key $licenseKey
+        createHeader # Calls createHeader function to set Accept & Authorization
+        $json = '{ "key" : "' + $key + '", "productType" : "' + $productType + '", "description" : "' + $description + '" }'
+        $uri = "https://$sddcManager/v1/license-keys"
+        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json # This API does not return a response
+        Get-VCFLicenseKey -key $key
     }
     Catch {
-      ResponseException -object $_
+        ResponseException -object $_
     }
-  }
 }
 Export-ModuleMember -Function New-VCFLicenseKey
 
