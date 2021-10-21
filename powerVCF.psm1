@@ -4093,3 +4093,20 @@ Function New-VCFEdgeCluster {
   }
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
+
+Function Validate-EdgeClusterSpec {
+
+  Param (
+      [Parameter (Mandatory = $true)] [object]$json
+  )
+
+  Try {
+      createHeader # Calls createHeader function to set Accept & Authorization
+      $uri = "https://$sddcManager/v1/edge-clusters/validations"
+      $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+  }
+  Catch {
+      ResponseException -object $_
+  }
+  Return $response
+}
