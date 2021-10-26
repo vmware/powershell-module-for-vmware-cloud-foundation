@@ -3442,35 +3442,6 @@ Function Get-VCFCertificateAuthority {
 }
 Export-ModuleMember -Function Get-VCFCertificateAuthority
 
-Function Remove-VCFCertificateAuthority {
-  <#
-      .SYNOPSIS
-      Deletes certificate authority configuration
-
-      .DESCRIPTION
-      The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from the connected SDDC Manager
-
-      .EXAMPLE
-      PS C:\> Remove-VCFCertificateAuthority
-      This example removes the Micosoft certificate authority configuration from the connected SDDC Manager
-    #>
-
-  Param (
-      [Parameter (Mandatory = $true)] [ValidateSet("OpenSSL", "Microsoft")] [String] $caType
-  )
-
-  Try {
-      createHeader # Calls createHeader function to set Accept & Authorization
-      $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
-      $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
-      $response
-  }
-  Catch {
-      ResponseException -object $_
-  }
-}
-Export-ModuleMember -Function Remove-VCFCertificateAuthority
-
 Function Set-VCFMicrosoftCA {
   <#
       .SYNOPSIS
