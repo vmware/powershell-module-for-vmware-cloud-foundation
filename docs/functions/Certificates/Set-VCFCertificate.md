@@ -52,18 +52,18 @@ Default value: None
     "operationType": "INSTALL",
     "resources": [
 		{
-			"fqdn": "sfo01mgr01.sfo01.rainpole.local",
-			"name": "sfo01mgr01",
+			"fqdn": "sfo-vcf01.sfo.rainpole.io",
+			"name": "sfo-vcf01",
 			"resourceId": "09a46df4-9492-4012-8213-c24f09414cb4",
 			"type": "SDDC_MANAGER"
 		},{
-			"fqdn": "sfo01m01nsx01.sfo01.rainpole.local",
-			"name": "sfo01m01nsx01",
+			"fqdn": "sfo-m01-nsx01.sfo.rainpole.io",
+			"name": "sfo-m01-nsx01",
 			"resourceId": "3d2ad408-075e-4833-a1cd-aef03ac12c6c",
 			"type": "NSXT_MANAGER"
 		},{
-			"fqdn": "sfo01m01vc01.sfo01.rainpole.local",
-			"name": "sfo01m01vc01",
+			"fqdn": "sfo-m01-vc01.sfo.rainpole.io",
+			"name": "sfo-m01-vc01",
 			"resourceId": "d9eadd12-1fed-440c-88cd-edebf8468318",
 			"type": "VCENTER"
 		}
