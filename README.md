@@ -22,6 +22,8 @@ Gary Blake - VMware HCI BU Staff II Architect \[[Twitter](https://twitter.com/Ga
 
 Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
 
+Ken Gould - VMware HCI BU Staff II Architect \[[Twitter](https://twitter.com/feardamhan)\] \[[Blog](https://feardamhan.com)\]
+
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
 
