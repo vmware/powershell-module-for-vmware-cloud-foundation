@@ -21,7 +21,7 @@ ModuleVersion = '2.1.6'
 GUID = '08e28c56-f231-4a8c-8906-dee337cf99c8'
 
 # Author of this module
-Author = 'Brian O Connell & Gary Blake'
+Author = 'Brian O Connell, Gary Blake & Ken Gould'
 
 # Description of the functionality provided by this module
 Description = 'PowerShell Module for the VMware Cloud Foundation 4.x API.'
