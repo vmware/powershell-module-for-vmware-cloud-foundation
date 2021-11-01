@@ -9,7 +9,7 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-RootModule = 'powerVCF.psm1'
+RootModule = 'PowerVCF.psm1'
 
 # Version number of this module.
 ModuleVersion = '1.2.4'
@@ -21,7 +21,7 @@ ModuleVersion = '1.2.4'
 GUID = '08e28c56-f231-4a2c-8906-dee337cf99b9'
 
 # Author of this module
-Author = 'Brian O Connell'
+Author = 'Brian O Connell, Gary Blake & Ken Gould'
 
 # Description of the functionality provided by this module
 Description = 'PowerShell Module for the VMware Cloud Foundation API'
