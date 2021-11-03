@@ -1058,7 +1058,8 @@ Function New-VCFCluster {
             Catch {
                 ResponseException -object $_
             }
-            else {
+        }
+        else {
                 Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
             }
         }
