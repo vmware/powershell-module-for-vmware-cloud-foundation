@@ -4052,12 +4052,12 @@ Function Get-VCFvROPs {
         if ($PsBoundParameters.ContainsKey("domains")) {
             $uri = "https://$sddcManager/v1/vrops/domains"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
+            $response.elements
         }
         else {
             $uri = "https://$sddcManager/v1/vropses"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
+            $response.elements
         }
     }
     Catch {
@@ -4124,7 +4124,7 @@ Function Get-VCFWSA {
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/wsas"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
+        $response.elements
     }
     Catch {
         ResponseException -object $_
@@ -4154,7 +4154,7 @@ Function Get-VCFvRA {
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/vras"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
+        $response.elements
     }
     Catch {
         ResponseException -object $_
@@ -4184,7 +4184,7 @@ Function Get-VCFvRLI {
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/vrlis"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
+        $response.elements
     }
     Catch {
         ResponseException -object $_
