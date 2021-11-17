@@ -4025,7 +4025,7 @@ Export-ModuleMember -Function Reset-VCFvRSLCM
 
 ######### Start APIs for managing vRealize Operations Manager ##########
 
-Function Get-VCFvROPs {
+Function Get-VCFvROPS {
     <#
         .SYNOPSIS
         Get the existing vRealize Operations Manager
@@ -4064,9 +4064,35 @@ Function Get-VCFvROPs {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFvROPs
+Export-ModuleMember -Function Get-VCFvROPS
 
-Function Set-VCFvROPs {
+Function Get-VCFvROPSConnection {
+    <#
+        .SYNOPSIS
+        Get connection status of VI Workload Domains to vRealize Operations Manager
+
+        .DESCRIPTION
+        The Get-VCFvROPSConnection cmdlet gets the connection status for all VI Workload Domains to vRealize Operations Manager
+
+        .EXAMPLE
+        Get-VCFvROPSConnection
+        This example gets the connection status of all VI Workload Domains to vRealize Operations Manager
+    #>
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/vrops/domains"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers 
+        $response.elements
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFvROPSConnection
+
+Function Set-VCFvROPSConnection {
     <#
         .SYNOPSIS
         Connect or disconnect Workload Domains to vRealize Operations Manager
@@ -4093,14 +4119,14 @@ Function Set-VCFvROPs {
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $body = '{"domainId": "' + $domainId + '","status": "' + $status + '"}'
         $uri = "https://$sddcManager/v1/vrops/domains"
-        $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body
+        $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body -ContentType application/json
         $response
     }
     Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Set-VCFvROPs
+Export-ModuleMember -Function Set-VCFvROPSConnection
 
 ######### End APIs for managing vRealize Operations Manager ##########
 
