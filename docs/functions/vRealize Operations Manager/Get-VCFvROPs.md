@@ -1,11 +1,11 @@
-# Get-VCFvROPs
+# Get-VCFvROPS
 
 ### Synopsis
 Get the existing vRealize Operations Manager
 
 ### Syntax
 ```
-Get-VCFvROPs
+Get-VCFvROPS
 ```
 
 ### Description
@@ -14,13 +14,13 @@ Gets the complete information about the existing vRealize Operations Manager.
 ### Examples
 #### Example 1
 ```
-Get-VCFvROPs
+Get-VCFvROPS
 ```
 This example list all details concerning the vRealize Operations Manager
 
 #### Example 2
 ```
-Get-VCFvROPs -domains
+Get-VCFvROPS -domains
 ```
 This example lists all workload domains connected to vRealize Operations Manager
 
@@ -37,7 +37,6 @@ Required: True
 Position: Named
 Default value: None
 ```
-
 
 ### Notes
 

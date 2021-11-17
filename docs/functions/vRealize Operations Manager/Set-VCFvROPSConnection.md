@@ -1,27 +1,27 @@
-# Set-VCFvROPs
+# Set-VCFvROPSConnection
 
 ### Synopsis
 Connect or disconnect Workload Domains to vRealize Operations Manager
 
 ### Syntax
 ```
-Set-VCFvROPs
+Set-VCFvROPSConnection
 ```
 
 ### Description
-The Set-VCFvROPs cmdlet connects or disconnects Workload Domains to vRealize Operations Manager
+The Set-VCFvROPSConnection cmdlet connects or disconnects Workload Domains to vRealize Operations Manager
 
 ### Examples
 #### Example 1
 ```
-Set-VCFvROPs -domainId <domain-id> -status ENABLED
+Set-VCFvROPSConnection -domainId <domain-id> -status ENABLED
         
 ```
 This example connects a Workload Domain to vRealize Operations Manager
 
 #### Example 2
 ```
-Set-VCFvROPs -domainId <domain-id> -status DISABLED
+Set-VCFvROPSConnection -domainId <domain-id> -status DISABLED
 ```
 This example disconnects a Workload Domain from vRealize Operations Manager
 
