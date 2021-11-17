@@ -1053,14 +1053,14 @@ Function New-VCFCluster {
                 Write-Output "Task validation completed successfully, invoking cluster task on SDDC Manager"
                 $uri = "https://$sddcManager/v1/clusters"
                 $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-                $response.elements
+                $response
             }
             Catch {
                 ResponseException -object $_
             }
-            else {
-                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
-            }
+        }
+        else {
+            Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
         }
     }
 }
