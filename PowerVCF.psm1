@@ -2066,7 +2066,7 @@ Function New-VCFLicenseKey {
 
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key,
-        [Parameter (Mandatory = $true)] [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER")] [String]$productType,
+        [Parameter (Mandatory = $true)] [ValidateSet("VCENTER", "VSAN", "ESXI", "WCP", "NSXT", "NSXV","SDDC_MANAGER", "HORIZON_VIEW")] [String]$productType,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$description
     )
 
