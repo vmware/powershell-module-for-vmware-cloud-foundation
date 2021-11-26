@@ -1,26 +1,18 @@
-#PowerShell module for VMware Cloud Foundation
-#Contributions, Improvements &/or Complete Re-writes Welcome!
-#https://github.com/PowerVCF/PowerVCF
+# PowerShell module for VMware Cloud Foundation
+# Contributions, Improvements &/or Complete Re-writes Welcome!
+# https://github.com/PowerVCF/PowerVCF
 
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+# OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ### Note
-#This powershell module should be considered entirely experimental. It is still
-#in development & not tested beyond lab scenarios.
-#It is recommended you dont use it for any production environment
-#without testing extensively!
+# This PowerShell module should be considered entirely experimental. It is still in development & not tested beyond
+# lab scenarios. It is recommended you dont use it for any production environment without testing extensively!
 
-
-# Enable communication with self signed certs when using Powershell Core
-# If you require all communications to be secure and do not wish to
-# allow communication with self signed certs remove lines 31-52 before
-# importing the module
+# Enable communication with self signed certs when using Powershell Core if you require all communications to be secure
+# and do not wish to allow communication with self signed certs remove lines 22-39 before importing the module
 
 if ($PSEdition -eq 'Core') {
     $PSDefaultParameterValues.Add("Invoke-RestMethod:SkipCertificateCheck", $true)
