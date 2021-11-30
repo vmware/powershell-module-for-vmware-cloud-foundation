@@ -23,11 +23,6 @@ Ken Gould - VMware CPBU Staff II Architect \[[Twitter](https://twitter.com/feard
 
 Giuliano Bertello - Dell EMC Sr. Principal Engineer Solutions Architecture \[[Twitter](https://twitter.com/GiulianoBerteo)\] \[[Blog](https://blog.bertello.org)\]
 
-## What's New
-
-- **NEW** `Add-VCFApplicationVirtualNetwork` cmdlet to add Application Virtual Networks (NSX segments)
-- **UPDATED** `ResponseException` updated the internal error handling function for Core 7.x
-
 ## Documentation
 <a href="https://powervcf.readthedocs.io/en/latest/" target="_blank">PowerVCF Documentation</a>
 
