@@ -2261,9 +2261,9 @@ Function Join-VCFFederation {
         else {
             Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
-        Catch {
-            ResponseException -object $_
-        }
+    }
+    Catch {
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Join-VCFFederation
@@ -2283,16 +2283,16 @@ Function Get-VCFNsxtCluster {
         The Get-VCFNsxtCluster cmdlet retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFNsxtCluster
+        Get-VCFNsxtCluster
         This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+        Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
         This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
         using the ID
 
         .EXAMPLE
-        PS C:\> Get-VCFNsxtCluster | select vipfqdn
+        Get-VCFNsxtCluster | select vipfqdn
         This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
     #>
 
@@ -2335,15 +2335,15 @@ Function Get-VCFNetworkPool {
         The Get-VCFNetworkPool cmdlet connects to the specified SDDC Manager & retrieves a list of Network Pools.
 
         .EXAMPLE
-        PS C:\> Get-VCFNetworkPool
+        Get-VCFNetworkPool
         This example shows how to get a list of all Network Pools
 
         .EXAMPLE
-        PS C:\> Get-VCFNetworkPool -name sfo01-networkpool
+        Get-VCFNetworkPool -name sfo01-networkpool
         This example shows how to get a Network Pool by name
 
         .EXAMPLE
-        PS C:\> Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
+        Get-VCFNetworkPool -id 40b0b36d-36d6-454c-814b-ba8bf9b383e3
         This example shows how to get a Network Pool by id
     #>
 
@@ -2387,7 +2387,7 @@ Function New-VCFNetworkPool {
         Network Pool spec is provided in a JSON file.
 
         .EXAMPLE
-        PS C:\> New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
+        New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
         This example shows how to create a Network Pool
     #>
 
@@ -2421,7 +2421,7 @@ Function Remove-VCFNetworkPool {
         The Remove-VCFNetworkPool cmdlet connects to the specified SDDC Manager & deletes a Network Pool
 
         .EXAMPLE
-        PS C:\> Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
+        Remove-VCFNetworkPool -id 7ee7c7d2-5251-4bc9-9f91-4ee8d911511f
         This example shows how to get a Network Pool by id
     #>
 
@@ -2451,11 +2451,11 @@ Function Get-VCFNetworkIPPool {
         configured for the provided network pool.
 
         .EXAMPLE
-        PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52
+        Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52
         This example shows how to get a list of all networks associated to the network pool based on the id provided
 
         .EXAMPLE
-        PS C:\> Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795
+        Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795
         This example shows how to get a list of details for a specific network associated to the network pool using ids
     #>
 
@@ -2494,7 +2494,7 @@ Function Add-VCFNetworkIPPool {
         to an existing Network within a Network Pool.
 
         .EXAMPLE
-        PS C:\> Add-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+        Add-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
         This example shows how create a new IP Pool on the existing network for a given Network Pool
     #>
 
@@ -2529,7 +2529,7 @@ Function Remove-VCFNetworkIPPool {
         existing Network within a Network Pool.
 
         .EXAMPLE
-        PS C:\> Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
+        Remove-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
         This example shows how remove an IP Pool on the existing network for a given Network Pool
     #>
 
@@ -2569,11 +2569,11 @@ Function Get-VCFEdgeCluster {
         The Get-VCFEdgeCluster cmdlet gets a list of NSX-T Edge Clusters
 
         .EXAMPLE
-        PS C:\> Get-VCFEdgeCluster
+        Get-VCFEdgeCluster
         This example list all NSX-T Edge Clusters
 
         .EXAMPLE
-        PS C:\> Get-VCFEdgeCluster -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
+        Get-VCFEdgeCluster -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
         This example list the NSX-T Edge Cluster by id
     #>
 
@@ -2610,11 +2610,11 @@ Function New-VCFEdgeCluster {
         The New-VCFEdgeCluster cmdlet connects to the specified SDDC Manager & creates an NSX-T edge cluster.
 
         .EXAMPLE
-        PS C:\> New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json
+        New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json
         This example shows how to create an NSX-T edge cluster from a json spec
 
         .EXAMPLE
-        PS C:\> New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json -validate
+        New-VCFEdgeCluster -json .\SampleJSON\EdgeCluster\edgeClusterSpec.json -validate
         This example shows how to validate the JSON spec for Edge Cluster creation
     #>
 
@@ -2686,11 +2686,11 @@ Function Get-VCFPersonality {
         The Get-VCFPersonality cmdlet gets the vSphere Lifecycle Manager personalities which are available via depot access
 
         .EXAMPLE
-        PS C:\> Get-VCFPersonality
+        Get-VCFPersonality
         This example list all the vSphere Lifecycle Manager personalities availble in the depot
 
         .EXAMPLE
-        PS C:\> Get-VCFPersonality -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
+        Get-VCFPersonality -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
         This example gets a vSphere Lifecycle Manager personality by ID
     #>
 
@@ -2733,7 +2733,7 @@ Function Get-VCFFederationTask {
         The Get-VCFFederationTask cmdlet gets the status of tasks relating to Federation operations
 
         .EXAMPLE
-        PS C:\> Get-VCFFederationTask -id f6f38f6b-da0c-4ef9-9228-9330f3d30279
+        Get-VCFFederationTask -id f6f38f6b-da0c-4ef9-9228-9330f3d30279
         This example list all tasks for Federation operations
     #>
 
@@ -2742,11 +2742,17 @@ Function Get-VCFFederationTask {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -lt "4.4.0") {
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        else {
+            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+        }
     }
     Catch {
         ResponseException -object $_
@@ -2769,11 +2775,11 @@ Function Get-CloudBuilderSDDC {
         The Get-CloudBuilderSDDC cmdlet gets a list of SDDC deployments from Cloud Builder
 
         .EXAMPLE
-        PS C:\> Get-CloudBuilderSDDC
+        Get-CloudBuilderSDDC
         This example list all SDDC deployments from Cloud Builder
 
         .EXAMPLE
-        PS C:\> Get-CloudBuilderSDDC -id 51cc2d90-13b9-4b62-b443-c1d7c3be0c23
+        Get-CloudBuilderSDDC -id 51cc2d90-13b9-4b62-b443-c1d7c3be0c23
         This example gets the SDDC deployment with a specific ID from Cloud Builder
     #>
 
@@ -2809,7 +2815,7 @@ Function Start-CloudBuilderSDDC {
         The Start-CloudBuilderSDDC cmdlet starts the deployment based on the SddcSpec.json provided
 
         .EXAMPLE
-        PS C:\> Start-CloudBuilderSDDC -json .\SampleJSON\SDDC\SddcSpec.json
+        Start-CloudBuilderSDDC -json .\SampleJSON\SDDC\SddcSpec.json
         This example starts the deployment using the SddcSpec.json
     #>
 
@@ -2839,11 +2845,11 @@ Function Restart-CloudBuilderSDDC {
         The Restart-CloudBuilderSDDC retries a deployment on Cloud Builder
 
         .EXAMPLE
-        PS C:\> Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
+        Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
         This example retries a deployment on Cloud Builder based on the ID
 
         .EXAMPLE
-        PS C:\> Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31 -json .\SampleJSON\SDDC\SddcSpec.json
+        Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31 -json .\SampleJSON\SDDC\SddcSpec.json
         This example retries a deployment on Cloud Builder based on the ID with an updated JSON file
     #>
 
@@ -2881,11 +2887,11 @@ Function Get-CloudBuilderSDDCValidation {
         The Get-CloudBuilderSDDCValidation cmdlet gets a list of SDDC validations from Cloud Builder
 
         .EXAMPLE
-        PS C:\> Get-CloudBuilderSDDCValidation
+        Get-CloudBuilderSDDCValidation
         This example list all SDDC validations from Cloud Builder
 
         .EXAMPLE
-        PS C:\> Get-CloudBuilderSDDCValidation -id 1ff80635-b878-441a-9e23-9369e1f6e5a3
+        Get-CloudBuilderSDDCValidation -id 1ff80635-b878-441a-9e23-9369e1f6e5a3
         This example gets the SDDC validation with a specific ID from Cloud Builder
     #>
 
@@ -2921,11 +2927,11 @@ Function Start-CloudBuilderSDDCValidation {
         The Start-CloudBuilderSDDCValidation cmdlet performs validation of the SddcSpec.json provided
 
         .EXAMPLE
-        PS C:\> Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json
+        Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json
         This example starts the validation of the SddcSpec.json
 
         .EXAMPLE
-        PS C:\> Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json -validation LICENSE_KEY_VALIDATION
+        Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json -validation LICENSE_KEY_VALIDATION
         This example starts the validation of the License Key items only based on the SddcSpec.json json
     #>
 
@@ -2963,7 +2969,7 @@ Function Stop-CloudBuilderSDDCValidation {
         The Stop-CloudBuilderSDDCValidation cancels a validation in progress on Cloud Builder
 
         .EXAMPLE
-        PS C:\> Stop-CloudBuilderSDDCValidation -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
+        Stop-CloudBuilderSDDCValidation -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
         This example stops a validation that is running on Cloud Builder based on the ID
     #>
 
@@ -2992,7 +2998,7 @@ Function Restart-CloudBuilderSDDCValidation {
         The Restart-CloudBuilderSDDCValidation reties a validation on Cloud Builder
 
         .EXAMPLE
-        PS C:\> Restart-CloudBuilderSDDCValidation -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
+        Restart-CloudBuilderSDDCValidation -id bedf19f8-9dfe-4c60-aae4-bca986a65a31
         This example retries a validation on Cloud Builder based on the ID
     #>
 
@@ -3027,15 +3033,15 @@ Function Get-VCFManager {
         The Get-VCFManager cmdlet retrieves the SDDC Manager details
 
         .EXAMPLE
-        PS C:\> Get-VCFManager
+        Get-VCFManager
         This example shows how to retrieve a list of SDDC Managers
 
         .EXAMPLE
-        PS C:\> Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
+        Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
         This example shows how to return the details for a specific SDDC Manager based on the ID
 
         .EXAMPLE
-        PS C:\> Get-VCFManager -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
+        Get-VCFManager -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
         This example shows how to return the details for a specific SDDC Manager based on a domain ID
     #>
 
@@ -3084,7 +3090,7 @@ Function Start-VCFSystemPrecheck {
         The Start-VCFSystemPrecheck cmdlet performs system level health checks and upgrade pre-checks for an upgrade to be successful
 
         .EXAMPLE
-        PS C:\> Start-VCFSystemPrecheck -json .\SystemCheck\precheckVCFSystem.json
+        Start-VCFSystemPrecheck -json .\SystemCheck\precheckVCFSystem.json
         This example shows how to perform system level health check
     #>
 
@@ -3114,7 +3120,7 @@ Function Get-VCFSystemPrecheckTask {
         The Get-VCFSystemPrecheckTask cmdlet performs retrieval of a system precheck task that can be polled and monitored.
 
         .EXAMPLE
-        PS C:\> Get-VCFSystemPrecheckTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
+        Get-VCFSystemPrecheckTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
         This example shows how to retrieve the status of a system level precheck task
     #>
 
@@ -3150,15 +3156,15 @@ Function Get-VCFTask {
         The Get-VCFTask cmdlet connects to the specified SDDC Manager and retrieves a list of tasks.
 
         .EXAMPLE
-        PS C:\> Get-VCFTask
+        Get-VCFTask
         This example shows how to get all tasks
 
         .EXAMPLE
-        PS C:\> Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+        Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
         This example shows how to get a task by id
 
         .EXAMPLE
-        PS C:\> Get-VCFTask -status SUCCESSFUL
+        Get-VCFTask -status SUCCESSFUL
         This example shows how to get all tasks with a status of SUCCESSFUL
     #>
 
@@ -3209,7 +3215,7 @@ Function Restart-VCFTask {
         failed task using the task id.
 
         .EXAMPLE
-        PS C:\> Restart-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
+        Restart-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a
         This example retries the task based on the task id
     #>
 
@@ -3251,7 +3257,7 @@ Function Get-VCFUpgradable {
         The Upgradables provides information that can be use for Precheck API and also in the actual Upgrade API call.
 
         .EXAMPLE
-        PS C:\> Get-VCFUpgradable
+        Get-VCFUpgradable
         This example shows how to retrieve the list of upgradables in the system
     #>
 
@@ -3283,7 +3289,7 @@ Function Get-VCFUpgrade {
         The Get-VCFUpgrade cmdlet retrives a list of upgradable resources in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFUpgrade
+        Get-VCFUpgrade
         This example shows how to retrieve the list of upgradable resources in the system
     #>
 
@@ -3320,11 +3326,11 @@ Function Start-VCFUpgrade {
         The Start-VCFUpgrade cmdlet triggers an upgrade of a resource in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Start-VCFUpgrade -json $jsonSpec
+        Start-VCFUpgrade -json $jsonSpec
         This example invokes an upgrade in SDDC Manager using a variable
 
         .EXAMPLE
-        PS C:\> Start-VCFUpgrade -json (Get-Content -Raw .\upgradeDomain.json)
+        Start-VCFUpgrade -json (Get-Content -Raw .\upgradeDomain.json)
         This example invokes an upgrade in SDDC Manager by passing a JSON file
 
     #>
@@ -3361,23 +3367,23 @@ Function Get-VCFUser {
         The Get-VCFUser cmdlet gets a list of users, groups and service users in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFUser
+        Get-VCFUser
         This example list all users, groups and service users in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFUser -type USER
+        Get-VCFUser -type USER
         This example list all users in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFUser -type GROUP
+        Get-VCFUser -type GROUP
         This example list all groups in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFUser -type SERVICE
+        Get-VCFUser -type SERVICE
         This example list all service users in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFUser -domain rainpole.io
+        Get-VCFUser -domain rainpole.io
         This example list all users and groups based on the authentication domain provided in SDDC Manager
     #>
 
@@ -3416,7 +3422,7 @@ Function New-VCFUser {
         The New-VCFUser cmdlet connects to the specified SDDC Manager and adds a new user with a specified role.
 
         .EXAMPLE
-        PS C:\> New-VCFUser -user vcf-admin@rainpole.io -role ADMIN
+        New-VCFUser -user vcf-admin@rainpole.io -role ADMIN
         This example shows how to add a new user with a specified role
     #>
 
@@ -3433,12 +3439,12 @@ Function New-VCFUser {
         $roleID = Get-VCFRole | Where-object { $_.name -eq $role } | Select-Object -ExpandProperty id
         $domain = $user.split('@')
         $body = '[ {
-          "name" : "'+ $user + '",
-          "domain" : "'+ $domain[1] + '",
-          "type" : "USER",
-          "role" : {
+            "name" : "'+ $user + '",
+            "domain" : "'+ $domain[1] + '",
+            "type" : "USER",
+            "role" : {
             "id" : "'+ $roleID + '"
-          }
+            }
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
         $response.elements
@@ -3477,8 +3483,8 @@ Function New-VCFServiceUser {
             "name" : "'+ $user + '",
             "type" : "SERVICE",
             "role" : {
-              "id" : "'+ $roleID + '"
-            }
+            "id" : "'+ $roleID + '"
+        }
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
         $response.elements
@@ -3498,7 +3504,7 @@ Function Get-VCFRole {
         The Get-VCFRole cmdlet gets a list of roles in SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFRole
+        Get-VCFRole
         This example list all roles in SDDC Manager
     #>
 
@@ -3524,7 +3530,7 @@ Function Remove-VCFUser {
         The Remove-VCFUser cmdlet connects to the specified SDDC Manager and deletes a user
 
         .EXAMPLE
-        PS C:\> Remove-VCFUser -id c769fcc5-fb61-4d05-aa40-9c7786163fb5
+        Remove-VCFUser -id c769fcc5-fb61-4d05-aa40-9c7786163fb5
         This example shows how to delete a user
     #>
 
@@ -3554,7 +3560,7 @@ Function New-VCFGroup {
         The New-VCFGroup cmdlet connects to the specified SDDC Manager and adds a new group with a specified role
 
         .EXAMPLE
-        PS C:\> New-VCFGroup -group ug-vcf-group -domain rainpole.io -role ADMIN
+        New-VCFGroup -group ug-vcf-group -domain rainpole.io -role ADMIN
         This example shows how to add a new group with a specified role
     #>
 
@@ -3572,12 +3578,12 @@ Function New-VCFGroup {
         $roleID = Get-VCFRole | Where-object { $_.name -eq $role } | Select-Object -ExpandProperty id
         #$domain = $user.split('@')
         $body = '[{
-          "name" : "'+ $group + '",
-          "domain" : "'+ $domain.ToUpper() + '",
-          "type" : "GROUP",
-          "role" : {
+            "name" : "'+ $group + '",
+            "domain" : "'+ $domain.ToUpper() + '",
+            "type" : "GROUP",
+            "role" : {
             "id" : "'+ $roleID + '"
-          }
+        }
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
         $response.elements
@@ -3656,7 +3662,7 @@ Function Get-VCFConfigurationDNS {
         The Get-VCFConfigurationDNS cmdlet retrieves the DNS configuration of the connected SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFConfigurationDNS
+        Get-VCFConfigurationDNS
         This example shows how to get the DNS configuration of the connected SDDC Manager
     #>
 
@@ -3683,7 +3689,7 @@ Function Get-VCFConfigurationDNSValidation {
         JSON
 
         .EXAMPLE
-        PS C:\> Get-VCFConfigurationDNSValidation
+        Get-VCFConfigurationDNSValidation
         This example shows how to get the status of the validation of the DNS Configuration
     #>
 
@@ -3713,15 +3719,15 @@ Function Set-VCFConfigurationDNS {
         The Set-VCFConfigurationDNS cmdlet configures the DNS Server for all systems managed by SDDC Manager
 
         .EXAMPLE
-        PS C:\> Set-VCFConfigurationDNS -json $jsonSpec
+        Set-VCFConfigurationDNS -json $jsonSpec
         This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a variable
 
-       .EXAMPLE
-        PS C:\> Set-VCFConfigurationDNS -json (Get-Content -Raw .\dnsSpec.json)
+        .EXAMPLE
+        Set-VCFConfigurationDNS -json (Get-Content -Raw .\dnsSpec.json)
         This example shows how to configure the DNS Servers for all systems managed by SDDC Manager using a JSON file
 
         .EXAMPLE
-        PS C:\> Set-VCFConfigurationDNS -json $jsonSpec -validate
+        Set-VCFConfigurationDNS -json $jsonSpec -validate
         This example shows how to validate the DNS configuration only
     #>
 
@@ -3759,7 +3765,7 @@ Function Get-VCFConfigurationNTP {
         The Get-VCFConfigurationNTP cmdlet retrieves the NTP configuration of the connected SDDC Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFConfigurationNTP
+        Get-VCFConfigurationNTP
         This example shows how to get the NTP configuration of the connected SDDC Manager
     #>
 
@@ -3786,7 +3792,7 @@ Function Get-VCFConfigurationNTPValidation {
         JSON
 
         .EXAMPLE
-        PS C:\> Get-VCFConfigurationNTPValidation
+        Get-VCFConfigurationNTPValidation
         This example shows how to get the status of the validation of the NTP Configuration
     #>
 
@@ -3816,15 +3822,15 @@ Function Set-VCFConfigurationNTP {
         The Set-VCFConfigurationNTP cmdlet configures the NTP Server for all systems managed by SDDC Manager
 
         .EXAMPLE
-        PS C:\> Set-VCFConfigurationNTP -json $jsonSpec
+        Set-VCFConfigurationNTP -json $jsonSpec
         This example shows how to configure the NTP Servers for all systems managed by SDDC Manager using a variable
 
-       .EXAMPLE
-        PS C:\> Set-VCFConfigurationNTP (Get-Content -Raw .\ntpSpec.json)
+        .EXAMPLE
+        Set-VCFConfigurationNTP (Get-Content -Raw .\ntpSpec.json)
         This example shows how to configure the NTP Servers for all systems managed by SDDC Manager using a JSON file
 
         .EXAMPLE
-        PS C:\> Set-VCFConfigurationNTP -json $jsonSpec -validate
+        Set-VCFConfigurationNTP -json $jsonSpec -validate
         This example shows how to validate the NTP configuration only
     #>
 
@@ -3861,30 +3867,30 @@ Export-ModuleMember -Function Set-VCFConfigurationNTP
 
 Function Get-VCFvCenter {
     <#
-    .SYNOPSIS
-    Gets a list of vCenter Servers
+        .SYNOPSIS
+        Gets a list of vCenter Servers
 
-    .DESCRIPTION
-    Retrieves a list of vCenter Servers managed by the connected SDDC Manager
+        .DESCRIPTION
+        Retrieves a list of vCenter Servers managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
+        .EXAMPLE
+        Get-VCFvCenter
+        This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager
 
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-    This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
-    using its id
+        .EXAMPLE
+        Get-VCFvCenter -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+        This example shows how to return the details for a specific vCenter Server managed by the connected SDDC Manager
+        using its id
 
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
-    This example shows how to return the details off all vCenter Server managed by the connected SDDC Manager using
-    its domainId
+        .EXAMPLE
+        Get-VCFvCenter -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
+        This example shows how to return the details off all vCenter Server managed by the connected SDDC Manager using
+        its domainId
 
-    .EXAMPLE
-    PS C:\> Get-VCFvCenter | select fqdn
-    This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
-  #>
+        .EXAMPLE
+        Get-VCFvCenter | select fqdn
+        This example shows how to get the list of vCenter Servers managed by the connected SDDC Manager but only return the fqdn
+    #>
 
     Param (
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
@@ -3931,7 +3937,7 @@ Function Get-VCFvRSLCM {
         The Get-VCFvRSLCM cmdlet gets the complete information about the existing vRealize Suite Lifecycle Manager.
 
         .EXAMPLE
-        PS C:\> Get-VCFvRSLCM
+        Get-VCFvRSLCM
         This example list all details concerning the vRealize Suite Lifecycle Manager
     #>
 
@@ -3957,11 +3963,11 @@ Function New-VCFvRSLCM {
         The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
 
         .EXAMPLE
-        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json
+        New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json
         This example deploys vRealize Suite Lifecycle Manager using a supplied json file
 
         .EXAMPLE
-        PS C:\> New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json -validate
+        New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json -validate
         This example performs validation of vRealize Suite Lifecycle Manager using a supplied json file
     #>
 
@@ -4006,7 +4012,7 @@ Function Remove-VCFvRSLCM {
         to a successful vRealize Suite Lifecycle Manager deployment.
 
         .EXAMPLE
-        PS C:\> Remove-VCFvRSLCM
+        Remove-VCFvRSLCM
         This example removes a failed vRealize Suite Lifecycle Manager deployment
     #>
 
@@ -4032,7 +4038,7 @@ Function Reset-VCFvRSLCM {
         The Reset-VCFvRSLCM cmdlet redeploys the existing vRealize Suite Lifecycle Manager
 
         .EXAMPLE
-        PS C:\> Reset-VCFvRSLCM
+        Reset-VCFvRSLCM
         This example redeploys the vRealize Suite Lifecycle Manager
     #>
 
@@ -4062,11 +4068,11 @@ Function Get-VCFvROPS {
         The Get-VCFvROPs cmdlet gets the complete information about the existing vRealize Operations Manager.
 
         .EXAMPLE
-        PS C:\> Get-VCFvROPs
+        Get-VCFvROPs
         This example list all details concerning the vRealize Operations Manager
 
         .EXAMPLE
-        PS C:\> Get-VCFvROPs -domains
+        Get-VCFvROPs -domains
         This example lists all workload domains connected to vRealize Operations Manager
     #>
 
@@ -4129,11 +4135,11 @@ Function Set-VCFvROPSConnection {
         The Set-VCFvROPs cmdlet connects or disconnects Workload Domains to vRealize Operations Manager.
 
         .EXAMPLE
-        PS C:\> Set-VCFvROPs -domainId <domain-id> -status ENABLED
+        Set-VCFvROPs -domainId <domain-id> -status ENABLED
         This example connects a Workload Domain to vRealize Operations Manager
 
         .EXAMPLE
-        PS C:\> Set-VCFvROPs -domainId <domain-id> -status DISABLED
+        Set-VCFvROPs -domainId <domain-id> -status DISABLED
         This example disconnects a Workload Domain from vRealize Operations Manager
     #>
 
@@ -4169,7 +4175,7 @@ Function Get-VCFWSA {
         The Get-VCFWSA cmdlet gets the complete information about the existing Workspace ONE Access.
 
         .EXAMPLE
-        PS C:\> Get-VCFWSA
+        Get-VCFWSA
         This example list all details concerning Workspace ONE Access
     #>
 
@@ -4199,7 +4205,7 @@ Function Get-VCFvRA {
         The Get-VCFvRA cmdlet gets the complete information about the existing vRealize Automation.
 
         .EXAMPLE
-        PS C:\> Get-VCFvRA
+        Get-VCFvRA
         This example list all details concerning the vRealize Automation
     #>
 
@@ -4229,7 +4235,7 @@ Function Get-VCFvRLI {
         The Get-VCFvRLI cmdlet gets the complete information about the existing vRealize Log Insight.
 
         .EXAMPLE
-        PS C:\> Get-VCFvRLI
+        Get-VCFvRLI
         This example list all details concerning the vRealize Log Insight
     #>
 
