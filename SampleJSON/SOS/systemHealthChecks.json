@@ -1,0 +1,34 @@
+{
+    "healthChecks": {
+        "certificateHealth": true,
+        "composabilityHealth": true,
+        "computeHealth": true,
+        "connectivityHealth": true,
+        "dnsHealth": true,
+        "generalHealth": true,
+        "hardwareCompatibilityHealth": true,
+        "ntpHealth": true,
+        "passwordHealth": true,
+        "servicesHealth": true,
+        "storageHealth": true
+    },
+    "options": {
+        "config": {
+        "force": false,
+        "skipKnownHostCheck": false
+    },
+    "include": {
+        "summaryReport": true
+    }
+    },
+    "scope": {
+        "domains": [
+        {
+            "clusterNames": [""],
+            "domainName": ""
+        }
+        ],
+        "includeAllDomains": true,
+        "includeFreeHosts": true
+    }
+}

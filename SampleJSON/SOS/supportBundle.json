@@ -1,0 +1,34 @@
+{
+    "logs": {
+        "apiLogs": false,
+        "esxLogs": false,
+        "nsxLogs": false,
+        "sddcManagerLogs": true,
+        "systemDebugLogs": false,
+        "vcLogs": false,
+        "vmScreenshots": false,
+        "vraLogs": false,
+        "vrliLogs": false,
+        "vropsLogs": false,
+        "vrslcmLogs": false,
+        "vxrailManagerLogs": false,
+        "wcpLogs": false
+    },
+    "options": {
+        "config": {
+            "force": false,
+            "skipKnownHostCheck": false
+        },
+        "include": {
+            "healthCheck": false,
+            "summaryReport": false
+        }
+    },
+    "scope": {
+        "domains": [ {
+            "clusterNames": [ "" ],
+            "domainName": ""
+        } ],
+        "includeFreeHosts": false
+    }
+}
