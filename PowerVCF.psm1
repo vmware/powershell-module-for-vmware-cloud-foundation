@@ -3038,7 +3038,7 @@ Function Request-VCFHealthSummaryBundle {
         The Request-VCFHealthSummaryBundle cmdlet downloads the Health Summary bundle
 
         .EXAMPLE
-        Request-VCFHealthSummaryBundle -id <task_id>
+        Request-VCFHealthSummaryBundle -id <id>
         This example downloads a Health Summary bundle
     #>
 
@@ -3072,11 +3072,11 @@ Function Start-VCFHealthSummary {
         Start Health Summary checks
 
         .DESCRIPTION
-        The Start-VCFHealthSummary cmdlet to start the Health Summary checks
+        The Start-VCFHealthSummary cmdlet is used to start the Health Summary checks
 
         .EXAMPLE
         Start-VCFHealthSummary -json .\SampleJSON\SOS\systemHealthChecks.json
-        This example starts the Health Summary checks
+        This example starts the Health Summary checks using the json file
     #>
 
     Param (
@@ -3156,11 +3156,11 @@ Function Request-VCFSupportBundle {
         Download the Support Bundle
 
         .DESCRIPTION
-        The Request-VCFSupportBundle cmdlet retrieves the Support Bundle tasks
+        The Request-VCFSupportBundle cmdlet downloads the Support Bundle
 
         .EXAMPLE
-        Request-VCFSupportBundle -id <task_id>
-        This example downloads a Support Bundle by id
+        Request-VCFSupportBundle -id <id>
+        This example downloads the Support Bundle based on the id
     #>
 
     Param (
@@ -3192,11 +3192,11 @@ Function Start-VCFSupportBundle {
         Start Support Bundle generation
 
         .DESCRIPTION
-        The Start-VCFSupportBundle cmdlet to start the Support Bundle generation
+        The Start-VCFSupportBundle cmdlet is used to start the Support Bundle generation
 
         .EXAMPLE
         Start-VCFSupportBundle -json .\SampleJSON\SOS\supportBundle.json
-        This example starts the Support Bundle generation
+        This example starts the Support Bundle generation using the json file
     #>
 
     Param (
