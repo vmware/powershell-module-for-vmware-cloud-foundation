@@ -2980,6 +2980,253 @@ Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
 
 
 
+######### Start APIs for managing SOS ##########
+
+Function Get-VCFHealthSummaryTask {
+    <#
+        .SYNOPSIS
+        Get Health Summary tasks
+
+        .DESCRIPTION
+        The Get-VCFHealthSummaryTask cmdlet retrieves the Health Summary tasks
+
+        .EXAMPLE
+        Get-VCFHealthSummaryTask
+        This example gets all Health Summary tasks
+
+        .EXAMPLE
+        Get-VCFHealthSummaryTask -id <task_id>
+        This example gets the Health Summary task by id
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge "4.4.0") {
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            if ($PsBoundParameters.ContainsKey("id")) {
+                $uri = "https://$sddcManager/v1/system/health-summary/$id"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response
+            }
+            else {
+                $uri = "https://$sddcManager/v1/system/health-summary"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response.elements
+            }
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFHealthSummaryTask
+
+Function Request-VCFHealthSummaryBundle {
+    <#
+        .SYNOPSIS
+        Download Health Summary bundle
+
+        .DESCRIPTION
+        The Request-VCFHealthSummaryBundle cmdlet downloads the Health Summary bundle
+
+        .EXAMPLE
+        Request-VCFHealthSummaryBundle -id <id>
+        This example downloads a Health Summary bundle
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge "4.4.0") {
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $vcfHeaders = @{"Accept" = "application/octet-stream" }
+            $vcfHeaders.Add("ContentType", "application/octet-stream")
+            $vcfHeaders.Add("Authorization", "Bearer $accessToken")
+            $uri = "https://$sddcManager/v1/system/health-summary/$id/data"
+            Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "health-summary-$id.tar"
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Request-VCFHealthSummaryBundle
+
+Function Start-VCFHealthSummary {
+    <#
+        .SYNOPSIS
+        Start Health Summary checks
+
+        .DESCRIPTION
+        The Start-VCFHealthSummary cmdlet is used to start the Health Summary checks
+
+        .EXAMPLE
+        Start-VCFHealthSummary -json .\SampleJSON\SOS\systemHealthChecks.json
+        This example starts the Health Summary checks using the json file
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge "4.4.0") {
+            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/system/health-summary"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Start-VCFHealthSummary
+
+Function Get-VCFSupportBundleTask {
+    <#
+        .SYNOPSIS
+        Get Support Bundle tasks
+
+        .DESCRIPTION
+        The Get-VCFSupportBundleTask cmdlet retrieves the Support Bundle tasks
+
+        .EXAMPLE
+        Get-VCFSupportBundleTask
+        This example gets all Support Bundle tasks
+
+        .EXAMPLE
+        Get-VCFSupportBundleTask -id <task_id>
+        This example gets the Support Bundle task by id
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge "4.4.0") {
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            if ($PsBoundParameters.ContainsKey("id")) {
+                $uri = "https://$sddcManager/v1/system/support-bundles/$id"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response
+            }
+            else {
+                $uri = "https://$sddcManager/v1/system/support-bundles"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response.elements
+            }
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFSupportBundleTask
+
+Function Request-VCFSupportBundle {
+    <#
+        .SYNOPSIS
+        Download the Support Bundle
+
+        .DESCRIPTION
+        The Request-VCFSupportBundle cmdlet downloads the Support Bundle
+
+        .EXAMPLE
+        Request-VCFSupportBundle -id <id>
+        This example downloads the Support Bundle based on the id
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge "4.4.0") {
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $vcfHeaders = @{"Accept" = "application/octet-stream" }
+            $vcfHeaders.Add("Authorization", "Bearer $accessToken")
+            $uri = "https://$sddcManager/v1/system/support-bundles/$id/data"
+            Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "support-bundle-$id.tar"
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Request-VCFSupportBundle
+
+Function Start-VCFSupportBundle {
+    <#
+        .SYNOPSIS
+        Start Support Bundle generation
+
+        .DESCRIPTION
+        The Start-VCFSupportBundle cmdlet is used to start the Support Bundle generation
+
+        .EXAMPLE
+        Start-VCFSupportBundle -json .\SampleJSON\SOS\supportBundle.json
+        This example starts the Support Bundle generation using the json file
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge "4.4.0") {
+            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/system/support-bundles"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+            $response
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Start-VCFSupportBundle
+
+######### End APIs for managing SDDC Manager ##########
+
+
+
 ######### Start APIs for managing SDDC Manager ##########
 
 Function Get-VCFManager {
