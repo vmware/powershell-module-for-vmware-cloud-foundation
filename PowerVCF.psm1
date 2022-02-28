@@ -1698,7 +1698,7 @@ Function Get-VCFFederation {
             $response
         }
         else {
-            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
@@ -1738,7 +1738,7 @@ Function Set-VCFFederation {
             $response
         }
         else {
-            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
@@ -1787,7 +1787,7 @@ Function Remove-VCFFederation {
             $response
         }
         else {
-            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
@@ -2158,7 +2158,7 @@ Function Get-VCFFederationMember {
             }
         }
         else {
-            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
@@ -2207,7 +2207,7 @@ Function New-VCFFederationInvite {
             }
         }
         else {
-            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
@@ -2259,7 +2259,7 @@ Function Join-VCFFederation {
             }
         }
         else {
-            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
@@ -2751,7 +2751,7 @@ Function Get-VCFFederationTask {
             $response
         }
         else {
-            Write-Warning "Multi-Instance Management has been depricated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
