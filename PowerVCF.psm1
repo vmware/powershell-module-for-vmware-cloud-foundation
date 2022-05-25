@@ -62,7 +62,8 @@ Function Request-VCFToken {
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$fqdn,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$username,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$password
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$skipCertificateCheck
     )
 
     if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
@@ -71,7 +72,28 @@ Function Request-VCFToken {
         $password = $creds.GetNetworkCredential().password
     }
 
-    if ($MyInvocation.InvocationName -eq "Connect-VCFManager") { Write-Warning "Connect-VCFManager is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Request-VCFToken. Please refactor to Request-VCFToken at earliest opportunity." }
+    if ($PsBoundParameters.ContainsKey("skipCertificateCheck")) {
+        if (-not("dummy" -as [type])) {
+            add-type -TypeDefinition @"
+using System;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+
+public static class Dummy {
+    public static bool ReturnTrue(object sender,
+        X509Certificate certificate,
+        X509Chain chain,
+        SslPolicyErrors sslPolicyErrors) { return true; }
+
+    public static RemoteCertificateValidationCallback GetDelegate() {
+        return new RemoteCertificateValidationCallback(Dummy.ReturnTrue);
+    }
+}
+"@
+} 
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [dummy]::GetDelegate()
+    }
 
     $Global:sddcManager = $fqdn
     $headers = @{"Content-Type" = "application/json" }
@@ -98,8 +120,7 @@ Function Request-VCFToken {
         ResponseException -object $_
     }
 }
-New-Alias -name Connect-VCFManager -Value Request-VCFToken
-Export-ModuleMember -Alias Connect-VCFManager -Function Request-VCFToken
+Export-ModuleMember -Function Request-VCFToken
 
 Function Connect-CloudBuilder {
     <#
@@ -118,13 +139,37 @@ Function Connect-CloudBuilder {
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$fqdn,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$username,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$password
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$skipCertificateCheck
     )
 
     if ( -not $PsBoundParameters.ContainsKey("username") -or ( -not $PsBoundParameters.ContainsKey("password"))) {
         $creds = Get-Credential # Request Credentials
         $username = $creds.UserName.ToString()
         $password = $creds.GetNetworkCredential().password
+    }
+
+    if ($PsBoundParameters.ContainsKey("skipCertificateCheck")) {
+        if (-not("dummy" -as [type])) {
+            add-type -TypeDefinition @"
+using System;
+using System.Net;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+
+public static class Dummy {
+    public static bool ReturnTrue(object sender,
+        X509Certificate certificate,
+        X509Chain chain,
+        SslPolicyErrors sslPolicyErrors) { return true; }
+
+    public static RemoteCertificateValidationCallback GetDelegate() {
+        return new RemoteCertificateValidationCallback(Dummy.ReturnTrue);
+    }
+}
+"@
+} 
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [dummy]::GetDelegate()
     }
 
     $Global:cloudBuilder = $fqdn
