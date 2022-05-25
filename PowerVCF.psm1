@@ -2674,6 +2674,51 @@ Export-ModuleMember -Function New-VCFEdgeCluster
 ######### End APIs for managing NSX-T Edge Clusters ##########
 
 
+######### Start APIs for managing PSCs ##########
+
+Function Get-VCFPSC {
+    <#
+        .SYNOPSIS
+        Get Platform Services Controllers
+
+        .DESCRIPTION
+        The Get-VCFPSC cmdlet gets a list of Platform Services Controllers
+
+        .EXAMPLE
+        Get-VCFPSC
+        This example list all Platform Services Controllers
+
+        .EXAMPLE
+        Get-VCFPSC -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
+        This example list the Platform Services Controllers by id
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/pscs"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/pscs/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFPSC
+
+######### Start APIs for managing PSCs ##########
+
 
 ######### Start APIs for managing Personalities ##########
 
