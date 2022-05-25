@@ -1,6 +1,6 @@
 # Release History
 
-## v2.1.8 (2021-xx-xx)
+## v2.1.8 (2022-31-05)
 - Fixed `Get-VCFApplicationVirtualNetwork`cmdlet when passing the ID of the Application Virtual Network the response was failing.
 - Updated `Get-VCFFederation` cmdlet to check the system version, multi-instance management is deprecated in VMware Cloud Foundation v4.4.0.
 - Updated `Set-VCFFederation` cmdlet to check the system version, multi-instance management is deprecated in VMware Cloud Foundation v4.4.0.
@@ -9,6 +9,10 @@
 - Updated `New-VCFFederationInvite` cmdlet to check the system version, multi-instance management is deprecated in VMware Cloud Foundation v4.4.0.
 - Updated `Join-VCFFederation` cmdlet to check the system version, multi-instance management is deprecated in VMware Cloud Foundation v4.4.0.
 - Updated `Get-VCFFederationTask` cmdlet to check the system version, multi-instance management is deprecated in VMware Cloud Foundation v4.4.0.
+- Updated `Request-VCFToken` cmdlet to support -skipCertificateCheck switch and removed the alias for Connect-VCFToken.
+- Updated `Connect-CloudBuilder` cmdlet to support -skipCertificateCheck switch.
+- Updated `Get-VCFCredentialTask` cmdlet to support -status validation set.
+- Added `Get-VCFPSC` cmdlet to support the retrieval of Platform Services Controllers from the SDDC Manager inventory.
 
 ## v2.1.7 (2021-30-11)
 - Fixed `New-VCFCluster`cmdlet where incorrect braces prevented the ability to retrieve response information.
