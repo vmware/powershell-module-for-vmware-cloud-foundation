@@ -1317,30 +1317,41 @@ Function Get-VCFCredentialTask {
         .EXAMPLE
         Get-VCFCredentialTask -id 7534d35d-98fb-43de-bcf7-2776beb6fcc3 -resourceCredentials
         This example shows how to get resource credentials (for e.g. ESXI) for a credential task id
+
+        .EXAMPLE
+        Get-VCFCredentialTask -status SUCCESSFUL
+        This example shows how to get all tasks with a status of SUCCESSFUL
     #>
 
     Param (
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$resourceCredentials
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$resourceCredentials,
+        [Parameter (Mandatory = $false)] [ValidateSet("SUCCESSFUL", "FAILED", "USER_CANCELLED")] [String]$status
+        
     )
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ( -not $PsBoundParameters.ContainsKey("id")) {
-            $uri = "https://$sddcManager/v1/credentials/tasks"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/credentials/tasks/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
         }
-        if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("resourceCredentials"))) {
+        elseif ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("resourceCredentials"))) {
             $uri = "https://$sddcManager/v1/credentials/tasks/$id/resource-credentials"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
+        }
+        elseif ($PsBoundParameters.ContainsKey("status")) {
+            $uri = "https://$sddcManager/v1/credentials/tasks"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements | Where-Object { $_.status -eq $status }
+        }
+        elseif ( -not $PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/credentials/tasks"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
         }
     }
     Catch {
