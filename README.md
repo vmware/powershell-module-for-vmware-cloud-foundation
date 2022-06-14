@@ -1,4 +1,4 @@
-# PowerVCF
+# PowerVCF: A PowerShell Module for VMware Cloud Foundation
 
 [![@Read the Docs](https://img.shields.io/badge/Read%20the%20Docs-8CA1AF?style=flat-square&logo=readthedocs&logoColor=white)](https://powervcf.readthedocs.io/en/latest/)&nbsp;&nbsp;&nbsp;[![@PowerVCF](https://img.shields.io/badge/Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/PowerVCF)
 
@@ -12,15 +12,13 @@ VMware Cloud Foundation
 
 * VMware Cloud Foundation 4.0 or later.
 
-    The module supports versions in accordance with the VMware Product Lifecycle Matrixfrom General Availability to End of General Support.
+    The module supports versions in accordance with the VMware Product Lifecycle Matrix from General Availability to End of General Support.
 
     * Learn more: [VMware Product Lifecycle Matrix][product-lifecycle-matrix]
 
 * PowerCLI 12.3.0 or later
 * Windows PowerShell 5.x
 * PowerShell Core 6.x and 7.x
-
-
 
 This version is supported with VMware Cloud Foundation 4.0 and above due to changes in the API authentication process.
 
@@ -37,7 +35,6 @@ VMware Cloud Foundation on VxRail has not been fully tested, The following cmdle
 * All Network pool actions
 
 * `New-`, `Set-`, and `Remove-` Workload Domains
-
 
 ## Installing the Module
 
@@ -62,7 +59,10 @@ To create a `base64` credential to authenticate each cmdlet you must first run:
 ```powershell
 Connect-VCFManager -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMw@re1!
 ```
-> **Note**: Both `-username` and `-password` are optional parameters. If not passed, a credential window will be presented.
+
+> **Note**: 
+> 
+> Both `-username` and `-password` are optional parameters. If not passed, a credential window will be presented.
 
 Authentication is only valid for the duration of the PowerShell session.
 
@@ -140,7 +140,7 @@ Get-Help cmdlet-name -full
 
 ## Contributing
 
-PowerVCFis the work of many contributors and the project team appreciates your help!
+PowerVCF is the work of many contributors and the project team appreciates your help!
 
 If you discover a bug or would like to suggest an enhancement, submit [an issue][issues]. Once submitted, your issue will follow an issue lifecycle process.
 
@@ -155,7 +155,7 @@ Cloud Infrastructure Business Group, Solutions Engineering
 
 **Gary Blake**  
 Senior Staff Solutions Architect @vmware
-Cloud Infrastructure Business Group, Solutions Engineering
+Cloud Infrastructure Business Group, Solutions Engineering  
 [![@GaryJBlake](https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white)](https://github.com/GaryJBlake)&nbsp;&nbsp;&nbsp;[![@GaryJBlake](https://img.shields.io/badge/Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/GaryJBlake)&nbsp;&nbsp;&nbsp;[![my-cloudy-world.com](https://img.shields.io/badge/Blog-FF8800?style=flat-square&logo=rss&logoColor=white)](https://my-cloudy-world.com)
 
 **Ken Gould**  
