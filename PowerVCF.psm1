@@ -803,11 +803,11 @@ Function Get-VCFCertificateCSR {
         The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
 
         .EXAMPLE
-        Get-VCFCertificateCSR -domainName MGMT
+        Get-VCFCertificateCSR -domainName sfo-m01
         This example gets a list of CSRs and displays the output
 
         .EXAMPLE
-        Get-VCFCertificateCSR -domainName MGMT | ConvertTo-Json
+        Get-VCFCertificateCSR -domainName sfo-m01 | ConvertTo-Json
         This example gets a list of CSRs and displays them in JSON format
     #>
 
