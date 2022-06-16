@@ -1773,11 +1773,11 @@ Function Set-VCFFederation {
 
         .EXAMPLE
         Set-VCFFederation -json $jsonSpec
-        This example shows how to create a fedration using the using a variable
+        This example shows how to create a fedration using a variable
 
         .EXAMPLE
         Set-VCFFederation -json (Get-Content -Raw .\federationSpec.json)
-        This example shows how to create a fedration using the using a JSON file
+        This example shows how to create a fedration using a JSON file
     #>
 
     Param (
