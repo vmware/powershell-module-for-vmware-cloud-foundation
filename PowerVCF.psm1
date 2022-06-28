@@ -1769,15 +1769,15 @@ Function Set-VCFFederation {
         Bootstrap a VMware Cloud Foundation to form a federation
 
         .DESCRIPTION
-        The Set-VCFFederation cmdlet bootstraps the creation of a Federation in VCF
+        The Set-VCFFederation cmdlet bootstraps the creation of a federation in VCF
 
         .EXAMPLE
         Set-VCFFederation -json $jsonSpec
-        This example shows how to create a fedration using the using a variable
+        This example shows how to create a federation using a variable
 
         .EXAMPLE
         Set-VCFFederation -json (Get-Content -Raw .\federationSpec.json)
-        This example shows how to create a fedration using the using a JSON file
+        This example shows how to create a federation using a JSON file
     #>
 
     Param (
@@ -4037,7 +4037,7 @@ Function Get-VCFConfigurationDNSValidation {
         JSON
 
         .EXAMPLE
-        Get-VCFConfigurationDNSValidation
+        Get-VCFConfigurationDNSValidation -id d729fcc5-fb61-2d05-aa40-9c7686163fa1
         This example shows how to get the status of the validation of the DNS Configuration
     #>
 
@@ -4140,7 +4140,7 @@ Function Get-VCFConfigurationNTPValidation {
         JSON
 
         .EXAMPLE
-        Get-VCFConfigurationNTPValidation
+        Get-VCFConfigurationNTPValidation -id a749fcc5-fb61-2d05-aa40-9c7686164fc2
         This example shows how to get the status of the validation of the NTP Configuration
     #>
 
