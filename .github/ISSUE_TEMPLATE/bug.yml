@@ -5,8 +5,6 @@ title: '[BUG] REPLACE WITH A SHORT DESCRIPTION'
 labels:
   - bug
   - needs-triage
-assignees:
-  - tenthirtyam
 body:
   - type: markdown
     attributes:
