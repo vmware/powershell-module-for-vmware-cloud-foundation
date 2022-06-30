@@ -47,7 +47,7 @@ Default value: None
 ```
 
 #### -ipStart
-- Start IP in the new range
+- Start IP in the range
 
 ```yaml
 Type: String
@@ -60,7 +60,7 @@ Default value: None
 ```
 
 #### -ipEnd
-- End IP in the new range
+- End IP in the range
 
 ```yaml
 Type: String
