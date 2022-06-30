@@ -2511,28 +2511,28 @@ Function Get-VCFNetworkIPPool {
         This example shows how to get a list of all networks associated to the network pool based on the id provided
 
         .EXAMPLE
-        Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795
+        Get-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkId c2197368-5b7c-4003-80e5-ff9d3caef795
         This example shows how to get a list of details for a specific network associated to the network pool using ids
     #>
 
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$networkid
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$networkId
     )
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ($PsBoundParameters.ContainsKey("id")) {
+        if ($PsBoundParameters.ContainsKey("id") -and $PsBoundParameters.ContainsKey("networkId")) {
+            $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        } else {
             $uri = "https://$sddcManager/v1/network-pools/$id/networks"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
         }
-        if ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("networkid"))) {
-            $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
+        
     }
     Catch {
         ResponseException -object $_
@@ -3378,7 +3378,7 @@ Function Get-VCFManager {
         Get a list of SDDC Managers
 
         .DESCRIPTION
-        The Get-VCFManager cmdlet retrieves the SDDC Manager details
+        The Get-VCFManager cmdlet retrieves a list of SDDC Managers
 
         .EXAMPLE
         Get-VCFManager
@@ -3386,11 +3386,11 @@ Function Get-VCFManager {
 
         .EXAMPLE
         Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
-        This example shows how to return the details for a specific SDDC Manager based on the ID
+        This example shows how to return the details for a specific SDDC Manager based on the unique ID
 
         .EXAMPLE
-        Get-VCFManager -domain 1a6291f2-ed54-4088-910f-ead57b9f9902
-        This example shows how to return the details for a specific SDDC Manager based on a domain ID
+        Get-VCFManager -domainId 1a6291f2-ed54-4088-910f-ead57b9f9902
+        This example shows how to return the details for a specific SDDC Manager based on a workload domains unique ID
     #>
 
     Param (

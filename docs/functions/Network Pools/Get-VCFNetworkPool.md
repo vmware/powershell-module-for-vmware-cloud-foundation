@@ -33,7 +33,7 @@ This example shows how to get a Network Pool by id
 ### Parameters
 
 #### -name
-- ID of target cluster
+- name of the network pool
 
 ```yaml
 Type: String
@@ -46,7 +46,7 @@ Default value: None
 ```
 
 #### -id
-- ID of target cluster
+- unique ID of the network pool
 
 ```yaml
 Type: String
