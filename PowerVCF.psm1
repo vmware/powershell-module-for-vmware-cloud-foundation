@@ -117,7 +117,7 @@ public static class Dummy {
         }
     }
     Catch {
-        ResponseException -object $_
+        Write-Error $._Exception.Message
     }
 }
 Export-ModuleMember -Function Request-VCFToken
