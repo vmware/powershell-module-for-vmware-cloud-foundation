@@ -1,8 +1,16 @@
+![](https://img.shields.io/powershellgallery/v/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white)&nbsp;&nbsp; 
+![](https://img.shields.io/powershellgallery/dt/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white)
+
+[<img alt="Documentation" src="https://img.shields.io/badge/Documentation-Read-blue?style=for-the-badge&logo=readthedocs&logoColor=white">][module-documentation]&nbsp;&nbsp; 
+[<img alt="Changelog" src="https://img.shields.io/badge/Changelog-Read-blue?style=for-the-badge">](CHANGELOG.md)
+
+
 # PowerVCF: A PowerShell Module for VMware Cloud Foundation
 
-[![@Read the Docs](https://img.shields.io/badge/Read%20the%20Docs-8CA1AF?style=flat-square&logo=readthedocs&logoColor=white)](https://powervcf.readthedocs.io/en/latest/)&nbsp;&nbsp;&nbsp;[![@PowerVCF](https://img.shields.io/badge/Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/PowerVCF)
-
 PowerVCF is an open source PowerShell Module for interacting with the VMware Cloud Foundation (SDDC Manager & Cloud Builder) public API.
+
+Module
+* [Module Documentation][module-documentation]
 
 VMware Cloud Foundation
 * [Product Documentation][product-documentation]
@@ -146,30 +154,6 @@ If you discover a bug or would like to suggest an enhancement, submit [an issue]
 
 If you would like to submit a pull request, please read the [contribution guidelines][contributing] to get started.
 
-### Maintainers
-
-**Brian O'Connell**  
-Staff II Solutions Architect @vmware
-Cloud Infrastructure Business Group, Solutions Engineering  
-[![@LifeOfBrianOC](https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white)](https://github.com/LifeOfBrianOC)&nbsp;&nbsp;&nbsp;[![@LifeOfBrianOC](https://img.shields.io/badge/Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/LifeOfBrianOC)&nbsp;&nbsp;&nbsp;[![LifeOfBrianOC.com](https://img.shields.io/badge/Blog-FF8800?style=flat-square&logo=rss&logoColor=white)](https://LifeOfBrianOC.com)
-
-**Gary Blake**  
-Senior Staff Solutions Architect @vmware
-Cloud Infrastructure Business Group, Solutions Engineering  
-[![@GaryJBlake](https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white)](https://github.com/GaryJBlake)&nbsp;&nbsp;&nbsp;[![@GaryJBlake](https://img.shields.io/badge/Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/GaryJBlake)&nbsp;&nbsp;&nbsp;[![my-cloudy-world.com](https://img.shields.io/badge/Blog-FF8800?style=flat-square&logo=rss&logoColor=white)](https://my-cloudy-world.com)
-
-**Ken Gould**  
-Staff II Solutions Architect @vmware
-Cloud Infrastructure Business Group, Solutions Engineering  
-[![@feardamhan](https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white)](https://github.com/feardamhan)&nbsp;&nbsp;&nbsp;[![@feardamhan](https://img.shields.io/badge/Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/feardamhan)&nbsp;&nbsp;&nbsp;[![my-cloudy-world.com](https://img.shields.io/badge/Blog-FF8800?style=flat-square&logo=rss&logoColor=white)](https://feardamhan.com)
-
-### Contributors
-
-**Giuliano Bertello**  
-Staff Solutions Architect @vmware
-Customer Success  
-[![@GiulianoBerteo](https://img.shields.io/badge/GitHub-100000?style=flat-square&logo=github&logoColor=white)](https://github.com/GiulianoBerteo)&nbsp;&nbsp;&nbsp;[![@GiulianoBerteo](https://img.shields.io/badge/Twitter-1DA1F2?style=flat-square&logo=twitter&logoColor=white)](https://twitter.com/GiulianoBerteo)&nbsp;&nbsp;&nbsp;[![my-cloudy-world.com](https://img.shields.io/badge/Blog-FF8800?style=flat-square&logo=rss&logoColor=white)](https://blog.bertello.org)
-
 ## Disclaimer
 This is not an officially supported VMware PowerShell Module.
 
@@ -180,5 +164,6 @@ It is provided without warranty and should not be used in a production environme
 [contributing]: CONTRIBUTING.md
 [issues]: /issues
 [api-documentation]: https://developer.vmware.com/apis/1181/vmware-cloud-foundation
-[product-documentation]: https://docs.vmware.com/en/VMware-Cloud-Foundation/
-[product-lifecycle-matrix]: https://lifecycle.vmware.com/
+[module-documentation]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/docs
+[product-documentation]: https://docs.vmware.com/en/VMware-Cloud-Foundation
+[product-lifecycle-matrix]: https://lifecycle.vmware.com
