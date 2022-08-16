@@ -65,7 +65,7 @@ All API operations must currently be authenticated using the SDDC Manager `admin
 To create a `base64` credential to authenticate each cmdlet you must first run:
 
 ```powershell
-Connect-VCFManager -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMw@re1!
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMw@re1!
 ```
 
 > **Note**: 
