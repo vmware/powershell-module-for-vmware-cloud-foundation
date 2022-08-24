@@ -844,7 +844,12 @@ Function Request-VCFCertificateCSR {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
-        validateJsonInput        
+
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        $ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable       
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
@@ -855,6 +860,7 @@ Function Request-VCFCertificateCSR {
         Catch {
             ResponseException -object $_
         }
+    }
 }
 Export-ModuleMember -Function Request-VCFCertificateCSR
 
@@ -929,7 +935,13 @@ Function Request-VCFCertificate {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
-        validateJsonInput
+
+    if (!(Test-Path $json)) {
+        Throw "JSON File Not Found"
+    }
+    else {
+        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json)
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
