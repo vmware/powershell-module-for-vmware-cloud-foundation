@@ -41,7 +41,7 @@ if ($PSEdition -eq 'Desktop') {
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
-#Region CreateConnections
+#Region APIs for managing VCF tokens and initial connections
 Function Request-VCFToken {
     <#
         .SYNOPSIS
@@ -197,9 +197,10 @@ public static class Dummy {
     }
 }
 Export-ModuleMember -Function Connect-CloudBuilder
-#EndRegion CreateConnections
+#EndRegion APIs for managing VCF tokens and initial connections
 
-#Region AVN-Management
+
+#Region APIs for managing Application Virtual Networks
 Function Get-VCFApplicationVirtualNetwork {
     <#
         .SYNOPSIS
@@ -294,10 +295,10 @@ Function Add-VCFApplicationVirtualNetwork {
 }
 Export-ModuleMember -Function Add-VCFApplicationVirtualNetwork
 
-#EndRegion AVN-Management
+#EndRegion APIs for managing Application Virtual Networks
 
 
-#Region BackupRestore-Management
+#Region APIs for managing Backup and Restore
 Function Get-VCFBackupConfiguration {
     <#
         .SYNOPSIS
@@ -450,10 +451,10 @@ Function Get-VCFRestoreTask {
 }
 Export-ModuleMember -Function Get-VCFRestoreTask
 
-#EndRegion BackupRestore-Management
+#EndRegion APIs for managing Backup and Restore
 
 
-#Region Bundles-Management
+#Region APIs for managing Bundles
 
 Function Get-VCFBundle {
     <#
@@ -572,10 +573,10 @@ Function Start-VCFBundleUpload {
 }
 Export-ModuleMember -Function Start-VCFBundleUpload
 
-#EndRegion Bundles-Management
+#EndRegion APIs for managing Bundles
 
 
-#Region CEIP-Management
+#Region APIs for managing CEIP
 
 Function Get-VCFCeip {
     <#
@@ -639,10 +640,10 @@ Function Set-VCFCeip {
 }
 Export-ModuleMember -Function Set-VCFCeip
 
-#EndRegion CEIP-Management
+#EndRegion APIs for managing CEIP
 
 
-#Region SSLCertificates-Management
+#Region APIs for managing Certificates
 
 Function Get-VCFCertificateAuthority {
     <#
@@ -843,7 +844,7 @@ Function Request-VCFCertificateCSR {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
-        validateJsonInput -json $json
+        validateJsonInput        
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
@@ -928,7 +929,7 @@ Function Request-VCFCertificate {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
-        validateJsonInput -json $json
+        validateJsonInput
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
@@ -981,10 +982,10 @@ Function Set-VCFCertificate {
 }
 Export-ModuleMember -Function Set-VCFCertificate
 
-#EndRegion SSLCertificates-Management
+#EndRegion APIs for managing Certificates
 
 
-#Region VCFCluster-Management
+#Region APIs for managing Clusters
 
 Function Get-VCFCluster {
     <#
@@ -1213,10 +1214,10 @@ Function Get-VCFClusterValidation {
 }
 Export-ModuleMember -Function Get-VCFClusterValidation
 
-#EndRegion VCFCluster-Management
+#EndRegion APIs for managing Clusters
 
 
-#Region Credential-Management
+#Region APIs for managing Credentials
 
 Function Get-VCFCredential {
     <#
@@ -1465,11 +1466,10 @@ Function Restart-VCFCredentialTask {
 }
 Export-ModuleMember -Function Restart-VCFCredentialTask
 
-######### End APIs for managing Credentials ##########
+#EndRegion APIs for managing Credentials
 
 
-
-######### Start APIs for managing Depot Settings ##########
+#Region APIs for managing Depot Settings
 
 Function Get-VCFDepotCredential {
     <#
@@ -1532,11 +1532,10 @@ Function Set-VCFDepotCredential {
 }
 Export-ModuleMember -Function Set-VCFDepotCredential
 
-######### End APIs for managing Depot Settings ##########
+#EndRegion APIs for managing Depot Settings
 
 
-
-######### Start APIs for managing Domains ##########
+#Region APIs for managing Domains
 
 Function Get-VCFWorkloadDomain {
     <#
@@ -1702,11 +1701,10 @@ Function Remove-VCFWorkloadDomain {
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
 
-######### End APIs for managing Domains ##########
+#EndRegion APIs for managing Domains
 
 
-
-######### Start APIs for managing Federation ##########
+#Region APIs for managing Federation
 
 Function Get-VCFFederation {
     <#
@@ -1833,11 +1831,10 @@ Function Remove-VCFFederation {
 }
 Export-ModuleMember -Function Remove-VCFFederation
 
-######### Start APIs for managing Federation ##########
+#EndRegion APIs for managing Federation
 
 
-
-######### Start APIs for managing Hosts ##########
+#Region APIs for managing Hosts
 
 Function Get-VCFHost {
     <#
@@ -2029,11 +2026,10 @@ Function Remove-VCFCommissionedHost {
 New-Alias -name Decommission-VCFHost -value Remove-VCFCommissionedHost
 Export-ModuleMember -Alias Decommission-VCFHost -Function Remove-VCFCommissionedHost
 
-######### End APIs for managing Hosts ##########
+#EndRegion APIs for managing Hosts
 
 
-
-######### Start APIs for managing License Keys ##########
+#Region APIs for managing License Keys
 
 Function Get-VCFLicenseKey {
     <#
@@ -2161,11 +2157,10 @@ Function Remove-VCFLicenseKey {
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
 
-######### End APIs for managing License Keys ##########
+#EndRegion APIs for managing License Keys
 
 
-
-######### Start APIs for managing Members of the Federation ##########
+#Region APIs for managing Members of the Federation
 
 Function Get-VCFFederationMember {
     <#
@@ -2305,10 +2300,10 @@ Function Join-VCFFederation {
 }
 Export-ModuleMember -Function Join-VCFFederation
 
-#EndRegion Credential-Management
+#EndRegion APIs for managing Members of the Federation
 
 
-#Region NSXTCluster-Management
+#Region APIs for managing NSX-T Clusters
 
 Function Get-VCFNsxtCluster {
     <#
@@ -2356,10 +2351,10 @@ Function Get-VCFNsxtCluster {
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
 
-#EndRegion NSXTCluster-Management
+#EndRegion APIs for managing NSX-T Clusters
 
 
-#Region VCFNetworkPools-Management
+#Region APIs for managing Network Pools
 
 Function Get-VCFNetworkPool {
     <#
@@ -2589,10 +2584,10 @@ Function Remove-VCFNetworkIPPool {
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
-#EndRegion VCFNetworkPools-Management
+#EndRegion APIs for managing Network Pools
 
 
-#Region NSXTEdgeCluster-Management
+#Region APIs for managing NSX-T Edge Clusters
 
 Function Get-VCFEdgeCluster {
     <#
@@ -2705,10 +2700,10 @@ Function New-VCFEdgeCluster {
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
 
-#EndRegion NSXTEdgeCluster-Management
+#EndRegion APIs for managing NSX-T Edge Clusters
 
 
-#Region PSC-Management
+#Region APIs for managing PSCs
 
 Function Get-VCFPSC {
     <#
@@ -2751,10 +2746,10 @@ Function Get-VCFPSC {
 }
 Export-ModuleMember -Function Get-VCFPSC
 
-#EndRegion PSC-Management
+#EndRegion APIs for managing PSCs
 
 
-#Region Personalities-Management
+#Region APIs for managing Personalities
 
 Function Get-VCFPersonality {
     <#
@@ -2797,10 +2792,10 @@ Function Get-VCFPersonality {
 }
 Export-ModuleMember -Function Get-VCFPersonality
 
-#EndRegion Personalities-Management
+#EndRegion APIs for managing Personalities
 
 
-#Region Federation-Management
+#Region APIs for managing Federation Tasks
 
 Function Get-VCFFederationTask {
     <#
@@ -2838,10 +2833,10 @@ Function Get-VCFFederationTask {
 }
 Export-ModuleMember -Function Get-VCFFederationTask
 
-#EndRegion Federation-Management
+#EndRegion APIs for managing Federation Tasks
 
 
-#Region SDDC-CloudBuilder-Management
+#Region APIs for managing SDDC (Cloud Builder)
 
 Function Get-CloudBuilderSDDC {
     <#
@@ -3095,10 +3090,10 @@ Function Restart-CloudBuilderSDDCValidation {
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
 
-#EndRegion SDDC-CloudBuilder-Management
+#EndRegion APIs for managing SDDC (Cloud Builder)
 
 
-#Region SOS-SupportOps-Management
+#Region APIs for managing SOS
 
 Function Get-VCFHealthSummaryTask {
     <#
@@ -3341,10 +3336,10 @@ Function Start-VCFSupportBundle {
 }
 Export-ModuleMember -Function Start-VCFSupportBundle
 
-#EndRegion SOS-SupportOps-Management
+#EndRegion APIs for managing SOS
 
 
-#Region SDDCManager-Management
+#Region APIs for managing SDDC Manager
 
 Function Get-VCFManager {
     <#
@@ -3397,10 +3392,10 @@ Function Get-VCFManager {
 }
 Export-ModuleMember -Function Get-VCFManager
 
-#EndRegion SDDCManager-Management
+#EndRegion APIs for managing SDDC Manager
 
 
-#Region SystemPrechecks-Management
+#Region APIs for managing System Prechecks
 
 Function Start-VCFSystemPrecheck {
     <#
@@ -3462,10 +3457,10 @@ Function Get-VCFSystemPrecheckTask {
 }
 Export-ModuleMember -Function Get-VCFSystemPrecheckTask
 
-#EndRegion SystemPrechecks-Management
+#EndRegion APIs for managing System Prechecks
 
 
-#Region Tasks-Management
+#Region APIs for managing Tasks
 
 Function Get-VCFTask {
     <#
@@ -3555,9 +3550,10 @@ Function Restart-VCFTask {
 }
 Export-ModuleMember -Function Restart-VCFTask
 
-#EndRegion Tasks-Management
+#EndRegion APIs for managing Tasks
 
-#Region Tokens-Management
+
+#Region APIs for managing Access and Refresh Token
 Function checkVCFToken {
     if (!$accessToken) {
         Write-Error "API Access Token Required. Request an Access Token by running Request-VCFToken"
@@ -3655,10 +3651,10 @@ Function Get-JWTDetail {
     Return $decodedToken
 }
 
-#EndRegion Tokens-Management
+#EndRegion APIs for managing Access and Refresh Token
 
 
-#Region Upgradeables-Management
+#Region APIs for managing Upgradables
 
 Function Get-VCFUpgradable {
     <#
@@ -3687,10 +3683,10 @@ Function Get-VCFUpgradable {
 }
 Export-ModuleMember -Function Get-VCFUpgradable
 
-#EndRegion Upgradeables-Management
+#EndRegion APIs for managing Upgradables
 
 
-#Region Upgrades-Management
+#Region APIs for managing Upgrades
 
 Function Get-VCFUpgrade {
     <#
@@ -3764,10 +3760,10 @@ Function Start-VCFUpgrade {
 }
 Export-ModuleMember -Function Start-VCFUpgrade
 
-#EndRegion Upgrades-Management
+#EndRegion APIs for managing Upgrades
 
 
-#Region Useres-Management
+#Region APIs for managing Users
 
 Function Get-VCFUser {
     <#
@@ -4005,10 +4001,10 @@ Function New-VCFGroup {
 }
 Export-ModuleMember -Function New-VCFGroup
 
-#EndRegion Useres-Management
+#EndRegion APIs for managing Users
 
 
-#Region VCFServices-Management
+#Region APIs for managing VCF Services
 
 Function Get-VCFService {
     <#
@@ -4051,14 +4047,15 @@ Function Get-VCFService {
 }
 Export-ModuleMember -Function Get-VCFService
 
-#EndRegion VCFServices-Management
+#EndRegion APIs for managing VCF Services
 
 
-#Region VersionAlias-Management
-#EndRegion VersionAlias-Management
+#Region APIs for managing Version Alias Configuration
+# for future implementation
+#EndRegion APIs for managing Version Alias Configuration
 
 
-#Region DNSNTP-Management
+#Region APIs for managing DNS NTP Configuration
 
 Function Get-VCFConfigurationDNS {
     <#
@@ -4266,10 +4263,10 @@ Function Set-VCFConfigurationNTP {
 }
 Export-ModuleMember -Function Set-VCFConfigurationNTP
 
-#EndRegion DNSNTP-Management
+#EndRegion APIs for managing DNS NTP Configuration
 
 
-#Region VC-Management
+#Region APIs for managing vCenters
 
 Function Get-VCFvCenter {
     <#
@@ -4328,10 +4325,10 @@ Function Get-VCFvCenter {
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
-#EndRegion VC-Management
+#EndRegion APIs for managing vCenters
 
 
-#Region vRSLC-Management
+#Region APIs for managing vRealize Suite Lifecycle Manager
 
 Function Get-VCFvRSLCM {
     <#
@@ -4460,10 +4457,10 @@ Function Reset-VCFvRSLCM {
 }
 Export-ModuleMember -Function Reset-VCFvRSLCM
 
-#EndRegion vRSLC-Management
+#EndRegion APIs for managing vRealize Suite Lifecycle Manager
 
 
-#Region vROps-Management
+#Region APIs for managing vRealize Operations Manager
 
 Function Get-VCFvROPS {
     <#
@@ -4568,10 +4565,10 @@ Function Set-VCFvROPSConnection {
 }
 Export-ModuleMember -Function Set-VCFvROPSConnection
 
-#EndRegion vROps-Management
+#EndRegion APIs for managing vRealize Operations Manager
 
 
-#Region WS1A-Management
+#Region APIs for managing Workspace ONE Access
 
 Function Get-VCFWSA {
     <#
@@ -4599,10 +4596,10 @@ Function Get-VCFWSA {
 }
 Export-ModuleMember -Function Get-VCFWSA
 
-#EndRegion WS1A-Management
+#EndRegion APIs for managing Workspace ONE Access
 
 
-#Region vRA-Management
+#Region APIs for managing vRealize Automation
 
 Function Get-VCFvRA {
     <#
@@ -4630,10 +4627,10 @@ Function Get-VCFvRA {
 }
 Export-ModuleMember -Function Get-VCFvRA
 
-#EndRegion vRA-Management
+#EndRegion APIs for managing vRealize Automation
 
 
-#Region vRLI-Management
+#Region APIs for managing vRealize Log Insight
 
 Function Get-VCFvRLI {
     <#
@@ -4723,10 +4720,10 @@ Function Set-VCFvRLIConnection {
 }
 Export-ModuleMember -Function Set-VCFvRLIConnection
 
-#EndRegion vRLI-Management
+#EndRegion APIs for managing vRealize Log Insight
 
 
-#Region VCFValidation-Management
+#Region APIs for managing Validations
 
 Function Validate-CommissionHostSpec {
 
@@ -4818,9 +4815,10 @@ Function Validate-EdgeClusterSpec {
     }
     Return $response
 }
-#EndRegion VCFValidation-Management
+#EndRegion APIs for managing Validations
 
-#Region SOSOps-Management
+
+#Region SoS Operations
 
 Function Invoke-VCFCommand {
     <#
@@ -4914,10 +4912,10 @@ Function Invoke-VCFCommand {
 }
 Export-ModuleMember -Function Invoke-VCFCommand
 
-#EndRegion SOSOps-Management
+#EndRegion SoS Operations
 
 
-#Region Utility-Functions-NotExported
+#Region Utility Functions (not exported)
 
 Function ResponseException {
     Param (
@@ -5017,10 +5015,10 @@ Function validateJsonInput {
         Write-Verbose $ConfigJson
     }
 }
-#EndRegion Utility-Functions-NotExported
+#EndRegion Utility Functions (not exported()
 
 
-#Region Useful-Scripts-Functions
+#Region Useful Script Functions
 
 Function Start-SetupLogFile ($path, $scriptName) {
     $filetimeStamp = Get-Date -Format "MM-dd-yyyy_hh_mm_ss"
@@ -5076,4 +5074,4 @@ Function Debug-CatchWriter {
 }
 Export-ModuleMember -Function Debug-CatchWriter
 
-#EndRegion Useful-Scripts-Functions
+#EndRegion Useful Script Functions
