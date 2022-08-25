@@ -41,6 +41,7 @@ if ($PSEdition -eq 'Desktop') {
 
 ####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
+#Region APIs for managing VCF tokens and initial connections
 Function Request-VCFToken {
     <#
         .SYNOPSIS
@@ -196,10 +197,10 @@ public static class Dummy {
     }
 }
 Export-ModuleMember -Function Connect-CloudBuilder
+#EndRegion APIs for managing VCF tokens and initial connections
 
 
-######### Start APIs for managing Application Virtual Networks ##########
-
+#Region APIs for managing Application Virtual Networks
 Function Get-VCFApplicationVirtualNetwork {
     <#
         .SYNOPSIS
@@ -294,12 +295,10 @@ Function Add-VCFApplicationVirtualNetwork {
 }
 Export-ModuleMember -Function Add-VCFApplicationVirtualNetwork
 
-######### End APIs for managing Application Virtual Networks ##########
+#EndRegion APIs for managing Application Virtual Networks
 
 
-
-######### Start APIs for managing Backup and Restore ##########
-
+#Region APIs for managing Backup and Restore
 Function Get-VCFBackupConfiguration {
     <#
         .SYNOPSIS
@@ -452,11 +451,10 @@ Function Get-VCFRestoreTask {
 }
 Export-ModuleMember -Function Get-VCFRestoreTask
 
-######### End APIs for managing Backup and Restore ##########
+#EndRegion APIs for managing Backup and Restore
 
 
-
-######### Start APIs for managing Bundles ##########
+#Region APIs for managing Bundles
 
 Function Get-VCFBundle {
     <#
@@ -575,11 +573,10 @@ Function Start-VCFBundleUpload {
 }
 Export-ModuleMember -Function Start-VCFBundleUpload
 
-######### End APIs for managing Bundles ##########
+#EndRegion APIs for managing Bundles
 
 
-
-######### Start APIs for managing CEIP ##########
+#Region APIs for managing CEIP
 
 Function Get-VCFCeip {
     <#
@@ -643,11 +640,10 @@ Function Set-VCFCeip {
 }
 Export-ModuleMember -Function Set-VCFCeip
 
-######### End APIs for managing CEIP ##########
+#EndRegion APIs for managing CEIP
 
 
-
-######### Start APIs for managing Certificates ##########
+#Region APIs for managing Certificates
 
 Function Get-VCFCertificateAuthority {
     <#
@@ -853,7 +849,7 @@ Function Request-VCFCertificateCSR {
         Throw "JSON File Not Found"
     }
     else {
-        $ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable
+        $ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable       
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
@@ -998,11 +994,10 @@ Function Set-VCFCertificate {
 }
 Export-ModuleMember -Function Set-VCFCertificate
 
-######### End APIs for managing Certificates ##########
+#EndRegion APIs for managing Certificates
 
 
-
-######### Start APIs for managing Clusters ##########
+#Region APIs for managing Clusters
 
 Function Get-VCFCluster {
     <#
@@ -1231,11 +1226,10 @@ Function Get-VCFClusterValidation {
 }
 Export-ModuleMember -Function Get-VCFClusterValidation
 
-######### End APIs for managing Clusters ##########
+#EndRegion APIs for managing Clusters
 
 
-
-######### Start APIs for managing Credentials ##########
+#Region APIs for managing Credentials
 
 Function Get-VCFCredential {
     <#
@@ -1484,11 +1478,10 @@ Function Restart-VCFCredentialTask {
 }
 Export-ModuleMember -Function Restart-VCFCredentialTask
 
-######### End APIs for managing Credentials ##########
+#EndRegion APIs for managing Credentials
 
 
-
-######### Start APIs for managing Depot Settings ##########
+#Region APIs for managing Depot Settings
 
 Function Get-VCFDepotCredential {
     <#
@@ -1551,11 +1544,10 @@ Function Set-VCFDepotCredential {
 }
 Export-ModuleMember -Function Set-VCFDepotCredential
 
-######### End APIs for managing Depot Settings ##########
+#EndRegion APIs for managing Depot Settings
 
 
-
-######### Start APIs for managing Domains ##########
+#Region APIs for managing Domains
 
 Function Get-VCFWorkloadDomain {
     <#
@@ -1721,11 +1713,10 @@ Function Remove-VCFWorkloadDomain {
 }
 Export-ModuleMember -Function Remove-VCFWorkloadDomain
 
-######### End APIs for managing Domains ##########
+#EndRegion APIs for managing Domains
 
 
-
-######### Start APIs for managing Federation ##########
+#Region APIs for managing Federation
 
 Function Get-VCFFederation {
     <#
@@ -1852,11 +1843,10 @@ Function Remove-VCFFederation {
 }
 Export-ModuleMember -Function Remove-VCFFederation
 
-######### Start APIs for managing Federation ##########
+#EndRegion APIs for managing Federation
 
 
-
-######### Start APIs for managing Hosts ##########
+#Region APIs for managing Hosts
 
 Function Get-VCFHost {
     <#
@@ -2048,11 +2038,10 @@ Function Remove-VCFCommissionedHost {
 New-Alias -name Decommission-VCFHost -value Remove-VCFCommissionedHost
 Export-ModuleMember -Alias Decommission-VCFHost -Function Remove-VCFCommissionedHost
 
-######### End APIs for managing Hosts ##########
+#EndRegion APIs for managing Hosts
 
 
-
-######### Start APIs for managing License Keys ##########
+#Region APIs for managing License Keys
 
 Function Get-VCFLicenseKey {
     <#
@@ -2180,11 +2169,10 @@ Function Remove-VCFLicenseKey {
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
 
-######### End APIs for managing License Keys ##########
+#EndRegion APIs for managing License Keys
 
 
-
-######### Start APIs for managing Members of the Federation ##########
+#Region APIs for managing Members of the Federation
 
 Function Get-VCFFederationMember {
     <#
@@ -2324,11 +2312,10 @@ Function Join-VCFFederation {
 }
 Export-ModuleMember -Function Join-VCFFederation
 
-######### End APIs for managing Members of the Federation ##########
+#EndRegion APIs for managing Members of the Federation
 
 
-
-######### Start APIs for managing NSX-T Clusters ##########
+#Region APIs for managing NSX-T Clusters
 
 Function Get-VCFNsxtCluster {
     <#
@@ -2376,11 +2363,10 @@ Function Get-VCFNsxtCluster {
 }
 Export-ModuleMember -Function Get-VCFNsxtCluster
 
-######### End APIs for managing NSX-T Clusters ##########
+#EndRegion APIs for managing NSX-T Clusters
 
 
-
-######### Start APIs for managing Network Pools ##########
+#Region APIs for managing Network Pools
 
 Function Get-VCFNetworkPool {
     <#
@@ -2610,11 +2596,10 @@ Function Remove-VCFNetworkIPPool {
 }
 Export-ModuleMember -Function Remove-VCFNetworkIPPool
 
-######### End APIs for managing Network Pools ##########
+#EndRegion APIs for managing Network Pools
 
 
-
-######### Start APIs for managing NSX-T Edge Clusters ##########
+#Region APIs for managing NSX-T Edge Clusters
 
 Function Get-VCFEdgeCluster {
     <#
@@ -2727,10 +2712,10 @@ Function New-VCFEdgeCluster {
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
 
-######### End APIs for managing NSX-T Edge Clusters ##########
+#EndRegion APIs for managing NSX-T Edge Clusters
 
 
-######### Start APIs for managing PSCs ##########
+#Region APIs for managing PSCs
 
 Function Get-VCFPSC {
     <#
@@ -2773,10 +2758,10 @@ Function Get-VCFPSC {
 }
 Export-ModuleMember -Function Get-VCFPSC
 
-######### Start APIs for managing PSCs ##########
+#EndRegion APIs for managing PSCs
 
 
-######### Start APIs for managing Personalities ##########
+#Region APIs for managing Personalities
 
 Function Get-VCFPersonality {
     <#
@@ -2819,11 +2804,10 @@ Function Get-VCFPersonality {
 }
 Export-ModuleMember -Function Get-VCFPersonality
 
-######### End APIs for managing Personalities ##########
+#EndRegion APIs for managing Personalities
 
 
-
-######### Start APIs for managing Federation Tasks ##########
+#Region APIs for managing Federation Tasks
 
 Function Get-VCFFederationTask {
     <#
@@ -2861,11 +2845,10 @@ Function Get-VCFFederationTask {
 }
 Export-ModuleMember -Function Get-VCFFederationTask
 
-######### End APIs for managing Federation Tasks ##########
+#EndRegion APIs for managing Federation Tasks
 
 
-
-######### Start APIs for managing SDDC (Cloud Builder) ##########
+#Region APIs for managing SDDC (Cloud Builder)
 
 Function Get-CloudBuilderSDDC {
     <#
@@ -3119,11 +3102,10 @@ Function Restart-CloudBuilderSDDCValidation {
 }
 Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
 
-######### End APIs for managing SDDC (Cloud Builder) ##########
+#EndRegion APIs for managing SDDC (Cloud Builder)
 
 
-
-######### Start APIs for managing SOS ##########
+#Region APIs for managing SOS
 
 Function Get-VCFHealthSummaryTask {
     <#
@@ -3366,11 +3348,10 @@ Function Start-VCFSupportBundle {
 }
 Export-ModuleMember -Function Start-VCFSupportBundle
 
-######### End APIs for managing SDDC Manager ##########
+#EndRegion APIs for managing SOS
 
 
-
-######### Start APIs for managing SDDC Manager ##########
+#Region APIs for managing SDDC Manager
 
 Function Get-VCFManager {
     <#
@@ -3423,11 +3404,10 @@ Function Get-VCFManager {
 }
 Export-ModuleMember -Function Get-VCFManager
 
-######### End APIs for managing SDDC Manager ##########
+#EndRegion APIs for managing SDDC Manager
 
 
-
-######### Start APIs for managing System Prechecks ##########
+#Region APIs for managing System Prechecks
 
 Function Start-VCFSystemPrecheck {
     <#
@@ -3489,11 +3469,10 @@ Function Get-VCFSystemPrecheckTask {
 }
 Export-ModuleMember -Function Get-VCFSystemPrecheckTask
 
-######### End APIs for managing System Prechecks ##########
+#EndRegion APIs for managing System Prechecks
 
 
-
-######### Start APIs for managing Tasks ##########
+#Region APIs for managing Tasks
 
 Function Get-VCFTask {
     <#
@@ -3583,17 +3562,111 @@ Function Restart-VCFTask {
 }
 Export-ModuleMember -Function Restart-VCFTask
 
-#### End APIs for managing Tasks #####
+#EndRegion APIs for managing Tasks
 
 
+#Region APIs for managing Access and Refresh Token
+Function checkVCFToken {
+    if (!$accessToken) {
+        Write-Error "API Access Token Required. Request an Access Token by running Request-VCFToken"
+        Break
+    }
+    else {
+        $expiryDetails = Get-JWTDetail $accessToken
+        if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
+            Write-Output "API Access Token Expired. Requesting a new access token with current refresh token"
+            $headers = @{"Accept" = "application/json" }
+            $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
+            $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
+            $Global:accessToken = $response
+        }
+    }
+}
 
-######### Start APIs for managing Access and Refresh Token ##########
+Function Get-JWTDetail {
+    [cmdletbinding()]
 
-######### End APIs for managing Access and Refresh Token ##########
+    Param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)] [String]$token
+    )
+
+    <#
+        .SYNOPSIS
+        Decode a JWT Access Token and convert to a PowerShell Object.
+        JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
+        Written by Darren Robinson
+        https://blog.darrenjrobinson.com
+        https://blog.darrenjrobinson.com/jwtdetails-powershell-module-for-decoding-jwt-access-tokens-with-readable-token-expiry-time/
+
+        .DESCRIPTION
+        Decode a JWT Access Token and convert to a PowerShell Object.
+        JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
+
+        .PARAMETER token
+        The JWT Access Token to decode and udpate with expiry time and time to expiry
+
+        .INPUTS
+        Token from Pipeline
+
+        .OUTPUTS
+        PowerShell Object
+
+        .SYNTAX
+        Get-JWTDetail (accesstoken)
+
+        .EXAMPLE
+        PS> Get-JWTDetail ('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
+    #>
 
 
+    if (!$token.Contains(".") -or !$token.StartsWith("eyJ")) { Write-Error "Invalid token" -ErrorAction Stop }
 
-######### Start APIs for managing Upgradables ##########
+    # Token
+    Foreach ($i in 0..1) {
+        $data = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
+        Switch ($data.Length % 4) {
+            0 { break }
+            2 { $data += '==' }
+            3 { $data += '=' }
+        }
+    }
+
+    $decodedToken = [System.Text.Encoding]::UTF8.GetString([convert]::FromBase64String($data)) | ConvertFrom-Json
+    Write-Verbose "JWT Token:"
+    Write-Verbose $decodedToken
+
+    # Signature
+    Foreach ($i in 0..2) {
+        $sig = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
+        Switch ($sig.Length % 4) {
+            0 { break }
+            2 { $sig += '==' }
+            3 { $sig += '=' }
+        }
+    }
+    Write-Verbose "JWT Signature:"
+    Write-Verbose $sig
+    $decodedToken | Add-Member -Type NoteProperty -Name "sig" -Value $sig
+
+    # Convert Expiry time to PowerShell DateTime
+    $orig = (Get-Date -Year 1970 -Month 1 -Day 1 -hour 0 -Minute 0 -Second 0 -Millisecond 0)
+    $timeZone = Get-TimeZone
+    $utcTime = $orig.AddSeconds($decodedToken.exp)
+    $hoursOffset = $timeZone.GetUtcOffset($(Get-Date)).hours #Daylight saving needs to be calculated
+    $localTime = $utcTime.AddHours($hoursOffset)     # Return local time,
+    $decodedToken | Add-Member -Type NoteProperty -Name "expiryDateTime" -Value $localTime
+
+    # Time to Expiry
+    $timeToExpiry = ($localTime - (get-date))
+    $decodedToken | Add-Member -Type NoteProperty -Name "timeToExpiry" -Value $timeToExpiry
+
+    Return $decodedToken
+}
+
+#EndRegion APIs for managing Access and Refresh Token
+
+
+#Region APIs for managing Upgradables
 
 Function Get-VCFUpgradable {
     <#
@@ -3622,11 +3695,10 @@ Function Get-VCFUpgradable {
 }
 Export-ModuleMember -Function Get-VCFUpgradable
 
-######### End APIs for managing Upgradables ##########
+#EndRegion APIs for managing Upgradables
 
 
-
-######### Start APIs for managing Upgrades ##########
+#Region APIs for managing Upgrades
 
 Function Get-VCFUpgrade {
     <#
@@ -3700,11 +3772,10 @@ Function Start-VCFUpgrade {
 }
 Export-ModuleMember -Function Start-VCFUpgrade
 
-######### End APIs for managing Upgrades ##########
+#EndRegion APIs for managing Upgrades
 
 
-
-######### Start APIs for managing Users ##########
+#Region APIs for managing Users
 
 Function Get-VCFUser {
     <#
@@ -3942,11 +4013,10 @@ Function New-VCFGroup {
 }
 Export-ModuleMember -Function New-VCFGroup
 
-######### End APIs for managing Users ##########
+#EndRegion APIs for managing Users
 
 
-
-######### Start APIs for managing VCF Services ##########
+#Region APIs for managing VCF Services
 
 Function Get-VCFService {
     <#
@@ -3989,17 +4059,15 @@ Function Get-VCFService {
 }
 Export-ModuleMember -Function Get-VCFService
 
-######### End APIs for managing VCF Services ##########
+#EndRegion APIs for managing VCF Services
 
 
-
-######### Start APIs for managing Version Alias Configuration ##########
-
-######### End APIs for managing Version Alias Configuration ##########
-
+#Region APIs for managing Version Alias Configuration
+# for future implementation
+#EndRegion APIs for managing Version Alias Configuration
 
 
-######### Start APIs for managing DNS & NTP Configuration ##########
+#Region APIs for managing DNS NTP Configuration
 
 Function Get-VCFConfigurationDNS {
     <#
@@ -4207,11 +4275,10 @@ Function Set-VCFConfigurationNTP {
 }
 Export-ModuleMember -Function Set-VCFConfigurationNTP
 
-######### End APIs for managing DNS & NTP Configuration ##########
+#EndRegion APIs for managing DNS NTP Configuration
 
 
-
-######### Start APIs for managing vCenters ##########
+#Region APIs for managing vCenters
 
 Function Get-VCFvCenter {
     <#
@@ -4270,11 +4337,10 @@ Function Get-VCFvCenter {
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
-######### Start APIs for managing vCenters ##########
+#EndRegion APIs for managing vCenters
 
 
-
-######### Start APIs for managing vRealize Suite Lifecycle Manager ##########
+#Region APIs for managing vRealize Suite Lifecycle Manager
 
 Function Get-VCFvRSLCM {
     <#
@@ -4403,9 +4469,10 @@ Function Reset-VCFvRSLCM {
 }
 Export-ModuleMember -Function Reset-VCFvRSLCM
 
-######### End APIs for managing vRealize Suite Lifecycle Manager ##########
+#EndRegion APIs for managing vRealize Suite Lifecycle Manager
 
-######### Start APIs for managing vRealize Operations Manager ##########
+
+#Region APIs for managing vRealize Operations Manager
 
 Function Get-VCFvROPS {
     <#
@@ -4510,9 +4577,10 @@ Function Set-VCFvROPSConnection {
 }
 Export-ModuleMember -Function Set-VCFvROPSConnection
 
-######### End APIs for managing vRealize Operations Manager ##########
+#EndRegion APIs for managing vRealize Operations Manager
 
-######### Start APIs for managing Workspace ONE Access ##########
+
+#Region APIs for managing Workspace ONE Access
 
 Function Get-VCFWSA {
     <#
@@ -4540,9 +4608,10 @@ Function Get-VCFWSA {
 }
 Export-ModuleMember -Function Get-VCFWSA
 
-######### End APIs for managing Workspace ONE Access ##########
+#EndRegion APIs for managing Workspace ONE Access
 
-######### Start APIs for managing vRealize Automation ##########
+
+#Region APIs for managing vRealize Automation
 
 Function Get-VCFvRA {
     <#
@@ -4570,9 +4639,10 @@ Function Get-VCFvRA {
 }
 Export-ModuleMember -Function Get-VCFvRA
 
-######### End APIs for managing vRealize Automation ##########
+#EndRegion APIs for managing vRealize Automation
 
-######### Start APIs for managing vRealize Log Insight ##########
+
+#Region APIs for managing vRealize Log Insight
 
 Function Get-VCFvRLI {
     <#
@@ -4662,10 +4732,10 @@ Function Set-VCFvRLIConnection {
 }
 Export-ModuleMember -Function Set-VCFvRLIConnection
 
-######### End APIs for managing vRealize Log Insight ##########
+#EndRegion APIs for managing vRealize Log Insight
 
 
-######## Start APIs for managing Validations ########
+#Region APIs for managing Validations
 
 Function Validate-CommissionHostSpec {
 
@@ -4757,109 +4827,10 @@ Function Validate-EdgeClusterSpec {
     }
     Return $response
 }
-
-Function checkVCFToken {
-    if (!$accessToken) {
-        Write-Error "API Access Token Required. Request an Access Token by running Request-VCFToken"
-        Break
-    }
-    else {
-        $expiryDetails = Get-JWTDetail $accessToken
-        if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
-            Write-Output "API Access Token Expired. Requesting a new access token with current refresh token"
-            $headers = @{"Accept" = "application/json" }
-            $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
-            $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -body $refreshToken
-            $Global:accessToken = $response
-        }
-    }
-}
-
-Function Get-JWTDetail {
-    [cmdletbinding()]
-
-    Param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true, Position = 0)] [String]$token
-    )
-
-    <#
-        .SYNOPSIS
-        Decode a JWT Access Token and convert to a PowerShell Object.
-        JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
-        Written by Darren Robinson
-        https://blog.darrenjrobinson.com
-        https://blog.darrenjrobinson.com/jwtdetails-powershell-module-for-decoding-jwt-access-tokens-with-readable-token-expiry-time/
-
-        .DESCRIPTION
-        Decode a JWT Access Token and convert to a PowerShell Object.
-        JWT Access Token updated to include the JWT Signature (sig), JWT Token Expiry (expiryDateTime) and JWT Token time to expiry (timeToExpiry).
-
-        .PARAMETER token
-        The JWT Access Token to decode and udpate with expiry time and time to expiry
-
-        .INPUTS
-        Token from Pipeline
-
-        .OUTPUTS
-        PowerShell Object
-
-        .SYNTAX
-        Get-JWTDetail (accesstoken)
-
-        .EXAMPLE
-        PS> Get-JWTDetail ('eyJ0eXAiOi........XmN4GnWQAw7OwMA')
-    #>
+#EndRegion APIs for managing Validations
 
 
-    if (!$token.Contains(".") -or !$token.StartsWith("eyJ")) { Write-Error "Invalid token" -ErrorAction Stop }
-
-    # Token
-    Foreach ($i in 0..1) {
-        $data = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
-        Switch ($data.Length % 4) {
-            0 { break }
-            2 { $data += '==' }
-            3 { $data += '=' }
-        }
-    }
-
-    $decodedToken = [System.Text.Encoding]::UTF8.GetString([convert]::FromBase64String($data)) | ConvertFrom-Json
-    Write-Verbose "JWT Token:"
-    Write-Verbose $decodedToken
-
-    # Signature
-    Foreach ($i in 0..2) {
-        $sig = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
-        Switch ($sig.Length % 4) {
-            0 { break }
-            2 { $sig += '==' }
-            3 { $sig += '=' }
-        }
-    }
-    Write-Verbose "JWT Signature:"
-    Write-Verbose $sig
-    $decodedToken | Add-Member -Type NoteProperty -Name "sig" -Value $sig
-
-    # Convert Expiry time to PowerShell DateTime
-    $orig = (Get-Date -Year 1970 -Month 1 -Day 1 -hour 0 -Minute 0 -Second 0 -Millisecond 0)
-    $timeZone = Get-TimeZone
-    $utcTime = $orig.AddSeconds($decodedToken.exp)
-    $hoursOffset = $timeZone.GetUtcOffset($(Get-Date)).hours #Daylight saving needs to be calculated
-    $localTime = $utcTime.AddHours($hoursOffset)     # Return local time,
-    $decodedToken | Add-Member -Type NoteProperty -Name "expiryDateTime" -Value $localTime
-
-    # Time to Expiry
-    $timeToExpiry = ($localTime - (get-date))
-    $decodedToken | Add-Member -Type NoteProperty -Name "timeToExpiry" -Value $timeToExpiry
-
-    Return $decodedToken
-}
-
-######## End APIs for managing Validations ########
-
-
-
-######### Start SoS Operations ##########
+#Region SoS Operations
 
 Function Invoke-VCFCommand {
     <#
@@ -4953,11 +4924,10 @@ Function Invoke-VCFCommand {
 }
 Export-ModuleMember -Function Invoke-VCFCommand
 
-######### End SoS Operations ##########
+#EndRegion SoS Operations
 
 
-
-######### Start Utility Functions (not exported) ##########
+#Region Utility Functions (not exported)
 
 Function ResponseException {
     Param (
@@ -5057,12 +5027,10 @@ Function validateJsonInput {
         Write-Verbose $ConfigJson
     }
 }
-
-######### End Utility Functions (not exported) ##########
-
+#EndRegion Utility Functions (not exported()
 
 
-######### Start Useful Script Functions ##########
+#Region Useful Script Functions
 
 Function Start-SetupLogFile ($path, $scriptName) {
     $filetimeStamp = Get-Date -Format "MM-dd-yyyy_hh_mm_ss"
@@ -5118,4 +5086,4 @@ Function Debug-CatchWriter {
 }
 Export-ModuleMember -Function Debug-CatchWriter
 
-######### End Useful Script Functions ##########
+#EndRegion Useful Script Functions
