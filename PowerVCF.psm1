@@ -5018,13 +5018,56 @@ Function Resolve-PSModule {
 }
 
 Function validateJsonInput {
+    
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    # Checking the file path is valid. if not, evaluate if the variable was passed as JSON string
     if (!(Test-Path $json)) {
-        Throw "JSON file provided not found, please try again"
+        
+        # File path invalid. Checking if the JSON was passed directly as string by converting to a PS object.If it works, means it was
+        # Not using Test-Json since it's not available on PS 5.x but only on 6+
+        
+        Try {
+            $jsonPSobject = ConvertFrom-Json $json -ErrorAction Stop;
+            $jsonValid = $true;
+        }
+
+        Catch {
+            $jsonValid = $false;
+        }
+    
+        if ($jsonValid) {
+            # JSON parameter was passed as JSON string.Reconverting back from PS object
+            $Global:ConfigJson = ConvertTo-Json -InputObject $jsonPSobject
+            Write-Verbose "The JSON parameter was passed as a valid JSON string notation"
+            Write-Verbose $Global:ConfigJson
+        }
+        else {
+            Throw "The provided JSON parameter couldn't be validated as file path nor JSON string. Please check the file path or JSON string formatting again."
+        }  
     }
     else {
+        # JSON parameter was passed as file path. 
         $Global:ConfigJson = (Get-Content -Raw $json) # Read the json file contents into the $ConfigJson variable
-        Write-Verbose "JSON file found and content has been read into a variable"
-        Write-Verbose $ConfigJson
+        
+        # Validate JSON format
+        Try {
+            $jsonPSobject = ConvertFrom-Json  $Global:ConfigJson -ErrorAction Stop;
+            $jsonValid = $true;
+        } 
+        Catch {
+            $jsonValid = $false;
+        }
+
+        if ($jsonValid) {
+            Write-Verbose "JSON file found, JSON string format was valid and content has been stored into a variable"
+            Write-Verbose $ConfigJson
+        }
+        else {
+            Throw "The provided JSON file path was valid however it couldn't be converted from JSON, please check the formatting of your input file"
+        }
     }
 }
 #EndRegion Utility Functions (not exported()
