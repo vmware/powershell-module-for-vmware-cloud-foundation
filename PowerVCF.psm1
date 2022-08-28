@@ -274,23 +274,26 @@ Function Add-VCFApplicationVirtualNetwork {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ($PsBoundParameters.ContainsKey("validate")) {
-            $uri = "https://$sddcManager/v1/avns/validations"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
-            $response
+    
+    if ($PsBoundParameters.ContainsKey("json")) {  
+        Try {
+            validateJsonInput -json $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            if ($PsBoundParameters.ContainsKey("validate")) {
+                $uri = "https://$sddcManager/v1/avns/validations"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+                $response
+            }
+            else {
+                $uri = "https://$sddcManager/v1/avns"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+                $response
+            }
         }
-        else {
-            $uri = "https://$sddcManager/v1/avns"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
-            $response
+        Catch {
+            ResponseException -object $_
         }
-    }
-    Catch {
-        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Add-VCFApplicationVirtualNetwork
@@ -347,16 +350,18 @@ Function Set-VCFBackupConfiguration {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-
-        $uri = "https://$sddcManager/v1/system/backup-configuration"
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $json
-        $response
-    }
-    Catch {
-        ResponseException -object $_
+    if ($PsBoundParameters.ContainsKey("json")) {
+        Try {
+            validateJsonInput -json $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/system/backup-configuration"
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        }
+        Catch {
+            ResponseException -object $_
+        }
     }
 }
 Export-ModuleMember -Function Set-VCFBackupConfiguration
@@ -5045,6 +5050,7 @@ Function validateJsonInput {
             Write-Verbose $Global:ConfigJson
         }
         else {
+            ResponseException -object $_
             Throw "The provided JSON parameter couldn't be validated as file path nor JSON string. Please check the file path or JSON string formatting again."
         }  
     }
