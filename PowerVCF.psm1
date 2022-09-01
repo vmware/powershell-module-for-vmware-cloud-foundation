@@ -107,7 +107,7 @@ public static class Dummy {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck # PS Core has -SkipCertificateCheck implemented
             $Global:accessToken = $response.accessToken
             $Global:refreshToken = $response.refreshToken.id
-        }
+        }:
         else {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
             $Global:accessToken = $response.accessToken
@@ -277,17 +277,17 @@ Function Add-VCFApplicationVirtualNetwork {
     
     if ($PsBoundParameters.ContainsKey("json")) {  
         Try {
-            validateJsonInput -json $json
+            $jsonBody = validateJsonInput -json $json
             createHeader # Calls createHeader function to set Accept & Authorization
             checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
             if ($PsBoundParameters.ContainsKey("validate")) {
                 $uri = "https://$sddcManager/v1/avns/validations"
-                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
                 $response
             }
             else {
                 $uri = "https://$sddcManager/v1/avns"
-                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
                 $response
             }
         }
@@ -352,11 +352,11 @@ Function Set-VCFBackupConfiguration {
 
     if ($PsBoundParameters.ContainsKey("json")) {
         Try {
-            validateJsonInput -json $json
+            $jsonBody = validateJsonInput -json $json
             createHeader # Calls createHeader function to set Accept & Authorization
             checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
             $uri = "https://$sddcManager/v1/system/backup-configuration"
-            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $json
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
         }
         Catch {
@@ -564,16 +564,19 @@ Function Start-VCFBundleUpload {
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
-
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/bundles"
-    Try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $json
-        $response
-    }
-    Catch {
-        ResponseException -object $_
+    
+    if ($PsBoundParameters.ContainsKey("json")) {
+        Try {
+            $jsonBody = validateJsonInput -json $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/bundles"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $jsonBody
+            $response
+        }
+        Catch {
+            ResponseException -object $_
+        }
     }
 }
 Export-ModuleMember -Function Start-VCFBundleUpload
@@ -850,16 +853,13 @@ Function Request-VCFCertificateCSR {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        $ConfigJson = (Get-Content -Raw $json) # Reads the requestCsrSpec json file contents into the $ConfigJson variable       
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-        Try {
-            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+	if ($PsBoundParameters.ContainsKey("json")) {
+	    Try {
+            $jsonBody = validateJsonInput -json $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
         }
         Catch {
@@ -941,17 +941,13 @@ Function Request-VCFCertificate {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        # Reads the requestCsrSpec json file contents into the $ConfigJson variable
-        $ConfigJson = (Get-Content -Raw $json)
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-        Try {
-            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+    if ($PsBoundParameters.ContainsKey("json")) {
+	    Try {
+            $jsonBody = validateJsonInput -json $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
         }
         Catch {
@@ -980,16 +976,13 @@ Function Set-VCFCertificate {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        $ConfigJson = (Get-Content -Raw $json) # Reads the updateCertificateSpec json file contents into the $ConfigJson variable
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-        Try {
-            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+    if ($PsBoundParameters.ContainsKey("json")) {
+	    Try {
+            $jsonBody = validateJsonInput -json $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
         }
         Catch {
@@ -5041,26 +5034,28 @@ Function validateJsonInput {
 
         Catch {
             $jsonValid = $false;
+            $ConfigJson = $json   # load the raw & wrong JSON content for function return
         }
     
         if ($jsonValid) {
             # JSON parameter was passed as JSON string.Reconverting back from PS object
-            $Global:ConfigJson = ConvertTo-Json -InputObject $jsonPSobject
+            $ConfigJson = ConvertTo-Json -InputObject $jsonPSobject
             Write-Verbose "The JSON parameter was passed as a valid JSON string notation"
-            Write-Verbose $Global:ConfigJson
+            $ConfigJson  # return validated json
         }
         else {
             ResponseException -object $_
-            Throw "The provided JSON parameter couldn't be validated as file path nor JSON string. Please check the file path or JSON string formatting again."
+            $ConfigJson  # return unvalidated JSON before throwing
+            Throw "The provided JSON parameter couldn't be validated as file path nor as JSON string. Please check the file path or JSON string formatting again."
         }  
     }
     else {
-        # JSON parameter was passed as file path. 
-        $Global:ConfigJson = (Get-Content -Raw $json) # Read the json file contents into the $ConfigJson variable
+        # JSON parameter was passed as file path.  Read the file contents and loads it
+        $ConfigJson = (Get-Content -Raw $json)
         
         # Validate JSON format
         Try {
-            $jsonPSobject = ConvertFrom-Json  $Global:ConfigJson -ErrorAction Stop;
+            $jsonPSobject = ConvertFrom-Json  $ConfigJson -ErrorAction Stop;
             $jsonValid = $true;
         } 
         Catch {
@@ -5070,8 +5065,10 @@ Function validateJsonInput {
         if ($jsonValid) {
             Write-Verbose "JSON file found, JSON string format was valid and content has been stored into a variable"
             Write-Verbose $ConfigJson
+            $Global:ConfigJson  # return validated json
         }
         else {
+            ConfigJson  # return unvalidated json before throwing
             Throw "The provided JSON file path was valid however it couldn't be converted from JSON, please check the formatting of your input file"
         }
     }
