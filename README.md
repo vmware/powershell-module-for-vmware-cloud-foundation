@@ -1,58 +1,69 @@
-![](https://img.shields.io/powershellgallery/v/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white)&nbsp;&nbsp; 
-![](https://img.shields.io/powershellgallery/dt/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white)
-
-[<img alt="Documentation" src="https://img.shields.io/badge/Documentation-Read-blue?style=for-the-badge&logo=readthedocs&logoColor=white">][module-documentation]&nbsp;&nbsp; 
-[<img alt="Changelog" src="https://img.shields.io/badge/Changelog-Read-blue?style=for-the-badge">](CHANGELOG.md)
-
+<img src=".github/icon-400px.svg" alt="A PowerShell Module for VMware Validated Soltions" width="150"></br></br>
 
 # PowerVCF: A PowerShell Module for VMware Cloud Foundation
 
-PowerVCF is an open source PowerShell Module for interacting with the VMware Cloud Foundation (SDDC Manager & Cloud Builder) public API.
+[<img src="https://img.shields.io/powershellgallery/v/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell Gallery">][module-powervcf]&nbsp;&nbsp;[<img src="https://img.shields.io/badge/Changelog-Read-blue?style=for-the-badge&logo=github&logoColor=white" alt="CHANGELOG">][changelog]&nbsp;&nbsp;
+[<img src="https://img.shields.io/powershellgallery/dt/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell Gallery Downloads">][module-powervcf]&nbsp;&nbsp;
+[<img alt="Documentation" src="https://img.shields.io/badge/Documentation-Read-blue?style=for-the-badge&logo=readthedocs&logoColor=white">][module-powervcf-documentation]&nbsp;&nbsp;
+
+`PowerVCF` is an open source PowerShell Module for interacting with the VMware Cloud Foundation (SDDC Manager & Cloud Builder) public API.
 
 Module
-* [Module Documentation][module-documentation]
+
+* [Module Documentation][module-powervcf-documentation]
 
 VMware Cloud Foundation
+
 * [Product Documentation][product-documentation]
-* [API Documentation][api-documentation]
+* [API Documentation][product-api]
 
 ## Requirements
+
+### Platform
 
 * VMware Cloud Foundation 4.0 or later.
 
     The module supports versions in accordance with the VMware Product Lifecycle Matrix from General Availability to End of General Support.
 
-    * Learn more: [VMware Product Lifecycle Matrix][product-lifecycle-matrix]
+    Learn more: [VMware Product Lifecycle Matrix][product-lifecycle-matrix]
 
-* PowerCLI 12.3.0 or later
-* Windows PowerShell 5.x
-* PowerShell Core 6.x and 7.x
+    > **Note**
+    >
+    > This version has been tested using vSAN Ready Nodes.
+    >
+    > VMware Cloud Foundation on VxRail has not been fully tested. The following cmdlets will not work with VxRail as the workflow is different due to the use of VxRail Manager.
+    >
+    > * `New-VCFCommissionedHost`
+    > * `Remove-VCFCommissionedHost`
+    > * All Network pool actions
+    > * `New-`, `Set-`, and `Remove-` for Workload Domains
+    >
+    > Other cmdlets may work but are subject to testing.
 
-This version is supported with VMware Cloud Foundation 4.0 and above due to changes in the API authentication process.
+### PowerShell
 
-## Supported Platforms
+* [Microsoft Windows PowerShell][microsoft-powershell] 5.x
+* [Microsoft PowerShell Core][microsoft-powershell] 6.x and 7.x
 
-This version has been tested using vSAN Ready Nodes.
+### PowerShell Modules
 
-VMware Cloud Foundation on VxRail has not been fully tested, The following cmdlets will not work with VxRail as the workflow is different due to the use of VxRail Manager. _Other cmdlets may work subject to testing._
-
-* `New-VCFCommissionedHost`
-
-* `Remove-VCFCommissionedHost`
-
-* All Network pool actions
-
-* `New-`, `Set-`, and `Remove-` Workload Domains
+* [`VMware PowerCLI`][module-vmware-powercli] 12.3.0 or later
 
 ## Installing the Module
 
-To install the module from the PowerShell Gallery Open PowerShell as Administrator and run the following
+Verify that your system has a supported edition and version of PowerShell installed.
+
+### From the PowerShell Gallery
+
+Install the module from the PowerShell Gallery by opening a PowerShell session as an Administrator and running the following command:
 
 ```powershell
 Install-Module -Name PowerVCF
 ```
 
-Alternatively to manually install the module download the full module zip from the GitHub repo, extract and run the following in PowerShell
+### From Source
+
+Install the module from the from source first downloading and extracting the [release][module-powervcf-releases] archive. Next, open a PowerShell session as an Administrator, navigate to the directory where the binary has been extracted, and run the following command:
 
 ```powershell
 Import-Module .\PowerVCF
@@ -60,16 +71,22 @@ Import-Module .\PowerVCF
 
 ## Getting Started
 
-All API operations must currently be authenticated using the SDDC Manager `admin` account.
+All API operations must currently be authenticated using the SDDC Manager. To create a `base64` credential to authenticate each cmdlet you must first run the `Request-VCFToken` cmdlet.
 
-To create a `base64` credential to authenticate each cmdlet you must first run:
+This example shows how to connect to SDDC Manager to request API access & refresh tokens using the default `administrator@vsphere.local` vCenter Single Sign-On administrator account.
 
 ```powershell
-Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin -password VMw@re1!
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMw@re1!
 ```
 
-> **Note**: 
-> 
+This example shows how to connect to SDDC Manager using the `admin@local` local administrator account.
+
+```powershell
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password VMw@re1!VMw@re1!
+```
+
+> **Note**
+>
 > Both `-username` and `-password` are optional parameters. If not passed, a credential window will be presented.
 
 Authentication is only valid for the duration of the PowerShell session.
@@ -78,9 +95,11 @@ Authentication is only valid for the duration of the PowerShell session.
 
 ### Get a List of Hosts
 
-`Get-VCFHost`
+```powershell
+Get-VCFHost
+```
 
-**Sample Output**
+Sample Output:
 
 ```powershell
 id                  : 598519e7-cbba-4a10-801d-d76111f3ce0e
@@ -103,7 +122,9 @@ bundleRepoDatastore : lcm-bundle-repo
 hybrid              : False
 ```
 
-Responses can be filtered like this:
+You can also filter the output of the cmdlet.
+
+Example 1:
 
 ```powershell
 Get-VCFHost -id 598519e7-cbba-4a10-801d-d76111f3ce0e | Select esxiVersion
@@ -115,7 +136,7 @@ esxiVersion
 7.0.2-17867351
 ```
 
-Or like this:
+Example 2:
 
 ```powershell
 $hostDetail = Get-VCFHost -id 598519e7-cbba-4a10-801d-d76111f3ce0e
@@ -128,42 +149,67 @@ $hostDetail.esxiVersion
 
 ## Get Help
 
-For a full list of supported cmdlets run the following
+Once installed, any cmdlets associated with `PowerVCF` will be available for use.
+
+To view the cmdlets for available in the module, run the following command in the PowerShell console.
 
 ```powershell
 Get-Command -Module PowerVCF
 ```
 
-All cmdlets support the following:
+To view the help for any cmdlet, run the `Get-Help` command in the PowerShell console.
+
+For example:
 
 ```powershell
-Get-Help cmdlet-name
+Get-Help -Name <cmdlet name>
+```
 
-Get-Help cmdlet-name -examples
+Each cmdlet support the following options:
 
-Get-Help cmdlet-name -detailed
+```powershell
+Get-Help -Name <cmdlet name> -Examples
 
-Get-Help cmdlet-name -full
+Get-Help -Name <cmdlet name> -Detailed
+
+Get-Help -Name <cmdlet name> -Full
 ```
 
 ## Contributing
 
-PowerVCF is the work of many contributors and the project team appreciates your help!
+The project team welcomes contributions from the community. Before you start working with PowerValidatedSolutions, please read our [Developer Certificate of Origin][vmware-cla-dco]. All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch.
 
-If you discover a bug or would like to suggest an enhancement, submit [an issue][issues]. Once submitted, your issue will follow an issue lifecycle process.
-
-If you would like to submit a pull request, please read the [contribution guidelines][contributing] to get started.
+For more detailed information, refer to the [contribution guidelines][contributing] to get started.
 
 ## Disclaimer
-This is not an officially supported VMware PowerShell Module.
 
-The purpose of this module is to make VMware Cloud Foundation API more accessible to fans of PowerCLI and drive adoption of the VMware Cloud Foundation API & VMware Cloud Foundation in general.
+This PowerShell module is not supported by VMware Support.
 
-It is provided without warranty and should not be used in a production environment without thoroughly testing first.
+If you discover a bug or would like to suggest an enhancement, please [open an issue][issues].
 
+## License
+
+Copyright 2021-2022 VMware, Inc.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+[//]: Links
+
+[changelog]: CHANGELOG.md
 [contributing]: CONTRIBUTING.md
 [issues]: /issues
-[api-documentation]: https://developer.vmware.com/apis/1181/vmware-cloud-foundation
-[module-documentation]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/docs
+[product-api]: https://developer.vmware.com/apis/1181/vmware-cloud-foundation
 [product-documentation]: https://docs.vmware.com/en/VMware-Cloud-Foundation
 [product-lifecycle-matrix]: https://lifecycle.vmware.com
+[microsoft-powershell]: https://docs.microsoft.com/en-us/powershell
+[module-vmware-powercli]: https://www.powershellgallery.com/packages/VMware.PowerCLI
+[module-powervcf]: https://www.powershellgallery.com/packages/PowerVCF
+[module-powervcf-documentation]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/docs
+[module-powervcf-releases]: /releases
+[vmware-cla-dco]: https://cla.vmware.com/dco
