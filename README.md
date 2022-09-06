@@ -203,7 +203,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 [changelog]: CHANGELOG.md
 [contributing]: CONTRIBUTING.md
-[issues]: /issues
+[issues]: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/issues
 [product-api]: https://developer.vmware.com/apis/1181/vmware-cloud-foundation
 [product-documentation]: https://docs.vmware.com/en/VMware-Cloud-Foundation
 [product-lifecycle-matrix]: https://lifecycle.vmware.com
@@ -211,5 +211,5 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 [module-vmware-powercli]: https://www.powershellgallery.com/packages/VMware.PowerCLI
 [module-powervcf]: https://www.powershellgallery.com/packages/PowerVCF
 [module-powervcf-documentation]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/docs
-[module-powervcf-releases]: /releases
+[module-powervcf-releases]: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/releases
 [vmware-cla-dco]: https://cla.vmware.com/dco
