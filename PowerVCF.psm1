@@ -1065,31 +1065,33 @@ Function New-VCFCluster {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
-    if (!(Test-Path $json)) {
-        Throw "JSON File Not Found"
-    }
-    else {
-        $ConfigJson = (Get-Content $json) # Read the json file contents into the $ConfigJson variable
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        # Validate the provided JSON input specification file
-        $response = Validate-VCFClusterSpec -json $ConfigJson
-        # the validation API does not currently support polling with a task ID
-        Start-Sleep 5
-        # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-            Try {
-                Write-Output "Task validation completed successfully, invoking cluster task on SDDC Manager"
-                $uri = "https://$sddcManager/v1/clusters"
-                $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
-                $response
+    if ($PsBoundParameters.ContainsKey("json")) {      
+        Try {
+            $jsonBody = validateJsonInput -json $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            # Validate the provided JSON input specification file
+            $response = Validate-VCFClusterSpec -json $jsonBody
+            # the validation API does not currently support polling with a task ID
+            Start-Sleep 5
+            # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Try {
+                    Write-Output "Task validation completed successfully, invoking cluster task on SDDC Manager"
+                    $uri = "https://$sddcManager/v1/clusters"
+                    $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $jsonBody
+                    $response
+                }
+                Catch {
+                    ResponseException -object $_
+                }
             }
-            Catch {
-                ResponseException -object $_
+            else {
+                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
             }
         }
-        else {
-            Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+        Catch {
+            ResponseException -object $_
         }
     }
 }
@@ -1130,9 +1132,8 @@ Function Set-VCFCluster {
             Throw "You must include either -json or -markForDeletion"
         }
         if ($PsBoundParameters.ContainsKey("json")) {
-            validateJsonInput # Calls validateJsonInput Function to check the JSON file provided exists
-            # Validate the provided JSON input specification file
-            $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $ConfigJson
+            $jsonBody = validateJsonInput -json $json   # validate input file and format
+            $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # validate the JSON provided meets the cluster specifications format
             # the validation API does not currently support polling with a task ID
             Start-Sleep 5
             # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
@@ -1140,7 +1141,7 @@ Function Set-VCFCluster {
                 Try {
                     Write-Output "`Task validation completed successfully. Invoking cluster task on SDDC Manager"
                     $uri = "https://$sddcManager/v1/clusters/$id/"
-                    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $ConfigJson
+                    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
                     $response
                 }
                 Catch {
@@ -1152,9 +1153,9 @@ Function Set-VCFCluster {
             }
         }
         if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
-            $ConfigJson = '{"markForDeletion": true}'
+            $jsonBody = '{"markForDeletion": true}'
             $uri = "https://$sddcManager/v1/clusters/$id/"
-            $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+            $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $jsonBody
         }
     }
     Catch {
@@ -4776,12 +4777,12 @@ Function Validate-VCFClusterSpec {
     Param (
         [Parameter (Mandatory = $true)] [object]$json
     )
-
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    $uri = "https://$sddcManager/v1/clusters/validations"
     Try {
-        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
+        $jsonBody = validateJsonInput -json $json
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/clusters/validations"
+        $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $jsonBody
     }
     Catch {
         ResponseException -object $_
