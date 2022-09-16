@@ -1733,19 +1733,22 @@ Function Get-VCFFederation {
     #>
 
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = "Multi-instance management is not supported in 4.4.0 and later."
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt '4.4.0') {
-            if ($vcfVersion -ge '4.3.0') {
-                Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. Multi-instance management was discontinued in 4.4.0."
-                createHeader # Calls createHeader function to set the Accept and Authorization headers
-                checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
-                $uri = "https://$sddcManager/v1/sddc-federation"
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-                $response
-            }
-        }
-        else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. Multi-instance management was discontinued in 4.4.0."
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0') -and ($vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response
         }
     }
     Catch {
@@ -1776,19 +1779,23 @@ Function Set-VCFFederation {
     )
 
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt '4.4.0') {
-            if ($vcfVersion -ge '4.3.0') {
-                Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. Multi-instance management was discontinued in 4.4.0."
-                createHeader # Calls createHeader function to set the Accept and Authorization headers
-                checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
-                $uri = "https://$sddcManager/v1/sddc-federation"
-                $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
-                $response
-            }
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         }
-        else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. Multi-instance management was discontinued in 4.4.0."
+        elseif ($vcfVersion -ge '4.3.0') -and ($vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
         }
     }
     Catch {
@@ -1812,35 +1819,55 @@ Function Remove-VCFFederation {
 
     
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt '4.4.0') {
-            if ($vcfVersion -ge '4.3.0') {
-                Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. Multi-instance management was discontinued in 4.4.0."
-                createHeader # Calls createHeader function to set the Accept and Authorization headers
-                checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
-                $uri = "https://$sddcManager/v1/sddc-federation"
-                # Verify that the connected SDDC Manager is a controller and the only one present in the federation
-                $sddcs = Get-VCFFederation | Select-Object memberDetails
-                Foreach ($sddc in $sddcs) {
-                    if ($sddc.memberDetails.role -eq 'CONTROLLER') {
-                        $controller++
-                        if ($sddc.memberDetails.role -eq 'MEMBER') {
-                            $member++
-                        }
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        }
+        elseif ($vcfVersion -ge '4.3.0') -and ($vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            # Verify that the connected SDDC Manager is a controller and the only one present in the federation
+            $sddcs = Get-VCFFederation | Select-Object memberDetails
+            Foreach ($sddc in $sddcs) {
+                if ($sddc.memberDetails.role -eq 'CONTROLLER') {
+                    $controller++
+                    if ($sddc.memberDetails.role -eq 'MEMBER') {
+                        $member++
                     }
                 }
-                if ($controller -gt 1) {
-                    Throw 'More than one federation controller exists. Remove additional controllers.'
-                }
-                if ($member -gt 0) {
-                    Throw 'Federation members still exist. Remove all members and any additional controllers.'
-                }
-                $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
-                $response
             }
-        }
-        else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. Multi-instance management was discontinued in 4.4.0."
+            if ($controller -gt 1) {
+                Throw 'More than one federation controller exists. Remove additional controllers.'
+            }
+            if ($member -gt 0) {
+                Throw 'Federation members still exist. Remove all members and any additional controllers.'
+            }
+            $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
+            $response
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            # Verify that the connected SDDC Manager is a controller and the only one present in the federation
+            $sddcs = Get-VCFFederation | Select-Object memberDetails
+            Foreach ($sddc in $sddcs) {
+                if ($sddc.memberDetails.role -eq 'CONTROLLER') {
+                    $controller++
+                    if ($sddc.memberDetails.role -eq 'MEMBER') {
+                        $member++
+                    }
+                }
+            }
+            if ($controller -gt 1) {
+                Throw 'More than one federation controller exists. Remove additional controllers.'
+            }
+            if ($member -gt 0) {
+                Throw 'Federation members still exist. Remove all members and any additional controllers.'
+            }
+            $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
+            $response
         }
     }
     Catch {
