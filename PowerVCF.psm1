@@ -1,25 +1,24 @@
 # PowerShell module for VMware Cloud Foundation
-# Contributions, Improvements &/or Complete Re-writes Welcome!
-# https://github.com/PowerVCF/PowerVCF
+# Contributions are welcome. https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/blob/main/CONTRIBUTING.md
 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-# OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-### Note
-# This PowerShell module should be considered entirely experimental. It is still in development & not tested beyond
-# lab scenarios. It is recommended you dont use it for any production environment without testing extensively!
+# NOTE
+# This PowerShell module should be considered entirely experimental. It is still in development & not tested beyond lab
+# scenarios. It is recommended you don't use it for any production environment without testing extensively!
 
-# Enable communication with self signed certs when using Powershell Core if you require all communications to be secure
-# and do not wish to allow communication with self signed certs remove lines 22-39 before importing the module
+# Enable communication with self signed certs when using Powershell Core. If you require all communications to be secure
+# and do not wish to allow communication with self-signed certificates remove lines 22-39 before importing the module.
 
 if ($PSEdition -eq 'Core') {
     $PSDefaultParameterValues.Add("Invoke-RestMethod:SkipCertificateCheck", $true)
 }
 
 if ($PSEdition -eq 'Desktop') {
-    # Enable communication with self signed certs when using Windows Powershell
+    # Enable communication with self-signed certificates when using Windows Powershell
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
     If (!("TrustAllCertificatePolicy" -as [type])) {
@@ -38,8 +37,6 @@ if ($PSEdition -eq 'Desktop') {
 }
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
-
-####  Do not modify anything below this line. All user variables are in the accompanying JSON files #####
 
 #Region APIs for managing VCF tokens and initial connections
 Function Request-VCFToken {
