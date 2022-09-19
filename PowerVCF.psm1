@@ -1739,7 +1739,7 @@ Function Get-VCFFederation {
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
-        } elseif ($vcfVersion -ge '4.3.0') -and ($vcfVersion -lt '4.4.0') {
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
             Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1785,8 +1785,7 @@ Function Set-VCFFederation {
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
-        }
-        elseif ($vcfVersion -ge '4.3.0') -and ($vcfVersion -lt '4.4.0') {
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
             Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
@@ -1825,8 +1824,7 @@ Function Remove-VCFFederation {
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
-        }
-        elseif ($vcfVersion -ge '4.3.0') -and ($vcfVersion -lt '4.4.0') {
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
             Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation"
             # Verify that the connected SDDC Manager is a controller and the only one present in the federation
