@@ -1843,6 +1843,42 @@ Export-ModuleMember -Function Remove-VCFFederation
 #EndRegion APIs for managing Federation
 
 
+#Region APIs for managing FIPS
+
+Function Get-VCFFipsMode {
+    <#
+        .SYNOPSIS
+        Returns the status for FIPS mode.
+
+        .DESCRIPTION
+        The Get-VCFFipsMode cmdlet returns the status for FIPS mode on the VMware Cloud Foundation instance.
+
+        .EXAMPLE
+        Get-VCFFipsMode
+        This example returns the status for FIPS mode on the VMware Cloud Foundation instance.
+    #>
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge '4.3.0') {
+            createHeader # Call createHeader function to set the Accept & Authorization headers.
+            checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
+            $uri = "https://$sddcManager/v1/system/security/fips"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response
+        }
+        else {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFFipsMode
+
+#EndRegion APIs for managing FIPS
+
 #Region APIs for managing Hosts
 
 Function Get-VCFHost {
