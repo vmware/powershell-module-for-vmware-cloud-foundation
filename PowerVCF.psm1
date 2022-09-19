@@ -2881,6 +2881,132 @@ Export-ModuleMember -Function Get-VCFFederationTask
 #EndRegion APIs for managing Federation Tasks
 
 
+#Region APIs for managing Releases
+
+Function Get-VCFRelease {
+    <#
+        .SYNOPSIS
+        Get releases.
+
+        .DESCRIPTION
+        The Get-VCFRelease cmdlet returns all releases with options to return releases for a specified workload domain
+        ID, releases for a specified version, all future releases for a specified version, all applicable releases for
+        a specified target release, or all future releases for a specified workload domain ID.
+
+        .EXAMPLE
+        Get-VCFRelease
+        This example returns all releases.
+
+        .EXAMPLE
+        Get-VCFRelease -domainId 1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p
+        This example returns the release for a specified workload domain ID.
+
+        .EXAMPLE
+        Get-VCFRelease -versionEquals 4.4.1.0
+        This example returns the release for a specified version.
+
+        .EXAMPLE
+        Get-VCFRelease -versionGreaterThan 4.4.1.0
+        This example returns all future releases for a specified version.
+
+        .EXAMPLE
+        Get-VCFRelease -vxRailVersionEquals 4.4.1.0
+        This example returns the release for a specified version on VxRail.
+
+        .EXAMPLE
+        Get-VCFRelease -vxRailVersionGreaterThan 4.4.1.0
+        This example returns all future releases for a specified version on VxRail.
+
+        .EXAMPLE
+        Get-VCFRelease -applicableForVersion 4.4.1.0
+        This example returns all applicable target releases for a version. 
+
+        .EXAMPLE
+        Get-VCFRelease -applicableForVxRailVersion 4.4.1.0
+        This example returns all applicable target releases for a version on VxRail.
+
+        .EXAMPLE
+        Get-VCFRelease -futureReleases -domainId 1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p
+        This example returns all future releases for a specified workload domain.
+    #>
+
+    [CmdletBinding(DefaultParametersetName = 'default')][OutputType('System.Management.Automation.PSObject')]
+
+    Param (
+        [Parameter (ParameterSetName = 'default', Mandatory = $false)]
+        [Parameter (ParameterSetName = 'futureReleases', Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainId,
+        [Parameter (ParameterSetName = 'versionEquals', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$versionEquals,
+        [Parameter (ParameterSetName = 'versionGreaterThan', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$versionGreaterThan,
+        [Parameter (ParameterSetName = 'vxRailVersionEquals', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$vxRailVersionEquals,
+        [Parameter (ParameterSetName = 'vxRailVersionGreaterThan', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$vxRailVersionGreaterThan,
+        [Parameter (ParameterSetName = 'vxRailVersionGreaterThan', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$applicableForVersion,
+        [Parameter (ParameterSetName = 'applicableForVxRailVersion', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$applicableForVxRailVersion,
+        [Parameter (ParameterSetName = 'futureReleases', Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$futureReleases
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        createHeader # Call createHeader function to set the Accept & Authorization headers.
+        checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
+
+        if ($vcfVersion -ge '4.1.0' -and (-not $PsBoundParameters.ContainsKey('domainId')) -and (-not $PsBoundParameters.ContainsKey('versionEquals')) -and (-not $PsBoundParameters.ContainsKey('versionGreaterThan')) -and (-not $PsBoundParameters.ContainsKey('vxRailVersionEquals')) -and (-not $PsBoundParameters.ContainsKey('vxRailVersionGreaterThan')) -and (-not $PsBoundParameters.ContainsKey('applicableForVersion')) -and (-not $PsBoundParameters.ContainsKey('applicableForVxRailVersion')) -and (-not $PsBoundParameters.ContainsKey('futureReleases'))) {
+            $uri = "https://$sddcManager/v1/releases"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('domainId')) -and (-not $PsBoundParameters.ContainsKey('futureReleases'))) {
+            $uri = "https://$sddcManager/v1/releases?domainId=$domainId"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionEquals'))) {
+            $uri = "https://$sddcManager/v1/releases?versionEq=$versionEquals"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionGreaterThan'))) {
+            $uri = "https://$sddcManager/v1/releases?versionGt=$versionGreaterThan"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('applicableForVersion'))) {
+            $uri = "https://$sddcManager/v1/releases?applicableForVersion=$applicableForVersion"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionEquals'))) {
+            $uri = "https://$sddcManager/v1/releases?vxRailVersionEq=$vxRailVersionEquals"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionGreaterThan'))) {
+            $uri = "https://$sddcManager/v1/releases?vxRailVersionGt=$vxRailVersionGreaterThan"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('applicableForVxRailVersion'))) {
+            $uri = "https://$sddcManager/v1/releases?applicableForVxRailVersion=$applicableForVxRailVersion"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('futureReleases')) -and ($PsBoundParameters.ContainsKey('domainId'))) {
+            $uri = "https://$sddcManager/v1/releases?getFutureReleases=true&domainId=$domainId"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        else {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFRelease
+
+#EndRegion APIs for managing Releases
+
+
 #Region APIs for managing SDDC (Cloud Builder)
 
 Function Get-CloudBuilderSDDC {
@@ -3420,7 +3546,7 @@ Function Get-VCFManager {
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
         }
-        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId")) ) {
             $uri = "https://$sddcManager/v1/sddc-managers"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
