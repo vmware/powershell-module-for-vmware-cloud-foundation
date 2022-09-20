@@ -71,26 +71,26 @@ Function Request-VCFToken {
     }
 
     if ($PsBoundParameters.ContainsKey("skipCertificateCheck")) {
-        if (-not("dummy" -as [type])) {
+        if (-not("placeholder" -as [type])) {
             add-type -TypeDefinition @"
 using System;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-public static class Dummy {
+public static class Placeholder {
     public static bool ReturnTrue(object sender,
         X509Certificate certificate,
         X509Chain chain,
         SslPolicyErrors sslPolicyErrors) { return true; }
 
     public static RemoteCertificateValidationCallback GetDelegate() {
-        return new RemoteCertificateValidationCallback(Dummy.ReturnTrue);
+        return new RemoteCertificateValidationCallback(Placeholder.ReturnTrue);
     }
 }
 "@
 } 
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [dummy]::GetDelegate()
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
     $Global:sddcManager = $fqdn
@@ -148,26 +148,26 @@ Function Connect-CloudBuilder {
     }
 
     if ($PsBoundParameters.ContainsKey("skipCertificateCheck")) {
-        if (-not("dummy" -as [type])) {
+        if (-not("placeholder" -as [type])) {
             add-type -TypeDefinition @"
 using System;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-public static class Dummy {
+public static class Placeholder {
     public static bool ReturnTrue(object sender,
         X509Certificate certificate,
         X509Chain chain,
         SslPolicyErrors sslPolicyErrors) { return true; }
 
     public static RemoteCertificateValidationCallback GetDelegate() {
-        return new RemoteCertificateValidationCallback(Dummy.ReturnTrue);
+        return new RemoteCertificateValidationCallback(Placeholder.ReturnTrue);
     }
 }
 "@
 } 
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [dummy]::GetDelegate()
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
     $Global:cloudBuilder = $fqdn
