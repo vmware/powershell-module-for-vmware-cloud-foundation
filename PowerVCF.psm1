@@ -71,26 +71,26 @@ Function Request-VCFToken {
     }
 
     if ($PsBoundParameters.ContainsKey("skipCertificateCheck")) {
-        if (-not("dummy" -as [type])) {
+        if (-not("placeholder" -as [type])) {
             add-type -TypeDefinition @"
 using System;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-public static class Dummy {
+public static class Placeholder {
     public static bool ReturnTrue(object sender,
         X509Certificate certificate,
         X509Chain chain,
         SslPolicyErrors sslPolicyErrors) { return true; }
 
     public static RemoteCertificateValidationCallback GetDelegate() {
-        return new RemoteCertificateValidationCallback(Dummy.ReturnTrue);
+        return new RemoteCertificateValidationCallback(Placeholder.ReturnTrue);
     }
 }
 "@
 } 
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [dummy]::GetDelegate()
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
     $Global:sddcManager = $fqdn
@@ -148,26 +148,26 @@ Function Connect-CloudBuilder {
     }
 
     if ($PsBoundParameters.ContainsKey("skipCertificateCheck")) {
-        if (-not("dummy" -as [type])) {
+        if (-not("placeholder" -as [type])) {
             add-type -TypeDefinition @"
 using System;
 using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-public static class Dummy {
+public static class Placeholder {
     public static bool ReturnTrue(object sender,
         X509Certificate certificate,
         X509Chain chain,
         SslPolicyErrors sslPolicyErrors) { return true; }
 
     public static RemoteCertificateValidationCallback GetDelegate() {
-        return new RemoteCertificateValidationCallback(Dummy.ReturnTrue);
+        return new RemoteCertificateValidationCallback(Placeholder.ReturnTrue);
     }
 }
 "@
 } 
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [dummy]::GetDelegate()
+        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
     $Global:cloudBuilder = $fqdn
@@ -1462,19 +1462,32 @@ Function Get-VCFDepotCredential {
         Get Depot Settings
 
         .DESCRIPTION
-        Retrieves the configuration for the depot of the connected SDDC Manager
+        Retrieves the configurations for the depots configured in the SDDC Manager instance.
 
         .EXAMPLE
         Get-VCFDepotCredential
-        This example shows credentials that have been configured for the depot.
+        This example shows credentials that have been configured for VMware Customer Connect.
+
+        .EXAMPLE
+        Get-VCFDepotCredential -vxrail
+        This example shows credentials that have been configured for Dell EMC Support.
     #>
 
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vxrail
+    )
+
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Calls the createHeader function to set Accept and Authorization headers
+        checkVCFToken # Calls the checkVCFToken function to validate the access token and refresh, if necessary
         $uri = "https://$sddcManager/v1/system/settings/depot"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.vmwareAccount
+        $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+        if ($PsBoundParameters.ContainsKey('vxrail')) {
+            $response.dellEmcSupportAccount
+        }
+        else {
+            $response.vmwareAccount
+        }
     }
     Catch {
         ResponseException -object $_
@@ -1491,24 +1504,41 @@ Function Set-VCFDepotCredential {
         Update the configuration for the depot of the connected SDDC Manager
 
         .EXAMPLE
-        Set-VCFDepotCredential -username "user@yourdomain.com" -password "VMware1!"
-        This example sets the credentials that have been configured for the depot.
+        Set-VCFDepotCredential -username "support@rainpole.io" -password "VMw@re1!"
+        This example sets the credentials that have been configured for VMware Customer Connect.
+
+        .EXAMPLE
+        Set-VCFDepotCredential -vxrail -username "support@rainpole.io" -password "VMw@re1!"
+        This example sets the credentials that have been configured for Dell EMC Support.
     #>
 
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (ParameterSetName = 'vxrail', Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vxrail
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Calls the createHeader function to set Accept and Authorization headers
+        checkVCFToken # Calls the checkVCFToken function to validate the access token and refresh, if necessary
         $uri = "https://$sddcManager/v1/system/settings/depot"
-        if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
-            Throw "You must enter a username and password"
+        if ($PsBoundParameters.ContainsKey('vxrail')) {
+            if (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
+                Throw 'You must enter a username and password for Dell EMC Support.'
+            }
         }
-        $ConfigJson = '{"vmwareAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
-        $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        elseif (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
+            Throw 'You must enter a username and password for VMware Customer Connect.'
+        }
+
+        if ($PsBoundParameters.ContainsKey('vxrail')) {
+            $ConfigJson = '{"dellEmcSupportAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
+        }
+        else {
+            $ConfigJson = '{"vmwareAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
+        }
+       
+        $response = Invoke-RestMethod -Method PUT -Uri $uri -ContentType application/json -Headers $headers -Body $ConfigJson
         $response
     }
     Catch {
@@ -1518,7 +1548,6 @@ Function Set-VCFDepotCredential {
 Export-ModuleMember -Function Set-VCFDepotCredential
 
 #EndRegion APIs for managing Depot Settings
-
 
 #Region APIs for managing Domains
 
@@ -1697,28 +1726,34 @@ Function Get-VCFFederation {
         Get information on existing Federation
 
         .DESCRIPTION
-        The Get-VCFFederation cmdlet gets the complete information about the existing VCF Federation
+        The Get-VCFFederation cmdlet returns the details for a VMware Cloud Foundation federation
 
         .EXAMPLE
         Get-VCFFederation
-        This example list all details concerning the VCF Federation
+        This example lists all details for a VMware Cloud Foundation federation.
 
         .EXAMPLE
         Get-VCFFederation | ConvertTo-Json
-        This example list all details concerning the VCF Federation and outputs them in Json format
+        This example lists all details for a VMware Cloud Foundation federation and outputs to JSON.
     #>
 
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = "Multi-instance management is not supported in 4.4.0 and later."
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt "4.4.0") {
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
-        }
-        else {
-            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response
         }
     }
     Catch {
@@ -1730,18 +1765,18 @@ Export-ModuleMember -Function Get-VCFFederation
 Function Set-VCFFederation {
     <#
         .SYNOPSIS
-        Bootstrap a VMware Cloud Foundation to form a federation
+        Bootstraps federation in a VMware Cloud Foundation instance.
 
         .DESCRIPTION
-        The Set-VCFFederation cmdlet bootstraps the creation of a federation in VCF
+        The Set-VCFFederation cmdlet bootstraps the creation of a federation in a VMware Cloud Foundation instance.
 
         .EXAMPLE
         Set-VCFFederation -json $jsonSpec
-        This example shows how to create a federation using a variable
+        This example bootstraps the creation of a federation in a VMware Cloud Foundation instance using the JSON as variable.
 
         .EXAMPLE
         Set-VCFFederation -json (Get-Content -Raw .\federationSpec.json)
-        This example shows how to create a federation using a JSON file
+        This example bootstraps the creation of a federation in a VMware Cloud Foundation instance using a JSON file.
     #>
 
     Param (
@@ -1749,17 +1784,22 @@ Function Set-VCFFederation {
     )
     
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt "4.4.0") {
-            $jsonBody = validateJsonInput -json $json
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $json
+            $response
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
-        }
-        else {
-            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
         }
     }
     Catch {
@@ -1771,44 +1811,66 @@ Export-ModuleMember -Function Set-VCFFederation
 Function Remove-VCFFederation {
     <#
         .SYNOPSIS
-        Remove VCF Federation
+        Removes federation from SDDC Manager.
 
         .DESCRIPTION
-        A function that ensures VCF Federation is empty and completely dismantles it.
+        The Remove-VCFFederation cmdlet removed federation from SDDC Manager.
 
         .EXAMPLE
         Remove-VCFFederation
-        This example demonstrates how to dismantle the VCF Federation
+        This example removes federation from SDDC Manager.
     #>
 
     
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt "4.4.0") {
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation"
-            # Verify that SDDC Manager we're connected to is a controller and only one in the Federation
+            # Verify that the connected SDDC Manager is a controller and the only one present in the federation
             $sddcs = Get-VCFFederation | Select-Object memberDetails
             Foreach ($sddc in $sddcs) {
-                if ($sddc.memberDetails.role -eq "CONTROLLER") {
+                if ($sddc.memberDetails.role -eq 'CONTROLLER') {
                     $controller++
-                    if ($sddc.memberDetails.role -eq "MEMBER") {
+                    if ($sddc.memberDetails.role -eq 'MEMBER') {
                         $member++
                     }
                 }
             }
             if ($controller -gt 1) {
-                Throw "Only one controller can be present when dismantling VCF Federation. Remove additional controllers and try again"
+                Throw 'More than one federation controller exists. Remove additional controllers.'
             }
             if ($member -gt 0) {
-                Throw "VCF Federation members still exist. Remove all members and additional controllers before dismantling VCF Federation"
+                Throw 'Federation members still exist. Remove all members and any additional controllers.'
             }
-            $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
             $response
-        }
-        else {
-            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation"
+            # Verify that the connected SDDC Manager is a controller and the only one present in the federation
+            $sddcs = Get-VCFFederation | Select-Object memberDetails
+            Foreach ($sddc in $sddcs) {
+                if ($sddc.memberDetails.role -eq 'CONTROLLER') {
+                    $controller++
+                    if ($sddc.memberDetails.role -eq 'MEMBER') {
+                        $member++
+                    }
+                }
+            }
+            if ($controller -gt 1) {
+                Throw 'More than one federation controller exists. Remove additional controllers.'
+            }
+            if ($member -gt 0) {
+                Throw 'Federation members still exist. Remove all members and any additional controllers.'
+            }
+            $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
+            $response
         }
     }
     Catch {
@@ -1819,6 +1881,42 @@ Export-ModuleMember -Function Remove-VCFFederation
 
 #EndRegion APIs for managing Federation
 
+
+#Region APIs for managing FIPS
+
+Function Get-VCFFipsMode {
+    <#
+        .SYNOPSIS
+        Returns the status for FIPS mode.
+
+        .DESCRIPTION
+        The Get-VCFFipsMode cmdlet returns the status for FIPS mode on the VMware Cloud Foundation instance.
+
+        .EXAMPLE
+        Get-VCFFipsMode
+        This example returns the status for FIPS mode on the VMware Cloud Foundation instance.
+    #>
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        if ($vcfVersion -ge '4.3.0') {
+            createHeader # Call createHeader function to set the Accept & Authorization headers.
+            checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
+            $uri = "https://$sddcManager/v1/system/security/fips"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response
+        }
+        else {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFFipsMode
+
+#EndRegion APIs for managing FIPS
 
 #Region APIs for managing Hosts
 
@@ -2816,6 +2914,132 @@ Export-ModuleMember -Function Get-VCFFederationTask
 #EndRegion APIs for managing Federation Tasks
 
 
+#Region APIs for managing Releases
+
+Function Get-VCFRelease {
+    <#
+        .SYNOPSIS
+        Get releases.
+
+        .DESCRIPTION
+        The Get-VCFRelease cmdlet returns all releases with options to return releases for a specified workload domain
+        ID, releases for a specified version, all future releases for a specified version, all applicable releases for
+        a specified target release, or all future releases for a specified workload domain ID.
+
+        .EXAMPLE
+        Get-VCFRelease
+        This example returns all releases.
+
+        .EXAMPLE
+        Get-VCFRelease -domainId 1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p
+        This example returns the release for a specified workload domain ID.
+
+        .EXAMPLE
+        Get-VCFRelease -versionEquals 4.4.1.0
+        This example returns the release for a specified version.
+
+        .EXAMPLE
+        Get-VCFRelease -versionGreaterThan 4.4.1.0
+        This example returns all future releases for a specified version.
+
+        .EXAMPLE
+        Get-VCFRelease -vxRailVersionEquals 4.4.1.0
+        This example returns the release for a specified version on VxRail.
+
+        .EXAMPLE
+        Get-VCFRelease -vxRailVersionGreaterThan 4.4.1.0
+        This example returns all future releases for a specified version on VxRail.
+
+        .EXAMPLE
+        Get-VCFRelease -applicableForVersion 4.4.1.0
+        This example returns all applicable target releases for a version. 
+
+        .EXAMPLE
+        Get-VCFRelease -applicableForVxRailVersion 4.4.1.0
+        This example returns all applicable target releases for a version on VxRail.
+
+        .EXAMPLE
+        Get-VCFRelease -futureReleases -domainId 1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p
+        This example returns all future releases for a specified workload domain.
+    #>
+
+    [CmdletBinding(DefaultParametersetName = 'default')][OutputType('System.Management.Automation.PSObject')]
+
+    Param (
+        [Parameter (ParameterSetName = 'default', Mandatory = $false)]
+        [Parameter (ParameterSetName = 'futureReleases', Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainId,
+        [Parameter (ParameterSetName = 'versionEquals', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$versionEquals,
+        [Parameter (ParameterSetName = 'versionGreaterThan', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$versionGreaterThan,
+        [Parameter (ParameterSetName = 'vxRailVersionEquals', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$vxRailVersionEquals,
+        [Parameter (ParameterSetName = 'vxRailVersionGreaterThan', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$vxRailVersionGreaterThan,
+        [Parameter (ParameterSetName = 'vxRailVersionGreaterThan', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$applicableForVersion,
+        [Parameter (ParameterSetName = 'applicableForVxRailVersion', Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$applicableForVxRailVersion,
+        [Parameter (ParameterSetName = 'futureReleases', Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$futureReleases
+    )
+
+    Try {
+        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        createHeader # Call createHeader function to set the Accept & Authorization headers.
+        checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
+
+        if ($vcfVersion -ge '4.1.0' -and (-not $PsBoundParameters.ContainsKey('domainId')) -and (-not $PsBoundParameters.ContainsKey('versionEquals')) -and (-not $PsBoundParameters.ContainsKey('versionGreaterThan')) -and (-not $PsBoundParameters.ContainsKey('vxRailVersionEquals')) -and (-not $PsBoundParameters.ContainsKey('vxRailVersionGreaterThan')) -and (-not $PsBoundParameters.ContainsKey('applicableForVersion')) -and (-not $PsBoundParameters.ContainsKey('applicableForVxRailVersion')) -and (-not $PsBoundParameters.ContainsKey('futureReleases'))) {
+            $uri = "https://$sddcManager/v1/releases"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('domainId')) -and (-not $PsBoundParameters.ContainsKey('futureReleases'))) {
+            $uri = "https://$sddcManager/v1/releases?domainId=$domainId"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionEquals'))) {
+            $uri = "https://$sddcManager/v1/releases?versionEq=$versionEquals"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionGreaterThan'))) {
+            $uri = "https://$sddcManager/v1/releases?versionGt=$versionGreaterThan"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('applicableForVersion'))) {
+            $uri = "https://$sddcManager/v1/releases?applicableForVersion=$applicableForVersion"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionEquals'))) {
+            $uri = "https://$sddcManager/v1/releases?vxRailVersionEq=$vxRailVersionEquals"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionGreaterThan'))) {
+            $uri = "https://$sddcManager/v1/releases?vxRailVersionGt=$vxRailVersionGreaterThan"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('applicableForVxRailVersion'))) {
+            $uri = "https://$sddcManager/v1/releases?applicableForVxRailVersion=$applicableForVxRailVersion"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        elseif ($vcfVersion -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('futureReleases')) -and ($PsBoundParameters.ContainsKey('domainId'))) {
+            $uri = "https://$sddcManager/v1/releases?getFutureReleases=true&domainId=$domainId"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response.elements
+        }
+        else {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFRelease
+
+#EndRegion APIs for managing Releases
+
+
 #Region APIs for managing SDDC (Cloud Builder)
 
 Function Get-CloudBuilderSDDC {
@@ -3356,7 +3580,7 @@ Function Get-VCFManager {
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
         }
-        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId")) ) {
             $uri = "https://$sddcManager/v1/sddc-managers"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
