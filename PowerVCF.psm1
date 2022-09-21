@@ -1486,19 +1486,32 @@ Function Get-VCFDepotCredential {
         Get Depot Settings
 
         .DESCRIPTION
-        Retrieves the configuration for the depot of the connected SDDC Manager
+        Retrieves the configurations for the depots configured in the SDDC Manager instance.
 
         .EXAMPLE
         Get-VCFDepotCredential
-        This example shows credentials that have been configured for the depot.
+        This example shows credentials that have been configured for VMware Customer Connect.
+
+        .EXAMPLE
+        Get-VCFDepotCredential -vxrail
+        This example shows credentials that have been configured for Dell EMC Support.
     #>
 
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vxrail
+    )
+
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Calls the createHeader function to set Accept and Authorization headers
+        checkVCFToken # Calls the checkVCFToken function to validate the access token and refresh, if necessary
         $uri = "https://$sddcManager/v1/system/settings/depot"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.vmwareAccount
+        $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+        if ($PsBoundParameters.ContainsKey('vxrail')) {
+            $response.dellEmcSupportAccount
+        }
+        else {
+            $response.vmwareAccount
+        }
     }
     Catch {
         ResponseException -object $_
@@ -1515,24 +1528,41 @@ Function Set-VCFDepotCredential {
         Update the configuration for the depot of the connected SDDC Manager
 
         .EXAMPLE
-        Set-VCFDepotCredential -username "user@yourdomain.com" -password "VMware1!"
-        This example sets the credentials that have been configured for the depot.
+        Set-VCFDepotCredential -username "support@rainpole.io" -password "VMw@re1!"
+        This example sets the credentials that have been configured for VMware Customer Connect.
+
+        .EXAMPLE
+        Set-VCFDepotCredential -vxrail -username "support@rainpole.io" -password "VMw@re1!"
+        This example sets the credentials that have been configured for Dell EMC Support.
     #>
 
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (ParameterSetName = 'vxrail', Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vxrail
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Calls the createHeader function to set Accept and Authorization headers
+        checkVCFToken # Calls the checkVCFToken function to validate the access token and refresh, if necessary
         $uri = "https://$sddcManager/v1/system/settings/depot"
-        if ( -not $PsBoundParameters.ContainsKey("username") -and ( -not $PsBoundParameters.ContainsKey("password"))) {
-            Throw "You must enter a username and password"
+        if ($PsBoundParameters.ContainsKey('vxrail')) {
+            if (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
+                Throw 'You must enter a username and password for Dell EMC Support.'
+            }
         }
-        $ConfigJson = '{"vmwareAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
-        $response = Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $ConfigJson
+        elseif (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
+            Throw 'You must enter a username and password for VMware Customer Connect.'
+        }
+
+        if ($PsBoundParameters.ContainsKey('vxrail')) {
+            $ConfigJson = '{"dellEmcSupportAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
+        }
+        else {
+            $ConfigJson = '{"vmwareAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
+        }
+       
+        $response = Invoke-RestMethod -Method PUT -Uri $uri -ContentType application/json -Headers $headers -Body $ConfigJson
         $response
     }
     Catch {
@@ -1542,7 +1572,6 @@ Function Set-VCFDepotCredential {
 Export-ModuleMember -Function Set-VCFDepotCredential
 
 #EndRegion APIs for managing Depot Settings
-
 
 #Region APIs for managing Domains
 
