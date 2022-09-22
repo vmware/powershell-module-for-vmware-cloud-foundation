@@ -1799,7 +1799,7 @@ Function Set-VCFFederation {
         This example bootstraps the creation of a federation in a VMware Cloud Foundation instance using the JSON as variable.
 
         .EXAMPLE
-        Set-VCFFederation -json (Get-Content -Raw .\federationSpec.json)
+        Set-VCFFederation -json (Get-Content -Raw .\createFederationSpec.json)
         This example bootstraps the creation of a federation in a VMware Cloud Foundation instance using a JSON file.
     #>
 
@@ -2273,21 +2273,25 @@ Export-ModuleMember -Function Remove-VCFLicenseKey
 Function Get-VCFFederationMember {
     <#
         .SYNOPSIS
-        Gets members of the Federation
+        Gets members of a VMware Cloud Foundation federation.
 
         .DESCRIPTION
-        Gets the complete information about the existing VCF Federation members.
+        Gets the information about the members of a VMware Cloud Foundation federation.
 
         .EXAMPLE
         Get-VCFFederationMember
-        This example lists all details concerning the VCF Federation members.
+        This example lists all details for members of a VMware Cloud Foundation federation.
     #>
     
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt "4.4.0") {
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation/members"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             if (!$response.federationName) {
@@ -2296,9 +2300,16 @@ Function Get-VCFFederationMember {
             else {
                 $response.memberDetail
             }
-        }
-        else {
-            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation/members"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            if (!$response.federationName) {
+                Throw 'Failed to get members, no Federation found.'
+            }
+            else {
+                $response.memberDetail
+            }
         }
     }
     Catch {
@@ -2310,14 +2321,15 @@ Export-ModuleMember -Function Get-VCFFederationMember
 Function New-VCFFederationInvite {
     <#
         .SYNOPSIS
-        Invite new member to VCF Federation.
+        Invite new member to join a VMware Cloud Foundation federation.
 
         .DESCRIPTION
-        The New-VCFFederationInvite cmdlet creates a new invitation for a member to join the existing VCF Federation.
+        The New-VCFFederationInvite cmdlet creates a new invitation for a member to join an existing VMware Cloud
+        Foundation federation.
 
         .EXAMPLE
         New-VCFFederationInvite -inviteeFqdn lax-vcf01.lax.rainpole.io -inviteeRole MEMBER
-        This example demonstrates how to create an invitation for a specified VCF Manager from the Federation controller.
+        This example demonstrates how to create an invitation from the federation controller.
     #>
 
     Param (
@@ -2326,10 +2338,14 @@ Function New-VCFFederationInvite {
     )
 
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt "4.4.0") {
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
             $sddcMemberRole = Get-VCFFederationMember
             if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
@@ -2345,9 +2361,23 @@ Function New-VCFFederationInvite {
                 $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -body $ConfigJson -ContentType 'application/json'
                 $response
             }
-        }
-        else {
-            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+        } else {
+            Write-Warning "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
+            $sddcMemberRole = Get-VCFFederationMember
+            if ($sddcMemberRole.memberDetail.role -ne 'CONTROLLER' -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
+                Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
+            }
+            else {
+                $inviteeDetails = @{
+                    inviteeRole = $inviteeRole
+                    inviteeFqdn = $inviteeFqdn
+
+                }
+                $ConfigJson = $inviteeDetails | ConvertTo-Json
+                $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -Body $ConfigJson -ContentType 'application/json'
+                $response
+            }
         }
     }
     Catch {
@@ -2359,15 +2389,15 @@ Export-ModuleMember -Function New-VCFFederationInvite
 Function Join-VCFFederation {
     <#
         .SYNOPSIS
-        Join an VMware Cloud Foundation instance to a Federation
+        Join an VMware Cloud Foundation instance to an existing VMware Cloud Foundation federation.
 
         .DESCRIPTION
         The Join-VCFFederation cmdlet joins a VMware Cloud Foundation instance an existing VMware Cloud Foundation
-        Federation (Multi-Instance configuration).
+        federation (Multi-Instance Management).
 
         .EXAMPLE
-        Join-VCFFederation -json .\joinVCFFederationSpec.json
-        This example demonstrates how to join an VCF Federation by referencing config info in JSON file.
+        Join-VCFFederation -json .\joinFederationSpec.json
+        This example demonstrates how to join an existing VMware Cloud Foundation dederation by referencing config info in JSON file.
     #>
 
     Param (
@@ -2375,15 +2405,18 @@ Function Join-VCFFederation {
     )
 
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt "4.4.0") {
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
             if (!(Test-Path $json)) {
                 Throw "JSON File Not Found"
-            }
-            else {
+            } else {
+                Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
                 $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
-                createHeader # Calls createHeader function to set Accept & Authorization
-                checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
                 $uri = "https://$sddcManager/v1/sddc-federation/members"
                 $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType 'application/json' -body $ConfigJson
                 $response
@@ -2397,9 +2430,25 @@ Function Join-VCFFederation {
                 While ($response.status -eq "IN_PROGRESS")
                 $response
             }
-        }
-        else {
-            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+        } else {
+            if (!(Test-Path $json)) {
+                Throw 'JSON File Not Found'
+            }
+            else {
+                $ConfigJson = (Get-Content -Raw $json) # Reads the joinSVCFFederation json file contents into the $ConfigJson variable
+                $uri = "https://$sddcManager/v1/sddc-federation/members"
+                $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $ConfigJson
+                $response
+                $taskId = $response.taskId # get the task id from the action
+                # keep checking until executionStatus is not IN_PROGRESS
+                Do {
+                    $uri = "https://$sddcManager/v1/sddc-federation/tasks/$taskId"
+                    $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers -ContentType 'application/json'
+                    Start-Sleep -Second 5
+                }
+                While ($response.status -eq 'IN_PROGRESS')
+                $response
+            }
         }
     }
     Catch {
@@ -2908,14 +2957,14 @@ Export-ModuleMember -Function Get-VCFPersonality
 Function Get-VCFFederationTask {
     <#
         .SYNOPSIS
-        Get task status for Federation operations
+        Get the status of operations tasks in a VMware Cloud Foundation federation.
 
         .DESCRIPTION
-        The Get-VCFFederationTask cmdlet gets the status of tasks relating to Federation operations
+        The Get-VCFFederationTask cmdlet gets the status of operations tasks in a VMware Cloud Foundation federation.
 
         .EXAMPLE
         Get-VCFFederationTask -id f6f38f6b-da0c-4ef9-9228-9330f3d30279
-        This example list all tasks for Federation operations
+        This example list all operations tasks in a VMware Cloud Foundation federation.
     #>
 
     Param (
@@ -2923,16 +2972,22 @@ Function Get-VCFFederationTask {
     )
 
     Try {
+        createHeader # Calls createHeader function to set the Accept and Authorization headers
+        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'     
         $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
-        if ($vcfVersion -lt "4.4.0") {
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($vcfVersion -ge '4.4.0') {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
+        } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
+            Write-Warning "This API is deprecated in this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
             $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        }
-        else {
-            Write-Warning "Multi-Instance Management has been deprecated in VMware Cloud Foundation v4.4.0 and later, this API is no longer supported"
+        } else {
+            Write-Output "This API is not available in the latest versions of VMware Cloud Foundation. $msgEndOfSupport"
+            $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response
         }
     }
     Catch {
