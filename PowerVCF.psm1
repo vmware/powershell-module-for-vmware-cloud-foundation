@@ -104,7 +104,7 @@ public static class Dummy {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck # PS Core has -SkipCertificateCheck implemented
             $Global:accessToken = $response.accessToken
             $Global:refreshToken = $response.refreshToken.id
-        }:
+        }
         else {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
             $Global:accessToken = $response.accessToken
