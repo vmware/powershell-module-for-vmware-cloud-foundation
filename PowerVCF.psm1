@@ -5262,10 +5262,10 @@ Function validateJsonInput {
         if ($jsonValid) {
             Write-Verbose "JSON file found, JSON string format was valid and content has been stored into a variable"
             Write-Verbose $ConfigJson
-            $Global:ConfigJson  # return validated json
+            $ConfigJson  # return validated json
         }
         else {
-            ConfigJson  # return unvalidated json before throwing
+            $ConfigJson  # return unvalidated json before throwing
             Throw "The provided JSON file path was valid however it couldn't be converted from JSON, please check the formatting of your input file"
         }
     }
