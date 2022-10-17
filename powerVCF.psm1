@@ -1934,7 +1934,7 @@ Function Request-VCFBundle {
     createHeader # Calls Function createHeader to set Accept & Authorization
     $uri = "https://$sddcManager/v1/bundles/$id"
     $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
-    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
+    $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $body
   }
   Catch {
     ResponseException -object $_
@@ -1972,6 +1972,41 @@ Function Get-VCFUpgradables {
 Export-ModuleMember -Function Get-VCFUpgradables
 
 ######### End Get Upgradable Operations ##########
+
+######### Start APIs for managing Upgrades ##########
+
+Function Start-VCFUpgrade {
+    <#
+        .SYNOPSIS
+        Schedule/Trigger Upgrade of a Resource
+        .DESCRIPTION
+        The Start-VCFUpgrade cmdlet triggers an upgrade of a resource in SDDC Manager
+        .EXAMPLE
+        PS C:\> Start-VCFUpgrade -json $jsonSpec
+        This example invokes an upgrade in SDDC Manager using a variable
+        .EXAMPLE
+        PS C:\> Start-VCFUpgrade -json (Get-Content -Raw .\upgradeDomain.json)
+        This example invokes an upgrade in SDDC Manager by passing a JSON file
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    $headers = @{"Accept" = "application/json"}
+  $headers.Add("Authorization", "Basic $base64AuthInfo")
+    $uri = "https://$sddcManager/v1/upgrades"
+    Try {
+        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $json
+        $response
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Start-VCFUpgrade
+
+######### End APIs for managing Upgrades ##########
 ######### Start Upload Bundle Operations ##########
 
 Function Start-UploadVCFBundle {
