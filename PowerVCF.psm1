@@ -4897,7 +4897,7 @@ Export-ModuleMember -Function Get-VCFvRA
 Function Get-VCFvRLI {
     <#
         .SYNOPSIS
-        Get the existi  ng vRealize Log Insight
+        Get the existing vRealize Log Insight
 
         .DESCRIPTION
         The Get-VCFvRLI cmdlet gets the complete information about the existing vRealize Log Insight.
