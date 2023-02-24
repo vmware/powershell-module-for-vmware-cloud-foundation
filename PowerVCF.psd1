@@ -12,7 +12,7 @@
 RootModule = 'PowerVCF.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.2.1'
+ModuleVersion = '2.3.0'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,7 +27,7 @@ Author = 'Brian O Connell, Gary Blake & Ken Gould'
 CompanyName = 'VMware Inc.'
 
 # Copyright statement for this module
-Copyright = 'Copyright 2021-2022 VMware, Inc.'
+Copyright = 'Copyright 2021-2023 VMware, Inc.'
 
 # Description of the functionality provided by this module
 Description = 'PowerShell Module for the VMware Cloud Foundation 4.x API.'

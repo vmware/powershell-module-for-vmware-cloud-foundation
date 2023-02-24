@@ -1451,6 +1451,62 @@ Function Restart-VCFCredentialTask {
 }
 Export-ModuleMember -Function Restart-VCFCredentialTask
 
+Function Get-VCFCredentialExpiry {
+    <#
+        .SYNOPSIS
+        Get credential password expiry
+
+        .DESCRIPTION
+        The Get-VCFCredentialExpiry cmdlet connects to the specified SDDC Manager and retrieves a list of credentials
+        with password expiry details.
+
+        .EXAMPLE
+        Get-VCFCredentialExpiry
+        This example shows how to get a list of all credentials with their password expiry details
+
+        .EXAMPLE
+        Get-VCFCredentialExpiry -id 511906b0-e406-46b3-9f5d-38ece1501077
+        This example shows how to get password expiry details by user ID
+
+        .EXAMPLE
+        Get-VCFCredentialExpiry -resourceName sfo-m01-vc01.sfo.rainpole.io
+        This example shows how to get password expiry detauls by resource name
+
+        .EXAMPLE
+        Get-VCFCredentialExpiry -resourceType VCENTER
+        This example shows how to get a list of credentials with their password expiry details by resource type
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$resourceName,
+        [Parameter (Mandatory = $false)] [ValidateSet("VCENTER", "PSC", "ESXI", "BACKUP", "NSXT_MANAGER", "NSXT_EDGE", "VRSLCM", "WSA", "VROPS", "VRLI", "VRA")] [ValidateNotNullOrEmpty()] [String]$resourceType,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        $uri = "https://$sddcManager/v1/credentials/ui?includeExpiryOnly=true"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        if ($PsBoundParameters.ContainsKey("resourceName")) {
+            $response.elements | Where-Object {$_.resource.resourceName -eq $resourceName}
+        }
+        elseif ($PsBoundParameters.ContainsKey("id")) {
+            $response.elements | Where-Object {$_.id -eq $id}
+        }
+        elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
+            $response.elements | Where-Object {$_.resource.resourceType -eq $resourceType}
+        }
+        else {
+            $response.elements
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFCredentialExpiry
+
 #EndRegion APIs for managing Credentials
 
 
