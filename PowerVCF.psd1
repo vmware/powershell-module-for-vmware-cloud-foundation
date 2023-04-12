@@ -12,7 +12,7 @@
 RootModule = 'PowerVCF.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.3.0'
+ModuleVersion = '2.3.0.1003'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
