@@ -38,6 +38,7 @@
 - Added `Get-VCFRelease` cmdlet to retrieve details for releases.
 - Added `Get-VCFCredentialExpiry` cmdlet to retrieve the password expiry details for credentials.
 - Added `Get-VCFLicenseMode` cmdlet to retrieve the current license mode of the system & each domain
+- Added `New-VCFPersonality` cmdlet to add a new vSphere Lifecycle Manager personality/image in the SDDC Manager inventory from an existing vLCM image based cluster
 
 ## v2.2.0 (2022-26-05)
 
