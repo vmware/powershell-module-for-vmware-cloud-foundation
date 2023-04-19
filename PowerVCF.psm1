@@ -2291,6 +2291,34 @@ Function Remove-VCFLicenseKey {
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
 
+Function Get-VCFLicenseMode {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves the current license mode
+
+        .DESCRIPTION
+        The Get-VCFLicenseMode cmdlet connects to the specified SDDC Manager and retrieves the current license mode
+
+        .EXAMPLE
+        Get-VCFLicenseMode
+        This example shows how to retrieve the current license mode
+    #>
+
+    Param (
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/licensing-info"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFLicenseMode
 #EndRegion APIs for managing License Keys
 
 

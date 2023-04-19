@@ -37,6 +37,7 @@
 - Added `Get-VCFFipsMode` cmdlet to return the status for FIPS mode.
 - Added `Get-VCFRelease` cmdlet to retrieve details for releases.
 - Added `Get-VCFCredentialExpiry` cmdlet to retrieve the password expiry details for credentials.
+- Added `Get-VCFLicenseMode` cmdlet to retrieve the current license mode of the system & each domain
 
 ## v2.2.0 (2022-26-05)
 
