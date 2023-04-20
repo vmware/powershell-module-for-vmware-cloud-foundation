@@ -3006,10 +3006,10 @@ Export-ModuleMember -Function Get-VCFPersonality
 Function New-VCFPersonality {
     <#
         .SYNOPSIS
-        Creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory
+        Creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory from an existing vLCM cluster
 
         .DESCRIPTION
-        The New-VCFPersonality creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory
+        The New-VCFPersonality creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory from an existing vLCM cluster
 
         .EXAMPLE
         New-VCFPersonality -name "vSphere 8.0U1" -vCenterId 6c7c3aaa-79cb-42fd-ade3-353f682cb1dc -clusterId "domain-c44"
