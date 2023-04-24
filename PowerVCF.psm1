@@ -2291,6 +2291,34 @@ Function Remove-VCFLicenseKey {
 }
 Export-ModuleMember -Function Remove-VCFLicenseKey
 
+Function Get-VCFLicenseMode {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves the current license mode
+
+        .DESCRIPTION
+        The Get-VCFLicenseMode cmdlet connects to the specified SDDC Manager and retrieves the current license mode
+
+        .EXAMPLE
+        Get-VCFLicenseMode
+        This example shows how to retrieve the current license mode
+    #>
+
+    Param (
+    )
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/licensing-info"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFLicenseMode
 #EndRegion APIs for managing License Keys
 
 
@@ -2974,6 +3002,48 @@ Function Get-VCFPersonality {
     }
 }
 Export-ModuleMember -Function Get-VCFPersonality
+
+Function New-VCFPersonality {
+    <#
+        .SYNOPSIS
+        Creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory from an existing vLCM cluster
+
+        .DESCRIPTION
+        The New-VCFPersonality creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory from an existing vLCM cluster
+
+        .EXAMPLE
+        New-VCFPersonality -name "vSphere 8.0U1" -vCenterId 6c7c3aaa-79cb-42fd-ade3-353f682cb1dc -clusterId "domain-c44"
+        This example creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory where clusterId is the vSphere ID for an existing non-VCF cluster
+        Retrieve the cluster ID from vCenter using $clusterId = (Get-Cluster -Name 'vLCM-Cluster').ExtensionData.MoRef.Value
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$vCenterId,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$clusterId
+    )
+
+    $Global:body = '{
+        "uploadMode" : "REFERRED",
+        "uploadSpecReferredMode" : {
+        "vCenterId" : "'+ $vCenterId + '",
+        "clusterId" : "'+ $clusterId + '"
+  },
+  "name" : "'+ $name + '"
+    }' 
+
+    Try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/personalities"
+            $response = Invoke-RestMethod -Method POST -ContentType application/json  -URI $uri -headers $headers -body $body
+            $response
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function New-VCFPersonality
 
 #EndRegion APIs for managing Personalities
 
