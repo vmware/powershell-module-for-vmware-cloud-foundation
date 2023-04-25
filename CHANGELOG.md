@@ -1,6 +1,6 @@
 # Release History
 
-## v2.3.0 (Not Released)
+## v2.3.0 (2023-04-25)
 
 - Enhanced `validateJsonInput` cmdlet for consistency across functions.
 - Enhanced `Get-VCFDepotCredential` cmdlet to support retrieving the VxRail depot details.

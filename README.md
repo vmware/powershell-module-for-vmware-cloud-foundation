@@ -53,25 +53,53 @@ VMware Cloud Foundation
 
 Verify that your system has a supported edition and version of PowerShell installed.
 
-### From the PowerShell Gallery
-
 Install the module from the PowerShell Gallery by opening a PowerShell session as an Administrator and running the following command:
 
 ```powershell
 Install-Module -Name PowerVCF
 ```
 
-### From Source
+## Updating the Module
 
-Install the module from the from source first downloading and extracting the [release][module-powervcf-releases] archive. Next, open a PowerShell session as an Administrator, navigate to the directory where the binary has been extracted, and run the following command:
+Update the PowerShell module to the latest release from the Microsoft PowerShell Gallery by running the following command in the PowerShell console:
 
 ```powershell
-Import-Module .\PowerVCF
+Update-Module -Name PowerVCF
+```
+
+To verify the version of the PowerShell module, run the following command in the PowerShell console.
+
+```powershell
+Get-InstalledModule -Name PowerVCF
+```
+
+## Getting Help
+
+To view the cmdlets available in the module, run the following command in the PowerShell console.
+
+```powershell
+Get-Command -Module PowerVCF
+```
+
+To view the help for any cmdlet, run the `Get-Help` command in the PowerShell console.
+
+For example:
+
+```powershell
+Get-Help -Name Request-VCFToken
+```
+
+```powershell
+Get-Help -Name Request-VCFToken -examples
+```
+
+```powershell
+Get-Help -Name Request-VCFToken -full
 ```
 
 ## Getting Started
 
-All API operations must currently be authenticated using the SDDC Manager. To create a `base64` credential to authenticate each cmdlet you must first run the `Request-VCFToken` cmdlet.
+All API operations must be authenticated via SDDC Manager. To create a `base64` credential to authenticate each cmdlet you must first run the `Request-VCFToken` cmdlet.
 
 This example shows how to connect to SDDC Manager to request API access & refresh tokens using the default `administrator@vsphere.local` vCenter Single Sign-On administrator account.
 
@@ -147,34 +175,6 @@ $hostDetail.esxiVersion
 7.0.2-17867351
 ```
 
-## Get Help
-
-Once installed, any cmdlets associated with `PowerVCF` will be available for use.
-
-To view the cmdlets for available in the module, run the following command in the PowerShell console.
-
-```powershell
-Get-Command -Module PowerVCF
-```
-
-To view the help for any cmdlet, run the `Get-Help` command in the PowerShell console.
-
-For example:
-
-```powershell
-Get-Help -Name <cmdlet name>
-```
-
-Each cmdlet support the following options:
-
-```powershell
-Get-Help -Name <cmdlet name> -Examples
-
-Get-Help -Name <cmdlet name> -Detailed
-
-Get-Help -Name <cmdlet name> -Full
-```
-
 ## Contributing
 
 The project team welcomes contributions from the community. Before you start working with PowerValidatedSolutions, please read our [Developer Certificate of Origin][vmware-cla-dco]. All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch.
@@ -189,7 +189,7 @@ If you discover a bug or would like to suggest an enhancement, please [open an i
 
 ## License
 
-Copyright 2021-2022 VMware, Inc.
+Copyright 2021-2023 VMware, Inc.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
