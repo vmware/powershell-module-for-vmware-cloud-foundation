@@ -1,16 +1,18 @@
-# OS generated files #
-######################
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# MacOS
+## Ignore desktop services files.
+**/.DS_Store
 
-# Application Generated Files #
-######################
-.vscode
-=======
+# Hugo
+# Ignore generated files.
+/public/
+/resources/_gen/
+/assets/jsconfig.json
+hugo_stats.json
 
-.DS_Store
+# Ignore executables.
+hugo.exe
+hugo.darwin
+hugo.linux
+
+# Ignore temporary lock file.
+/.hugo_build.lock
