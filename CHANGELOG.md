@@ -1,5 +1,9 @@
 # Release History
 
+## v2.4.0 (Unreleased)
+
+- Updated `Request-VCFToken` cmdlet for better error handling.
+
 ## v2.3.0 (2023-04-25)
 
 - Enhanced `validateJsonInput` cmdlet for consistency across functions.
