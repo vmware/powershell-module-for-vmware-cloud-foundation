@@ -115,7 +115,7 @@ public static class Placeholder {
         }
     }
     Catch {
-        Write-Error $._Exception.Message
+        ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Request-VCFToken
