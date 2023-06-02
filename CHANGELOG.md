@@ -3,6 +3,8 @@
 ## v2.4.0 (Unreleased)
 
 - Updated `Request-VCFToken` cmdlet for better error handling.
+- Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager version in `x.y.z` format.
+- Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager build in `xxxxxxx` format.
 
 ## v2.3.0 (2023-04-25)
 

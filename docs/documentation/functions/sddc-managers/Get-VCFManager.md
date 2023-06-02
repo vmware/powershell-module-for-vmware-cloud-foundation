@@ -7,7 +7,7 @@ Retrieves a list of SDDC Managers.
 ## Syntax
 
 ```powershell
-Get-VCFManager [[-id] <String>] [[-domainId] <String>] [<CommonParameters>]
+Get-VCFManager [[-id] <String>] [[-domainId] <String>] [-version <Switch>] [-build <Switch>] [<CommonParameters>]
 ```
 
 ## Description
@@ -40,6 +40,22 @@ Get-VCFManager -domainId 1a6291f2-ed54-4088-910f-ead57b9f9902
 
 This example shows how to return the details for a specific SDDC Manager based on the domain ID of a workload domain.
 
+### Example 4
+
+``` powershell
+Get-VCFManager -version
+```
+
+This example shows how to return the SDDC Manager version in `x.y.z` format.
+
+### Example 5
+
+``` powershell
+Get-VCFManager -build
+```
+
+This example shows how to return the SDDC Manager build number in `xxxxxxx` format.
+
 ## Parameters
 
 ### -id
@@ -69,6 +85,38 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -version
+
+Specifies to return the SDDC Manager version in `x.y.z` format.
+
+```yaml
+Type: Switch
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -build
+
+Specifies to return the SDDC Manager build number in `xxxxxxx` format.
+
+```yaml
+Type: Switch
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
