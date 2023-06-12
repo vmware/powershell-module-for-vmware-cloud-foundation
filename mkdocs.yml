@@ -1,0 +1,325 @@
+# Project Information
+site_name: PowerVCF
+site_description: PowerShell Module for VMware Cloud Foundation
+site_url: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation
+site_author: VMware, Inc.
+docs_dir: docs
+site_dir: .site
+use_directory_urls: true
+
+# Repository
+repo_url: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation
+edit_uri: blob/main/docs/
+
+# Copyright
+copyright: >
+  Copyright &copy; 2023 - VMware, Inc. –
+  <a href="#__consent">Manage Settings</a>
+
+# Configuration
+theme:
+  name: material
+  favicon: favicon.ico
+  logo: assets/images/icon-white.svg
+  icon:
+    repo: fontawesome/brands/github
+  palette:  
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/toggle-switch
+      name: Dark Theme
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/toggle-switch-off-outline
+      name: Light Theme
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+  - content.action.edit
+  - content.action.view
+  - content.code.annotate
+  - content.code.copy
+  - content.tabs.link
+  - navigation.footer
+  - navigation.header
+  - navigation.indexes
+  - navigation.instant
+  - navigation.tabs
+  - navigation.tabs.sticky
+  - navigation.top
+  - navigation.tracking
+  - search.highlight
+  - search.share
+  - search.suggest
+  - toc.follow
+
+# Plugins
+plugins:
+- search:
+    separator: '[\s\u200b\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+- markdownextradata:
+    jinja_options:
+      variable_start_string: "${{"
+      variable_end_string: "}}"
+- git-authors
+- git-revision-date-localized:
+    enabled: !ENV [CI, false]
+    enable_creation_date: false
+    exclude:
+      - index.md
+    fallback_to_build_date: true
+    type: timeago
+
+# Customization
+extra:
+  config:
+    repo_url: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation
+    repo_url_raw: https://raw.githubusercontent.com/vmware/powershell-module-for-vmware-cloud-foundation
+  consent:
+    title: Cookie Consent
+    description: >- 
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+    actions:
+      - accept
+      - manage
+      - reject
+  version:
+    default: latest
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/powervcf
+    - icon: fontawesome/solid/book
+      link: https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html
+    - icon: fontawesome/solid/code
+      link: https://developer.vmware.com/apis/vcf/
+extra_css:
+  - assets/stylesheets/extra.css
+
+# Extensions
+markdown_extensions:
+- admonition
+- attr_list
+- footnotes
+- md_in_html
+- pymdownx.emoji:
+    emoji_index: !!python/name:materialx.emoji.twemoji
+    emoji_generator: !!python/name:materialx.emoji.to_svg
+    options:
+      custom_icons:
+      - material/.icons
+- pymdownx.inlinehilite
+- pymdownx.highlight:
+    use_pygments: true
+- pymdownx.snippets:
+    check_paths: true
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.details
+- tables
+- toc:
+    permalink: true
+
+# Navigation
+nav:
+- Getting Started: 
+  - index.md
+  - Installation: install.md
+  - Updating: update.md
+  - User Access: user-access.md
+  - Release Notes: release-notes.md
+  - Release Milestones: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/milestones
+  - License: license.md
+- Documentation:
+  - documentation/index.md
+  - Application Virtual Networks: 
+    - documentation/functions/avns/Add-VCFApplicationVirtualNetwork.md
+    - documentation/functions/avns/Get-VCFApplicationVirtualNetwork.md
+  - Authentication:
+    - Cloud Builder:
+      - documentation/functions/authentication/Connect-CloudBuilder.md
+    - SDDC Manager:
+      - documentation/functions/authentication/Request-VCFToken.md
+  - Backup and Restore:
+    - Backup:
+        - documentation/functions/backup-restore/Get-VCFBackupConfiguration.md
+        - documentation/functions/backup-restore/Set-VCFBackupConfiguration.md
+        - documentation/functions/backup-restore/Start-VCFBackup.md
+    - Restore:
+        - documentation/functions/backup-restore/Get-VCFRestoreTask.md
+        - documentation/functions/backup-restore/Start-VCFRestore.md
+  - Bundles:
+    - documentation/functions/bundles/Get-VCFBundle.md
+    - documentation/functions/bundles/Request-VCFBundle.md
+    - documentation/functions/bundles/Start-VCFBundleUpload.md
+  - Customer Experience Improvement Program:
+    - documentation/functions/ceip/Get-VCFCeip.md
+    - documentation/functions/ceip/Set-VCFCeip.md
+  - Certificates:
+    - Certificate:
+        - documentation/functions/certificates/Set-VCFCertificate.md
+        - documentation/functions/certificates/Request-VCFCertificate.md
+    - Certificate Authority:
+        - documentation/functions/certificates/Get-VCFCertificateAuthority.md
+        - documentation/functions/certificates/Remove-VCFCertificateAuthority.md
+        - documentation/functions/certificates/Set-VCFMicrosoftCA.md
+        - documentation/functions/certificates/Set-VCFOpenSSLCA.md
+    - Certificate Signing Request:
+        - documentation/functions/certificates/Get-VCFCertificate.md
+        - documentation/functions/certificates/Get-VCFCertificateCSR.md
+        - documentation/functions/certificates/Request-VCFCertificateCSR.md
+  - Clusters:
+    - documentation/functions/clusters/Get-VCFCluster.md
+    - documentation/functions/clusters/Get-VCFClusterValidation.md
+    - documentation/functions/clusters/New-VCFCluster.md
+    - documentation/functions/clusters/Remove-VCFCluster.md
+    - documentation/functions/clusters/Set-VCFCluster.md
+  - Credentials:
+    - documentation/functions/credentials/Get-VCFCredential.md
+    - documentation/functions/credentials/Get-VCFCredentialExpiry.md
+    - documentation/functions/credentials/Get-VCFCredentialTask.md
+    - documentation/functions/credentials/Restart-VCFCredentialTask.md
+    - documentation/functions/credentials/Set-VCFCredential.md
+    - documentation/functions/credentials/Stop-VCFCredentialTask.md
+  - Depots:
+    - documentation/functions/depots/Get-VCFDepotCredential.md
+    - documentation/functions/depots/Set-VCFDepotCredential.md
+  - DNS and NTP:
+    - DNS:
+        - documentation/functions/dns-ntp/Get-VCFConfigurationDNS.md
+        - documentation/functions/dns-ntp/Get-VCFConfigurationDNSValidation.md
+        - documentation/functions/system/Set-VCFConfigurationDNS.md
+    - NTP:
+        - documentation/functions/dns-ntp/Get-VCFConfigurationNTP.md
+        - documentation/functions/dns-ntp/Get-VCFConfigurationNTPValidation.md
+        - documentation/functions/dns-ntp/Set-VCFConfigurationNTP.md
+  - Domains:
+    - documentation/functions/domains/Get-VCFWorkloadDomain.md
+    - documentation/functions/domains/New-VCFWorkloadDomain.md
+    - documentation/functions/domains/Remove-VCFWorkloadDomain.md
+    - documentation/functions/domains/Set-VCFWorkloadDomain.md
+  - Hosts:
+    - documentation/functions/hosts/Get-VCFHost.md
+    - documentation/functions/hosts/New-VCFCommissionedHost.md
+    - documentation/functions/hosts/Remove-VCFCommissionedHost.md
+  - Identity and Access Management:
+    - Users:
+        - documentation/functions/iam/Get-VCFUser.md
+        - documentation/functions/iam/New-VCFUser.md
+        - documentation/functions/iam/Remove-VCFUser.md
+        - documentation/functions/iam/New-VCFServiceUser.md
+    - Groups:
+        - documentation/functions/iam/New-VCFGroup.md
+    - Roles:
+      - documentation/functions/iam/Get-VCFRole.md
+  - Licenses:
+    - documentation/functions/licenses/Get-VCFLicenseKey.md
+    - documentation/functions/licenses/Get-VCFLicenseMode.md
+    - documentation/functions/licenses/New-VCFLicenseKey.md
+    - documentation/functions/licenses/Remove-VCFLicenseKey.md
+  - Federation:
+    - documentation/functions/federation/Get-VCFFederation.md
+    - documentation/functions/federation/Get-VCFFederationMember.md
+    - documentation/functions/federation/Get-VCFFederationTask.md
+    - documentation/functions/federation/Join-VCFFederation.md
+    - documentation/functions/federation/New-VCFFederationInvite.md
+    - documentation/functions/federation/Remove-VCFFederation.md
+    - documentation/functions/federation/Set-VCFFederation.md
+  - FIPS:
+    - documentation/functions/fips/Get-VCFFipsMode.md
+  - Network Pools:
+    - documentation/functions/network-pools/Add-VCFNetworkIPPool.md
+    - documentation/functions/network-pools/Get-VCFNetworkIPPool.md
+    - documentation/functions/network-pools/Get-VCFNetworkPool.md
+    - documentation/functions/network-pools/New-VCFNetworkPool.md
+    - documentation/functions/network-pools/Remove-VCFNetworkIPPool.md
+    - documentation/functions/network-pools/Remove-VCFNetworkPool.md
+  - NSX:
+    - NSX Managers:
+      - documentation/functions/nsx/nsx-managers/Get-VCFNsxtCluster.md
+    - NSX Edge Clusters:
+      - documentation/functions/nsx/nsx-edge-clusters/Get-VCFEdgeCluster.md
+      - documentation/functions/nsx/nsx-edge-clusters/New-VCFEdgeCluster.md
+  - Personalities:
+    - documentation/functions/personalities/Get-VCFPersonality.md
+    - documentation/functions/personalities/New-VCFPersonality.md
+  - Platform Services Controllers:
+    - documentation/functions/pscs/Get-VCFPSC.md
+  - Releases:
+    - documentation/functions/releases/Get-VCFRelease.md
+  - SDDC (Cloud Builder):
+    - documentation/functions/sddc/Get-CloudBuilderSDDC.md
+    - documentation/functions/sddc/Get-CloudBuilderSDDCValidation.md
+    - documentation/functions/sddc/Restart-CloudBuilderSDDC.md
+    - documentation/functions/sddc/Restart-CloudBuilderSDDCValidation.md
+    - documentation/functions/sddc/Start-CloudBuilderSDDC.md
+    - documentation/functions/sddc/Start-CloudBuilderSDDCValidation.md
+    - documentation/functions/sddc/Stop-CloudBuilderSDDCValidation.md
+  - SDDC Manager:
+    - documentation/functions/sddc-managers/Get-VCFManager.md
+  - Services:
+    - documentation/functions/services/Get-VCFService.md
+  - Supportability and Serviceability (SoS):
+    - Health Summary:
+      - documentation/functions/sos/Get-VCFHealthSummaryTask.md
+      - documentation/functions/sos/Request-VCFHealthSummaryBundle.md
+      - documentation/functions/sos/Start-VCFHealthSummary.md
+      - documentation/functions/sos/Invoke-VCFCommand.md
+    - Support Bundles:
+      - documentation/functions/sos/Get-VCFSupportBundleTask.md
+      - documentation/functions/sos/Request-VCFSupportBundle.md
+      - documentation/functions/sos/Start-VCFSupportBundle.md
+  - System Prechecks:
+    - documentation/functions/system-prechecks/Get-VCFSystemPrecheckTask.md
+    - documentation/functions/system-prechecks/Start-VCFSystemPrecheck.md
+  - Tasks:
+    - documentation/functions/tasks/Get-VCFTask.md
+    - documentation/functions/tasks/Restart-VCFTask.md
+  - Upgrades:
+    - documentation/functions/upgrades/Get-VCFUpgradable.md
+    - documentation/functions/upgrades/Get-VCFUpgrade.md
+    - documentation/functions/upgrades/Start-VCFUpgrade.md
+  - vCenter Server:
+    - documentation/functions/vcenters/Get-VCFvCenter.md
+  - vRealize Suite Lifecycle Manager:
+    - documentation/functions/aria-suite/aria-suite-lifecycle/Get-VCFvRSLCM.md
+    - documentation/functions/aria-suite/aria-suite-lifecycle/New-VCFvRSLCM.md
+    - documentation/functions/aria-suite/aria-suite-lifecycle/Remove-VCFvRSLCM.md
+    - documentation/functions/aria-suite/aria-suite-lifecycle/Reset-VCFvRSLCM.md
+  - vRealize Automation:
+    - documentation/functions/aria-suite/aria-automation/Get-VCFvRA.md
+  - vRealize Operations:
+    - documentation/functions/aria-suite/aria-operations/Get-VCFvROPS.md
+    - documentation/functions/aria-suite/aria-operations/Get-VCFvROPSConnection.md
+    - documentation/functions/aria-suite/aria-operations/Set-VCFvROPSConnection.md
+  - vRealize Log Insight:
+    - documentation/functions/aria-suite/aria-operations-logs/Get-VCFvRLI.md
+    - documentation/functions/aria-suite/aria-operations-logs/Get-VCFvRLIConnection.md
+    - documentation/functions/aria-suite/aria-operations-logs/Set-VCFvRLIConnection.md
+  - Workspace ONE Access:
+    - documentation/functions/aria-suite/workspace-one-access/Get-VCFWSA.md
+- Community:
+  - community/index.md
+  - Contributing: community/contributing.md
+  - Discussions: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/discussions
+  - Search Issues: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/issues
+  - Open an Issue: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/issues/new/choose
+  - Support: community/support.md
+  - Code of Conduct: community/code-of-conduct.md
