@@ -1797,7 +1797,7 @@ Function Get-VCFFederation {
         createHeader # Calls createHeader function to set the Accept and Authorization headers
         checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
         $msgEndOfSupport = "Multi-instance management is not supported in 4.4.0 and later."
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
@@ -1843,7 +1843,7 @@ Function Set-VCFFederation {
         createHeader # Calls createHeader function to set the Accept and Authorization headers
         checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
@@ -1882,7 +1882,7 @@ Function Remove-VCFFederation {
         createHeader # Calls createHeader function to set the Accept and Authorization headers
         checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
@@ -1954,7 +1954,7 @@ Function Get-VCFFipsMode {
     #>
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.3.0') {
             createHeader # Call createHeader function to set the Accept & Authorization headers.
             checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
@@ -2341,7 +2341,7 @@ Function Get-VCFFederationMember {
         createHeader # Calls createHeader function to set the Accept and Authorization headers
         checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
@@ -2395,7 +2395,7 @@ Function New-VCFFederationInvite {
         createHeader # Calls createHeader function to set the Accept and Authorization headers
         checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
@@ -2462,7 +2462,7 @@ Function Join-VCFFederation {
         createHeader # Calls createHeader function to set the Accept and Authorization headers
         checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
@@ -3071,7 +3071,7 @@ Function Get-VCFFederationTask {
         createHeader # Calls createHeader function to set the Accept and Authorization headers
         checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'     
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
         } elseif ($vcfVersion -ge '4.3.0' -and $vcfVersion -lt '4.4.0') {
@@ -3159,7 +3159,7 @@ Function Get-VCFRelease {
     )
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         createHeader # Call createHeader function to set the Accept & Authorization headers.
         checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
 
@@ -3503,7 +3503,7 @@ Function Get-VCFHealthSummaryTask {
     )
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge "4.4.0") {
             createHeader # Calls createHeader function to set Accept & Authorization
             checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -3519,7 +3519,7 @@ Function Get-VCFHealthSummaryTask {
             }
         }
         else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
         }
     }
     Catch {
@@ -3546,7 +3546,7 @@ Function Request-VCFHealthSummaryBundle {
     )
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge "4.4.0") {
             checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
             $vcfHeaders = @{"Accept" = "application/octet-stream" }
@@ -3556,7 +3556,7 @@ Function Request-VCFHealthSummaryBundle {
             Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "health-summary-$id.tar"
         }
         else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
         }
     }
     Catch {
@@ -3583,7 +3583,7 @@ Function Start-VCFHealthSummary {
     )
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge "4.4.0") {
             $jsonBody = validateJsonInput -json $json
             createHeader # Calls createHeader function to set Accept & Authorization
@@ -3593,7 +3593,7 @@ Function Start-VCFHealthSummary {
             $response
         }
         else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
         }
     }
     Catch {
@@ -3624,7 +3624,7 @@ Function Get-VCFSupportBundleTask {
     )
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge "4.4.0") {
             createHeader # Calls createHeader function to set Accept & Authorization
             checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
@@ -3640,7 +3640,7 @@ Function Get-VCFSupportBundleTask {
             }
         }
         else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
         }
     }
     Catch {
@@ -3667,7 +3667,7 @@ Function Request-VCFSupportBundle {
     )
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge "4.4.0") {
             checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
             $vcfHeaders = @{"Accept" = "application/octet-stream" }
@@ -3676,7 +3676,7 @@ Function Request-VCFSupportBundle {
             Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "support-bundle-$id.tar"
         }
         else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
         }
     }
     Catch {
@@ -3703,7 +3703,7 @@ Function Start-VCFSupportBundle {
     )
 
     Try {
-        $vcfVersion = ((Get-VCFManager).version -Split ('\.\d{1}\-\d{8}')) -split '\s+' -match '\S'
+        $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge "4.4.0") {
             $jsonBody = validateJsonInput -json $json
             createHeader # Calls createHeader function to set Accept & Authorization
@@ -3713,7 +3713,7 @@ Function Start-VCFSupportBundle {
             $response
         }
         else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation v4.4.0 or later"
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
         }
     }
     Catch {
@@ -3740,36 +3740,89 @@ Function Get-VCFManager {
         This example shows how to retrieve a list of SDDC Managers
 
         .EXAMPLE
+        Get-VCFManager -version
+        This example shows how to return the version of the SDDC Manager.
+
+        .EXAMPLE
+        Get-VCFManager -build
+        This example shows how to return the build of the SDDC Manager.
+
+        .EXAMPLE
         Get-VCFManager -id 60d6b676-47ae-4286-b4fd-287a888fb2d0
         This example shows how to return the details for a specific SDDC Manager based on the unique ID
 
         .EXAMPLE
         Get-VCFManager -domainId 1a6291f2-ed54-4088-910f-ead57b9f9902
         This example shows how to return the details for a specific SDDC Manager based on a workload domains unique ID
-    #>
+
+        #>
 
     Param (
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainId
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainId,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$version,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$build
     )
 
     Try {
         createHeader # Calls createHeader function to set Accept & Authorization
         checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ($PsBoundParameters.ContainsKey("id")) {
-            $uri = "https://$sddcManager/v1/sddc-managers/$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
-        }
-        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId")) ) {
-            $uri = "https://$sddcManager/v1/sddc-managers"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
-        if ($PsBoundParameters.ContainsKey("domainId")) {
-            $uri = "https://$sddcManager/v1/sddc-managers/?domain=$domainId"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
+
+        $patternVersion = '^(\d+\.\d+\.\d+\.\d+)'
+        $patternBuild = '(\d+)$'
+
+        if ($PsBoundParameters.ContainsKey('version') -and ($PsBoundParameters.ContainsKey('build')) ) {
+            Write-Error 'You can only specify one of the following parameters: version, build.'
+            Break
+        } else {
+            if ($PsBoundParameters.ContainsKey('id')) {
+                $uri = "https://$sddcManager/v1/sddc-managers/$id"
+                $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+                $vcfVersion = $response.version
+                if ($PsBoundParameters.ContainsKey('version')) {
+                    $matches = [regex]::Match($vcfVersion, $patternVersion)
+                    $versionNumber = $matches.Groups[1].Value
+                    $versionNumber
+                } elseif ($PsBoundParameters.ContainsKey('build')) {
+                    $matches = [regex]::Match($vcfVersion, $patternBuild)
+                    $buildNumber = $matches.Groups[1].Value
+                    $buildNumber
+                } else {
+                    $response
+                }
+            }
+            if (-not $PsBoundParameters.ContainsKey('id') -and (-not $PsBoundParameters.ContainsKey('domainId')) ) {
+                $uri = "https://$sddcManager/v1/sddc-managers"
+                $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+                $vcfVersion = $response.elements.version
+                if ($PsBoundParameters.ContainsKey('version')) {
+                    $matches = [regex]::Match($vcfVersion, $patternVersion)
+                    $versionNumber = $matches.Groups[1].Value
+                    $versionNumber
+                } elseif ($PsBoundParameters.ContainsKey('build')) {
+                    $matches = [regex]::Match($vcfVersion, $patternBuild)
+                    $buildNumber = $matches.Groups[1].Value
+                    $buildNumber
+                } else {
+                    $response.elements
+                }
+            }
+            if ($PsBoundParameters.ContainsKey('domainId')) {
+                $uri = "https://$sddcManager/v1/sddc-managers/?domain=$domainId"
+                $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+                $vcfVersion = $response.elements.version
+                if ($PsBoundParameters.ContainsKey('version')) {
+                    $matches = [regex]::Match($vcfVersion, $patternVersion)
+                    $versionNumber = $matches.Groups[1].Value
+                    $versionNumber
+                } elseif ($PsBoundParameters.ContainsKey('build')) {
+                    $matches = [regex]::Match($vcfVersion, $patternBuild)
+                    $buildNumber = $matches.Groups[1].Value
+                    $buildNumber
+                } else {
+                    $response.elements
+                }
+            }
         }
     }
     Catch {
