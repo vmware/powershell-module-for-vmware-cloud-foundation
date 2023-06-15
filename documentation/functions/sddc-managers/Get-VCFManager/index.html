@@ -21,7 +21,7 @@
         <link rel="next" href="../../services/Get-VCFService/">
       
       <link rel="icon" href="../../../../favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.15">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
     
     
       
@@ -3409,6 +3409,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#example-4" class="md-nav__link">
+    Example 4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-5" class="md-nav__link">
+    Example 5
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3432,6 +3446,20 @@
           <li class="md-nav__item">
   <a href="#-domainid" class="md-nav__link">
     -domainId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-version" class="md-nav__link">
+    -version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-build" class="md-nav__link">
+    -build
   </a>
   
 </li>
@@ -4611,6 +4639,20 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#example-4" class="md-nav__link">
+    Example 4
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-5" class="md-nav__link">
+    Example 5
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4634,6 +4676,20 @@
           <li class="md-nav__item">
   <a href="#-domainid" class="md-nav__link">
     -domainId
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-version" class="md-nav__link">
+    -version
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-build" class="md-nav__link">
+    -build
   </a>
   
 </li>
@@ -4685,7 +4741,7 @@
 <h2 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">&para;</a></h2>
 <p>Retrieves a list of SDDC Managers.</p>
 <h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="nb">Get-VCFManager</span> <span class="p">[[</span><span class="n">-id</span><span class="p">]</span> <span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;]</span> <span class="p">[[</span><span class="n">-domainId</span><span class="p">]</span> <span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;]</span> <span class="p">[&lt;</span><span class="n">CommonParameters</span><span class="p">&gt;]</span>
+<div class="highlight"><pre><span></span><code><span class="nb">Get-VCFManager</span> <span class="p">[[</span><span class="n">-id</span><span class="p">]</span> <span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;]</span> <span class="p">[[</span><span class="n">-domainId</span><span class="p">]</span> <span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;]</span> <span class="p">[</span><span class="n">-version</span> <span class="p">&lt;</span><span class="k">Switch</span><span class="p">&gt;]</span> <span class="p">[</span><span class="n">-build</span> <span class="p">&lt;</span><span class="k">Switch</span><span class="p">&gt;]</span> <span class="p">[&lt;</span><span class="n">CommonParameters</span><span class="p">&gt;]</span>
 </code></pre></div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
 <p>The Get-VCFManager cmdlet retrieves a list of SDDC Managers.</p>
@@ -4702,6 +4758,14 @@
 <div class="highlight"><pre><span></span><code><span class="nb">Get-VCFManager</span> <span class="n">-domainId</span> <span class="n">1a6291f2-ed54</span><span class="p">-</span><span class="n">4088</span><span class="p">-</span><span class="n">910f-ead57b9f9902</span>
 </code></pre></div>
 <p>This example shows how to return the details for a specific SDDC Manager based on the domain ID of a workload domain.</p>
+<h3 id="example-4">Example 4<a class="headerlink" href="#example-4" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">Get-VCFManager</span> <span class="n">-version</span>
+</code></pre></div>
+<p>This example shows how to return the SDDC Manager version in <code>x.y.z</code> format.</p>
+<h3 id="example-5">Example 5<a class="headerlink" href="#example-5" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">Get-VCFManager</span> <span class="n">-build</span>
+</code></pre></div>
+<p>This example shows how to return the SDDC Manager build number in <code>xxxxxxx</code> format.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <h3 id="-id">-id<a class="headerlink" href="#-id" title="Permanent link">&para;</a></h3>
 <p>Specifies the unique ID of the SDDC Manager.</p>
@@ -4727,6 +4791,30 @@
 <span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
 <span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
 </code></pre></div>
+<h3 id="-version">-version<a class="headerlink" href="#-version" title="Permanent link">&para;</a></h3>
+<p>Specifies to return the SDDC Manager version in <code>x.y.z</code> format.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Switch</span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span>
+<span class="nt">Aliases</span><span class="p">:</span>
+
+<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span>
+<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+</code></pre></div>
+<h3 id="-build">-build<a class="headerlink" href="#-build" title="Permanent link">&para;</a></h3>
+<p>Specifies to return the SDDC Manager build number in <code>xxxxxxx</code> format.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Switch</span>
+<span class="nt">Parameter Sets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(All)</span>
+<span class="nt">Aliases</span><span class="p">:</span>
+
+<span class="nt">Required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Position</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Named</span>
+<span class="nt">Default value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span>
+<span class="nt">Accept pipeline input</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">Accept wildcard characters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+</code></pre></div>
 <h3 id="common-parameters">Common Parameters<a class="headerlink" href="#common-parameters" title="Permanent link">&para;</a></h3>
 <p>This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see <a href="http://go.microsoft.com/fwlink/?LinkID=113216">about_CommonParameters</a>.</p>
 
@@ -4735,7 +4823,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-12T13:52:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-15T20:09:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-15</span>
       
     
   </small>
@@ -4939,11 +5027,15 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.footer", "navigation.header", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.b4d07000.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.a51614de.min.js"></script>
       
-        <script src="../../../../js/timeago.min.js"></script>
+        
+          <script src="../../../../js/timeago.min.js"></script>
+        
       
-        <script src="../../../../js/timeago_mkdocs_material.js"></script>
+        
+          <script src="../../../../js/timeago_mkdocs_material.js"></script>
+        
       
     
   </body>
