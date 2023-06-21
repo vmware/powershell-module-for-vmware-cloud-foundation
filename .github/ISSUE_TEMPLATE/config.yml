@@ -1,8 +1,8 @@
 ---
 blank_issues_enabled: false
 contact_links:
-  - name: PowerVCF Documentation
-    url: 'https://powervcf.readthedocs.io/en/latest/'
+  - name: Module Documentation
+    url: 'https://vmware.github.io/powershell-module-for-vmware-cloud-foundation'
     about: Having trouble with the module? Check out the documentation.
   - name: VMware Cloud Foundation Documentation
     url: 'https://docs.vmware.com/en/VMware-Cloud-Foundation/'
