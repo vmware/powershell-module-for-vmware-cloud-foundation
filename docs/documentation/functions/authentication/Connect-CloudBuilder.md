@@ -7,8 +7,7 @@ Request an authentication token from a VMware Cloud Builder instance.
 ## Syntax
 
 ```powershell
-Connect-CloudBuilder [-fqdn] <String> [[-username] <String>] [[-password] <String>] [-skipCertificateCheck]
- [<CommonParameters>]
+Connect-CloudBuilder [-fqdn] <String> [[-username] <String>] [[-password] <String>] [-skipCertificateCheck] [<CommonParameters>]
 ```
 
 ## Description

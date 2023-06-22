@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Creates a network pool.
+Adds a network pool.
 
 ## Syntax
 
@@ -12,54 +12,22 @@ New-VCFNetworkPool [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The New-VCFNetworkPool cmdlet creates a network pool.
+The New-VCFNetworkPool cmdlet adds a network pool.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-New-VCFNetworkPool -json .\NetworkPool\createNetworkPoolSpec.json
+New-VCFNetworkPool -json (Get-Content -Raw .\samples\network-pools\networkPoolSpec.json)
 ```
 
-This example shows how to create a new network pool using a JSON specification file.
+This example shows how to add a network pool using a JSON specification file.
 
-???+ example "Sample JSON: Network Pool Configuration"
+???+ example "Sample JSON: Add Network Pool"
 
     ```json
-    {
-      "name": "sfo-np01",
-      "networks": [
-        {
-          "type": "VSAN",
-          "vlanId": 2240,
-          "mtu": 9000,
-          "subnet": "172.16.240.0",
-          "mask": "255.255.255.0",
-          "gateway": "172.16.240.253",
-          "ipPools": [
-            {
-              "start": "172.16.240.5",
-              "end": "172.16.240.100"
-            }
-          ]
-        },
-        {
-          "type": "VMOTION",
-          "vlanId": 2236,
-          "mtu": 9000,
-          "subnet": "172.16.236.0",
-          "mask": "255.255.255.0",
-          "gateway": "172.16.236.253",
-          "ipPools": [
-            {
-              "start": "172.16.236.5",
-              "end": "172.16.236.100"
-            }
-          ]
-        }
-      ]
-    }
+    --8<-- "./samples/network-pools/networkPoolSpec.json"
     ```
 
 ## Parameters

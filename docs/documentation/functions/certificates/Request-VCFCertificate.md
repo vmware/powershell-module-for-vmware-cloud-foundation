@@ -27,10 +27,16 @@ The Request-VCFCertificate cmdlet generates certificate(s) for the selected reso
 ### Example 1
 
 ```powershell
-Request-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
+Request-VCFCertificate -domainName MGMT -json (Get-Content -Raw .\samples\certificates\requestCertificateSpec.json)
 ```
 
-This example shows how to generate the certificate(s) based on the entries within the requestCertificateSpec.json file for resources within the workload domain named MGMT.
+This example shows how to generate the certificate(s) based on the entries within the JSON specification file for resources within the workload domain named MGMT.
+
+???+ example "Sample JSON: Request Certificate"
+
+    ```json
+    --8<-- "./samples/certificates/requestCertificateSpec.json"
+    ```
 
 ## Parameters
 

@@ -1,0 +1,12 @@
+{
+   "dnsServers": [
+       {
+            "ipAddress": "172.16.11.4",
+            "isPrimary": true
+       },
+       {
+            "ipAddress": "172.16.11.5",
+            "isPrimary": false
+        }    
+    ]
+}

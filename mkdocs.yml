@@ -64,6 +64,7 @@ theme:
 plugins:
 - search:
     separator: '[\s\u200b\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+- open-in-new-tab
 - markdownextradata:
     jinja_options:
       variable_start_string: "${{"
@@ -141,13 +142,14 @@ markdown_extensions:
 nav:
 - Getting Started: 
   - index.md
-  - Installation: install.md
-  - Updating: update.md
-  - User Access: user-access.md
+  - Installation: documentation/getting-started/install.md
+  - Updating: documentation/getting-started/update.md
+  - User Access: documentation/getting-started/user-access.md
+  - Usage: documentation/getting-started/usage.md
   - Release Notes: release-notes.md
   - Release Milestones: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/milestones
   - License: license.md
-- Documentation:
+- Reference:
   - documentation/index.md
   - Application Virtual Networks: 
     - documentation/functions/avns/Add-VCFApplicationVirtualNetwork.md
@@ -205,7 +207,7 @@ nav:
     - DNS:
         - documentation/functions/dns-ntp/Get-VCFConfigurationDNS.md
         - documentation/functions/dns-ntp/Get-VCFConfigurationDNSValidation.md
-        - documentation/functions/system/Set-VCFConfigurationDNS.md
+        - documentation/functions/dns-ntp/Set-VCFConfigurationDNS.md
     - NTP:
         - documentation/functions/dns-ntp/Get-VCFConfigurationNTP.md
         - documentation/functions/dns-ntp/Get-VCFConfigurationNTPValidation.md

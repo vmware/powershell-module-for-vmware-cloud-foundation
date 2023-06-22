@@ -7,8 +7,7 @@ Connects to the specified SDDC Manager using SSH and invoke SSH commands (SoS).
 ## Syntax
 
 ```powershell
-Invoke-VCFCommand [[-vcfPassword] <String>] [[-rootPassword] <String>] [-sosOption] <String>
- [<CommonParameters>]
+Invoke-VCFCommand [[-vcfPassword] <String>] [[-rootPassword] <String>] [-sosOption] <String> [<CommonParameters>]
 ```
 
 ## Description

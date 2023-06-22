@@ -19,10 +19,16 @@ The Start-VCFHealthSummary cmdlet is used to start the Health Summary checks.
 ### Example 1
 
 ```powershell
-Start-VCFHealthSummary -json .\SampleJSON\SOS\systemHealthChecks.json
+Start-VCFHealthSummary -json (Get-Content -Raw .\samples\sos\healthSummarySpec.json)
 ```
 
-This example starts the Health Summary checks using the json file.
+This example starts the Health Summary checks using the JSON specification file.
+
+???+ example "Sample JSON: Start Health Summary"
+
+    ```json
+    --8<-- "./samples/sos/healthSummarySpec.json"
+    ```
 
 ## Parameters
 

@@ -19,15 +19,21 @@ The New-VCFvRSLCM cmdlet deploys VMware Aria Suite Lifecycle in the management d
 ### Example 1
 
 ```powershell
-New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json
+New-VCFvRSLCM -json (Get-Content -Raw .\samples\aria-suite\aria-lifecycle\deployAriaLifecycleAvnOverlaySpec.json)
 ```
 
 This example shows how to deploy VMware Aria Suite Lifecycle using a JSON specification file.
 
+???+ example "Sample JSON: Deploy VMware Aria Suite Lifecycle"
+
+    ```json
+    --8<-- "./samples/aria-suite/aria-lifecycle/deployAriaLifecycleAvnOverlaySpec.json"
+    ```
+
 ### Example 2
 
 ```powershell
-New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json -validate
+New-VCFvRSLCM -json (Get-Content -Raw .\samples\aria-suite\aria-lifecycle\deployAriaLifecycleAvnOverlaySpec.json) -validate
 ```
 
 This example shows how to validate a JSON specification file.

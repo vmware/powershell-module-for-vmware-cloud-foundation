@@ -7,8 +7,7 @@ Retrieves the password expiry details of credentials.
 ## Syntax
 
 ```powershell
-Get-VCFCredentialExpiry [[-resourceName] <String>] [[-resourceType] <String>] [[-id] <String>]
- [<CommonParameters>]
+Get-VCFCredentialExpiry [[-resourceName] <String>] [[-resourceType] <String>] [[-id] <String>] [<CommonParameters>]
 ```
 
 ## Description

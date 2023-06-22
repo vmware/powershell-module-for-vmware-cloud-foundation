@@ -19,6 +19,7 @@ The Request-VCFHealthSummaryBundle cmdlet downloads the Health Summary bundle.
 ### Example 1
 
 ```powershell
+Request-VCFHealthSummaryBundle -id 12345678-1234-1234-1234-123456789012
 ```
 
 This example downloads a Health Summary bundle.

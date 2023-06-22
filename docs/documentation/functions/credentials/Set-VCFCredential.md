@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Updates a credential.
+Updates or rotate a credential.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Set-VCFCredential [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Set-VCFCredential cmdlet updates a credential.
+The Set-VCFCredential cmdlet updates or rotates a credential.
 
 ???+ info
 
@@ -23,10 +23,30 @@ The Set-VCFCredential cmdlet updates a credential.
 ### Example 1
 
 ```powershell
-Set-VCFCredential -json .\Credential\updateCredentialSpec.json
+Set-VCFCredential -json .\samples\credentials\updateCredentialSpec.json
 ```
 
 This example shows how to update a credential using a JSON specification file.
+
+???+ example "Sample JSON: Update Credential"
+
+    ```json
+    --8<-- "./samples/credentials/updateCredentialSpec.json"
+    ```
+
+### Example 2
+
+```powershell
+Set-VCFCredential -json .\samples\credentials\rotateCredentialSpec.json
+```
+
+This example shows how to rotate a credential using a JSON specification file.
+
+???+ example "Sample JSON: Rotate Credential"
+
+    ```json
+    --8<-- "./samples/credentials/rotateCredentialSpec.json"
+    ```
 
 ## Parameters
 

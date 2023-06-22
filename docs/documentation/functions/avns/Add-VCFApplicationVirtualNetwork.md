@@ -19,78 +19,29 @@ The Add-VCFApplicationVirtualNetwork cmdlet creates Application Virtual Networks
 ### Example 1
 
 ```powershell
-Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\SampleJSON\Application Virtual Network\avnOPverlaySpec.json)
+Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\samples\avns\avnOPverlaySpec.json)
 ```
 
 This example shows how to deploy the Application Virtual Networks using the JSON specification file supplied.
 
+???+ example "Sample JSON: Overlay-backed NSX Segments for Application Virtual Networks"
+
+    ```json
+    --8<-- "./samples/avns/avnOverlaySpec.json"
+    ```
+
 ### Example 2
 
 ```powershell
-Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\SampleJSON\Application Virtual Network\avnOverlaySpec.json) -validate
+Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\samples\avns\avnOverlaySpec.json) -validate
 ```
 
 This example shows how to validate the Application Virtual Networks JSON specification file supplied.
 
-???+ example "Sample JSON: Overlay-backed NSX Segments for Application Virtual Networks"
-
-    ```json
-    {
-    "edgeClusterId": "083741ad-6d64-4ea0-8117-ea940ca238d7",
-    "avns": [
-        {
-        "name": "xreg-m01-seg01",
-        "regionType": "X_REGION",
-        "gateway": "192.168.11.1",
-        "subnet": "192.168.11.0",
-        "subnetMask": "255.255.255.0",
-        "mtu": 9000,
-        "routerName": "sfo-m01-ec01-t1-gw01",
-        "portGroupName": "xreg-m01-seg01"
-        },
-        {
-        "name": "sfo-m01-seg01",
-        "regionType": "REGION_A",
-        "subnet": "192.168.31.0",
-        "gateway": "192.168.31.1",
-        "subnetMask": "255.255.255.0",
-        "mtu": 9000,
-        "routerName": "sfo-m01-ec01-t1-gw01",
-        "portGroupName": "sfo-m01-seg01"
-        }
-    ]
-    }
-    ```
-
 ???+ example "Sample JSON: VLAN-backed NSX Segments for Application Virtual Networks"
 
     ```json
-
-    {
-    "edgeClusterId": "083741ad-6d64-4ea0-8117-ea940ca238d7",
-    "avns": [
-        {
-        "name": "xreg-m01-seg01",
-        "regionType": "X_REGION",
-        "gateway": "192.168.11.1",
-        "subnet": "192.168.11.0",
-        "subnetMask": "255.255.255.0",
-        "mtu": 9000,
-        "vlanId": 2021,
-        "portGroupName": "xreg-m01-seg01"
-        },
-        {
-        "name": "sfo-m01-seg01",
-        "regionType": "REGION_A",
-        "subnet": "192.168.31.0",
-        "gateway": "192.168.31.1",
-        "subnetMask": "255.255.255.0",
-        "mtu": 9000,
-        "vlanId": 2022,
-        "portGroupName": "sfo-m01-seg01"
-        }
-    ]
-    }
+    --8<-- "./samples/avns/avnVlanSpec.json"
     ```
 
 ## Parameters

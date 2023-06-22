@@ -19,6 +19,7 @@ The Request-VCFSupportBundle cmdlet downloads the support bundle.
 ### Example 1
 
 ```powershell
+Request-VCFSupportBundle -id 12345678-1234-1234-1234-123456789012
 ```
 
 This example shows how to download the support bundle by unique ID.

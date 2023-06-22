@@ -27,7 +27,7 @@ This example shows how to retry a deployment on VMware Cloud Builder based on th
 ### Example 2
 
 ```powershell
-Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31 -json .\SampleJSON\SDDC\SddcSpec.json
+Restart-CloudBuilderSDDC -id bedf19f8-9dfe-4c60-aae4-bca986a65a31 -json .\samples\SDDC\SddcSpec.json
 ```
 
 This example shows how to retry a deployment on VMware Cloud Builder based on the ID and an updated JSON specification file.

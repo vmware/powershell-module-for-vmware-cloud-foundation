@@ -23,18 +23,16 @@ The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
 ### Example 1
 
 ```powershell
-Start-VCFBundleUpload -json $jsonSpec
+Start-VCFBundleUpload -json (Get-Content -Raw .\samples\bundles\bundleUploadSpec.json)
 ```
 
-This example invokes the upload of a bundle onto SDDC Manager using a variable.
+This example invokes the upload of a bundle onto SDDC Manager by passing a JSON specification file.
 
-### Example 2
+???+ example "Sample JSON: Upload Bundle"
 
-```powershell
-Start-VCFBundleUpload -json (Get-Content -Raw .\upgradeDomain.json)
-```
-
-This example invokes the upload of a bundle onto SDDC Manager by passing a JSON file.
+    ```json
+    --8<-- "./samples/bundles/bundleUploadSpec.json"
+    ```
 
 ## Parameters
 

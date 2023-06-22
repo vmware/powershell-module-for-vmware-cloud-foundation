@@ -20,28 +20,15 @@ The Remove-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and
 ### Example 1
 
 ```powershell
-Remove-VCFCommissionedHost -json .\Host\decommissionHostSpec.json
+Remove-VCFCommissionedHost -json (Get-Content -Raw .\samples\hosts\decommissionHostsSpec.json)
 ```
 
 This example shows how to decommission a set of hosts based on the details provided in the JSON file.
 
-???+ example "Sample JSON: Decommision Hosts"
+???+ example "Sample JSON: Deommission ESXi Host(s)"
 
     ```json
-    [
-    {
-        "fqdn": "sfo01w01esx01.sfo.rainpole.io"
-    },
-    {
-        "fqdn": "sfo01w01esx02.sfo.rainpole.io"
-    },
-    {
-        "fqdn": "sfo01w01esx03.sfo.rainpole.io"
-    },
-    {
-        "fqdn": "sfo01w01esx04.sfo.rainpole.io"
-    }
-    ]
+    --8<-- "./samples/hosts/decommissionHostsSpec.json"
     ```
 
 ## Parameters

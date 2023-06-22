@@ -19,7 +19,7 @@ The New-VCFCluster cmdlet connects to the creates a cluster in a workload domain
 ### Example 1
 
 ```powershell
-New-VCFCluster -json .\WorkloadDomain\addClusterSpec.json
+New-VCFCluster -json .\samples\clusters\clusterSpec.json
 ```
 
 This example shows how to create a cluster in a workload domain from a JSON specification file.
@@ -35,7 +35,7 @@ This example shows how to create a cluster in a workload domain from a JSON spec
     "hostSpec": {
         "hostSystemSpec": [
         {
-            "license": "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+            "license": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
             "id": "c2398611-23cd-4b94-b2e3-9d84848b73cb",
             "vmnicToVdsNameMap": {
             "vmnic0": "w01-c02-vds01",
@@ -45,7 +45,7 @@ This example shows how to create a cluster in a workload domain from a JSON spec
             }
         },
         {
-            "license": "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+            "license": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
             "id": "8dbe7dcb-f409-4ccd-984b-711e70e9e767",
             "vmnicToVdsNameMap": {
             "vmnic0": "w01-c02-vds01",
@@ -55,7 +55,7 @@ This example shows how to create a cluster in a workload domain from a JSON spec
             }
         },
         {
-            "license": "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA",
+            "license": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
             "id": "e9ba66e0-4670-4973-bdb1-bc05702ca91a",
             "vmnicToVdsNameMap": {
             "vmnic0": "w01-c02-vds01",
@@ -73,7 +73,7 @@ This example shows how to create a cluster in a workload domain from a JSON spec
     "domainId": "983840c1-fa13-4edd-b3cb-907a95c29652",
     "datastoreSpec": {
         "vsanDatastoreSpec": {
-        "license": "BBBBB-BBBBB-BBBBB-BBBBB-BBBBB",
+        "license": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
         "ftt": 1,
         "name": "w01-c02-vsan01"
         }

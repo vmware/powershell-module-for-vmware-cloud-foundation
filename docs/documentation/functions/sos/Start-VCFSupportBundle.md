@@ -19,10 +19,16 @@ The Start-VCFSupportBundle cmdlet starts the support bundle generation.
 ### Example 1
 
 ```powershell
-Start-VCFSupportBundle -json .\SampleJSON\SOS\supportBundle.json
+Start-VCFSupportBundle -json (Get-Content -Raw .\samples\sos\supportBundleSpec.json)
 ```
 
 This example shows how to start the support bundle generation using a JSON specification file.
+
+???+ example "Sample JSON: Support Bundle Generation"
+
+    ```json
+    --8<-- "./samples/sos/supportBundleSpec.json"
+    ```
 
 ## Parameters
 
