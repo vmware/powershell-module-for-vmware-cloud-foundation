@@ -21,7 +21,7 @@
         <link rel="next" href="../Remove-VCFNetworkIPPool/">
       
       <link rel="icon" href="../../../../favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -242,7 +242,7 @@
   
     <li class="md-tabs__item">
       <a href="../../../" class="md-tabs__link md-tabs__link--active">
-        Documentation
+        Reference
       </a>
     </li>
   
@@ -346,6 +346,8 @@
         
           
         
+          
+        
       
       
         
@@ -374,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../install/" class="md-nav__link">
+      <a href="../../../getting-started/install/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -388,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../update/" class="md-nav__link">
+      <a href="../../../getting-started/update/" class="md-nav__link">
         Updating
       </a>
     </li>
@@ -402,8 +404,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../user-access/" class="md-nav__link">
+      <a href="../../../getting-started/user-access/" class="md-nav__link">
         User Access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/usage/" class="md-nav__link">
+        Usage
       </a>
     </li>
   
@@ -554,7 +570,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../">Documentation</a>
+          <a href="../../../">Reference</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -565,7 +581,7 @@
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          Documentation
+          Reference
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1839,8 +1855,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../system/Set-VCFConfigurationDNS.md" class="md-nav__link">
-        None
+      <a href="../../dns-ntp/Set-VCFConfigurationDNS/" class="md-nav__link">
+        Set-VCFConfigurationDNS
       </a>
     </li>
   
@@ -4641,47 +4657,47 @@
 
 <h1 id="new-vcfnetworkpool">New-VCFNetworkPool<a class="headerlink" href="#new-vcfnetworkpool" title="Permanent link">&para;</a></h1>
 <h2 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">&para;</a></h2>
-<p>Creates a network pool.</p>
+<p>Adds a network pool.</p>
 <h2 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="nb">New-VCFNetworkPool</span> <span class="p">[</span><span class="n">-json</span><span class="p">]</span> <span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="p">[&lt;</span><span class="n">CommonParameters</span><span class="p">&gt;]</span>
 </code></pre></div>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The New-VCFNetworkPool cmdlet creates a network pool.</p>
+<p>The New-VCFNetworkPool cmdlet adds a network pool.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="example-1">Example 1<a class="headerlink" href="#example-1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nb">New-VCFNetworkPool</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">NetworkPool</span><span class="p">\</span><span class="n">createNetworkPoolSpec</span><span class="p">.</span><span class="n">json</span>
+<div class="highlight"><pre><span></span><code><span class="nb">New-VCFNetworkPool</span> <span class="n">-json</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-Raw</span> <span class="p">.\</span><span class="n">samples</span><span class="p">\</span><span class="n">network-pools</span><span class="p">\</span><span class="n">networkPoolSpec</span><span class="p">.</span><span class="n">json</span><span class="p">)</span>
 </code></pre></div>
-<p>This example shows how to create a new network pool using a JSON specification file.</p>
+<p>This example shows how to add a network pool using a JSON specification file.</p>
 <details class="example" open="open">
-<summary>Sample JSON: Network Pool Configuration</summary>
+<summary>Sample JSON: Add Network Pool</summary>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-np01&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-w01-np01&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;networks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2240</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2612</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.240.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.104.0&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;mask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.240.253&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.104.1&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;ipPools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.240.5&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.240.100&quot;</span>
+<span class="w">          </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.104.101&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.104.104&quot;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2236</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2613</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.236.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.105.0&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;mask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.236.253&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.105.1&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;ipPools&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.236.5&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.236.100&quot;</span>
+<span class="w">          </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.105.101&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.18.105.104&quot;</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
@@ -4710,7 +4726,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-12T13:52:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-26T15:52:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-26</span>
       
     
   </small>
@@ -4914,7 +4930,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.footer", "navigation.header", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.a51614de.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
         
           <script src="../../../../js/timeago.min.js"></script>
@@ -4922,6 +4938,10 @@
       
         
           <script src="../../../../js/timeago_mkdocs_material.js"></script>
+        
+      
+        
+          <script src="../../../../js/open_in_new_tab.js"></script>
         
       
     

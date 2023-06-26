@@ -21,7 +21,7 @@
         <link rel="next" href="../Start-CloudBuilderSDDCValidation/">
       
       <link rel="icon" href="../../../../favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -242,7 +242,7 @@
   
     <li class="md-tabs__item">
       <a href="../../../" class="md-tabs__link md-tabs__link--active">
-        Documentation
+        Reference
       </a>
     </li>
   
@@ -346,6 +346,8 @@
         
           
         
+          
+        
       
       
         
@@ -374,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../install/" class="md-nav__link">
+      <a href="../../../getting-started/install/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -388,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../update/" class="md-nav__link">
+      <a href="../../../getting-started/update/" class="md-nav__link">
         Updating
       </a>
     </li>
@@ -402,8 +404,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../user-access/" class="md-nav__link">
+      <a href="../../../getting-started/user-access/" class="md-nav__link">
         User Access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/usage/" class="md-nav__link">
+        Usage
       </a>
     </li>
   
@@ -554,7 +570,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../">Documentation</a>
+          <a href="../../../">Reference</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -565,7 +581,7 @@
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          Documentation
+          Reference
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1839,8 +1855,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../system/Set-VCFConfigurationDNS.md" class="md-nav__link">
-        None
+      <a href="../../dns-ntp/Set-VCFConfigurationDNS/" class="md-nav__link">
+        Set-VCFConfigurationDNS
       </a>
     </li>
   
@@ -4649,26 +4665,32 @@
 <p>The Start-CloudBuilderSDDC cmdlet starts a management domain deployment task on VMware Cloud Builder using a JSON specification file.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="example-1">Example 1<a class="headerlink" href="#example-1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nb">Start-CloudBuilderSDDC</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">SampleJSON</span><span class="p">\</span><span class="n">SDDC</span><span class="p">\</span><span class="n">SddcSpec</span><span class="p">.</span><span class="n">json</span>
+<div class="highlight"><pre><span></span><code><span class="nb">Start-CloudBuilderSDDC</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">samples</span><span class="p">\</span><span class="n">sddc</span><span class="p">\</span><span class="n">sddcSpec</span><span class="p">.</span><span class="n">json</span>
 </code></pre></div>
 <p>This example shows how to start a management domain deployment task on VMware Cloud Builder using a JSON specification file.</p>
 <details class="example" open="open">
 <summary>Sample JSON: Management Domain Bringup</summary>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;excludedComponents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;NSX-V&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;dvSwitchVersion&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;7.0.0&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;skipEsxThumbprintValidation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;taskName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;workflowconfig/workflowspec-ems.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sddcId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;ceipEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fipsEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;False&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;managementPoolName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-np01&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;skipEsxThumbprintValidation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;esxLicense&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;excludedComponents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;NSX-V&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;ntpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;ntp0.sfo.rainpole.io&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ntp1.sfo.rainpole.io&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;dnsSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo.rainpole.io&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;subdomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo.rainpole.io&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;nameserver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;secondaryNameserver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.5&quot;</span>
+<span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;sddcManagerSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;secondUserCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vcf&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.59&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;netmask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-vcf01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.59&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;netmask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;localUserPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;rootUserCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
@@ -4676,102 +4698,48 @@
 <span class="w">    </span><span class="nt">&quot;restApiCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;secondUserCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vcf&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;sddcId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ceipEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;esxLicense&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;taskName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;workflowconfig/workflowspec-ems.json&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;ntpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;ntp.sfo.rainpole.io&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;dnsSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;subdomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo.rainpole.io&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo.rainpole.io&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;nameserver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.4&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;secondaryNameserver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.5&quot;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;networkSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3061&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1500&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MANAGEMENT&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.1&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-pg-mgmt&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.0/24&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1611&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1500&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-mgmt&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.13.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;includeIpAddressRanges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;startIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.13.101&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;endIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.13.104&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3063&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.13.253&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-pg-vsan&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.12.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;includeIpAddressRanges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;startIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.12.101&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;endIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.12.104&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3062&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.12.253&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-pg-vmotion&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.0/24&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;includeIpAddressRanges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;startIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.101&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;endIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.108&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1612&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-vmotion&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UPLINK01&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.24.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.24.253&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3284&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.0/24&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;includeIpAddressRanges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;startIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.101&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;endIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.108&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1613&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-pg-uplink01&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;UPLINK02&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.25.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.25.253&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3285&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-pg-uplink02&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;REGION_SPECIFIC&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.1&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;X_REGION&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.1&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NSXT_EDGE_TEP&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.15.0/24&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.15.253&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3065&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-vsan&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;nsxtSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -4779,15 +4747,7 @@
 <span class="w">    </span><span class="nt">&quot;nsxtManagers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">      </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-nsx01a&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.66&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-nsx01b&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.67&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-nsx01c&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.68&quot;</span>
+<span class="w">        </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.72&quot;</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;rootNsxtManagerPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
@@ -4797,97 +4757,26 @@
 <span class="w">    </span><span class="nt">&quot;sshEnabledForNsxtManager&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;overLayTransportZone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;zoneName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-tz-overlay01&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;networkName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-nvds01-pg-edge&quot;</span>
+<span class="w">      </span><span class="nt">&quot;networkName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;netName-overlay&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">&quot;vlanTransportZone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;zoneName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-tz-vlan01&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;networkName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;netName-vlan&quot;</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;vip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.65&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;vipFqdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-nsx01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.71&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vipFqdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-nsx01.sfo.rainpole.io&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;nsxtLicense&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;transportVlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3064</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;nsxtEdgeSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;edgeClusterName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-ec01&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;edgeRootPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;edgeAdminPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;edgeAuditPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;edgeFormFactor&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MEDIUM&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;tier0ServicesHighAvailability&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ACTIVE_ACTIVE&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;asn&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65003</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;edgeServicesSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;tier0GatewayName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-ec01-t0-gw01&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;tier1GatewayName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-ec01-t1-gw01&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;edgeNodeSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;edgeNodeName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-en01&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;edgeNodeHostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-en01.sfo.rainpole.io&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;managementCidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.69/24&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;edgeVtep1Cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.15.2/24&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;edgeVtep2Cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.15.3/24&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;interfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uplink-edge1-tor1&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;interfaceCidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.24.2/24&quot;</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uplink-edge1-tor2&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;interfaceCidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.25.3/24&quot;</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">          </span><span class="p">]</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;edgeNodeName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-en02&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;edgeNodeHostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-en02.sfo.rainpole.io&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;managementCidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.70/24&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;edgeVtep1Cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.15.4/24&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;edgeVtep2Cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.15.5/24&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;interfaces&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uplink-edge2-tor1&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;interfaceCidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.24.3/24&quot;</span>
-<span class="w">            </span><span class="p">},</span>
-<span class="w">            </span><span class="p">{</span>
-<span class="w">              </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uplink-edge2-tor2&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="nt">&quot;interfaceCidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.25.2/24&quot;</span>
-<span class="w">            </span><span class="p">}</span>
-<span class="w">          </span><span class="p">]</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;bgpNeighbours&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;neighbourIp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.24.1&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;autonomousSystem&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65001</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;neighbourIp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.27.25.1&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;autonomousSystem&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">65001</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">]</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;logicalSegments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;REGION_SPECIFIC&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xreg-m01-seg01&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;X_REGION&quot;</span>
-<span class="w">      </span><span class="p">}</span>
-<span class="w">    </span><span class="p">]</span>
+<span class="w">    </span><span class="nt">&quot;transportVlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1614</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;vsanSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;vsanName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vsan-1&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;licenseFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;vsanDedup&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;false&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vsanDedup&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;datastoreName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-ds-vsan01&quot;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;dvsSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;9000&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;niocSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
@@ -4927,18 +4816,8 @@
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">],</span>
 <span class="w">      </span><span class="nt">&quot;dvsName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vmnics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;vmnic0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;vmnic1&quot;</span>
-<span class="w">      </span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;networks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;MANAGEMENT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;UPLINK01&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;UPLINK02&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;NSXT_EDGE_TEP&quot;</span>
-<span class="w">      </span><span class="p">]</span>
+<span class="w">      </span><span class="nt">&quot;vmnics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;vmnic0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;vmnic1&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;networks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MANAGEMENT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;clusterSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -4948,153 +4827,326 @@
 <span class="w">      </span><span class="nt">&quot;EDGENODES&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-fd-edge&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="nt">&quot;clusterName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;clusterEvcMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;resourcePoolSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-rp-sddc-mgmt&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;management&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-rp-sddc-edge&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;network&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-rp-user-edge&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;compute&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-rp-user-vm&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;compute&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cpuSharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationPercentage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryLimit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memoryReservationExpandable&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesLevel&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;memorySharesValue&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">      </span><span class="p">}</span>
-<span class="w">    </span><span class="p">]</span>
+<span class="w">    </span><span class="nt">&quot;clusterEvcMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;pscSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;pscId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;psc-1&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;vcenterId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vcenter-1&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;pscSsoSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;ssoSiteName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ssoDomainPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ssoDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vsphere.local&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;isJoinSsoDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">        </span><span class="nt">&quot;ssoDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vsphere.local&quot;</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;adminUserSsoPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;vcenterSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;vcenterIp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.62&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vcenterIp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.70&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;vcenterHostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-vc01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;vcenterId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vcenter-1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;licenseFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;rootVcenterPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vmSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;hostSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.101&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx02&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.102&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx03&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.103&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx04&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.104&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;subscriptionLicensing&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;False&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+<details class="example" open="open">
+<summary>Sample JSON: Multi-pNIC Management Domain Bringup</summary>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;taskName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;workflowconfig/workflowspec-ems.json&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;sddcId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;ceipEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;True&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;fipsEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;False&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;managementPoolName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-np01&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;skipEsxThumbprintValidation&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;esxLicense&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;excludedComponents&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;NSX-V&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;ntpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;ntp0.sfo.rainpole.io&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ntp1.sfo.rainpole.io&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;dnsSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;domain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo.rainpole.io&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;subdomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo.rainpole.io&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;nameserver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.4&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;secondaryNameserver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.5&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;sddcManagerSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-vcf01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.59&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;netmask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;localUserPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;rootUserCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;restApiCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;secondUserCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vcf&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;networkSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MANAGEMENT&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.0/24&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1611&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1500&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-mgmt&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.0/24&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;includeIpAddressRanges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;startIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.101&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;endIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.108&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1612&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8900&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.12.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-vmotion&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;teamingPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;failover_explicit&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;activeUplinks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uplink1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;uplink2&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;standbyUplinks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uplink3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;uplink4&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;networkType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.0/24&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;includeIpAddressRanges&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;startIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.101&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;endIpAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.108&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1613&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8900&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.13.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupKey&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01-vsan&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;teamingPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;failover_explicit&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;activeUplinks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uplink3&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;uplink4&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;standbyUplinks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uplink1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;uplink2&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;nsxtSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;nsxtManagerSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;medium&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;nsxtManagers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-nsx01a&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;ip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.72&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;rootNsxtManagerPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;nsxtAdminPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;nsxtAuditPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!VMw@re1!&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;rootLoginEnabledForNsxtManager&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;sshEnabledForNsxtManager&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;overLayTransportZone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;zoneName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-tz-overlay01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;networkName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;netName-overlay&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;vlanTransportZone&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;zoneName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-tz-vlan01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;networkName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;netName-vlan&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;vip&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.71&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vipFqdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-nsx01.sfo.rainpole.io&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;nsxtLicense&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;transportVlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1614</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;vsanSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;vsanName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vsan-1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;licenseFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vsanDedup&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;datastoreName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-ds-vsan01&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;dvsSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;8900&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;niocSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HIGH&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LOW&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VDP&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LOW&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VIRTUALMACHINE&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HIGH&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MANAGEMENT&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NORMAL&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NFS&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LOW&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;HBR&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LOW&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAULTTOLERANCE&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LOW&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;trafficType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ISCSI&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LOW&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;dvsName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01-vds01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;vmnics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;vmnic0&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;vmnic1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;vmnic2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;vmnic3&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;networks&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;MANAGEMENT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;VMOTION&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;clusterSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;vmFolders&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;MANAGEMENT&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-fd-mgmt&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;NETWORKING&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-fd-nsx&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;EDGENODES&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-fd-edge&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;clusterName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-cl01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;clusterEvcMode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;pscSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;pscSsoSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;ssoDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vsphere.local&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;adminUserSsoPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;vcenterSpec&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;vcenterIp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.70&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vcenterHostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-vc01&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;licenseFile&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;XXXXX-XXXXX-XXXXX-XXXXX-XXXXX&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;rootVcenterPassword&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;vmSize&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;small&quot;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;hostSpecs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.0/24&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.101&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.1&quot;</span>
-<span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx01&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;serverId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;host-0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.0/24&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.102&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.1&quot;</span>
-<span class="w">      </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.101&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx02&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;serverId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;host-1&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.0/24&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.103&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.1&quot;</span>
-<span class="w">      </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.102&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx03&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;serverId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;host-2&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;cidr&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.0/24&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.104&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.20.11.1&quot;</span>
-<span class="w">      </span><span class="p">},</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.103&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;hostname&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-m01-esx04&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;vSwitch&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;vSwitch0&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;serverId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;host-3&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span>
+<span class="w">      </span><span class="nt">&quot;association&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-dc01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;credentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;ipAddressPrivate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;ipAddress&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.104&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;172.16.11.1&quot;</span>
+<span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">]</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;subscriptionLicensing&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;False&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
 </details>
@@ -5119,7 +5171,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-12T13:52:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-26T15:52:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-26</span>
       
     
   </small>
@@ -5323,7 +5375,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.footer", "navigation.header", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.a51614de.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
         
           <script src="../../../../js/timeago.min.js"></script>
@@ -5331,6 +5383,10 @@
       
         
           <script src="../../../../js/timeago_mkdocs_material.js"></script>
+        
+      
+        
+          <script src="../../../../js/open_in_new_tab.js"></script>
         
       
     

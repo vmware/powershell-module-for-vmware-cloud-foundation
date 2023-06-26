@@ -21,7 +21,7 @@
         <link rel="next" href="../../credentials/Get-VCFCredential/">
       
       <link rel="icon" href="../../../../favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -242,7 +242,7 @@
   
     <li class="md-tabs__item">
       <a href="../../../" class="md-tabs__link md-tabs__link--active">
-        Documentation
+        Reference
       </a>
     </li>
   
@@ -346,6 +346,8 @@
         
           
         
+          
+        
       
       
         
@@ -374,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../install/" class="md-nav__link">
+      <a href="../../../getting-started/install/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -388,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../update/" class="md-nav__link">
+      <a href="../../../getting-started/update/" class="md-nav__link">
         Updating
       </a>
     </li>
@@ -402,8 +404,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../user-access/" class="md-nav__link">
+      <a href="../../../getting-started/user-access/" class="md-nav__link">
         User Access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/usage/" class="md-nav__link">
+        Usage
       </a>
     </li>
   
@@ -554,7 +570,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../">Documentation</a>
+          <a href="../../../">Reference</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -565,7 +581,7 @@
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          Documentation
+          Reference
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1971,8 +1987,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../system/Set-VCFConfigurationDNS.md" class="md-nav__link">
-        None
+      <a href="../../dns-ntp/Set-VCFConfigurationDNS/" class="md-nav__link">
+        Set-VCFConfigurationDNS
       </a>
     </li>
   
@@ -4706,16 +4722,38 @@
 <details class="info" open="open">
 <summary>Info</summary>
 <p>Before a cluster can be removed it must first be marked for deletion.
-Please see <a href="emove-VCFCluster.md">Remove-VCFCluster</a> for more information.</p>
+Please see <a href="../Remove-VCFCluster/">Remove-VCFCluster</a> for more information.</p>
 </details>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="example-1">Example 1<a class="headerlink" href="#example-1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nb">Set-VCFCluster</span> <span class="n">-id</span> <span class="n">a511b625</span><span class="p">-</span><span class="n">8eb8</span><span class="p">-</span><span class="n">417e</span><span class="p">-</span><span class="n">85f0</span><span class="p">-</span><span class="n">5b47ebb4c0f1</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">Cluster</span><span class="p">\</span><span class="n">clusterExpansionSpec</span><span class="p">.</span><span class="n">json</span>
+<div class="highlight"><pre><span></span><code><span class="nb">Set-VCFCluster</span> <span class="n">-id</span> <span class="n">a511b625</span><span class="p">-</span><span class="n">8eb8</span><span class="p">-</span><span class="n">417e</span><span class="p">-</span><span class="n">85f0</span><span class="p">-</span><span class="n">5b47ebb4c0f1</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">samples</span><span class="p">\</span><span class="n">clusters</span><span class="p">\</span><span class="n">clusterExpansionSpec</span><span class="p">.</span><span class="n">json</span>
 </code></pre></div>
 <p>This example shows how to expand a cluster by adding a host(s) using a JSON specification file.</p>
+<details class="example" open="open">
+<summary>Sample JSON: Cluster Expansion</summary>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;clusterExpansionSpec&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hostSpecs&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4bd30f48-170a-4afa-a94d-725de3f745fd&quot;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
 <h3 id="example-2">Example 2<a class="headerlink" href="#example-2" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="nb">Set-VCFCluster</span> <span class="n">-id</span> <span class="n">a511b625</span><span class="p">-</span><span class="n">8eb8</span><span class="p">-</span><span class="n">417e</span><span class="p">-</span><span class="n">85f0</span><span class="p">-</span><span class="n">5b47ebb4c0f1</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">Cluster</span><span class="p">\</span><span class="n">clusterCompactionSpec</span><span class="p">.</span><span class="n">json</span>
 </code></pre></div>
+<details class="example" open="open">
+<summary>Sample JSON: Cluster Compaction</summary>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;clusterCompactionSpec&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;hosts&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4bd30f48-170a-4afa-a94d-725de3f745fd&quot;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
 <p>This example shows how to compact a cluster by removing a host(s) using a JSON specification file.</p>
 <h3 id="example-3">Example 3<a class="headerlink" href="#example-3" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="nb">Set-VCFCluster</span> <span class="n">-id</span> <span class="n">a511b625</span><span class="p">-</span><span class="n">8eb8</span><span class="p">-</span><span class="n">417e</span><span class="p">-</span><span class="n">85f0</span><span class="p">-</span><span class="n">5b47ebb4c0f1</span> <span class="n">-markForDeletion</span>
@@ -4766,7 +4804,7 @@ Please see <a href="emove-VCFCluster.md">Remove-VCFCluster</a> for more informat
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-12T13:52:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-26T15:52:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-26</span>
       
     
   </small>
@@ -4970,7 +5008,7 @@ Please see <a href="emove-VCFCluster.md">Remove-VCFCluster</a> for more informat
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.footer", "navigation.header", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.a51614de.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
         
           <script src="../../../../js/timeago.min.js"></script>
@@ -4978,6 +5016,10 @@ Please see <a href="emove-VCFCluster.md">Remove-VCFCluster</a> for more informat
       
         
           <script src="../../../../js/timeago_mkdocs_material.js"></script>
+        
+      
+        
+          <script src="../../../../js/open_in_new_tab.js"></script>
         
       
     

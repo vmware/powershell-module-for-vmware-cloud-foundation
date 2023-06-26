@@ -21,7 +21,7 @@
         <link rel="next" href="../Get-VCFApplicationVirtualNetwork/">
       
       <link rel="icon" href="../../../../favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -242,7 +242,7 @@
   
     <li class="md-tabs__item">
       <a href="../../../" class="md-tabs__link md-tabs__link--active">
-        Documentation
+        Reference
       </a>
     </li>
   
@@ -346,6 +346,8 @@
         
           
         
+          
+        
       
       
         
@@ -374,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../install/" class="md-nav__link">
+      <a href="../../../getting-started/install/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -388,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../update/" class="md-nav__link">
+      <a href="../../../getting-started/update/" class="md-nav__link">
         Updating
       </a>
     </li>
@@ -402,8 +404,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../user-access/" class="md-nav__link">
+      <a href="../../../getting-started/user-access/" class="md-nav__link">
         User Access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/usage/" class="md-nav__link">
+        Usage
       </a>
     </li>
   
@@ -554,7 +570,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../">Documentation</a>
+          <a href="../../../">Reference</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -565,7 +581,7 @@
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          Documentation
+          Reference
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1957,8 +1973,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../system/Set-VCFConfigurationDNS.md" class="md-nav__link">
-        None
+      <a href="../../dns-ntp/Set-VCFConfigurationDNS/" class="md-nav__link">
+        Set-VCFConfigurationDNS
       </a>
     </li>
   
@@ -4677,68 +4693,68 @@
 <p>The Add-VCFApplicationVirtualNetwork cmdlet creates Application Virtual Networks in SDDC Manager and NSX.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="example-1">Example 1<a class="headerlink" href="#example-1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nb">Add-VCFApplicationVirtualNetwork</span> <span class="n">-json</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-Raw</span> <span class="p">.\</span><span class="n">SampleJSON</span><span class="p">\</span><span class="n">Application</span> <span class="n">Virtual</span> <span class="n">Network</span><span class="p">\</span><span class="n">avnOPverlaySpec</span><span class="p">.</span><span class="n">json</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="nb">Add-VCFApplicationVirtualNetwork</span> <span class="n">-json</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-Raw</span> <span class="p">.\</span><span class="n">samples</span><span class="p">\</span><span class="n">avns</span><span class="p">\</span><span class="n">avnOPverlaySpec</span><span class="p">.</span><span class="n">json</span><span class="p">)</span>
 </code></pre></div>
 <p>This example shows how to deploy the Application Virtual Networks using the JSON specification file supplied.</p>
-<h3 id="example-2">Example 2<a class="headerlink" href="#example-2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nb">Add-VCFApplicationVirtualNetwork</span> <span class="n">-json</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-Raw</span> <span class="p">.\</span><span class="n">SampleJSON</span><span class="p">\</span><span class="n">Application</span> <span class="n">Virtual</span> <span class="n">Network</span><span class="p">\</span><span class="n">avnOverlaySpec</span><span class="p">.</span><span class="n">json</span><span class="p">)</span> <span class="n">-validate</span>
-</code></pre></div>
-<p>This example shows how to validate the Application Virtual Networks JSON specification file supplied.</p>
 <details class="example" open="open">
 <summary>Sample JSON: Overlay-backed NSX Segments for Application Virtual Networks</summary>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="nt">&quot;edgeClusterId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;083741ad-6d64-4ea0-8117-ea940ca238d7&quot;</span><span class="p">,</span>
-<span class="nt">&quot;avns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">&quot;edgeClusterId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;7d091d76-af11-4cb8-a562-368e7f0367cc&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;avns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xreg-m01-seg01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;X_REGION&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;routerName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-ec01-t1-gw01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xreg-m01-seg01&quot;</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xint-m01-seg01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;X_REGION&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;routerName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-ec01-t1-gw01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xint-m01-seg01&quot;</span>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;REGION_A&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;routerName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-ec01-t1-gw01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;REGION_A&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;routerName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-ec01-t1-gw01&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="p">]</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 </details>
+<h3 id="example-2">Example 2<a class="headerlink" href="#example-2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">Add-VCFApplicationVirtualNetwork</span> <span class="n">-json</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-Raw</span> <span class="p">.\</span><span class="n">samples</span><span class="p">\</span><span class="n">avns</span><span class="p">\</span><span class="n">avnOverlaySpec</span><span class="p">.</span><span class="n">json</span><span class="p">)</span> <span class="n">-validate</span>
+</code></pre></div>
+<p>This example shows how to validate the Application Virtual Networks JSON specification file supplied.</p>
 <details class="example" open="open">
 <summary>Sample JSON: VLAN-backed NSX Segments for Application Virtual Networks</summary>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="nt">&quot;edgeClusterId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;083741ad-6d64-4ea0-8117-ea940ca238d7&quot;</span><span class="p">,</span>
-<span class="nt">&quot;avns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xreg-m01-seg01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;X_REGION&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2021</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xreg-m01-seg01&quot;</span>
-<span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;REGION_A&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.1&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2022</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">]</span>
+<span class="w">    </span><span class="nt">&quot;edgeClusterId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;083741ad-6d64-4ea0-8117-ea940ca238d7&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;avns&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xreg-m01-seg01&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;X_REGION&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.1&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.11.0&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2021</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xreg-m01-seg01&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;regionType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;REGION_A&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;subnet&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.0&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;gateway&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;192.168.31.1&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;subnetMask&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;255.255.255.0&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;mtu&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9000</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;vlanId&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2022</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;portGroupName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-m01-seg01&quot;</span>
+<span class="w">        </span><span class="p">}</span><span class="w">    </span>
+<span class="w">    </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
 </details>
@@ -4775,7 +4791,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-12T13:52:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-26T15:52:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-26</span>
       
     
   </small>
@@ -4808,7 +4824,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Documentation" rel="prev">
+          <a href="../../../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Index" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -4817,7 +4833,7 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Documentation
+                Index
               </div>
             </div>
           </a>
@@ -4979,7 +4995,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.footer", "navigation.header", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.a51614de.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
         
           <script src="../../../../js/timeago.min.js"></script>
@@ -4987,6 +5003,10 @@
       
         
           <script src="../../../../js/timeago_mkdocs_material.js"></script>
+        
+      
+        
+          <script src="../../../../js/open_in_new_tab.js"></script>
         
       
     

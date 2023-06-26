@@ -21,7 +21,7 @@
         <link rel="next" href="../Remove-VCFCommissionedHost/">
       
       <link rel="icon" href="../../../../favicon.ico">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.16">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.17">
     
     
       
@@ -242,7 +242,7 @@
   
     <li class="md-tabs__item">
       <a href="../../../" class="md-tabs__link md-tabs__link--active">
-        Documentation
+        Reference
       </a>
     </li>
   
@@ -346,6 +346,8 @@
         
           
         
+          
+        
       
       
         
@@ -374,7 +376,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../install/" class="md-nav__link">
+      <a href="../../../getting-started/install/" class="md-nav__link">
         Installation
       </a>
     </li>
@@ -388,7 +390,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../update/" class="md-nav__link">
+      <a href="../../../getting-started/update/" class="md-nav__link">
         Updating
       </a>
     </li>
@@ -402,8 +404,22 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../../user-access/" class="md-nav__link">
+      <a href="../../../getting-started/user-access/" class="md-nav__link">
         User Access
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../getting-started/usage/" class="md-nav__link">
+        Usage
       </a>
     </li>
   
@@ -554,7 +570,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../../">Documentation</a>
+          <a href="../../../">Reference</a>
           
             <label for="__nav_2">
               <span class="md-nav__icon md-icon"></span>
@@ -565,7 +581,7 @@
       <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          Documentation
+          Reference
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -1839,8 +1855,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../system/Set-VCFConfigurationDNS.md" class="md-nav__link">
-        None
+      <a href="../../dns-ntp/Set-VCFConfigurationDNS/" class="md-nav__link">
+        Set-VCFConfigurationDNS
       </a>
     </li>
   
@@ -4677,51 +4693,51 @@
 <p>The New-VCFCommissionedHost cmdlet commissions a list of ESXi hosts.</p>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
 <h3 id="example-1">Example 1<a class="headerlink" href="#example-1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nb">New-VCFCommissionedHost</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">Host</span><span class="p">\</span><span class="n">commissionHosts</span><span class="p">\</span><span class="n">commissionHostSpec</span><span class="p">.</span><span class="n">json</span>
+<div class="highlight"><pre><span></span><code><span class="nb">New-VCFCommissionedHost</span> <span class="n">-json</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-Raw</span> <span class="p">.\</span><span class="n">samples</span><span class="p">\</span><span class="n">hosts</span><span class="p">\</span><span class="n">commissionHostsSpec</span><span class="p">.</span><span class="n">json</span><span class="p">)</span>
 </code></pre></div>
 <p>This example shows how to commission a list of ESXi hosts using a JSON specification file.</p>
-<h3 id="example-2">Example 2<a class="headerlink" href="#example-2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="nb">New-VCFCommissionedHost</span> <span class="n">-json</span> <span class="p">.\</span><span class="n">Host</span><span class="p">\</span><span class="n">commissionHosts</span><span class="p">\</span><span class="n">commissionHostSpec</span><span class="p">.</span><span class="n">json</span> <span class="n">-validate</span>
-</code></pre></div>
-<p>This example shows how to validate the ESXi host JSON specification file.</p>
 <details class="example" open="open">
-<summary>Sample JSON: Commision Hosts</summary>
+<summary>Sample JSON: Commission ESXi Host(s)</summary>
 <div class="highlight"><pre><span></span><code><span class="p">[</span>
-<span class="p">{</span>
+<span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;fqdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-w01-esx01.sfo.rainpole.io&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;storageType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;networkPoolName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-w01-np01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1cb5a82e-b1b0-4d98-9d99-544a22875584&quot;</span>
-<span class="p">},</span>
-<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;850c1edc-71f8-47e2-8308-66000338f67a&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;fqdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-w01-esx02.sfo.rainpole.io&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;storageType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;networkPoolName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-w01-np01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1cb5a82e-b1b0-4d98-9d99-544a22875584&quot;</span>
-<span class="p">},</span>
-<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;networkPool  Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-w01-np01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;850c1edc-71f8-47e2-8308-66000338f67a&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;fqdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-w01-esx03.sfo.rainpole.io&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;storageType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;networkPoolName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-w01-np01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1cb5a82e-b1b0-4d98-9d99-544a22875584&quot;</span>
-<span class="p">},</span>
-<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;850c1edc-71f8-47e2-8308-66000338f67a&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;fqdn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo01-w01-esx04.sfo.rainpole.io&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;root&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;storageType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VSAN&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;VMw@re1!&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;networkPoolName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfo-w01-np01&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1cb5a82e-b1b0-4d98-9d99-544a22875584&quot;</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="nt">&quot;networkPoolId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;850c1edc-71f8-47e2-8308-66000338f67a&quot;</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </code></pre></div>
 </details>
+<h3 id="example-2">Example 2<a class="headerlink" href="#example-2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nb">New-VCFCommissionedHost</span> <span class="n">-json</span> <span class="p">(</span><span class="nb">Get-Content</span> <span class="n">-Raw</span> <span class="p">.\</span><span class="n">samples</span><span class="p">\</span><span class="n">hosts</span><span class="p">\</span><span class="n">commissionHostSpec</span><span class="p">.</span><span class="n">json</span><span class="p">)</span> <span class="n">-validate</span>
+</code></pre></div>
+<p>This example shows how to validate the ESXi host JSON specification file.</p>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <h3 id="-json">-json<a class="headerlink" href="#-json" title="Permanent link">&para;</a></h3>
 <p>Specifies the JSON specification to be used.</p>
@@ -4755,7 +4771,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-12T13:52:49+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-12</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2023-06-26T15:52:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2023-06-26</span>
       
     
   </small>
@@ -4959,7 +4975,7 @@
     <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.footer", "navigation.header", "navigation.indexes", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.a51614de.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.b425cdc4.min.js"></script>
       
         
           <script src="../../../../js/timeago.min.js"></script>
@@ -4967,6 +4983,10 @@
       
         
           <script src="../../../../js/timeago_mkdocs_material.js"></script>
+        
+      
+        
+          <script src="../../../../js/open_in_new_tab.js"></script>
         
       
     
