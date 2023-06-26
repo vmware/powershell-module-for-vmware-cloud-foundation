@@ -1,0 +1,23 @@
+{
+  "caType": "Microsoft",
+  "resources": [
+    {
+      "fqdn": "sfo-w01-vc01.sfo.rainpole.io",
+      "name": "sfo-w01-vc01",
+      "resourceId": "56ec85d5-7276-4f81-ab93-bb3ce90e46a8",
+      "type": "VCENTER"
+    },
+    {
+      "fqdn": "sfo-w01-nsx01.sfo.rainpole.io",
+      "name": "sfo-w01-nsx01",
+      "resourceId": "05efb755-6107-4bc2-bd3f-6d59a5c47ee2",
+      "sans": [
+        "sfo-w01-nsx01a.sfo.rainpole.io",
+        "sfo-w01-nsx01b.sfo.rainpole.io",
+        "sfo-w01-nsx01c.sfo.rainpole.io",
+        "sfo-w01-nsx01.sfo.rainpole.io"
+      ],
+      "type": "NSXT_MANAGER"
+    }
+  ]
+}

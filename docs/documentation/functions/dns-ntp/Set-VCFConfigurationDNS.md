@@ -19,23 +19,21 @@ The Set-VCFConfigurationDNS cmdlet sets the DNS configuration for all systems ma
 ### Example 1
 
 ```powershell
-Set-VCFConfigurationDNS -json $jsonSpec
-```
-
-This example shows how to set the DNS configuration for all systems managed by SDDC Manager using a JSON specification.
-
-### Example 2
-
-```powershell
-Set-VCFConfigurationDNS -json (Get-Content -Raw .\dnsSpec.json)
+Set-VCFConfigurationDNS -json (Get-Content -Raw .\samples\dns-ntp\dnsSpec.json)
 ```
 
 This example shows how to set the DNS configuration for all systems managed by SDDC Manager using a JSON specification file.
 
-### Example 3
+???+ example "Sample JSON: DNS Configuration"
+
+    ```json
+    --8<-- "./samples/dns-ntp/dnsSpec.json"
+    ```
+
+### Example 2
 
 ```powershell
-Set-VCFConfigurationDNS -json $jsonSpec -validate
+Set-VCFConfigurationDNS -json (Get-Content -Raw .\samples\dns-ntp\dnsSpec.json) -validate
 ```
 
 This example shows how to validate the DNS configuration.

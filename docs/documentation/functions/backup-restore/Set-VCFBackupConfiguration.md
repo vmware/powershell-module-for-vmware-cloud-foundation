@@ -20,30 +20,15 @@ backing up NSX and SDDC Manager.
 ### Example 1
 
 ```powershell
-Set-VCFBackupConfiguration -json (Get-Content -Raw .\SampleJSON\Backup\backupConfiguration.json)
+Set-VCFBackupConfiguration -json (Get-Content -Raw .\samples\backup-restore\backupSpec.json)
 ```
 
 This example shows how to configure the backup configuration.
 
-???+ example "Sample JSON: Configure Backup Target"
+???+ example "Sample JSON: Configure Backup Settings"
 
     ```json
-    {
-        "backupLocations": [
-            {
-                "directoryPath": "/backups",
-                "password": "VMw@re1!",
-                "port": 22,
-                "protocol": "SFTP",
-                "server": "172.20.11.60",
-                "sshFingerprint": "<!!SSH-FINGERPRINT!!>",
-                "username": "svc-vcf-bck"
-            }
-        ],
-        "encryption": {
-            "passphrase": "VMw@re1!VMw@re1!"
-        }
-    }
+    --8<-- "./samples/backup-restore/backupSpec.json"
     ```
 
 ## Parameters

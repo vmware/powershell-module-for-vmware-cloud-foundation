@@ -1,0 +1,78 @@
+{
+  "edgeClusterName": "sfo-m01-ec01",
+  "edgeClusterProfileType": "CUSTOM",
+  "edgeClusterProfileSpec": {
+    "bfdAllowedHop": 255,
+    "bfdDeclareDeadMultiple": 3,
+    "bfdProbeInterval": 1000,
+    "edgeClusterProfileName": "sfo-m01-ecp01",
+    "standbyRelocationThreshold": 30
+  },
+  "edgeClusterType": "NSX-T",
+  "edgeRootPassword": "VMw@re1!VMw@re1!",
+  "edgeAdminPassword": "VMw@re1!VMw@re1!",
+  "edgeAuditPassword": "VMw@re1!VMw@re1!",
+  "edgeFormFactor": "MEDIUM",
+  "tier0ServicesHighAvailability": "ACTIVE_ACTIVE",
+  "mtu": 8900,
+  "asn": 65003,
+  "tier0RoutingType": "EBGP",
+  "tier0Name": "sfo-m01-ec01-t0-gw01",
+  "tier1Name": "sfo-m01-ec01-t1-gw01",
+  "edgeNodeSpecs": [
+    {
+      "edgeNodeName": "sfo-m01-en01.sfo.rainpole.io",
+      "managementIP": "172.16.11.75/24",
+      "managementGateway": "172.16.11.1",
+      "edgeTepGateway": "172.27.13.1",
+      "edgeTep1IP": "172.27.13.2/24",
+      "edgeTep2IP": "172.27.13.3/24",
+      "edgeTepVlan": 2713,
+      "clusterId": "246555e3-7737-4427-9863-1b5a7bef5681",
+      "interRackCluster": "false",
+      "uplinkNetwork": [
+        {
+          "uplinkVlan": 2711,
+          "uplinkInterfaceIP": "172.27.11.2/24",
+          "peerIP": "172.27.11.1/24",
+          "asnPeer": 65001,
+          "bgpPeerPassword": "VMw@re1!"
+        },
+        {
+          "uplinkVlan": 2712,
+          "uplinkInterfaceIP": "172.27.12.2/24",
+          "peerIP": "172.27.12.1/24",
+          "asnPeer": 65001,
+          "bgpPeerPassword": "VMw@re1!"
+        }
+      ]
+    },
+    {
+      "edgeNodeName": "sfo-m01-en02.sfo.rainpole.io",
+      "managementIP": "172.16.11.76/24",
+      "managementGateway": "172.16.11.1",
+      "edgeTepGateway": "172.27.13.1",
+      "edgeTep1IP": "172.27.13.4/24",
+      "edgeTep2IP": "172.27.13.5/24",
+      "edgeTepVlan": 2713,
+      "clusterId": "246555e3-7737-4427-9863-1b5a7bef5681",
+      "interRackCluster": "false",
+      "uplinkNetwork": [
+        {
+          "uplinkVlan": 2711,
+          "uplinkInterfaceIP": "172.27.11.3/24",
+          "peerIP": "172.27.11.1/24",
+          "asnPeer": 65001,
+          "bgpPeerPassword": "VMw@re1!"
+        },
+        {
+          "uplinkVlan": 2712,
+          "uplinkInterfaceIP": "172.27.12.3/24",
+          "peerIP": "172.27.12.1/24",
+          "asnPeer": 65001,
+          "bgpPeerPassword": "VMw@re1!"
+        }
+      ]
+    }
+  ]
+}

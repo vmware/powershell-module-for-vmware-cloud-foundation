@@ -7,8 +7,7 @@ Adds an IP Pool to the an existing network of a network pool.
 ## Syntax
 
 ```powershell
-Add-VCFNetworkIPPool [-id] <String> [-networkid] <String> [-ipStart] <String> [-ipEnd] <String>
- [<CommonParameters>]
+Add-VCFNetworkIPPool [-id] <String> [-networkid] <String> [-ipStart] <String> [-ipEnd] <String> [<CommonParameters>]
 ```
 
 ## Description

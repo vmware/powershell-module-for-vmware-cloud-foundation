@@ -19,7 +19,7 @@ The Start-CloudBuilderSDDCValidation cmdlet starts the validation of a managemen
 ### Example 1
 
 ```powershell
-Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json
+Start-CloudBuilderSDDCValidation -json .\samples\SDDC\SddcSpec.json
 ```
 
 This example shows how to start the validation of a management domain JSON specification file on VMware Cloud Builder.
@@ -27,7 +27,7 @@ This example shows how to start the validation of a management domain JSON speci
 ### Example 2
 
 ```powershell
-Start-CloudBuilderSDDCValidation -json .\SampleJSON\SDDC\SddcSpec.json -validation LICENSE_KEY_VALIDATION
+Start-CloudBuilderSDDCValidation -json .\samples\SDDC\SddcSpec.json -validation LICENSE_KEY_VALIDATION
 ```
 
 This example shows how to start the validation of a specific item in a management domain JSON specification file on VMware Cloud Builder.

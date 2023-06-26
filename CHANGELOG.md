@@ -2,11 +2,15 @@
 
 ## v2.4.0 (Unreleased)
 
+> Released: Unreleased
+
 - Updated `Request-VCFToken` cmdlet for better error handling.
 - Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager version in `x.y.z` format.
 - Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager build in `xxxxxxx` format.
 
-## v2.3.0 (2023-04-25)
+## v2.3.0
+
+> Released: 2023-04-25
 
 - Enhanced `validateJsonInput` cmdlet for consistency across functions.
 - Enhanced `Get-VCFDepotCredential` cmdlet to support retrieving the VxRail depot details.
@@ -46,7 +50,9 @@
 - Added `Get-VCFLicenseMode` cmdlet to retrieve the current license mode of the system & each domain
 - Added `New-VCFPersonality` cmdlet to add a new vSphere Lifecycle Manager personality/image in the SDDC Manager inventory from an existing vLCM image based cluster
 
-## v2.2.0 (2022-26-05)
+## v2.2.0
+
+> Released: 2022-26-05
 
 - Fixed `Get-VCFApplicationVirtualNetwork`cmdlet when passing the ID of the Application Virtual Network the response was failing.
 - Updated `Get-VCFFederation` cmdlet to check the system version, multi-instance management is deprecated in VMware Cloud Foundation v4.4.0.
@@ -61,7 +67,9 @@
 - Updated `Get-VCFCredentialTask` cmdlet to support -status validation set.
 - Added `Get-VCFPSC` cmdlet to support the retrieval of Platform Services Controllers from the SDDC Manager inventory.
 
-## v2.1.7 (2021-30-11)
+## v2.1.7
+
+> Released: 2021-30-11
 
 - Fixed `New-VCFCluster`cmdlet where incorrect braces prevented the ability to retrieve response information.
 - Added `Get-VCFvRLIConnection` cmdlet to get the connection status of VI Workload Domains to vRealize Log Insight.

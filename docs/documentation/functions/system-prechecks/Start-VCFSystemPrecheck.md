@@ -19,10 +19,16 @@ The Start-VCFSystemPrecheck cmdlet performs system level health checks and upgra
 ### Example 1
 
 ```powershell
-Start-VCFSystemPrecheck -json .\SystemCheck\precheckVCFSystem.json
+Start-VCFSystemPrecheck -json (Get-Content -Raw .\samples\system-prechecks\precheckSpec.json)
 ```
 
 This example shows how to perform system level health checks and upgrade pre-checks using the JSON specification file.
+
+???+ example "Sample JSON: System Prechecks"
+
+    ```json
+    --8<-- "./samples/system-prechecks/precheckSpec.json"
+    ```
 
 ## Parameters
 

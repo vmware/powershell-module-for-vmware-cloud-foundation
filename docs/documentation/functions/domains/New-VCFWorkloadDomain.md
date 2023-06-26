@@ -19,10 +19,21 @@ The New-VCFWorkloadDomain cmdlet creates a workload domain from a JSON specifica
 ### Example 1
 
 ```powershell
-New-VCFWorkloadDomain -json .\WorkloadDomain\workloadDomainSpec.json
+New-VCFWorkloadDomain -json (Get-Content -Raw .\samples\domains\domainSpec.json)
 ```
 
 This example shows how to create a workload domain from a JSON specification file.
+
+???+ example "Sample JSON: Workload Domain"
+
+    ```json
+    --8<-- "./samples/domains/domainSpec.json"
+    ```
+???+ example "Sample JSON: Isolated Workload Domain"
+
+    ```json
+    --8<-- "./samples/domains/isolatedDomainSpec.json"
+    ```
 
 ## Parameters
 

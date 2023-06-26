@@ -7,8 +7,7 @@ Request an authentication token from SDDC Manager.
 ## Syntax
 
 ```powershell
-Request-VCFToken [-fqdn] <String> [[-username] <String>] [[-password] <String>] [-skipCertificateCheck]
- [<CommonParameters>]
+Request-VCFToken [-fqdn] <String> [[-username] <String>] [[-password] <String>] [-skipCertificateCheck] [<CommonParameters>]
 ```
 
 ## Description

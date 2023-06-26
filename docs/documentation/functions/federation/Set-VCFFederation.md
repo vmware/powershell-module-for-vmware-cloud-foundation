@@ -23,18 +23,16 @@ The Set-VCFFederation cmdlet bootstraps the creation of a federation in SDDC Man
 ### Example 1
 
 ```powershell
-Set-VCFFederation -json $jsonSpec
-```
-
-This example shows how to bootstrap the creation of a federation using a JSON specification.
-
-### Example 2
-
-```powershell
-Set-VCFFederation -json (Get-Content -Raw .\createFederationSpec.json)
+Set-VCFFederation -json (Get-Content -Raw .\samples\federation\federationSpec.json)
 ```
 
 This example shows how to bootstrap the creation of a federation using a JSON specification file.
+
+???+ example "Sample JSON: Create Federation"
+
+    ```json
+    --8<-- "./samples/federation/federationSpec.json"
+    ```
 
 ## Parameters
 

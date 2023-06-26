@@ -7,8 +7,7 @@ Configures Microsoft Certificate Authority integration.
 ## Syntax
 
 ```powershell
-Set-VCFMicrosoftCA [-serverUrl] <String> [-username] <String> [-password] <String> [-templateName] <String>
- [<CommonParameters>]
+Set-VCFMicrosoftCA [-serverUrl] <String> [-username] <String> [-password] <String> [-templateName] <String> [<CommonParameters>]
 ```
 
 ## Description
@@ -20,7 +19,7 @@ Configures the Microsoft Certificate Authorty integration with SDDC Manager.
 ### Example 1
 
 ```powershell
-Set-VCFMicrosoftCA -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+Set-VCFMicrosoftCA -serverUrl "https://rpl-pki01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
 ```
 
 This example shows how to configure a Microsoft Certificate Authority integration with SDDC Manager.

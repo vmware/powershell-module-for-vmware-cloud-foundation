@@ -7,8 +7,7 @@ Removes an IP pool from the network of a network pool
 ## Syntax
 
 ```powershell
-Remove-VCFNetworkIPPool [-id] <String> [-networkid] <String> [-ipStart] <String> [-ipEnd] <String>
- [<CommonParameters>]
+Remove-VCFNetworkIPPool [-id] <String> [-networkid] <String> [-ipStart] <String> [-ipEnd] <String> [<CommonParameters>]
 ```
 
 ## Description

@@ -19,57 +19,24 @@ The New-VCFCommissionedHost cmdlet commissions a list of ESXi hosts.
 ### Example 1
 
 ```powershell
-New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json
+New-VCFCommissionedHost -json (Get-Content -Raw .\samples\hosts\commissionHostsSpec.json)
 ```
 
 This example shows how to commission a list of ESXi hosts using a JSON specification file.
 
+???+ example "Sample JSON: Commission ESXi Host(s)"
+
+    ```json
+    --8<-- "./samples/hosts/commissionHostsSpec.json"
+    ```
+
 ### Example 2
 
 ```powershell
-New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
+New-VCFCommissionedHost -json (Get-Content -Raw .\samples\hosts\commissionHostSpec.json) -validate
 ```
 
 This example shows how to validate the ESXi host JSON specification file.
-
-???+ example "Sample JSON: Commision Hosts"
-
-    ```json
-    [
-    {
-        "fqdn": "sfo01-w01-esx01.sfo.rainpole.io",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo-w01-np01",
-        "networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
-    },
-    {
-        "fqdn": "sfo01-w01-esx02.sfo.rainpole.io",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo-w01-np01",
-        "networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
-    },
-    {
-        "fqdn": "sfo01-w01-esx03.sfo.rainpole.io",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo-w01-np01",
-        "networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
-    },
-    {
-        "fqdn": "sfo01-w01-esx04.sfo.rainpole.io",
-        "username": "root",
-        "storageType": "VSAN",
-        "password": "VMw@re1!",
-        "networkPoolName": "sfo-w01-np01",
-        "networkPoolId": "1cb5a82e-b1b0-4d98-9d99-544a22875584"
-    }
-    ]
-    ```
 
 ## Parameters
 

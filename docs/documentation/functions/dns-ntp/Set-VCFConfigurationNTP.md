@@ -19,23 +19,21 @@ The Set-VCFConfigurationNTP cmdlet sets the NTP configuration for all systems ma
 ### Example 1
 
 ```powershell
-Set-VCFConfigurationNTP -json $jsonSpec
-```
-
-This example shows how to set the NTP configuration for all systems managed by SDDC Manager using a JSON specification.
-
-### Example 2
-
-```powershell
-Set-VCFConfigurationNTP (Get-Content -Raw .\ntpSpec.json)
+Set-VCFConfigurationNTP (Get-Content -Raw .\samples\dns-ntp\ntpSpec.json)
 ```
 
 This example shows how to set the NTP configuration for all systems managed by SDDC Manager using a JSON specification file.
 
-### Example 3
+???+ example "Sample JSON: NTP Configuration"
+
+    ```json
+    --8<-- "./samples/dns-ntp/ntpSpec.json"
+    ```
+
+### Example 2
 
 ```powershell
-Set-VCFConfigurationNTP -json $jsonSpec -validate
+Set-VCFConfigurationNTP -json (Get-Content -Raw .\samples\dns-ntp\ntpSpec.json) -validate
 ```
 
 This example shows how to validate the NTP configuration.

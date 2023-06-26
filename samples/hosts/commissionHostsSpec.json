@@ -1,0 +1,34 @@
+[
+  {
+    "fqdn": "sfo01-w01-esx01.sfo.rainpole.io",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPoolName": "sfo-w01-np01",
+    "networkPoolId": "850c1edc-71f8-47e2-8308-66000338f67a"
+  },
+  {
+    "fqdn": "sfo01-w01-esx02.sfo.rainpole.io",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPool  Name": "sfo-w01-np01",
+    "networkPoolId": "850c1edc-71f8-47e2-8308-66000338f67a"
+  },
+  {
+    "fqdn": "sfo01-w01-esx03.sfo.rainpole.io",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPoolName": "sfo-w01-np01",
+    "networkPoolId": "850c1edc-71f8-47e2-8308-66000338f67a"
+  },
+  {
+    "fqdn": "sfo01-w01-esx04.sfo.rainpole.io",
+    "username": "root",
+    "storageType": "VSAN",
+    "password": "VMw@re1!",
+    "networkPoolName": "sfo-w01-np01",
+    "networkPoolId": "850c1edc-71f8-47e2-8308-66000338f67a"
+  }
+]

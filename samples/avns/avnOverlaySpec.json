@@ -1,0 +1,25 @@
+{
+  "edgeClusterId": "7d091d76-af11-4cb8-a562-368e7f0367cc",
+  "avns": [
+    {
+      "name": "xint-m01-seg01",
+      "regionType": "X_REGION",
+      "gateway": "192.168.11.1",
+      "subnet": "192.168.11.0",
+      "subnetMask": "255.255.255.0",
+      "mtu": 9000,
+      "routerName": "sfo-m01-ec01-t1-gw01",
+      "portGroupName": "xint-m01-seg01"
+    },
+    {
+      "name": "sfo-m01-seg01",
+      "regionType": "REGION_A",
+      "gateway": "192.168.31.1",
+      "subnet": "192.168.31.0",
+      "subnetMask": "255.255.255.0",
+      "mtu": 9000,
+      "routerName": "sfo-m01-ec01-t1-gw01",
+      "portGroupName": "sfo-m01-seg01"
+    }
+  ]
+}

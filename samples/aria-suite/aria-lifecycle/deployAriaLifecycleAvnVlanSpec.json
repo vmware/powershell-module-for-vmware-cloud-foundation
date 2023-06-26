@@ -1,0 +1,10 @@
+{
+    "apiPassword": "VMw@re1!",
+    "fqdn": "xint-vrslcm01.rainpole.io",
+    "networkSpec": {
+        "gateway": "172.16.225.1",
+        "subnetMask": "255.255.255.0",
+        "vlanId": "2225"
+    },
+    "sshPassword": "VMw@re1!"
+}

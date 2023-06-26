@@ -23,10 +23,16 @@ The Request-VCFCertificateCSR generates a certificate signing request(s) (CSR) f
 ### Example 1
 
 ```powershell
-Request-VCFCertificateCSR -domainName MGMT -json .\requestCsrSpec.json
+Request-VCFCertificateCSR -domainName MGMT -json (Get-Content -Raw .\samples\certificates\requestCsrSpec.json)
 ```
 
-This example shows how to generate the certificate signing request(s) (CSR) based on the entries within the requestCsrSpec.json file for resources within the workload domain named MGMT.
+This example shows how to generate the certificate signing request(s) (CSR) based on the entries within the JSON specification file for resources within the workload domain named MGMT.
+
+???+ example "Sample JSON: Request Certificate Signing Request"
+
+    ```json
+    --8<-- "./samples/certificates/requestCsrSpec.json"
+    ```
 
 ## Parameters
 

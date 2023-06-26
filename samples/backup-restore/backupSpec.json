@@ -1,0 +1,14 @@
+{
+    "backupLocations": [ {
+        "directoryPath": "/backups/sfo-vcf-01/",
+        "password": "VMw@re1!",
+        "port": 22,
+        "protocol": "SFTP",
+        "server": "secure.rainpole.io",
+        "sshFingerprint": "<!!SSH-FINGERPRINT!!>",
+        "username": "svc-vcf-bck"
+    } ],
+    "encryption": {
+        "passphrase": "VMw@re1!VMw@re1!"
+    }
+}

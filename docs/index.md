@@ -8,8 +8,7 @@
 
 ???+ info
 
-    The module supports versions in accordance with the VMware Product Lifecycle Matrix from General Availability to End of General Support.
-    Learn more: [VMware Product Lifecycle Matrix][product-lifecycle-matrix].
+    The module supports versions in accordance with the VMware Product Lifecycle Matrix from General Availability to End of General Support. Learn more: [VMware Product Lifecycle Matrix][product-lifecycle-matrix].
 
 [:material-powershell: &nbsp; PowerShell Gallery][psgallery-module-powervcf]{ .md-button .md-button--primary }
 
@@ -61,11 +60,12 @@ Project                                                                         
 [PowerShell Module for VMware Cloud Foundation Reporting][psgallery-module-reporting]                           | :fontawesome-solid-book: &nbsp; [Documentation][docs-module-reporting]
 [PowerShell Module for VMware Cloud Foundation Certificate Management][psgallery-module-certificate-management] | :fontawesome-solid-book: &nbsp; [Documentation][docs-module-certificate-management]
 [PowerShell Module for VMware Cloud Foundation Password Management][psgallery-module-password-management]       | :fontawesome-solid-book: &nbsp; [Documentation][docs-module-password-management]
-[PowerShell Module for VMware Cloud Foundation Power Management][psgallery-module-power-management]             |
+[PowerShell Module for VMware Cloud Foundation Power Management][psgallery-module-power-management]             | :fontawesome-solid-book: &nbsp; [Documentation][docs-module-power-management]
 
 [developer-module-powercli]: https://developer.vmware.com/tool/vmware-powercli
 [docs-module-certificate-management]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation-certificate-management
 [docs-module-password-management]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation-password-management
+[docs-module-power-management]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation-power-management
 [docs-module-reporting]: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation-reporting
 [docs-vmware-cloud-foundation]: https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html
 [microsoft-powershell]: https://docs.microsoft.com/en-us/powershell

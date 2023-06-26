@@ -23,10 +23,16 @@ The Join-VCFFederation cmdlet joins an SDDC Manager instance to an existing fede
 ### Example 1
 
 ```powershell
-Join-VCFFederation -json .\joinFederationSpec.json
+Join-VCFFederation -json (Get-Content -Raw .\samples\federation\joinFederationSpec.json)
 ```
 
 This example shows how to join an SDDC Manager instance to an existing federation.
+
+???+ example "Sample JSON: Join Federation"
+
+    ```json
+    --8<-- "./samples/federation/joinFederationSpec.json"
+    ```
 
 ## Parameters
 

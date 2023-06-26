@@ -17,23 +17,35 @@ The Set-VCFCluster cmdlet can be used to expand or compact a cluster by adding o
 ???+ info
 
     Before a cluster can be removed it must first be marked for deletion.
-    Please see [Remove-VCFCluster](emove-VCFCluster.md) for more information.
+    Please see [Remove-VCFCluster](Remove-VCFCluster.md) for more information.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterExpansionSpec.json
+Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\samples\clusters\clusterExpansionSpec.json
 ```
 
 This example shows how to expand a cluster by adding a host(s) using a JSON specification file.
+
+???+ example "Sample JSON: Cluster Expansion"
+
+    ```json
+    --8<-- "./samples/clusters/clusterExpansionSpec.json"
+    ```
 
 ### Example 2
 
 ```powershell
 Set-VCFCluster -id a511b625-8eb8-417e-85f0-5b47ebb4c0f1 -json .\Cluster\clusterCompactionSpec.json
 ```
+
+???+ example "Sample JSON: Cluster Compaction"
+
+    ```json
+    --8<-- "./samples/clusters/clusterCompactionSpec.json"
+    ```
 
 This example shows how to compact a cluster by removing a host(s) using a JSON specification file.
 

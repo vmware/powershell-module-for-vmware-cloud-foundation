@@ -18,19 +18,18 @@ The Start-VCFUpgrade cmdlet starts the upgrade of a resource in SDDC Manager.
 
 ### Example 1
 
-```powershell
-Start-VCFUpgrade -json $jsonSpec
-```
-
-This example shows how to start an upgrade in SDDC Manager by passing a JSON specification.
-
-### Example 2
 
 ```powershell
-Start-VCFUpgrade -json (Get-Content -Raw .\upgradeDomain.json)
+Start-VCFUpgrade -json (Get-Content -Raw .\samples\upgrades\upgradeDomainSpec.json)
 ```
 
 This example shows how to start an upgrade in SDDC Manager by using a JSON specification file.
+
+???+ example "Sample JSON: Domain Upgrade"
+
+    ```json
+    --8<-- "./samples/upgrades/upgradeDomainSpec.json"
+    ```
 
 ## Parameters
 

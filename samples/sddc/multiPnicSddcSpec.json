@@ -1,0 +1,240 @@
+{
+  "taskName": "workflowconfig/workflowspec-ems.json",
+  "sddcId": "sfo-m01",
+  "ceipEnabled": "True",
+  "fipsEnabled": "False",
+  "managementPoolName": "sfo-m01-np01",
+  "skipEsxThumbprintValidation": true,
+  "esxLicense": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+  "excludedComponents": ["NSX-V"],
+  "ntpServers": ["ntp0.sfo.rainpole.io", "ntp1.sfo.rainpole.io"],
+  "dnsSpec": {
+    "domain": "sfo.rainpole.io",
+    "subdomain": "sfo.rainpole.io",
+    "nameserver": "172.16.11.4",
+    "secondaryNameserver": "172.16.11.5"
+  },
+  "sddcManagerSpec": {
+    "hostname": "sfo-vcf01",
+    "ipAddress": "172.16.11.59",
+    "netmask": "255.255.255.0",
+    "localUserPassword": "VMw@re1!VMw@re1!",
+    "rootUserCredentials": {
+      "username": "root",
+      "password": "VMw@re1!"
+    },
+    "restApiCredentials": {
+      "username": "admin",
+      "password": "VMw@re1!"
+    },
+    "secondUserCredentials": {
+      "username": "vcf",
+      "password": "VMw@re1!"
+    }
+  },
+  "networkSpecs": [
+    {
+      "networkType": "MANAGEMENT",
+      "subnet": "172.16.11.0/24",
+      "vlanId": "1611",
+      "mtu": "1500",
+      "gateway": "172.16.11.1",
+      "portGroupKey": "sfo-m01-cl01-vds01-mgmt"
+    },
+    {
+      "networkType": "VMOTION",
+      "subnet": "172.16.12.0/24",
+      "includeIpAddressRanges": [
+        {
+          "startIpAddress": "172.16.12.101",
+          "endIpAddress": "172.16.12.108"
+        }
+      ],
+      "vlanId": "1612",
+      "mtu": "8900",
+      "gateway": "172.16.12.1",
+      "portGroupKey": "sfo-m01-cl01-vds01-vmotion",
+      "teamingPolicy": "failover_explicit",
+      "activeUplinks": ["uplink1", "uplink2"],
+      "standbyUplinks": ["uplink3", "uplink4"]
+    },
+    {
+      "networkType": "VSAN",
+      "subnet": "172.16.13.0/24",
+      "includeIpAddressRanges": [
+        {
+          "startIpAddress": "172.16.13.101",
+          "endIpAddress": "172.16.13.108"
+        }
+      ],
+      "vlanId": "1613",
+      "mtu": "8900",
+      "gateway": "172.16.13.1",
+      "portGroupKey": "sfo-m01-cl01-vds01-vsan",
+      "teamingPolicy": "failover_explicit",
+      "activeUplinks": ["uplink3", "uplink4"],
+      "standbyUplinks": ["uplink1", "uplink2"]
+    }
+  ],
+  "nsxtSpec": {
+    "nsxtManagerSize": "medium",
+    "nsxtManagers": [
+      {
+        "hostname": "sfo-m01-nsx01a",
+        "ip": "172.16.11.72"
+      }
+    ],
+    "rootNsxtManagerPassword": "VMw@re1!VMw@re1!",
+    "nsxtAdminPassword": "VMw@re1!VMw@re1!",
+    "nsxtAuditPassword": "VMw@re1!VMw@re1!",
+    "rootLoginEnabledForNsxtManager": "true",
+    "sshEnabledForNsxtManager": "true",
+    "overLayTransportZone": {
+      "zoneName": "sfo-m01-tz-overlay01",
+      "networkName": "netName-overlay"
+    },
+    "vlanTransportZone": {
+      "zoneName": "sfo-m01-tz-vlan01",
+      "networkName": "netName-vlan"
+    },
+    "vip": "172.16.11.71",
+    "vipFqdn": "sfo-m01-nsx01.sfo.rainpole.io",
+    "nsxtLicense": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+    "transportVlanId": 1614
+  },
+  "vsanSpec": {
+    "vsanName": "vsan-1",
+    "licenseFile": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+    "vsanDedup": false,
+    "datastoreName": "sfo-m01-cl01-ds-vsan01"
+  },
+  "dvsSpecs": [
+    {
+      "mtu": "8900",
+      "niocSpecs": [
+        {
+          "trafficType": "VSAN",
+          "value": "HIGH"
+        },
+        {
+          "trafficType": "VMOTION",
+          "value": "LOW"
+        },
+        {
+          "trafficType": "VDP",
+          "value": "LOW"
+        },
+        {
+          "trafficType": "VIRTUALMACHINE",
+          "value": "HIGH"
+        },
+        {
+          "trafficType": "MANAGEMENT",
+          "value": "NORMAL"
+        },
+        {
+          "trafficType": "NFS",
+          "value": "LOW"
+        },
+        {
+          "trafficType": "HBR",
+          "value": "LOW"
+        },
+        {
+          "trafficType": "FAULTTOLERANCE",
+          "value": "LOW"
+        },
+        {
+          "trafficType": "ISCSI",
+          "value": "LOW"
+        }
+      ],
+      "dvsName": "sfo-m01-cl01-vds01",
+      "vmnics": ["vmnic0", "vmnic1", "vmnic2", "vmnic3"],
+      "networks": ["MANAGEMENT", "VMOTION", "VSAN"]
+    }
+  ],
+  "clusterSpec": {
+    "vmFolders": {
+      "MANAGEMENT": "sfo-m01-fd-mgmt",
+      "NETWORKING": "sfo-m01-fd-nsx",
+      "EDGENODES": "sfo-m01-fd-edge"
+    },
+    "clusterName": "sfo-m01-cl01",
+    "clusterEvcMode": ""
+  },
+  "pscSpecs": [
+    {
+      "pscSsoSpec": {
+        "ssoDomain": "vsphere.local"
+      },
+      "adminUserSsoPassword": "VMw@re1!"
+    }
+  ],
+  "vcenterSpec": {
+    "vcenterIp": "172.16.11.70",
+    "vcenterHostname": "sfo-m01-vc01",
+    "licenseFile": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+    "rootVcenterPassword": "VMw@re1!",
+    "vmSize": "small"
+  },
+  "hostSpecs": [
+    {
+      "hostname": "sfo01-m01-esx01",
+      "vSwitch": "vSwitch0",
+      "association": "sfo-m01-dc01",
+      "credentials": {
+        "username": "root",
+        "password": "VMw@re1!"
+      },
+      "ipAddressPrivate": {
+        "subnet": "255.255.255.0",
+        "ipAddress": "172.16.11.101",
+        "gateway": "172.16.11.1"
+      }
+    },
+    {
+      "hostname": "sfo01-m01-esx02",
+      "vSwitch": "vSwitch0",
+      "association": "sfo-m01-dc01",
+      "credentials": {
+        "username": "root",
+        "password": "VMw@re1!"
+      },
+      "ipAddressPrivate": {
+        "subnet": "255.255.255.0",
+        "ipAddress": "172.16.11.102",
+        "gateway": "172.16.11.1"
+      }
+    },
+    {
+      "hostname": "sfo01-m01-esx03",
+      "vSwitch": "vSwitch0",
+      "association": "sfo-m01-dc01",
+      "credentials": {
+        "username": "root",
+        "password": "VMw@re1!"
+      },
+      "ipAddressPrivate": {
+        "subnet": "255.255.255.0",
+        "ipAddress": "172.16.11.103",
+        "gateway": "172.16.11.1"
+      }
+    },
+    {
+      "hostname": "sfo01-m01-esx04",
+      "vSwitch": "vSwitch0",
+      "association": "sfo-m01-dc01",
+      "credentials": {
+        "username": "root",
+        "password": "VMw@re1!"
+      },
+      "ipAddressPrivate": {
+        "subnet": "255.255.255.0",
+        "ipAddress": "172.16.11.104",
+        "gateway": "172.16.11.1"
+      }
+    }
+  ],
+  "subscriptionLicensing": "False"
+}

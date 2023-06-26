@@ -1,0 +1,156 @@
+{
+  "domainName": "sfo-w01",
+  "orgName": "Rainpole",
+  "vcenterSpec": {
+    "name": "sfo-w01-vc01",
+    "networkDetailsSpec": {
+      "ipAddress": "172.16.11.130",
+      "dnsName": "sfo-w01-vc01.sfo.rainpole.io",
+      "gateway": "172.16.11.1",
+      "subnetMask": "255.255.255.0"
+    },
+    "rootPassword": "VMw@re1!",
+    "datacenterName": "sfo-w01-dc01"
+  },
+  "computeSpec": {
+    "clusterSpecs": [
+      {
+        "name": "sfo-w01-cl01",
+        "hostSpecs": [
+          {
+            "id": "94c5aca4-f9ef-477f-b4de-bc76e524c7db",
+            "licenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+            "hostNetworkSpec": {
+              "vmNics": [
+                {
+                  "id": "vmnic0",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                },
+                {
+                  "id": "vmnic1",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "",
+            "licenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+            "hostNetworkSpec": {
+              "vmNics": [
+                {
+                  "id": "vmnic0",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                },
+                {
+                  "id": "vmnic1",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "78b3cd16-85f9-4bc6-90f5-946d98ad07fc",
+            "licenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+            "hostNetworkSpec": {
+              "vmNics": [
+                {
+                  "id": "vmnic0",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                },
+                {
+                  "id": "vmnic1",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                }
+              ]
+            }
+          },
+          {
+            "id": "4bd30f48-170a-4afa-a94d-725de3f745fd",
+            "licenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+            "hostNetworkSpec": {
+              "vmNics": [
+                {
+                  "id": "vmnic0",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                },
+                {
+                  "id": "vmnic1",
+                  "vdsName": "sfo-w01-cl01-vds01"
+                }
+              ]
+            }
+          }
+        ],
+        "datastoreSpec": {
+          "vsanDatastoreSpec": {
+            "failuresToTolerate": "1",
+            "licenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+            "datastoreName": "sfo-w01-cl01-vsan01"
+          }
+        },
+        "networkSpec": {
+          "vdsSpecs": [
+            {
+              "name": "sfo-w01-cl01-vds01",
+              "portGroupSpecs": [
+                {
+                  "name": "sfo-w01-cl01-vds01-management",
+                  "transportType": "MANAGEMENT"
+                },
+                {
+                  "name": "sfo-w01-cl01-vds01-vmotion",
+                  "transportType": "VMOTION"
+                },
+                {
+                  "name": "sfo-w01-cl01-vds01-vsan",
+                  "transportType": "VSAN"
+                }
+              ]
+            }
+          ],
+          "nsxClusterSpec": {
+            "nsxTClusterSpec": {
+              "geneveVlanId": 2614
+            }
+          }
+        }
+      }
+    ]
+  },
+  "nsxTSpec": {
+    "nsxManagerSpecs": [
+      {
+        "name": "sfo-w01-nsx01a",
+        "networkDetailsSpec": {
+          "ipAddress": "172.16.11.132",
+          "dnsName": "sfo-w01-nsx01a.sfo.rainpole.io",
+          "gateway": "172.16.11.1",
+          "subnetMask": "255.255.255.0"
+        }
+      },
+      {
+        "name": "sfo-w01-nsx01b",
+        "networkDetailsSpec": {
+          "ipAddress": "172.16.11.133",
+          "dnsName": "sfo-w01-nsx01b.sfo.rainpole.io",
+          "gateway": "172.16.11.1",
+          "subnetMask": "255.255.255.0"
+        }
+      },
+      {
+        "name": "sfo-w01-nsx01c",
+        "networkDetailsSpec": {
+          "ipAddress": "172.16.11.134",
+          "dnsName": "sfo-w01-nsx01c.sfo.rainpole.io",
+          "gateway": "172.16.11.1",
+          "subnetMask": "255.255.255.0"
+        }
+      }
+    ],
+    "vip": "172.16.11.131",
+    "vipFqdn": "sfo-w01-nsx01.sfo.rainpole.io",
+    "licenseKey": "XXXXX-XXXXX-XXXXX-XXXXX-XXXXX",
+    "nsxManagerAdminPassword": "VMw@re1!VMw@re1!"
+  }
+}
