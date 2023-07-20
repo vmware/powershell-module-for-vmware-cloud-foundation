@@ -2,17 +2,6 @@
 ## Ignore desktop services files.
 **/.DS_Store
 
-# Hugo
-# Ignore generated files.
-/public/
-/resources/_gen/
-/assets/jsconfig.json
-hugo_stats.json
-
-# Ignore executables.
-hugo.exe
-hugo.darwin
-hugo.linux
-
-# Ignore temporary lock file.
-/.hugo_build.lock
+# MkDocs
+## Ignore site directory.
+**/.site/**
