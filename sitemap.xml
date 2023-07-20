@@ -2,642 +2,642 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/license/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/release-notes/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/community/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/community/code-of-conduct/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/community/contributing/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/community/support/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-automation/Get-VCFvRA/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-operations/Get-VCFvROPS/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-operations/Get-VCFvROPSConnection/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-operations/Set-VCFvROPSConnection/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-operations-logs/Get-VCFvRLI/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-operations-logs/Get-VCFvRLIConnection/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-operations-logs/Set-VCFvRLIConnection/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-suite-lifecycle/Get-VCFvRSLCM/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-suite-lifecycle/New-VCFvRSLCM/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-suite-lifecycle/Remove-VCFvRSLCM/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/aria-suite-lifecycle/Reset-VCFvRSLCM/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/aria-suite/workspace-one-access/Get-VCFWSA/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/authentication/Connect-CloudBuilder/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/authentication/Request-VCFToken/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/avns/Add-VCFApplicationVirtualNetwork/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/avns/Get-VCFApplicationVirtualNetwork/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/backup-restore/Get-VCFBackupConfiguration/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/backup-restore/Get-VCFRestoreTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/backup-restore/Set-VCFBackupConfiguration/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/backup-restore/Start-VCFBackup/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/backup-restore/Start-VCFRestore/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/bundles/Get-VCFBundle/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/bundles/Request-VCFBundle/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/bundles/Start-VCFBundleUpload/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/ceip/Get-VCFCeip/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/ceip/Set-VCFCeip/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Get-VCFCertificate/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Get-VCFCertificateAuthority/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Get-VCFCertificateCSR/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Remove-VCFCertificateAuthority/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Request-VCFCertificate/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Request-VCFCertificateCSR/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Set-VCFCertificate/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Set-VCFMicrosoftCA/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/certificates/Set-VCFOpenSSLCA/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/clusters/Get-VCFCluster/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/clusters/Get-VCFClusterValidation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/clusters/New-VCFCluster/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/clusters/Remove-VCFCluster/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/clusters/Set-VCFCluster/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/credentials/Get-VCFCredential/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/credentials/Get-VCFCredentialExpiry/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/credentials/Get-VCFCredentialTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/credentials/Restart-VCFCredentialTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/credentials/Set-VCFCredential/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/credentials/Stop-VCFCredentialTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/depots/Get-VCFDepotCredential/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/depots/Set-VCFDepotCredential/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/dns-ntp/Get-VCFConfigurationDNS/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/dns-ntp/Get-VCFConfigurationDNSValidation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/dns-ntp/Get-VCFConfigurationNTP/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/dns-ntp/Get-VCFConfigurationNTPValidation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/dns-ntp/Set-VCFConfigurationDNS/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/dns-ntp/Set-VCFConfigurationNTP/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/domains/Get-VCFWorkloadDomain/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/domains/New-VCFWorkloadDomain/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/domains/Remove-VCFWorkloadDomain/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/domains/Set-VCFWorkloadDomain/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/federation/Get-VCFFederation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/federation/Get-VCFFederationMember/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/federation/Get-VCFFederationTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/federation/Join-VCFFederation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/federation/New-VCFFederationInvite/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/federation/Remove-VCFFederation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/federation/Set-VCFFederation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/fips/Get-VCFFipsMode/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/hosts/Get-VCFHost/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/hosts/New-VCFCommissionedHost/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/hosts/Remove-VCFCommissionedHost/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/iam/Get-VCFRole/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/iam/Get-VCFUser/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/iam/New-VCFGroup/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/iam/New-VCFServiceUser/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/iam/New-VCFUser/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/iam/Remove-VCFUser/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/licenses/Get-VCFLicenseKey/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/licenses/Get-VCFLicenseMode/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/licenses/New-VCFLicenseKey/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/licenses/Remove-VCFLicenseKey/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/network-pools/Add-VCFNetworkIPPool/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/network-pools/Get-VCFNetworkIPPool/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/network-pools/Get-VCFNetworkPool/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/network-pools/New-VCFNetworkPool/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/network-pools/Remove-VCFNetworkIPPool/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/network-pools/Remove-VCFNetworkPool/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/nsx/nsx-edge-clusters/Get-VCFEdgeCluster/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/nsx/nsx-edge-clusters/New-VCFEdgeCluster/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/nsx/nsx-managers/Get-VCFNsxtCluster/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/personalities/Get-VCFPersonality/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/personalities/New-VCFPersonality/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/pscs/Get-VCFPSC/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/releases/Get-VCFRelease/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc/Get-CloudBuilderSDDC/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc/Get-CloudBuilderSDDCValidation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc/Restart-CloudBuilderSDDC/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc/Restart-CloudBuilderSDDCValidation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc/Start-CloudBuilderSDDC/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc/Start-CloudBuilderSDDCValidation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc/Stop-CloudBuilderSDDCValidation/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sddc-managers/Get-VCFManager/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/services/Get-VCFService/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sos/Get-VCFHealthSummaryTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sos/Get-VCFSupportBundleTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sos/Invoke-VCFCommand/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sos/Request-VCFHealthSummaryBundle/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sos/Request-VCFSupportBundle/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sos/Start-VCFHealthSummary/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/sos/Start-VCFSupportBundle/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/system-prechecks/Get-VCFSystemPrecheckTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/system-prechecks/Start-VCFSystemPrecheck/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/tasks/Get-VCFTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/tasks/Restart-VCFTask/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/upgrades/Get-VCFUpgradable/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/upgrades/Get-VCFUpgrade/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/upgrades/Start-VCFUpgrade/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/functions/vcenters/Get-VCFvCenter/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/getting-started/install/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/getting-started/update/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/getting-started/usage/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/documentation/getting-started/user-access/</loc>
-         <lastmod>2023-07-14</lastmod>
+         <lastmod>2023-07-20</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
