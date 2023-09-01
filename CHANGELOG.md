@@ -7,6 +7,7 @@
 - Updated `Request-VCFToken` cmdlet for better error handling.
 - Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager version in `x.y.z` format.
 - Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager build in `xxxxxxx` format.
+- Added `Set-VCFCredentialAutoRotate` cmdlet to configure or disable credential auto-rotation for a credential managed by SDDC Manager.
 
 ## v2.3.0
 

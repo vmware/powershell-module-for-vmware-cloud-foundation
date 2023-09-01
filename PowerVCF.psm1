@@ -1316,6 +1316,103 @@ Function Set-VCFCredential {
 }
 Export-ModuleMember -Function Set-VCFCredential
 
+Function Set-VCFCredentialAutoRotatePolicy {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and updates a credential auto rotate policy.
+
+        .DESCRIPTION
+        The Set-VCFCredentialAutoRotatePolicy cmdlet connects to the specified SDDC Manager and updates the auto rotate policy for a credential.
+        Credentials can be be set to auto rotate using system generated password(s).
+
+        .EXAMPLE
+        Set-VCFCredentialAutoRotatePolicy -resourceName sfo01-m01-vc01.sfo.rainpole.io -resourceType VCENTER -credentialType SSH -username root -autoRotate ENABLED -frequencyInDays 90
+        This example shows how to enable the auto rotate policy for a specific resource.
+
+        .EXAMPLE
+        Set-VCFCredentialAutoRotatePolicy -resourceName sfo01-m01-vc01.sfo.rainpole.io -resourceType VCENTER -credentialType SSH -username root -autoRotate DISABLED
+        This example shows how to disable the auto rotate policy for a specific resource.
+
+        .PARAMETER
+        resourceName
+        The name of the resource for which the credential auto rotate policy is to be set.
+
+        .PARAMETER
+        resourceType
+        The type of the resource for which the credential auto rotate policy is to be set. One amoung: VCENTER, PSC, ESXI, BACKUP, NSXT_MANAGER, NSXT_EDGE, VRSLCM, WSA, VROPS, VRLI, VRA.
+
+        .PARAMETER
+        credentialType
+        The type of the credential for which the auto rotate policy is to be set. One among: SSH, API, SSO, AUDIT.
+
+        .PARAMETER
+        username
+        The username of the credential for which the auto rotate policy is to be set.
+
+        .PARAMETER
+        autoRotate
+        Enable or disable the auto rotate policy. One among: ENABLED, DISABLED
+
+        .PARAMETER
+        frequencyInDays
+        The frequency in days for the auto rotate policy. This parameter is required only if the autoRotate parameter is set to ENABLED.
+    #>
+
+    Param (
+        [Parameter(Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$resourceName,
+        [Parameter(Mandatory = $true)] [ValidateSet('VCENTER', 'PSC', 'ESXI', 'BACKUP', 'NSXT_MANAGER', 'NSXT_EDGE', 'VRSLCM', 'WSA', 'VROPS', 'VRLI', 'VRA')] [ValidateNotNullOrEmpty()] [String]$resourceType,
+        [Parameter(Mandatory = $true)] [ValidateSet('SSH', 'API', 'SSO', 'AUDIT')] [ValidateNotNullOrEmpty()] [String]$credentialType,
+        [Parameter(Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter(Mandatory = $true)] [ValidateSet('ENABLED', 'DISABLED')][ValidateNotNullOrEmpty()] [String]$autoRotate,
+        [Parameter(Mandatory = $false)] [ValidateScript({ $autoRotate -eq 'ENABLED' -or $_ -eq $null })] [Int]$frequencyInDays
+    )
+
+    Try {
+        createHeader
+        checkVCFToken
+        $uri = "https://$sddcManager/v1/credentials"
+        $elements = @(
+            @{
+                resourceName = $resourceName
+                resourceType = $resourceType
+                credentials  = @(
+                    @{
+                        credentialType = $credentialType
+                        username       = $username
+                    }
+                )
+            }
+        )
+        if ($autoRotate -eq 'ENABLED') {
+            $autoRotatePolicy = @{
+                frequencyInDays        = $frequencyInDays
+                enableAutoRotatePolicy = $true
+            }
+        } else {
+            $autoRotatePolicy = @{
+                enableAutoRotatePolicy = $false
+            }
+        }
+        $body = @{
+            operationType    = 'UPDATE_AUTO_ROTATE_POLICY'
+            elements         = $elements
+            autoRotatePolicy = $autoRotatePolicy
+        }
+        $body = $body | ConvertTo-Json -Depth 4 -Compress
+        $task = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType application/json -Body $body
+        Do {
+            Start-Sleep -Seconds 2
+            $task = Get-VCFCredentialTask -id $task.id
+        } While ($task.status -eq 'IN_PROGRESS')
+        if ($task.Status -eq 'FAILED') {
+            Throw "The credential task ($($task.id)) failed with an error."
+        }
+    } Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Set-VcfCredentialAutoRotatePolicy
+
 Function Get-VCFCredentialTask {
     <#
         .SYNOPSIS
@@ -1506,6 +1603,8 @@ Function Get-VCFCredentialExpiry {
     }
 }
 Export-ModuleMember -Function Get-VCFCredentialExpiry
+
+
 
 #EndRegion APIs for managing Credentials
 

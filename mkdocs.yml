@@ -186,6 +186,7 @@ nav:
     - documentation/functions/credentials/Get-VCFCredentialTask.md
     - documentation/functions/credentials/Restart-VCFCredentialTask.md
     - documentation/functions/credentials/Set-VCFCredential.md
+    - documentation/functions/credentials/Set-VCFCredentialAutoRotatePolicy.md
     - documentation/functions/credentials/Stop-VCFCredentialTask.md
   - Depots:
     - documentation/functions/depots/Get-VCFDepotCredential.md
