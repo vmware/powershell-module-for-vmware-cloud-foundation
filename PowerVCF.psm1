@@ -5569,7 +5569,11 @@ Function validateJsonInput {
     
         if ($jsonValid) {
             # JSON parameter was passed as JSON string.Reconverting back from PS object
-            $ConfigJson = ConvertTo-Json -InputObject $jsonPSobject
+            # Converting back from Object truncates the content withouth the -depth parameter
+            # $ConfigJson = ConvertTo-Json -InputObject $jsonPSobject 
+            
+            # As we have proven validity of the original JSON, we should use that content
+            $ConfigJson = $json
             Write-Verbose "The JSON parameter was passed as a valid JSON string notation"
             $ConfigJson  # return validated json
         }
