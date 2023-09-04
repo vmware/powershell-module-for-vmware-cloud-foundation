@@ -5551,59 +5551,55 @@ Function validateJsonInput {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
-    # Checking the file path is valid. if not, evaluate if the variable was passed as JSON string
+    # Check if the file path is valid. if not, evaluate if the variable was passed as JSON string.
     if (!(Test-Path $json)) {
         
-        # File path invalid. Checking if the JSON was passed directly as string by converting to a PS object.If it works, means it was
-        # Not using Test-Json since it's not available on PS 5.x but only on 6+
+        # File path invalid.
+        # Check if the JSON was passed directly as string by converting to an object.
         
         Try {
             $jsonPSobject = ConvertFrom-Json $json -ErrorAction Stop;
             $jsonValid = $true;
-        }
-
-        Catch {
+        } Catch {
             $jsonValid = $false;
-            $ConfigJson = $json   # load the raw & wrong JSON content for function return
+            $ConfigJson = $json # Load the raw and wrong JSON content for function return.
         }
     
         if ($jsonValid) {
-            # JSON parameter was passed as JSON string.Reconverting back from PS object
-            $ConfigJson = ConvertTo-Json -InputObject $jsonPSobject
-            Write-Verbose "The JSON parameter was passed as a valid JSON string notation"
-            $ConfigJson  # return validated json
-        }
-        else {
+            # JSON parameter was passed as a string. Convert back from object to JSON.
+            # The validity of the JSON string format has been already validated by the ConvertFrom-Json cmdlet.
+            $ConfigJson = $json
+            Write-Verbose "The JSON parameter was passed as a valid JSON string notation."
+            $ConfigJson # Return validated JSON.
+        } else {
             ResponseException -object $_
-            $ConfigJson  # return unvalidated JSON before throwing
+            $ConfigJson # Return an unvalidated JSON before throwing.
             Throw "The provided JSON parameter couldn't be validated as file path nor as JSON string. Please check the file path or JSON string formatting again."
         }  
-    }
-    else {
-        # JSON parameter was passed as file path.  Read the file contents and loads it
+    } else {
+        # JSON parameter was passed as file path.
+        # Reads the file content and loads it.
         $ConfigJson = (Get-Content -Raw $json)
         
-        # Validate JSON format
+        # Validate the JSON string format.
         Try {
             $jsonPSobject = ConvertFrom-Json  $ConfigJson -ErrorAction Stop;
             $jsonValid = $true;
-        } 
-        Catch {
+        } Catch {
             $jsonValid = $false;
         }
 
         if ($jsonValid) {
-            Write-Verbose "JSON file found, JSON string format was valid and content has been stored into a variable"
+            Write-Verbose "JSON file found. JSON string format was valid and content has been stored into a variable."
             Write-Verbose $ConfigJson
-            $ConfigJson  # return validated json
-        }
-        else {
-            $ConfigJson  # return unvalidated json before throwing
-            Throw "The provided JSON file path was valid however it couldn't be converted from JSON, please check the formatting of your input file"
+            $ConfigJson # Return validated JSON.
+        } else {
+            $ConfigJson # Return an unvalidated JSON before throwing.
+            Throw "The provided JSON file path was valid; however, it could not be converted from JSON. Please check the formatting of the input."
         }
     }
 }
-#EndRegion Utility Functions (not exported()
+#EndRegion Utility Functions (not exported)
 
 
 #Region Useful Script Functions
