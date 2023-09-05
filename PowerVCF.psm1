@@ -1351,7 +1351,7 @@ Function Set-VCFCredentialAutoRotatePolicy {
 
         .PARAMETER
         autoRotate
-        Enable or disable the auto rotate policy. One among: ENABLED, DISABLED
+        Enable or disable the auto rotate policy. 
 
         .PARAMETER
         frequencyInDays
@@ -4807,8 +4807,127 @@ Function Set-VCFConfigurationNTP {
 }
 Export-ModuleMember -Function Set-VCFConfigurationNTP
 
-#EndRegion APIs for managing DNS NTP Configuration
+#EndRegion APIs for managing Proxy Configuration
 
+Function Get-VcfProxy {
+    <#
+        .SYNOPSIS
+        Gets the proxy configuration for the SDDC Manager.
+
+        .DESCRIPTION
+        The Get-VcfProxy cmdlet retrieves the proxy configuration of the SDDC Manager.
+
+        .EXAMPLE
+        Get-VcfProxy
+        This example shows how to get the proxy configuration of the SDDC Manager.
+    #>
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge '4.5.0') {
+            createHeader
+            checkVCFToken
+            $uri = "https://$sddcManager/v1/system/proxy-configuration"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers -ContentType application/json
+            $response
+        } else {
+            Write-Error "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+            Break
+        }
+    } Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VcfProxy
+
+Function Set-VcfProxy {
+    <#
+        .SYNOPSIS
+        Sets the proxy configuration for the SDDC Manager.
+
+        .DESCRIPTION
+        The Set-VcfProxy cmdlet sets the proxy configuration of the SDDC Manager.
+        Note: This cmdlet will not clear the proxy configuration.
+
+        .EXAMPLE
+        Set-VcfProxy -status ENABLED -proxyHost proxy.rainpole.io -proxyPort 3128
+        This example shows how to enable the proxy configuration of the SDDC Manager.
+
+        .EXAMPLE
+        Set-VcfProxy -status DISABLED
+        This example shows how to disable the proxy configuration of the SDDC Manager.
+
+        .PARAMETER status
+        Enable or disable the proxy configuration.
+
+        .PARAMETER proxyHost
+        The fully qualified domain name or IP address of the proxy.
+
+        .PARAMETER proxyPort
+        The port number of the proxy.
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateSet("ENABLED", "DISABLED")] [ValidateNotNullOrEmpty()] [String]$status,
+        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [String]$proxyHost,
+        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [ValidateRange(1,65535)] [Int]$proxyPort
+    )
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge '4.5.0') {
+            if ($status -eq "ENABLED") { $isEnabled = $true } else { $isEnabled = $false }
+            if ($isEnabled -eq $false -and ($proxyHost -or $proxyPort)) {
+                Write-Warning "The proxy host and port should not be specified when disabling the proxy configuration."
+                Break
+            } elseif ($isEnabled -eq $true -and (!$proxyHost -or !$proxyPort)) {
+                Write-Error "The proxy host and port must be specified when enabling the proxy configuration."
+                Break
+            } elseif ($isEnabled -eq $true -and ($proxyHost -ne $null -and $proxyPort -ne $null)) {
+                if ($PSVersionTable.PSEdition -eq 'Core') {
+                    $connection = Test-Connection -TargetName $proxyHost -TcpPort $proxyPort -Quiet
+                    if (!$connection) {
+                        Write-Error "The proxy host $proxyHost is not reachable on port TCP $proxyPort."
+                    }
+                } elseif ($PSVersionTable.PSEdition -eq 'Desktop') {
+                    $OriginalProgressPreference = $Global:ProgressPreference
+                    $Global:ProgressPreference = 'SilentlyContinue'
+                    $testConnection = Test-NetConnection -ComputerName $proxyHost -Port $proxyPort -WarningAction SilentlyContinue
+                    $Global:ProgressPreference = $OriginalProgressPreference
+                    $connection = $testConnection.TcpTestSucceeded
+                    if (!$connection) {
+                        Write-Error "The proxy host $proxyHost is not reachable on port TCP $proxyPort."
+                    }
+                }
+            } else {
+                $connection = $true
+            }
+
+            if ($connection) {
+                createHeader
+                checkVCFToken
+                $uri = "https://$sddcManager/v1/system/proxy-configuration"
+                $body = @{
+                    "isEnabled" = $isEnabled
+                }
+                if ($isEnabled -eq $true -and ($proxyHost -ne $null -and $proxyPort -ne $null)) {
+                    $body.Add("host", $proxyHost)
+                    $body.Add("port", $proxyPort)
+                }
+                $body = $body | ConvertTo-Json -Depth 4 -Compress
+                Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType "application/json" -Body $body
+            }
+        } else {
+            Write-Error "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+            Break
+        }
+    } Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Set-VcfProxy
+
+#Region APIs for managing Proxy Configuration
 
 #Region APIs for managing vCenters
 
