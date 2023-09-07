@@ -1010,7 +1010,8 @@ Function Get-VCFCluster {
 
     Param (
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vdses
     )
 
     createHeader # Calls createHeader function to set Accept & Authorization
@@ -1022,17 +1023,27 @@ Function Get-VCFCluster {
             $response.elements
         }
         if ($PsBoundParameters.ContainsKey("id")) {
-            $uri = "https://$sddcManager/v1/clusters/$id"
+            if ($PsBoundParameters.ContainsKey("vdses")) {
+                $uri = "https://$sddcManager/v1/clusters/$id/vdses" 
+            } else {
+                $uri = "https://$sddcManager/v1/clusters/$id"
+            }
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
         }
         if ($PsBoundParameters.ContainsKey("name")) {
             $uri = "https://$sddcManager/v1/clusters"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements | Where-Object { $_.name -eq $name }
+            if ($PsBoundParameters.ContainsKey("vdses")) {
+                $id = ($response.elements | Where-Object { $_.name -eq $name }).id
+                $uri = "https://$sddcManager/v1/clusters/$id/vdses"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response
+            } else {
+                $response.elements | Where-Object { $_.name -eq $name }
+            }            
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }

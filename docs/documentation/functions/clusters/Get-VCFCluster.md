@@ -7,7 +7,7 @@ Retrieves a list of clusters.
 ## Syntax
 
 ```powershell
-Get-VCFCluster [[-name] <String>] [[-id] <String>] [<CommonParameters>]
+Get-VCFCluster [[-name] <String>] [[-id] <String>] [[-vdses] <Switch> [<CommonParameters>]
 ```
 
 ## Description
@@ -40,6 +40,16 @@ Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
 
 This example shows how to retrieve a cluster by unique ID.
 
+### Example 4
+
+```powershell
+Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -vdses
+```
+
+This example shows how to retrieve the vds data of a cluster by unique ID.
+
+
+
 ## Parameters
 
 ### -name
@@ -69,6 +79,22 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -vdses
+
+Retrieves the vdses of the cluster.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
