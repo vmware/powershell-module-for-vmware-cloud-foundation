@@ -1,30 +1,34 @@
-# New-VCFvRSLCM
+# New-VCFVrslcm
+
+## Alias
+
+`New-VCFAriaSuiteLifecycle`
 
 ## Synopsis
 
-Deploys VMware Aria Suite Lifecycle, formerly vRealize Suite Lifecycle Manager, in the management domain in VMware Cloud Foundation mode.
+Deploys Aria Suite Lifecycle in the management domain in VMware Cloud Foundation mode.
 
 ## Syntax
 
 ```powershell
-New-VCFvRSLCM [-json] <String> [-validate] [<CommonParameters>]
+New-VCFVrslcm [-json] <String> [-validate] [<CommonParameters>]
 ```
 
 ## Description
 
-The New-VCFvRSLCM cmdlet deploys VMware Aria Suite Lifecycle in the management domain in VMware Cloud Foundation mode.
+The `New-VCFVrslcm` cmdlet deploys Aria Suite Lifecycle in the management domain in VMware Cloud Foundation mode.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-New-VCFvRSLCM -json (Get-Content -Raw .\samples\aria-suite\aria-lifecycle\deployAriaLifecycleAvnOverlaySpec.json)
+New-VCFVrslcm -json (Get-Content -Raw .\samples\aria-suite\aria-lifecycle\deployAriaLifecycleAvnOverlaySpec.json)
 ```
 
-This example shows how to deploy VMware Aria Suite Lifecycle using a JSON specification file.
+This example shows how to deploy Aria Suite Lifecycle using a JSON specification file.
 
-???+ example "Sample JSON: Deploy VMware Aria Suite Lifecycle"
+???+ example "Sample JSON: Deploy Aria Suite Lifecycle"
 
     ```json
     --8<-- "./samples/aria-suite/aria-lifecycle/deployAriaLifecycleAvnOverlaySpec.json"
@@ -33,7 +37,7 @@ This example shows how to deploy VMware Aria Suite Lifecycle using a JSON specif
 ### Example 2
 
 ```powershell
-New-VCFvRSLCM -json (Get-Content -Raw .\samples\aria-suite\aria-lifecycle\deployAriaLifecycleAvnOverlaySpec.json) -validate
+New-VCFVrslcm -json (Get-Content -Raw .\samples\aria-suite\aria-lifecycle\deployAriaLifecycleAvnOverlaySpec.json) -validate
 ```
 
 This example shows how to validate a JSON specification file.

@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Request an authentication token from SDDC Manager.
+Requests an authentication token from SDDC Manager.
 
 ## Syntax
 
@@ -12,8 +12,7 @@ Request-VCFToken [-fqdn] <String> [[-username] <String>] [[-password] <String>] 
 
 ## Description
 
-The Request-VCFToken cmdlet connects to the specified SDDC Manager and requests API access and refresh tokens.
-It is required once per session before running all other cmdlets.
+The `Request-VCFToken` cmdlet connects to the specified SDDC Manager and requests API access and refresh tokens. It is required once per session before running all other cmdlets.
 
 ## Examples
 
@@ -37,7 +36,7 @@ This example shows how to connect to SDDC Manager using local account `admin@loc
 
 ### -fqdn
 
-Specifies the fully qualified domain name or IP Address of the SDDC Manager instance.
+The fully qualified domain name or IP Address of the SDDC Manager instance.
 
 ```yaml
 Type: String
@@ -53,7 +52,7 @@ Accept wildcard characters: False
 
 ### -username
 
-Specifies the username to connect to the SDDC Manager instance.
+The username to authenticate to the SDDC Manager instance.
 
 ```yaml
 Type: String
@@ -69,7 +68,7 @@ Accept wildcard characters: False
 
 ### -password
 
-Specifies the password for the user to connect to the SDDC Manager instance.
+The password to authenticate to the SDDC Manager instance.
 
 ```yaml
 Type: String
@@ -85,7 +84,7 @@ Accept wildcard characters: False
 
 ### -skipCertificateCheck
 
-Specifies whether to skip the certificate check for the SDDC Manager instance.
+Switch to skip certificate check when connecting to the SDDC Manager instance.
 
 ```yaml
 Type: SwitchParameter

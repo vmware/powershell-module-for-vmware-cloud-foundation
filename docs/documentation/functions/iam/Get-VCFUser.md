@@ -12,7 +12,7 @@ Get-VCFUser [[-type] <String>] [[-domain] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFUser cmdlet retrieves a list of users, groups, and service users from SDDC Manager.
+The `Get-VCFUser` cmdlet retrieves a list of users, groups, and service users from SDDC Manager.
 
 ## Examples
 

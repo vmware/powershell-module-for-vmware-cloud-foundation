@@ -253,8 +253,8 @@ nav:
   - Platform Services Controllers:
     - documentation/functions/pscs/Get-VCFPSC.md
   - Proxy:
-    - documentation/functions/proxy/Get-VcfProxy.md
-    - documentation/functions/proxy/Set-VcfProxy.md
+    - documentation/functions/proxy/Get-VCFProxy.md
+    - documentation/functions/proxy/Set-VCFProxy.md
   - Releases:
     - documentation/functions/releases/Get-VCFRelease.md
   - SDDC (Cloud Builder):
@@ -291,23 +291,23 @@ nav:
     - documentation/functions/upgrades/Start-VCFUpgrade.md
   - vCenter Server:
     - documentation/functions/vcenters/Get-VCFvCenter.md
-  - vRealize Suite Lifecycle Manager:
-    - documentation/functions/aria-suite/aria-suite-lifecycle/Get-VCFvRSLCM.md
-    - documentation/functions/aria-suite/aria-suite-lifecycle/New-VCFvRSLCM.md
-    - documentation/functions/aria-suite/aria-suite-lifecycle/Remove-VCFvRSLCM.md
-    - documentation/functions/aria-suite/aria-suite-lifecycle/Reset-VCFvRSLCM.md
-  - vRealize Automation:
-    - documentation/functions/aria-suite/aria-automation/Get-VCFvRA.md
-  - vRealize Operations:
-    - documentation/functions/aria-suite/aria-operations/Get-VCFvROPS.md
-    - documentation/functions/aria-suite/aria-operations/Get-VCFvROPSConnection.md
-    - documentation/functions/aria-suite/aria-operations/Set-VCFvROPSConnection.md
-  - vRealize Log Insight:
-    - documentation/functions/aria-suite/aria-operations-logs/Get-VCFvRLI.md
-    - documentation/functions/aria-suite/aria-operations-logs/Get-VCFvRLIConnection.md
-    - documentation/functions/aria-suite/aria-operations-logs/Set-VCFvRLIConnection.md
+  - Aria Suite Lifecycle:
+    - documentation/functions/aria-suite/aria-suite-lifecycle/Get-VCFVrslcm.md
+    - documentation/functions/aria-suite/aria-suite-lifecycle/New-VCFVrslcm.md
+    - documentation/functions/aria-suite/aria-suite-lifecycle/Remove-VCFVrslcm.md
+    - documentation/functions/aria-suite/aria-suite-lifecycle/Reset-VCFVrslcm.md
+  - Aria Automation:
+    - documentation/functions/aria-suite/aria-automation/Get-VCFVra.md
+  - Aria Operations:
+    - documentation/functions/aria-suite/aria-operations/Get-VCFVrops.md
+    - documentation/functions/aria-suite/aria-operations/Get-VCFVropsConnection.md
+    - documentation/functions/aria-suite/aria-operations/Set-VCFVropsConnection.md
+  - Aria Operations for Logs:
+    - documentation/functions/aria-suite/aria-operations-logs/Get-VCFVrli.md
+    - documentation/functions/aria-suite/aria-operations-logs/Get-VCFVrliConnection.md
+    - documentation/functions/aria-suite/aria-operations-logs/Set-VCFVrliConnection.md
   - Workspace ONE Access:
-    - documentation/functions/aria-suite/workspace-one-access/Get-VCFWSA.md
+    - documentation/functions/aria-suite/workspace-one-access/Get-VCFWsa.md
 - Community:
   - community/index.md
   - Contributing: community/contributing.md

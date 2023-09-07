@@ -12,7 +12,7 @@ Remove-VCFUser [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Remove-VCFUser cmdlet removes a user from SDDC Manager.
+The `Remove-VCFUser` cmdlet removes a user from SDDC Manager.
 
 ## Examples
 
