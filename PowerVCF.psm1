@@ -1023,34 +1023,27 @@ Function Get-VCFCluster {
             $response.elements
         }
         if ($PsBoundParameters.ContainsKey("id")) {
-            if ($PsBoundParameters.ContainsKey("vdses"))
-                {
-                    $uri = "https://$sddcManager/v1/clusters/$id/vdses"
-                }
-            else
-                {
+            if ($PsBoundParameters.ContainsKey("vdses")) {
+                $uri = "https://$sddcManager/v1/clusters/$id/vdses" 
+            } else {
                 $uri = "https://$sddcManager/v1/clusters/$id"
-                }
+            }
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response
         }
         if ($PsBoundParameters.ContainsKey("name")) {
             $uri = "https://$sddcManager/v1/clusters"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            if ($PsBoundParameters.ContainsKey("vdses"))
-            {
+            if ($PsBoundParameters.ContainsKey("vdses")) {
                 $id = ($response.elements | Where-Object { $_.name -eq $name }).id
                 $uri = "https://$sddcManager/v1/clusters/$id/vdses"
                 $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
                 $response
-            }
-            else 
-                {
-                    $response.elements | Where-Object { $_.name -eq $name }
-                }            
+            } else {
+                $response.elements | Where-Object { $_.name -eq $name }
+            }            
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }

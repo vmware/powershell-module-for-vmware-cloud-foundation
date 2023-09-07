@@ -11,6 +11,7 @@
 - Fixed `validateJsonInput` function to prevent it from truncating directly passed JSON content.
 - Added `Get-VcfProxy` cmdlet to retrieve the proxy configuration for the SDDC Manager.
 - Added `Set-VcfProxy` cmdlet to configure the proxy configuration for the SDDC Manager.
+- Enhanced `Get-VCFCluster` cmdlet to return associated vSphere Distributed Switches.
 
 ## v2.3.0
 
