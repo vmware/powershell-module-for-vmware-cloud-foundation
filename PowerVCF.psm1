@@ -215,26 +215,32 @@ Export-ModuleMember -Function Connect-CloudBuilder
 
 
 #Region APIs for managing Application Virtual Networks
+
 Function Get-VCFApplicationVirtualNetwork {
     <#
         .SYNOPSIS
-        Retrieves all Application Virtual Networks
+        Retrieves Application Virtual Networks (AVN) from SDDC Manager.
 
         .DESCRIPTION
-        The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager
-        - regionType supports REGION_A, REGION_B, X_REGION
+        cmdlet retrieves the Application Virtual Networks configured in SDDC Manager.
 
         .EXAMPLE
         Get-VCFApplicationVirtualNetwork
-        This example demonstrates how to retrieve a list of Application Virtual Networks
+        This example shows how to retrieve a list of Application Virtual Networks.
 
         .EXAMPLE
         Get-VCFApplicationVirtualNetwork -regionType REGION_A
-        This example demonstrates how to retrieve the details of the regionType REGION_A Application Virtual Networks
+        This example shows how to retrieve the details of the regionType REGION_A Application Virtual Networks.
 
         .EXAMPLE
         Get-VCFApplicationVirtualNetwork -id 577e6262-73a9-4825-bdb9-4341753639ce
-        This example demonstrates how to retrieve the details of the Application Virtual Networks using the id
+        This example shows how to retrieve the details of the Application Virtual Networks using the id.
+
+        .PARAMETER regionType
+        Specifies the region. One of: REGION_A, REGION_B, X_REGION.
+
+        .PARAMETER id
+        Specifies the unique ID of the Application Virtual Network.
     #>
 
     Param (
@@ -247,21 +253,20 @@ Function Get-VCFApplicationVirtualNetwork {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
             $uri = "https://$sddcManager/v1/avns"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
         if ($PsBoundParameters.ContainsKey("regionType")) {
             $uri = "https://$sddcManager/v1/avns?regionType=$regionType"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/avns/avns?id=$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -270,18 +275,24 @@ Export-ModuleMember -Function Get-VCFApplicationVirtualNetwork
 Function Add-VCFApplicationVirtualNetwork {
     <#
         .SYNOPSIS
-        Creates Application Virtual Networks
+        Creates Application Virtual Networks (AVN) in SDDC Manager and NSX.
 
         .DESCRIPTION
-        The Add-VCFApplicationVirtualNetwork cmdlet creates Application Virtual Networks in SDDC Manager and NSX-T Data Center
+        The Add-VCFApplicationVirtualNetwork cmdlet creates Application Virtual Networks in SDDC Manager and NSX.
 
         .EXAMPLE
-        Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\SampleJSON\Application Virtual Network\avnOPverlaySpec.json)
-        This example demonstrates how to deploy the Application Virtual Networks using the JSON spec supplied
+        Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\samples\avns\avnOPverlaySpec.json)
+        This example shows how to deploy the Application Virtual Networks using the JSON specification file supplied.
 
         .EXAMPLE
-        Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\SampleJSON\Application Virtual Network\avnOverlaySpec.json) -validate
-        This example demonstrates how to validate the Application Virtual Networks JSON spec supplied
+        Add-VCFApplicationVirtualNetwork -json (Get-Content -Raw .\samples\avns\avnOverlaySpec.json) -validate
+        This example shows how to validate the Application Virtual Networks JSON specification file supplied.
+
+        .PARAMETER json
+        Specifies the JSON specification to be used.
+
+        .PARAMETER validate
+        Specifies that the JSON specification should be validated.
     #>
 
     Param (
@@ -295,16 +306,14 @@ Function Add-VCFApplicationVirtualNetwork {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/avns/validations"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
             $response
-        }
-        else {
+        } else {
             $uri = "https://$sddcManager/v1/avns"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
             $response
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -317,28 +326,27 @@ Export-ModuleMember -Function Add-VCFApplicationVirtualNetwork
 Function Get-VCFBackupConfiguration {
     <#
         .SYNOPSIS
-        Gets the backup configuration of NSX Manager and SDDC Manager
+        Retrieves the current backup configuration details from SDDC Manager.
 
         .DESCRIPTION
-        The Get-VCFBackupConfiguration cmdlet retrieves the current backup configuration details
+        The Get-VCFBackupConfiguration cmdlet retrieves the current backup configuration details.
 
         .EXAMPLE
         Get-VCFBackupConfiguration
-        This example retrieves the backup configuration
+        This example retrieves the backup configuration.
 
         .EXAMPLE
         Get-VCFBackupConfiguration | ConvertTo-Json
-        This example retrieves the backup configuration and outputs it in json format
+        This example retrieves the backup configuration and outputs it in JSON format.
     #>
 
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/backup-configuration"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.backupLocations
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -347,15 +355,17 @@ Export-ModuleMember -Function Get-VCFBackupConfiguration
 Function Set-VCFBackupConfiguration {
     <#
         .SYNOPSIS
-        Configure backup settings for NSX and SDDC manager
+        Configures or updates the backup configuration details for backing up NSX and SDDC Manager.
 
         .DESCRIPTION
-        The Set-VCFBackupConfiguration cmdlet configures or updates the backup configuration details for
-        backing up NSX and SDDC Manager
+        The Set-VCFBackupConfiguration cmdlet configures or updates the backup configuration details for backing up NSX and SDDC Manager.
 
         .EXAMPLE
-        Set-VCFBackupConfiguration -json (Get-Content -Raw .\SampleJSON\Backup\backupConfiguration.json)
-        This example shows how to update the backup configuration
+        Set-VCFBackupConfiguration -json (Get-Content -Raw .\samples\backup-restore\backupSpec.json)
+        This example shows how to configure the backup configuration.
+
+        .PARAMETER json
+        Specifies the JSON specification to be used.
     #>
 
     Param (
@@ -368,10 +378,9 @@ Function Set-VCFBackupConfiguration {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/backup-configuration"
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+        $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -380,26 +389,24 @@ Export-ModuleMember -Function Set-VCFBackupConfiguration
 Function Start-VCFBackup {
     <#
         .SYNOPSIS
-        Start the SDDC Manager backup
+        Starts the backup task in SDDC Manager.
 
         .DESCRIPTION
-        The Start-VCFBackup cmdlet invokes the SDDC Manager backup task
+        The Start-VCFBackup cmdlet starts the backup task in SDDC Manager.
 
         .EXAMPLE
         Start-VCFBackup
-        This example shows how to start the SDDC Manager backup
+        This example shows how to start the backup task in SDDC Manager.
     #>
 
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
-        # this body is fixed for SDDC Manager backups. not worth having it stored on file
         $ConfigJson = '{"elements" : [{"resourceType" : "SDDC_MANAGER"}]}'
         $uri = "https://$sddcManager/v1/backups/tasks"
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+        $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType "application/json" -Body $ConfigJson
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -408,14 +415,20 @@ Export-ModuleMember -Function Start-VCFBackup
 Function Start-VCFRestore {
     <#
         .SYNOPSIS
-        Start the SDDC Manager restore
+        Starts the SDDC Manager restore task.
 
         .DESCRIPTION
-        The Start-VCFRestore cmdlet invokes the SDDC Manager restore task
+        The Start-VCFRestore cmdlet starts the SDDC Manager restore task.
 
         .EXAMPLE
-        Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-2020-04-20-14-37-25.tar.gz" -passphrase "VMw@re1!VMw@re1!"
-        This example shows how to start the SDDC Manager restore
+        Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-yyyy-mm-dd-00-00-00.tar.gz" -passphrase "VMw@re1!VMw@re1!"
+        This example shows how to start the SDDC Manager restore task.
+
+        .PARAMETER backupFile
+        Specifies the backup file to be used.
+
+        .PARAMETER passphrase
+        Specifies the passphrase to be used.
     #>
 
     Param (
@@ -427,10 +440,9 @@ Function Start-VCFRestore {
         createBasicAuthHeader
         $ConfigJson = '{ "backupFile": "' + $backupFile + '", "elements": [ {"resourceType": "SDDC_MANAGER"} ], "encryption": {"passphrase": "' + $passphrase + '"}}'
         $uri = "https://$sddcManager/v1/restores/tasks"
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType "application/json" -body $ConfigJson
+        $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType "application/json" -Body $ConfigJson
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -439,14 +451,17 @@ Export-ModuleMember -Function Start-VCFRestore
 Function Get-VCFRestoreTask {
     <#
         .SYNOPSIS
-        Fetch the restores task
+        Retrieves the status of the restore task.
 
         .DESCRIPTION
-        The Get-VCFRestoreTask cmdlet retrieves the status of the restore task
+        The Get-VCFRestoreTask cmdlet retrieves the status of the restore task.
 
         .EXAMPLE
         Get-VCFRestoreTask -id a5788c2d-3126-4c8f-bedf-c6b812c4a753
-        This example shows how to retrieve the status of the restore task by id
+        This example shows how to retrieve the status of the restore task by unique ID.
+
+        .PARAMETER id
+        Specifies the unique ID of the restore task.
     #>
 
     Param (
@@ -457,11 +472,10 @@ Function Get-VCFRestoreTask {
         if ($PsBoundParameters.ContainsKey("id")) {
             createBasicAuthHeader
             $uri = "https://$sddcManager/v1/restores/tasks/$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -475,27 +489,29 @@ Export-ModuleMember -Function Get-VCFRestoreTask
 Function Get-VCFBundle {
     <#
         .SYNOPSIS
-        Get all Bundles available to SDDC Manager
+        Retrieves a list of all bundles available to the SDDC Manager instance.
 
         .DESCRIPTION
         The Get-VCFBundle cmdlet gets all bundles available to the SDDC Manager instance.
-        i.e. Manually uploaded bundles and bundles available via depot access.
 
         .EXAMPLE
         Get-VCFBundle
-        This example gets the list of bundles and all their details
+        This example shows how to retrieve a list of all bundles available to the SDDC Manager instance.
 
         .EXAMPLE
         Get-VCFBundle | Select version,downloadStatus,id
-        This example gets the list of bundles and filters on the version, download status and the id only
+        This example shows how to retrieve a list of all bundles available to the SDDC Manager instance and select specific properties.
 
         .EXAMPLE
         Get-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
-        This example gets the details of a specific bundle by its id
+        This example shows how to retrieve a list of details for a specific bundle using the unique ID of the bundle.
 
         .EXAMPLE
         Get-VCFBundle | Where {$_.description -Match "NSX"}
-        This example lists all bundles that match NSX in the description field
+        This example shows how to retrieve a list of all bundles available to the SDDC Manager instance and filter the results by description.
+
+        .PARAMETER
+        Specifies the unique ID of the bundle.
     #>
 
     Param (
@@ -507,16 +523,14 @@ Function Get-VCFBundle {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/bundles/$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        }
-        else {
+        } else {
             $uri = "https://$sddcManager/v1/bundles"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -525,15 +539,17 @@ Export-ModuleMember -Function Get-VCFBundle
 Function Request-VCFBundle {
     <#
         .SYNOPSIS
-        Start download of bundle from depot
+        Start download of bundle from depot.
 
         .DESCRIPTION
         The Request-VCFBundle cmdlet starts an immediate download of a bundle from the depot.
-        Only one download can be triggered for a bundle.
 
         .EXAMPLE
         Request-VCFBundle -id 7ef354ab-13a6-4e39-9561-10d2c4de89db
-        This example requests the immediate download of a bundle based on its id
+        This example shows how to start an immediate download of a bundle from the depot using the unique ID of the bundle.
+
+        .PARAMETER id
+        Specifies the unique ID of the bundle.
     #>
 
     Param (
@@ -545,10 +561,9 @@ Function Request-VCFBundle {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/bundles/$id"
         $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
+        $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers	-ContentType application/json -Body $body
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -557,19 +572,17 @@ Export-ModuleMember -Function Request-VCFBundle
 Function Start-VCFBundleUpload {
     <#
         .SYNOPSIS
-        Starts upload of bundle to SDDC Manager
+        Starts upload of bundle to SDDC Manager.
 
         .DESCRIPTION
         The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
-        Prerequisite: The bundle should have been downloaded to SDDC Manager VM using the bundle transfer utility tool
 
         .EXAMPLE
-        Start-VCFBundleUpload -json $jsonSpec
-        This example invokes the upload of a bundle onto SDDC Manager using a variable
+        Start-VCFBundleUpload -json (Get-Content -Raw .\samples\bundles\bundleUploadSpec.json)
+        This example invokes the upload of a bundle onto SDDC Manager by passing a JSON specification file.
 
-        .EXAMPLE
-        Start-VCFBundleUpload -json (Get-Content -Raw .\upgradeDomain.json)
-        This example invokes the upload of a bundle onto SDDC Manager by passing a JSON file
+        .PARAMETER json
+        Specifies the JSON specification to be used.
     #>
 
     Param (
@@ -581,10 +594,9 @@ Function Start-VCFBundleUpload {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/bundles"
-        $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $jsonBody
+        $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers	-ContentType application/json -Body $jsonBody
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -598,24 +610,25 @@ Export-ModuleMember -Function Start-VCFBundleUpload
 Function Get-VCFCeip {
     <#
         .SYNOPSIS
-        Retrieves the current setting for CEIP of the connected SDDC Manager
+        Retrieves the status for the Customer Experience Improvement Program (CEIP) for SDDC Manager, vCenter Server,
+        vSAN, and NSX.
 
         .DESCRIPTION
-        The Get-VCFCeip cmdlet retrieves the current setting for Customer Experience Improvement Program (CEIP) of the connected SDDC Manager
+        The Get-VCFCeip cmdlet retrieves the current setting for the Customer Experience Improvement Program (CEIP)
+        of the connected SDDC Manager.
 
         .EXAMPLE
         Get-VCFCeip
-        This example shows how to get the current setting of CEIP
+        This example shows how to retrieve the current setting of the Customer Experience Improvement Program for SDDC Manager, vCenter Server, vSAN, and NSX.
     #>
 
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/ceip"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -624,19 +637,22 @@ Export-ModuleMember -Function Get-VCFCeip
 Function Set-VCFCeip {
     <#
         .SYNOPSIS
-        Sets the CEIP status (Enabled/Disabled) of the connected SDDC Manager and components managed
+        Sets the Customer Experience Improvement Program (CEIP) status for SDDC Manager, vCenter Server, vSAN, and NSX.
 
         .DESCRIPTION
-        The Set-VCFCeip cmdlet configures the status (Enabled/Disabled) for Customer Experience Improvement Program (CEIP) of the connected
-        SDDC Manager and the components managed (vCenter Server, vSAN and NSX Manager)
+        The Set-VCFCeip cmdlet configures the status for the Customer Experience Improvement Program (CEIP) for
+        SDDC Manager, vCenter Server, vSAN, and NSX.
 
         .EXAMPLE
         Set-VCFCeip -ceipSetting DISABLE
-        This example shows how to DISABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
+        This example shows how to disable the Customer Experience Improvement Program for SDDC Manager, vCenter Server, vSAN, and NSX.
 
         .EXAMPLE
         Set-VCFCeip -ceipSetting ENABLE
-        This example shows how to ENABLE CEIP for SDDC Manager, vCenter Server, vSAN and NSX Manager
+        This example shows how to enable the Customer Experience Improvement Program for SDDC Manager, vCenter Server, vSAN, and NSX.
+
+        .PARAMETER ceipSetting
+        Specifies the configuration of the Customer Experience Improvement Program. One of: ENABLE, DISABLE.
     #>
 
     Param (
@@ -648,10 +664,9 @@ Function Set-VCFCeip {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/ceip"
         $json = '{"status": "' + $ceipSetting + '"}'
-        $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $json
+        $response = Invoke-RestMethod -Method PATCH -Uri $uri -ContentType application/json -Headers $headers -Body $json
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -665,24 +680,25 @@ Export-ModuleMember -Function Set-VCFCeip
 Function Get-VCFCertificateAuthority {
     <#
         .SYNOPSIS
-        Get certificate authorities information
+        Retrieves the certificate authority information.
 
         .DESCRIPTION
-        The Get-VCFCertificateAuthority cmdlet retrieves the certificate authorities information for the connected SDDC Manager
+        The Get-VCFCertificateAuthority cmdlet retrieves the certificate authority configuration from SDDC Manager.
 
         .EXAMPLE
         Get-VCFCertificateAuthority
-        This example shows how to get the certificate authority configuration from the connected SDDC Manager
+        This example shows how to retrieve the certificate authority configuration from SDDC Manager.
 
         .EXAMPLE
         Get-VCFCertificateAuthority | ConvertTo-Json
-        This example shows how to get the certificate authority configuration from the connected SDDC Manager
-        and output to Json format
+        This example shows how to retrieve the certificate authority configuration from SDDC Manager and convert the output to JSON.
 
         .EXAMPLE
         Get-VCFCertificateAuthority -caType Microsoft
-        This example shows how to get the certificate authority configuration for a Microsoft Certificate Authority from the
-        connected SDDC Manager
+        This example shows how to retrieve the certificate authority configuration for a Microsoft Certificate Authority from SDDC Manager.
+
+        .PARAMETER caType
+        Specifies the certificate authority type. One of: Microsoft, OpenSSL.
     #>
 
     Param (
@@ -694,16 +710,14 @@ Function Get-VCFCertificateAuthority {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("caType")) {
             $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        }
-        else {
+        } else {
             $uri = "https://$sddcManager/v1/certificate-authorities"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -712,14 +726,17 @@ Export-ModuleMember -Function Get-VCFCertificateAuthority
 Function Remove-VCFCertificateAuthority {
     <#
         .SYNOPSIS
-        Deletes certificate authority configuration
+        Removes the certificate authority configuration.
 
         .DESCRIPTION
-        The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from the connected SDDC Manager
+        The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from SDDC Manager.
 
         .EXAMPLE
         Remove-VCFCertificateAuthority
-        This example removes the Micosoft certificate authority configuration from the connected SDDC Manager
+        This example shows how to remove the certificate authority configuration from SDDC Manager.
+
+        .PARAMETER caType
+        Specifies the certificate authority type. One of: Microsoft, OpenSSL.
     #>
 
     Param (
@@ -732,24 +749,35 @@ Function Remove-VCFCertificateAuthority {
         $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Remove-VCFCertificateAuthority
 
-Function Set-VCFMicrosoftCA {
+Function Set-VCFMicrosoftCa {
     <#
         .SYNOPSIS
-        Configures a Microsoft Certificate Authority
+        Configures Microsoft Certificate Authority integration.
 
         .DESCRIPTION
-        Configures the Microsoft Certificate Authorty on the connected SDDC Manager
+        The Set-VCFMicrosoftCa cmdlet configures Microsoft Certificate Authority integration with SDDC Manager.
 
         .EXAMPLE
-        Set-VCFMicrosoftCA -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
-        This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+        Set-VCFMicrosoftCa -serverUrl "https://rpl-dc01.rainpole.io/certsrv" -username Administrator -password "VMw@re1!" -templateName VMware
+        This example shows how to configure a Microsoft Certificate Authority integration with SDDC Manager.
+
+        .PARAMETER serverUrl
+        Specifies the HTTPS URL for the Microsoft Certificate Authority.
+
+        .PARAMETER username
+        Specifies the username used to authenticate to the Microsoft Certificate Authority.
+
+        .PARAMETER password
+        Specifies the password used to authenticate to the Microsoft Certificate Authority.
+
+        .PARAMETER templateName
+        Specifies the name of the certificate template used on the Microsoft Certificate Authority.
     #>
 
     Param (
@@ -764,25 +792,42 @@ Function Set-VCFMicrosoftCA {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $json = '{"microsoftCertificateAuthoritySpec": {"secret": "' + $password + '","serverUrl": "' + $serverUrl + '","username": "' + $username + '","templateName": "' + $templateName + '"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
-        Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
-    }
-    Catch {
+        Invoke-RestMethod -Method PUT -Uri $uri -ContentType application/json -Headers $headers -Body $json # No response from API
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Set-VCFMicrosoftCA
+Export-ModuleMember -Function Set-VCFMicrosoftCa
 
-Function Set-VCFOpenSSLCA {
+Function Set-VCFOpensslCa {
     <#
         .SYNOPSIS
-        Configures the OpenSSL Certificate Authority
+        Configures OpenSSL Certificate Authority integration.
 
         .DESCRIPTION
-        Configures the OpenSSL Certificate Authorty on the connected SDDC Manager
+        The Set-VCFOpensslCa cmdlet configures OpenSSL Certificate Authority integration with SDDC Manager.
 
         .EXAMPLE
-        Set-VCFOpenSSLCA -commonName sddcManager -organization Rainpole -organizationUnit Support -locality "Palo Alto" -state CA -country US
-        This example shows how to configure a Microsoft certificate authority on the connected SDDC Manager
+        Set-VCFOpensslCa -commonName "sfo-vcf01.sfo.rainpole.io" -organization Rainpole -organizationUnit "Platform Engineering -locality "San Francisco" -state CA -country US
+        This example shows how to configure an OpenSSL Certificate Authority integration with SDDC Manager.
+
+        .PARAMETER commonName
+        Specifies the common name for the OpenSSL Certificate Authority.
+
+        .PARAMETER organization
+        Specifies the organization name for the OpenSSL Certificate Authority.
+
+        .PARAMETER organizationUnit
+        Specifies the organization unit for the OpenSSL Certificate Authority.
+
+        .PARAMETER locality
+        Specifies the locality for the OpenSSL Certificate Authority.
+
+        .PARAMETER state
+        Specifies the state for the OpenSSL Certificate Authority.
+
+        .PARAMETER country
+        Specifies the country for the OpenSSL Certificate Authority.
     #>
 
     Param (
@@ -800,28 +845,30 @@ Function Set-VCFOpenSSLCA {
         $json = '{"openSSLCertificateAuthoritySpec": {"commonName": "' + $commonName + '","organization": "' + $organization + '","organizationUnit": "' + $organizationUnit + '","locality": "' + $locality + '","state": "' + $state + '","country": "' + $country + '"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Set-VCFOpenSSLCA
+Export-ModuleMember -Function Set-VCFOpensslCa
 
-Function Get-VCFCertificateCSR {
+Function Get-VCFCertificateCsr {
     <#
         .SYNOPSIS
-        Get available CSR(s)
+        Retrieve the latest generated certificate signing request(s) (CSR) for a workload domain.
 
         .DESCRIPTION
-        The Get-VCFCertificateCSR cmdlet gets the available CSRs that have been created on SDDC Manager
+        The Get-VCFCertificateCsr cmdlet gets the available certificate signing request(s) (CSR) for a workload domain.
 
         .EXAMPLE
-        Get-VCFCertificateCSR -domainName sfo-m01
-        This example gets a list of CSRs and displays the output
+        Get-VCFCertificateCsr -domainName sfo-m01
+        This example shows how to retrieve the available certificate signing request(s) (CSR) for a workload domain.
 
         .EXAMPLE
-        Get-VCFCertificateCSR -domainName sfo-m01 | ConvertTo-Json
-        This example gets a list of CSRs and displays them in JSON format
+        Get-VCFCertificateCsr -domainName sfo-m01 | ConvertTo-Json
+        This example shows how to retrieve the available certificate signing request(s) (CSR) for a workload domain and convert the output to JSON.
+
+        .PARAMETER domainName
+        Specifies the name of the workload domain.
     #>
 
     Param (
@@ -832,29 +879,29 @@ Function Get-VCFCertificateCSR {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFCertificateCSR
+Export-ModuleMember -Function Get-VCFCertificateCsr
 
-Function Request-VCFCertificateCSR {
+Function Request-VCFCertificateCsr {
     <#
         .SYNOPSIS
-        Generate CSR(s)
+        Generate a certificate signing request(s) (CSR) for the selected resource(s) in a workload domain.
 
         .DESCRIPTION
-        The Request-VCFCertificateCSR generates CSR(s) for the selected resource(s) in the domain
-        - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA,
-        VRLI, VROPS, VRSLCM, VXRAIL_MANAGER
+        The Request-VCFCertificateCsr generates a certificate signing request(s) (CSR) for the selected resource(s)
+        in a workload domain.
 
         .EXAMPLE
-        Request-VCFCertificateCSR -domainName MGMT -json .\requestCsrSpec.json
-        This example requests the generation of the CSR based on the entries within the requestCsrSpec.json file for resources within
-        the domain called MGMT
+        Request-VCFCertificateCsr -domainName MGMT -json (Get-Content -Raw .\samples\certificates\requestCsrSpec.json)
+        This example shows how to generate the certificate signing request(s) (CSR) based on the entries within the JSON specification file for resources within the workload domain named MGMT.
+
+        .PARAMETER json
+        Specifies the JSON specification to be used.
     #>
 
     Param (
@@ -869,36 +916,41 @@ Function Request-VCFCertificateCSR {
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
         $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $jsonBody
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Request-VCFCertificateCSR
+Export-ModuleMember -Function Request-VCFCertificateCsr
 
 Function Get-VCFCertificate {
     <#
         .SYNOPSIS
-        Get latest generated certificate(s) in a domain
+        Retrieves the latest generated certificate(s) for a workload domain.
 
         .DESCRIPTION
-        The Get-VCFCertificate cmdlet gets the latest generated certificate(s) in a domain
+        The Get-VCFCertificate cmdlet retrieves the latest generated certificate(s) for a workload domain.
 
         .EXAMPLE
         Get-VCFCertificate -domainName sfo-m01
-        This example gets a list of certificates that have been generated
+        This example shows how to retrieve the latest generated certificate(s) for a workload domain.
 
         .EXAMPLE
         Get-VCFCertificate -domainName sfo-m01 | ConvertTo-Json
-        This example gets a list of certificates and displays them in JSON format
+        This example shows how to retrieve the latest generated certificate(s) for a workload domain and convert the output to JSON.
 
         .EXAMPLE
         Get-VCFCertificate -domainName sfo-m01 | Select issuedTo
-        This example gets a list of endpoint names where certificates have been issued
-
+        TThis example shows how to retrieve the latest generated certificate(s) for a workload domain and select the issuedTo property.
+       
         .EXAMPLE
         Get-VCFCertificate -domainName sfo-m01 -resources
-        This example gets the certificates of all resources in the domain
+        This example shows how to retrieve the latest generated certificate(s) for a workload domain and retrieve the certificates for all resources in the workload domain.
+
+        .PARAMETER domainName
+        Specifies the name of the workload domain.
+
+        .PARAMETER resources
+        Specifies retrieving the certificates for the resources.
     #>
 
     Param (
@@ -913,14 +965,12 @@ Function Get-VCFCertificate {
             $uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
-        }
-        else {
+        } else {
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -929,18 +979,20 @@ Export-ModuleMember -Function Get-VCFCertificate
 Function Request-VCFCertificate {
     <#
         .SYNOPSIS
-        Generate certificate(s) for the selected resource(s) in a domain
+        Generate a certificate(s) for the selected resource(s) in a workload domain.
 
         .DESCRIPTION
-        The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a domain.
-        CA must be configured and CSR must be generated beforehand
-        - Resource Types (SDDC_MANAGER, PSC, VCENTER, NSX_MANAGER, NSXT_MANAGER, VRA, VRLI, VROPS,
-        VRSLCM, VXRAIL_MANAGER
+        The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a workload domain.
 
         .EXAMPLE
-        Request-VCFCertificate -domainName MGMT -json .\requestCertificateSpec.json
-        This example requests the generation of the Certificates based on the entries within the requestCertificateSpec.json file
-        for resources within the domain called MGMT
+        Request-VCFCertificate -domainName MGMT -json (Get-Content -Raw .\samples\certificates\requestCertificateSpec.json)
+        This example shows how to generate the certificate(s) based on the entries within the JSON specification file for resources within the workload domain named MGMT.
+
+        .PARAMETER json
+        Specifies the JSON specification to be used.
+
+        .PARAMETER domainName
+        Specifies the name of the workload domain.
     #>
 
     Param (
@@ -949,15 +1001,14 @@ Function Request-VCFCertificate {
     )
 
     if ($PsBoundParameters.ContainsKey("json")) {
-	    Try {
+        Try {
             $jsonBody = validateJsonInput -json $json
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
-            $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+            $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
             $response
-        }
-        Catch {
+        } Catch {
             ResponseException -object $_
         }
     }
@@ -967,15 +1018,20 @@ Export-ModuleMember -Function Request-VCFCertificate
 Function Set-VCFCertificate {
     <#
         .SYNOPSIS
-        Replace certificate(s) for the selected resource(s) in a domain
+        Install certificate(s) for the selected resource(s) in a workload domain.
 
         .DESCRIPTION
-        The Set-VCFCertificate cmdlet replaces certificate(s) for the selected resource(s) in a domain
+        The Set-VCFCertificate cmdlet installs certificate(s) for the selected resource(s) in a workload domain.
 
         .EXAMPLE
-        Set-VCFCertificate -domainName MGMT -json .\updateCertificateSpec.json
-        This example replaces the Certificates based on the entries within the requestCertificateSpec.json file
-        for resources within the domain called MGMT
+        Set-VCFCertificate -domainName MGMT -json (Get-Content -Raw .\samples\certificates\updateCertificateSpec.json)
+        This example shows how to install the certificate(s) for the resources within the domain called MGMT based on the entries within the JSON specification file.
+
+        .PARAMETER json
+        Specifies the JSON specification to be used.
+
+        .PARAMETER domainName
+        Specifies the name of the workload domain.
     #>
 
     Param (
@@ -991,8 +1047,7 @@ Function Set-VCFCertificate {
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
             $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
-        }
-        Catch {
+        } Catch {
             ResponseException -object $_
         }
     }
@@ -4854,6 +4909,7 @@ Function Set-VCFConfigurationNTP {
 Export-ModuleMember -Function Set-VCFConfigurationNTP
 
 #EndRegion APIs for managing DNS and NTP
+
 
 #Region APIs for managing Proxy Configuration
 

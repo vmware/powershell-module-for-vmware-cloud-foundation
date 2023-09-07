@@ -12,7 +12,7 @@ Get-VCFCertificate [-domainName] <String> [-resources] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFCertificate cmdlet retrieves the latest generated certificate(s) for a workload domain.
+The `Get-VCFCertificate` cmdlet retrieves the latest generated certificate(s) for a workload domain.
 
 ## Examples
 

@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Retrieves Application Virtual Networks (AVN) from SDDC Manager
+Retrieves Application Virtual Networks (AVN) from SDDC Manager.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Get-VCFApplicationVirtualNetwork [[-regionType] <String>] [[-id] <String>] [<Com
 
 ## Description
 
-The Get-VCFApplicationVirtualNetwork cmdlet retrieves the Application Virtual Networks configured in SDDC Manager.
+The `Get-VCFApplicationVirtualNetwork` cmdlet retrieves the Application Virtual Networks configured in SDDC Manager.
 
 ## Examples
 

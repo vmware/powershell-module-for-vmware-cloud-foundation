@@ -1,4 +1,4 @@
-# Set-VCFOpenSSLCA
+# Set-VCFOpensslCa
 
 ## Synopsis
 
@@ -7,19 +7,19 @@ Configures OpenSSL Certificate Authority integration.
 ## Syntax
 
 ```powershell
-Set-VCFOpenSSLCA [-commonName] <String> [-organization] <String> [-organizationUnit] <String> [-locality] <String> [-state] <String> [-country] <String> [<CommonParameters>]
+Set-VCFOpensslCa [-commonName] <String> [-organization] <String> [-organizationUnit] <String> [-locality] <String> [-state] <String> [-country] <String> [<CommonParameters>]
 ```
 
 ## Description
 
-Configures the OpenSSL Certificate Authorty integration with SDDC Manager.
+The `Set-VCFOpensslCa` cmdlet configures OpenSSL Certificate Authority integration with SDDC Manager.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Set-VCFOpenSSLCA -commonName "sfo-vcf01.sfo.rainpole.io" -organization Rainpole -organizationUnit "Platform Engineering -locality "San Francisco" -state CA -country US
+Set-VCFOpensslCa -commonName "sfo-vcf01.sfo.rainpole.io" -organization Rainpole -organizationUnit "Platform Engineering -locality "San Francisco" -state CA -country US
 ```
 
 This example shows how to configure an OpenSSL Certificate Authority integration with SDDC Manager.

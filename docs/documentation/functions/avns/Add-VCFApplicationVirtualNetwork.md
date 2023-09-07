@@ -12,7 +12,7 @@ Add-VCFApplicationVirtualNetwork [-json] <String> [-validate] [<CommonParameters
 
 ## Description
 
-The Add-VCFApplicationVirtualNetwork cmdlet creates Application Virtual Networks in SDDC Manager and NSX.
+The `Add-VCFApplicationVirtualNetwork` cmdlet creates Application Virtual Networks in SDDC Manager and NSX.
 
 ## Examples
 

@@ -12,7 +12,7 @@ Get-VCFFipsMode
 
 ## Description
 
-The Get-VCFFipsMode cmdlet returns the status for FIPS mode on the VMware Cloud Foundation instance.
+The `Get-VCFFipsMode` cmdlet returns the status for FIPS mode on the VMware Cloud Foundation instance.
 
 ## Examples
 
@@ -22,4 +22,4 @@ The Get-VCFFipsMode cmdlet returns the status for FIPS mode on the VMware Cloud 
 Get-VCFFipsMode
 ```
 
-This example returns the status for FIPS mode on the VMware Cloud Foundation instance..
+This example returns the status for FIPS mode on the VMware Cloud Foundation instance.

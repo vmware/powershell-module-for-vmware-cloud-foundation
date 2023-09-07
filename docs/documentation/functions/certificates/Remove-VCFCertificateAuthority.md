@@ -12,7 +12,7 @@ Remove-VCFCertificateAuthority [-caType] <String> [<CommonParameters>]
 
 ## Description
 
-The Remove-VCFCertificateAuthority cmdlet removes the certificate authority configuration from SDDC Manager.
+The `Remove-VCFCertificateAuthority` cmdlet removes the certificate authority configuration from SDDC Manager.
 
 ## Examples
 
@@ -28,7 +28,7 @@ This example shows how to remove the certificate authority configuration from SD
 
 ### -caType
 
-Specifies the Certificate Authority type. One of: Microsoft, OpenSSL.
+Specifies the certificate authority type. One of: Microsoft, OpenSSL.
 
 ```yaml
 Type: String

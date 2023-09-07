@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Retrieve the certificate authority information.
+Retrieves the certificate authority information.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Get-VCFCertificateAuthority [[-caType] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFCertificateAuthority cmdlet retrieves the certificate authority configuration from SDDC Manager.
+The `Get-VCFCertificateAuthority` cmdlet retrieves the certificate authority configuration from SDDC Manager.
 
 ## Examples
 
@@ -44,7 +44,7 @@ This example shows how to retrieve the certificate authority configuration for a
 
 ### -caType
 
-Specifies the Certificate Authority type. One of: Microsoft, OpenSSL.
+Specifies the certificate authority type. One of: Microsoft, OpenSSL.
 
 ```yaml
 Type: String

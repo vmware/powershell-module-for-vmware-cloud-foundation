@@ -2,7 +2,7 @@
 
 All API operations with SDDC Manager must be authenticated.
 
-To create a `base64` credential to authenticate each cmdlet you must first run the [`Request-VCFToken`](functions/authentication/Request-VCFToken.md) cmdlet.
+To create a `base64` credential to authenticate each cmdlet you must first run the `Request-VCFToken` cmdlet.
 
 This example shows how to connect to SDDC Manager to request API access and refresh tokens using the default `administrator@vsphere.local` vCenter Single Sign-On administrator account.
 
@@ -26,7 +26,7 @@ Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password
 
 Now that you have authenticated to SDDC Manager, you can run any of the cmdlets in the module.
 
-Let's start by getting a list of EXSi hosts managed by the connected SDDC Manager instance. We'll use the [`Get-VCFHost`](functions/hosts/Get-VCFHost.md) cmdlet.
+Let's start by getting a list of EXSi hosts managed by the connected SDDC Manager instance. We'll use the `Get-VCFHost` cmdlet.
 
 ```powershell
 Get-VCFHost

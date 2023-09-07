@@ -1,4 +1,4 @@
-# Get-VCFCertificateCSR
+# Get-VCFCertificateCsr
 
 ## Synopsis
 
@@ -7,19 +7,19 @@ Retrieve the latest generated certificate signing request(s) (CSR) for a workloa
 ## Syntax
 
 ```powershell
-Get-VCFCertificateCSR [-domainName] <String> [<CommonParameters>]
+Get-VCFCertificateCsr [-domainName] <String> [<CommonParameters>]
 ```
 
 ## Description
 
-The Get-VCFCertificateCSR cmdlet gets the available certificate signing request(s) (CSR) for a workload domain.
+The `Get-VCFCertificateCsr` cmdlet gets the available certificate signing request(s) (CSR) for a workload domain.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Get-VCFCertificateCSR -domainName sfo-m01
+Get-VCFCertificateCsr -domainName sfo-m01
 ```
 
 This example shows how to retrieve the available certificate signing request(s) (CSR) for a workload domain.
@@ -27,7 +27,7 @@ This example shows how to retrieve the available certificate signing request(s) 
 ### Example 2
 
 ```powershell
-Get-VCFCertificateCSR -domainName sfo-m01 | ConvertTo-Json
+Get-VCFCertificateCsr -domainName sfo-m01 | ConvertTo-Json
 ```
 
 This example shows how to retrieve the available certificate signing request(s) (CSR) for a workload domain and convert the output to JSON.
