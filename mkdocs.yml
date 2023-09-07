@@ -252,6 +252,9 @@ nav:
     - documentation/functions/personalities/New-VCFPersonality.md
   - Platform Services Controllers:
     - documentation/functions/pscs/Get-VCFPSC.md
+  - Proxy:
+    - documentation/functions/proxy/Get-VcfProxy.md
+    - documentation/functions/proxy/Set-VcfProxy.md
   - Releases:
     - documentation/functions/releases/Get-VCFRelease.md
   - SDDC (Cloud Builder):

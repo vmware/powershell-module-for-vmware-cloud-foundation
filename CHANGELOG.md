@@ -9,6 +9,8 @@
 - Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager build in `xxxxxxx` format.
 - Added `Set-VCFCredentialAutoRotate` cmdlet to configure or disable credential auto-rotation for a credential managed by SDDC Manager.
 - Fixed `validateJsonInput` function to prevent it from truncating directly passed JSON content.
+- Added `Get-VcfProxy` cmdlet to retrieve the proxy configuration for the SDDC Manager.
+- Added `Set-VcfProxy` cmdlet to configure the proxy configuration for the SDDC Manager.
 
 ## v2.3.0
 
