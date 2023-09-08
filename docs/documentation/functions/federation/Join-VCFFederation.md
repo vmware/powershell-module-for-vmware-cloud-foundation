@@ -12,7 +12,7 @@ Join-VCFFederation [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Join-VCFFederation cmdlet joins an SDDC Manager instance to an existing federation.
+The `Join-VCFFederation` cmdlet joins an SDDC Manager instance to an existing federation.
 
 ???+ warning
 

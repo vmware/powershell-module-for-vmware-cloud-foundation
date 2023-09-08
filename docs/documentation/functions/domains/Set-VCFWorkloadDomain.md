@@ -12,7 +12,7 @@ Set-VCFWorkloadDomain [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Set-VCFWorkloadDomain cmdlet marks a workload domain for deletion.
+The `Set-VCFWorkloadDomain` cmdlet marks a workload domain for deletion.
 
 ???+ info
 

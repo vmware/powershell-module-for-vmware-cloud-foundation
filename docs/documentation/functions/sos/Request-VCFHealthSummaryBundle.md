@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Download Health Summary bundle.
+Downloads the Health Summary bundle.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Request-VCFHealthSummaryBundle [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Request-VCFHealthSummaryBundle cmdlet downloads the Health Summary bundle.
+The `Request-VCFHealthSummaryBundle` cmdlet downloads the Health Summary bundle.
 
 ## Examples
 
@@ -22,13 +22,13 @@ The Request-VCFHealthSummaryBundle cmdlet downloads the Health Summary bundle.
 Request-VCFHealthSummaryBundle -id 12345678-1234-1234-1234-123456789012
 ```
 
-This example downloads a Health Summary bundle.
+This example shows how to download a Health Summary bundle.
 
 ## Parameters
 
 ### -id
 
-{{ Fill id Description }}
+Specifies the unique ID of the Health Summary task.
 
 ```yaml
 Type: String

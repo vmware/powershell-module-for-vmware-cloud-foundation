@@ -12,7 +12,7 @@ Get-VCFFederationMember
 
 ## Description
 
-Gets the information about all the members of a federation from SDDC Manager.
+The `Get-VCFFederationMember` cmdlets retrieves the information about all the members of a federation from SDDC Manager.
 
 ???+ warning
 

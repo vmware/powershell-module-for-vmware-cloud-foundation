@@ -12,7 +12,7 @@ Get-VCFClusterValidation [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Get-VCFClusterValidation cmdlet retrieves the status of the validation task for the cluster JSON specification.
+The `Get-VCFClusterValidation` cmdlet retrieves the status of the validation task for the cluster JSON specification.
 
 ## Examples
 

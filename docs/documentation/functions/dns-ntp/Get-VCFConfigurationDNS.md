@@ -12,7 +12,7 @@ Get-VCFConfigurationDNS
 
 ## Description
 
-The Get-VCFConfigurationDNS cmdlet retrieves the DNS configuration from SDDC Manager.
+The `Get-VCFConfigurationDNS` cmdlet retrieves the DNS configuration from SDDC Manager.
 
 ## Examples
 

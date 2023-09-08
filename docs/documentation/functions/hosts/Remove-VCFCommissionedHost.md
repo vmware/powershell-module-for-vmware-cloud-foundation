@@ -2,8 +2,7 @@
 
 ## Synopsis
 
-Connects to the specified SDDC Manager and decommissions a list of hosts.
-Host list is provided in a JSON file.
+Decommissions a list of ESXi hosts.
 
 ## Syntax
 
@@ -13,7 +12,7 @@ Remove-VCFCommissionedHost [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Remove-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and decommissions a list of hosts.
+The `Remove-VCFCommissionedHost` cmdlet decommissions a list of ESXi hosts.
 
 ## Examples
 
@@ -23,7 +22,7 @@ The Remove-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and
 Remove-VCFCommissionedHost -json (Get-Content -Raw .\samples\hosts\decommissionHostsSpec.json)
 ```
 
-This example shows how to decommission a set of hosts based on the details provided in the JSON file.
+This example shows how to decommission a list of ESXi hosts using a JSON specification file.
 
 ???+ example "Sample JSON: Deommission ESXi Host(s)"
 

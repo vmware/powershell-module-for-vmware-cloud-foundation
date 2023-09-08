@@ -12,7 +12,7 @@ Get-VCFLicenseMode
 
 ## Description
 
-The Get-VCFLicenseMode cmdlet retrieves the current license mode.
+The `Get-VCFLicenseMode` cmdlet retrieves the current license mode.
 
 ## Examples
 

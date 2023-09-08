@@ -12,7 +12,7 @@ New-VCFWorkloadDomain [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The New-VCFWorkloadDomain cmdlet creates a workload domain from a JSON specification file.
+The `New-VCFWorkloadDomain` cmdlet creates a workload domain from a JSON specification file.
 
 ## Examples
 

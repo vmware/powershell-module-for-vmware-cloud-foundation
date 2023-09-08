@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Adds a license key to SDDC Manager.
+Adds a license key.
 
 ## Syntax
 
@@ -12,14 +12,14 @@ New-VCFLicenseKey [-key] <String> [-productType] <String> [-description] <String
 
 ## Description
 
-The New-VCFLicenseKey cmdlet adds a new license key to SDDC Manager.
+The `New-VCFLicenseKey` cmdlet adds a new license key to SDDC Manager.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-New-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" -productType VCENTER -description "vCenter License"
+New-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" -productType VCENTER -description "vCenter Server License"
 ```
 
 This example shows how to add a license key to SDDC Manager.
@@ -44,7 +44,7 @@ Accept wildcard characters: False
 
 ### -productType
 
-Specifies the product type for the license key. One of: SDDC_MANAGER, VCENTER, VSAN, ESXI, NSXT.
+Specifies the product type for the license key. One of: SDDC_MANAGER, VCENTER, VSAN, ESXI, NSXT, WCP.
 
 ```yaml
 Type: String

@@ -12,7 +12,7 @@ Start-VCFSystemPrecheck [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Start-VCFSystemPrecheck cmdlet performs system level health checks and upgrade pre-checks.
+The `Start-VCFSystemPrecheck` cmdlet performs system level health checks and upgrade pre-checks.
 
 ## Examples
 

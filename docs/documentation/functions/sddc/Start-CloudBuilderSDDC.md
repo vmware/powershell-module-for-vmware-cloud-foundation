@@ -12,7 +12,7 @@ Start-CloudBuilderSDDC [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Start-CloudBuilderSDDC cmdlet starts a management domain deployment task on VMware Cloud Builder using a JSON specification file.
+The `Start-CloudBuilderSDDC` cmdlet starts a management domain deployment task on VMware Cloud Builder using a JSON specification file.
 
 ## Examples
 

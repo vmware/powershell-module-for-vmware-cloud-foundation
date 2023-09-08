@@ -12,7 +12,7 @@ Remove-VCFCluster [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Remove-VCFCluster cmdlet removes a cluster from a workload domain.
+The `Remove-VCFCluster` cmdlet removes a cluster from a workload domain.
 
 ???+ note
 

@@ -12,7 +12,7 @@ Get-VCFFederation
 
 ## Description
 
-The Get-VCFFederation cmdlet retrieves the details for a federation from SDDC Manager.
+The `Get-VCFFederation` cmdlet retrieves the details for a federation from SDDC Manager.
 
 ???+ warning
 

@@ -12,7 +12,7 @@ New-VCFCluster [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The New-VCFCluster cmdlet connects to the creates a cluster in a workload domain from a JSON specification file.
+The `New-VCFCluster` cmdlet connects to the creates a cluster in a workload domain from a JSON specification file.
 
 ## Examples
 

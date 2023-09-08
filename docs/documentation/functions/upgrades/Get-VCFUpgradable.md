@@ -12,7 +12,7 @@ Get-VCFUpgradable
 
 ## Description
 
-The Get-VCFUpgradable cmdlet retrieves a list of upgradables from SDDC Manager.
+The `Get-VCFUpgradable` cmdlet retrieves a list of upgradables from SDDC Manager.
 
 ???+ info
 

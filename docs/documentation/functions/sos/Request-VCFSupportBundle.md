@@ -12,7 +12,7 @@ Request-VCFSupportBundle [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Request-VCFSupportBundle cmdlet downloads the support bundle.
+The `Request-VCFSupportBundle` cmdlet downloads the support bundle.
 
 ## Examples
 
@@ -28,7 +28,7 @@ This example shows how to download the support bundle by unique ID.
 
 ### -id
 
-Specifies the unique ID of the support bundle.
+Specifies the unique ID of the support bundle task.
 
 ```yaml
 Type: String

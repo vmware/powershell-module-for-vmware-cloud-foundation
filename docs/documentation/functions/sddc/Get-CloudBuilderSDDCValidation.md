@@ -12,7 +12,7 @@ Get-CloudBuilderSDDCValidation [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-CloudBuilderSDDCValidation cmdlet retrieves a list of all SDDC validations from VMware Cloud Builder.
+The `Get-CloudBuilderSDDCValidation` cmdlet retrieves a list of all SDDC validations from VMware Cloud Builder.
 
 ## Examples
 
@@ -36,7 +36,7 @@ This example shows how to retrieve a SDDC validation from VMware Cloud Builder b
 
 ### -id
 
-pecifies the unique ID of the management domain validation task.
+Specifies the unique ID of the management domain validation task.
 
 ```yaml
 Type: String

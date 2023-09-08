@@ -12,7 +12,7 @@ Restart-VCFTask [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Restart-VCFTask cmdlet retries a previously failed task based on the unique ID of the task.
+The `Restart-VCFTask` cmdlet retries a previously failed task based on the unique ID of the task.
 
 ## Examples
 
@@ -28,7 +28,7 @@ This example shows how to restart a task by unique ID.
 
 ### -id
 
-Specifies the unique ID of the task to restart.
+Specifies the unique ID of the task.
 
 ```yaml
 Type: String

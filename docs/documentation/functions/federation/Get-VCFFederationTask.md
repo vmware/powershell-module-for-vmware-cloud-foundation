@@ -12,7 +12,7 @@ Get-VCFFederationTask [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Get-VCFFederationTask cmdlet retrieves the status of operations tasks in a federation from SDDC Manager.
+The `Get-VCFFederationTask` cmdlet retrieves the status of operations tasks in a federation from SDDC Manager.
 
 ???+ warning
 

@@ -12,7 +12,7 @@ Get-VCFCluster [[-name] <String>] [[-id] <String>] [[-vdses] <Switch> [<CommonPa
 
 ## Description
 
-The Get-VCFCluster cmdlet retrieves a list of clusters from SDDC Manager. You can retrieve the clusters by unique ID or name.
+The `Get-VCFCluster` cmdlet retrieves a list of clusters from SDDC Manager. You can retrieve the clusters by unique ID or name.
 
 ## Examples
 
@@ -47,8 +47,6 @@ Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -vdses
 ```
 
 This example shows how to retrieve the vds data of a cluster by unique ID.
-
-
 
 ## Parameters
 
@@ -86,7 +84,7 @@ Accept wildcard characters: False
 
 ### -vdses
 
-Retrieves the vdses of the cluster.
+Specifies retrieving the vSphere Distributed Switches (VDS) for the cluster.
 
 ```yaml
 Type: String

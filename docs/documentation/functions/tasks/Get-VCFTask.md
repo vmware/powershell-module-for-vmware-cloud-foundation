@@ -12,7 +12,7 @@ Get-VCFTask [[-id] <String>] [[-status] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFTask cmdlet retrieves a list of tasks from the SDDC Manager.
+The `Get-VCFTask` cmdlet retrieves a list of tasks from the SDDC Manager.
 
 ## Examples
 
@@ -38,7 +38,7 @@ This example shows how to retrieve a task by unique ID.
 Get-VCFTask -status SUCCESSFUL
 ```
 
-This example shows how to retrieve all tasks with a status of `SUCCESSFUL`.
+This example shows how to retrieve all tasks with a specific status.
 
 ## Parameters
 
@@ -60,7 +60,7 @@ Accept wildcard characters: False
 
 ### -status
 
-Specifies the status of the task to retrieve.
+Specifies the status of the task to retrieve. One of: SUCCESSFUL, FAILED.
 
 ```yaml
 Type: String

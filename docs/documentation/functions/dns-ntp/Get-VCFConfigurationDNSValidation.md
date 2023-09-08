@@ -12,7 +12,7 @@ Get-VCFConfigurationDNSValidation [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Get-VCFConfigurationDNSValidation cmdlet retrieves the status of the validation of the DNS configuration.
+The `Get-VCFConfigurationDNSValidation` cmdlet retrieves the status of the validation of the DNS configuration.
 
 ## Examples
 

@@ -1,8 +1,12 @@
 # Get-VCFEdgeCluster
 
+## Aliases
+
+`Get-NSXEdgeCluster`
+
 ## Synopsis
 
-Retrieves a list of NSX Edge Clusters managed by SDDC Manager.
+Retrieves a list of NSX Edge clusters managed by SDDC Manager.
 
 ## Syntax
 
@@ -12,7 +16,7 @@ Get-VCFEdgeCluster [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFEdgeCluster cmdlet retrieves a list of NSX Edge Clusters managed by SDDC Manager.
+The `Get-VCFEdgeCluster` cmdlet retrieves a list of NSX Edge clusters managed by SDDC Manager.
 
 ## Examples
 
@@ -22,7 +26,7 @@ The Get-VCFEdgeCluster cmdlet retrieves a list of NSX Edge Clusters managed by S
 Get-VCFEdgeCluster
 ```
 
-This example shows how to retrieve the list of NSX Edge Clusters managed by SDDC Manager.
+This example shows how to retrieve the list of NSX Edge clusters managed by SDDC Manager.
 
 ### Example 2
 
@@ -30,13 +34,13 @@ This example shows how to retrieve the list of NSX Edge Clusters managed by SDDC
 Get-VCFEdgeCluster -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
 ```
 
-This example shows how to retrieve the NSX Edge Cluster managed by SDDC Manager by unique ID.
+This example shows how to retrieve an NSX Edge cluster managed by SDDC Manager by unique ID.
 
 ## Parameters
 
 ### -id
 
-Specifies the unique ID of the NSX Edge Cluster.
+Specifies the unique ID of the NSX Edge cluster.
 
 ```yaml
 Type: String

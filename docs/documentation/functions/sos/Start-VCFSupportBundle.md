@@ -12,7 +12,7 @@ Start-VCFSupportBundle [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Start-VCFSupportBundle cmdlet starts the support bundle generation.
+The `Start-VCFSupportBundle` cmdlet starts the support bundle generation.
 
 ## Examples
 

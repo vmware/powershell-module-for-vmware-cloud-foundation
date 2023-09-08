@@ -12,7 +12,7 @@ Start-VCFUpgrade [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Start-VCFUpgrade cmdlet starts the upgrade of a resource in SDDC Manager.
+The `Start-VCFUpgrade` cmdlet starts the upgrade of a resource in SDDC Manager.
 
 ## Examples
 
