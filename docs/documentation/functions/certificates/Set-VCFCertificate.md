@@ -12,7 +12,7 @@ Set-VCFCertificate [-json] <String> [-domainName] <String> [<CommonParameters>]
 
 ## Description
 
-The Set-VCFCertificate cmdlet installs certificate(s) for the selected resource(s) in a workload domain.
+The `Set-VCFCertificate` cmdlet installs certificate(s) for the selected resource(s) in a workload domain.
 
 ## Examples
 

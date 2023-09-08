@@ -12,7 +12,7 @@ Get-VCFRestoreTask [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFRestoreTask cmdlet retrieves the status of the restore task.
+The `Get-VCFRestoreTask` cmdlet retrieves the status of the restore task.
 
 ## Examples
 

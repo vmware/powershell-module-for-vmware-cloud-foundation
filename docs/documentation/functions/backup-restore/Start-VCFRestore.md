@@ -12,14 +12,14 @@ Start-VCFRestore [-backupFile] <String> [-passphrase] <String> [<CommonParameter
 
 ## Description
 
-The Start-VCFRestore cmdlet starts the SDDC Manager restore task.
+The `Start-VCFRestore` cmdlet starts the SDDC Manager restore task.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-2020-04-20-14-37-25.tar.gz" -passphrase "VMw@re1!VMw@re1!"
+Start-VCFRestore -backupFile "/tmp/vcf-backup-sfo-vcf01-sfo-rainpole-io-yyyy-mm-dd-00-00-00.tar.gz" -passphrase "VMw@re1!VMw@re1!"
 ```
 
 This example shows how to start the SDDC Manager restore task.
@@ -28,7 +28,7 @@ This example shows how to start the SDDC Manager restore task.
 
 ### -backupFile
 
-{{ Fill backupFile Description }}
+Specifies the backup file to be used.
 
 ```yaml
 Type: String
@@ -44,7 +44,7 @@ Accept wildcard characters: False
 
 ### -passphrase
 
-{{ Fill passphrase Description }}
+Specifies the passphrase to be used.
 
 ```yaml
 Type: String

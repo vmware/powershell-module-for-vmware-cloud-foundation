@@ -12,8 +12,7 @@ Set-VCFBackupConfiguration [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Set-VCFBackupConfiguration cmdlet configures or updates the backup configuration details for
-backing up NSX and SDDC Manager.
+The `Set-VCFBackupConfiguration` cmdlet configures or updates the backup configuration details for backing up NSX and SDDC Manager.
 
 ## Examples
 

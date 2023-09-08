@@ -168,12 +168,12 @@ nav:
     - Certificate Authority:
         - documentation/functions/certificates/Get-VCFCertificateAuthority.md
         - documentation/functions/certificates/Remove-VCFCertificateAuthority.md
-        - documentation/functions/certificates/Set-VCFMicrosoftCA.md
-        - documentation/functions/certificates/Set-VCFOpenSSLCA.md
+        - documentation/functions/certificates/Set-VCFMicrosoftCa.md
+        - documentation/functions/certificates/Set-VCFOpensslCa.md
     - Certificate Signing Request:
         - documentation/functions/certificates/Get-VCFCertificate.md
-        - documentation/functions/certificates/Get-VCFCertificateCSR.md
-        - documentation/functions/certificates/Request-VCFCertificateCSR.md
+        - documentation/functions/certificates/Get-VCFCertificateCsr.md
+        - documentation/functions/certificates/Request-VCFCertificateCsr.md
   - Clusters:
     - documentation/functions/clusters/Get-VCFCluster.md
     - documentation/functions/clusters/Get-VCFClusterValidation.md

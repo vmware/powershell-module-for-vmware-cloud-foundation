@@ -12,7 +12,7 @@ Start-VCFBackup
 
 ## Description
 
-The Start-VCFBackup cmdlet starts backup task in SDDC Manager.
+The `Start-VCFBackup` cmdlet starts the backup task in SDDC Manager.
 
 ## Examples
 

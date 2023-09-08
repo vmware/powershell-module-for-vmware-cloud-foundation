@@ -12,7 +12,7 @@ Get-VCFBundle [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFBundle cmdlet gets all bundles available to the SDDC Manager instance.
+The `Get-VCFBundle` cmdlet gets all bundles available to the SDDC Manager instance.
 
 ???+ info
 
@@ -47,7 +47,7 @@ This example shows how to retrieve a list of details for a specific bundle using
 ### Example 4
 
 ```powershell
-Get-VCFBundle | Where {$_.description -Match "vRealize"}
+Get-VCFBundle | Where {$_.description -Match "NSX"}
 ```
 
 This example shows how to retrieve a list of all bundles available to the SDDC Manager instance and filter the results by description.

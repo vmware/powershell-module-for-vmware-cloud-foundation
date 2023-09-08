@@ -12,7 +12,7 @@ Request-VCFCertificate [-json] <String> [-domainName] <String> [<CommonParameter
 
 ## Description
 
-The Request-VCFCertificate cmdlet generates certificate(s) for the selected resource(s) in a workload domain.
+The `Request-VCFCertificate` cmdlet generates certificate(s) for the selected resource(s) in a workload domain.
 
 ???+ note
 

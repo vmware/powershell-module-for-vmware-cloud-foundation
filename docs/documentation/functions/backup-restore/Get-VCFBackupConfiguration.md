@@ -12,7 +12,7 @@ Get-VCFBackupConfiguration
 
 ## Description
 
-The Get-VCFBackupConfiguration cmdlet retrieves the current backup configuration details.
+The `Get-VCFBackupConfiguration` cmdlet retrieves the current backup configuration details.
 
 ## Examples
 

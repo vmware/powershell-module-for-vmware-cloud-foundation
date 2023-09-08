@@ -12,7 +12,7 @@ Request-VCFBundle [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Request-VCFBundle cmdlet starts an immediate download of a bundle from the depot.
+The `Request-VCFBundle` cmdlet starts an immediate download of a bundle from the depot.
 
 ???+ note
 

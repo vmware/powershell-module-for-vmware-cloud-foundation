@@ -12,7 +12,7 @@ Start-VCFBundleUpload [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Start-VCFBundleUpload cmdlet starts upload of bundle(s) to SDDC Manager
+The `Start-VCFBundleUpload` cmdlet starts upload of bundle(s) to SDDC Manager
 
 ???+ note
 
