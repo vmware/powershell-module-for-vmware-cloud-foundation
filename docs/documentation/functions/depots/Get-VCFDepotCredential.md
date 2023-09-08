@@ -12,7 +12,7 @@ Get-VCFDepotCredential [-vxrail] [<CommonParameters>]
 
 ## Description
 
-Retrieves the configurations for the depot configured in the SDDC Manager instance.
+The `Get-VCFDepotCredential` cmdlet retrieves the configurations for the depot configured in the SDDC Manager instance.
 
 ## Examples
 

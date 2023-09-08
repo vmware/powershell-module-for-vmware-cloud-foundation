@@ -50,7 +50,7 @@ Get-VCFRelease [-applicableForVxRailVersion <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFRelease cmdlet returns all releases with options to return releases for a specified workload domain
+The `Get-VCFRelease` cmdlet returns all releases with options to return releases for a specified workload domain
 ID, releases for a specified version, all future releases for a specified version, all applicable releases for
 a specified target release, or all future releases for a specified workload domain ID.
 
@@ -126,13 +126,13 @@ This example shows how to retrieve all applicable target releases for a version 
 Get-VCFRelease -futureReleases -domainId 1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p
 ```
 
-This example shows how to retrieve all future releases for a specified workload domain..
+This example shows how to retrieve all future releases for a specified workload domain.
 
 ## Parameters
 
 ### -domainId
 
-Specifies the workload domain ID.
+Specifies the unique ID of the workload domain.
 
 ```yaml
 Type: String
@@ -160,7 +160,7 @@ Accept wildcard characters: False
 
 ### -versionEquals
 
-Specifies the version.
+Specifies the exact version of the release.
 
 ```yaml
 Type: String
@@ -176,7 +176,7 @@ Accept wildcard characters: False
 
 ### -versionGreaterThan
 
-Specifies the version is greater than.
+Specifies the version of the release to be greater than.
 
 ```yaml
 Type: String
@@ -192,7 +192,7 @@ Accept wildcard characters: False
 
 ### -vxRailVersionEquals
 
-Specifies the VxRail version.
+Specifies the exact version of the release on VxRail.
 
 ```yaml
 Type: String
@@ -208,7 +208,7 @@ Accept wildcard characters: False
 
 ### -vxRailVersionGreaterThan
 
-Specifies the VxRail version is greater than.
+Specifies the version of the release on VxRail to be greater than.
 
 ```yaml
 Type: String
@@ -224,23 +224,7 @@ Accept wildcard characters: False
 
 ### -applicableForVersion
 
-Specifies the applicable target release for a version.
-
-```yaml
-Type: String
-Parameter Sets: vxRailVersionGreaterThan
-Aliases:
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -applicableForVxRailVersion
-
-Specifies the applicable target release for a version on VxRail.
+Specifies the version of the release on VxRail for which applicable target releases are to be retrieved.
 
 ```yaml
 Type: String

@@ -12,7 +12,7 @@ Get-VCFPSC [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFPSC cmdlet retrieves a list of all Platform Services Controllers.
+The `Get-VCFPSC` cmdlet retrieves a list of all Platform Services Controllers.
 
 ## Examples
 

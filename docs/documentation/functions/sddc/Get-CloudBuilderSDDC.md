@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Retrieves a list of management domain deployment tasks from VMware Cloud Builder.
+Retrieves a list of management domain deployment from VMware Cloud Builder.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Get-CloudBuilderSDDC [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-CloudBuilderSDDC cmdlet retrieves a list of all SDDC deployments from VMware Cloud Builder.
+The `Get-CloudBuilderSDDC` cmdlet retrieves a list of all SDDC deployments from VMware Cloud Builder.
 
 ## Examples
 

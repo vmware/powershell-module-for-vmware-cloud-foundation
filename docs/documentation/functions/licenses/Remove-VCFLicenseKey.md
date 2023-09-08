@@ -12,11 +12,11 @@ Remove-VCFLicenseKey [-key] <String> [<CommonParameters>]
 
 ## Description
 
-The Remove-VCFLicenseKey cmdlet removes a license key from SDDC Manager.
+The `Remove-VCFLicenseKey` cmdlet removes a license key from SDDC Manager.
 
 ???+ info
 
-    A license Key can only be removed if it is not in use.
+    A license key can only be removed if the key is not in use.
 
 ## Examples
 

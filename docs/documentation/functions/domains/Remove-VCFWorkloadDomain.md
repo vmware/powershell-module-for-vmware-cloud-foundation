@@ -12,7 +12,7 @@ Remove-VCFWorkloadDomain [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Remove-VCFWorkloadDomain cmdlet removes a workload domain from the SDDC Manager. You can specify the workload domain by unique ID.
+The `Remove-VCFWorkloadDomain` cmdlet removes a workload domain from the SDDC Manager. You can specify the workload domain by unique ID.
 
 ???+ note
 

@@ -32,7 +32,7 @@ Get-VCFHost [-id <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFHost cmdlet retrieves a list of ESXi hosts. You can retrieve the hosts by unique ID, status, or FQDN.
+The `Get-VCFHost` cmdlet retrieves a list of ESXi hosts. You can retrieve the hosts by unique ID, status, or FQDN.
 
 - ASSIGNED: Hosts that are assigned to a workload domain.
 - UNASSIGNED_USEABLE: Hosts that are available to be assigned to a workload domain.

@@ -12,7 +12,7 @@ Get-VCFUpgrade [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFUpgrade cmdlet retrieves a list of upgradable resources from SDDC Manager.
+The `Get-VCFUpgrade` cmdlet retrieves a list of upgradable resources from SDDC Manager.
 
 ## Examples
 

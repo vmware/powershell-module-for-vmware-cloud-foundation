@@ -12,7 +12,7 @@ Remove-VCFNetworkPool [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Remove-VCFNetworkPool cmdlet removes a network pool.
+The `Remove-VCFNetworkPool` cmdlet removes a network pool.
 
 ## Examples
 

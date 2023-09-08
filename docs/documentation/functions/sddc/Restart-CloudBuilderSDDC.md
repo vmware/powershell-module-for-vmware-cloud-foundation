@@ -12,7 +12,7 @@ Restart-CloudBuilderSDDC [-id] <String> [[-json] <String>] [<CommonParameters>]
 
 ## Description
 
-The Restart-CloudBuilderSDDC cmdlet retries a failed management domain deployment task on VMware Cloud Builder.
+The `Restart-CloudBuilderSDDC` cmdlet retries a failed management domain deployment task on VMware Cloud Builder.
 
 ## Examples
 

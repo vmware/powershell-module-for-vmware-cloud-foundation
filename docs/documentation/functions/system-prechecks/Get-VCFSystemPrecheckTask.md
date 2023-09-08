@@ -12,7 +12,7 @@ Get-VCFSystemPrecheckTask [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Get-VCFSystemPrecheckTask cmdlet retrieves the status of a system level precheck task that can be polled and monitored.
+The `Get-VCFSystemPrecheckTask` cmdlet retrieves the status of a system level precheck task that can be polled and monitored.
 
 ## Examples
 

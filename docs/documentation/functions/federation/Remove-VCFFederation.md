@@ -12,7 +12,7 @@ Remove-VCFFederation
 
 ## Description
 
-The Remove-VCFFederation cmdlet removes a federation from SDDC Manager.
+The `Remove-VCFFederation` cmdlet removes a federation from SDDC Manager.
 
 ???+ warning
 

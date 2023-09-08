@@ -62,7 +62,7 @@ Accept wildcard characters: False
 
 ### -validate
 
-Specifies that the JSON specification should be validated.
+Specifies to validate the JSON specification file.
 
 ```yaml
 Type: SwitchParameter

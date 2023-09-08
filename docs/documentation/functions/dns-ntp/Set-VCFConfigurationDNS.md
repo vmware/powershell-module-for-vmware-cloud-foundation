@@ -12,7 +12,7 @@ Set-VCFConfigurationDNS [-json] <String> [-validate] [<CommonParameters>]
 
 ## Description
 
-The Set-VCFConfigurationDNS cmdlet sets the DNS configuration for all systems managed by SDDC Manager.
+The `Set-VCFConfigurationDNS` cmdlet sets the DNS configuration for all systems managed by SDDC Manager.
 
 ## Examples
 
@@ -58,7 +58,7 @@ Accept wildcard characters: False
 
 ### -validate
 
-Specifies that the JSON specification should be validated.
+Specifies to validate the JSON specification file.
 
 ```yaml
 Type: SwitchParameter

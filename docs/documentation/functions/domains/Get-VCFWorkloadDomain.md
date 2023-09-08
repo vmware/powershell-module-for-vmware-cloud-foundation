@@ -12,7 +12,7 @@ Get-VCFWorkloadDomain [[-name] <String>] [[-id] <String>] [-endpoints] [<CommonP
 
 ## Description
 
-The Get-VCFWorkloadDomain cmdlet retrieves a list of workload domains from the SDDC Manager. You can filter the list by name or unique ID. You can also retrieve endpoints of a workload domain.
+The `Get-VCFWorkloadDomain` cmdlet retrieves a list of workload domains from the SDDC Manager. You can filter the list by name or unique ID. You can also retrieve endpoints of a workload domain.
 
 ## Examples
 

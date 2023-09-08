@@ -12,7 +12,7 @@ Get-VCFvCenter [[-id] <String>] [[-domainId] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFvCenter cmdlet retrieves a list of vCenter Servers instances managed by SDDC Manager.
+The `Get-VCFvCenter` cmdlet retrieves a list of vCenter Servers instances managed by SDDC Manager.
 
 ## Examples
 

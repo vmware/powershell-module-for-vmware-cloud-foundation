@@ -12,7 +12,7 @@ Stop-VCFCredentialTask [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Stop-VCFCredentialTask cmdlet stops a failed rotate/update password task. You can stop a failed rotate/update password task by unique ID.
+The `Stop-VCFCredentialTask` cmdlet stops a failed rotate/update password task. You can stop a failed rotate/update password task by unique ID.
 
 ## Examples
 

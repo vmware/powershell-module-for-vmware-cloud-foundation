@@ -12,7 +12,7 @@ Get-VCFLicenseKey [[-key] <String>] [[-productType] <String>] [[-status] <String
 
 ## Description
 
-The Get-VCFLicenseKey cmdlet retrieves license keys. You can filter the list by key, product type, and status.
+The `Get-VCFLicenseKey` cmdlet retrieves license keys. You can filter the list by key, product type, and status.
 
 ## Examples
 

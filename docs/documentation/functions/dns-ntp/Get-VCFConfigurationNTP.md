@@ -12,7 +12,7 @@ Get-VCFConfigurationNTP
 
 ## Description
 
-The Get-VCFConfigurationNTP cmdlet retrieves the NTP configuration from SDDC Manager.
+The `Get-VCFConfigurationNTP` cmdlet retrieves the NTP configuration from SDDC Manager.
 
 ## Examples
 

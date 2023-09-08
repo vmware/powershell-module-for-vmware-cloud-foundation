@@ -12,7 +12,7 @@ Get-VCFCredential [[-resourceName] <String>] [[-resourceType] <String>] [[-id] <
 
 ## Description
 
-The Get-VCFCredential cmdlet retrieves a list of credentials from the SDDC Manager database. The cmdlet can be used to retrieve all credentials, or a specific credential by resourceName, resourceType, or id.
+The `Get-VCFCredential` cmdlet retrieves a list of credentials from the SDDC Manager database. The cmdlet can be used to retrieve all credentials, or a specific credential by resourceName, resourceType, or id.
 
 ???+ info
 
@@ -44,7 +44,7 @@ This example shows how to retrieve a list of credentials.
 Get-VCFCredential -resourceType VCENTER
 ```
 
-This example shows how to retrieve a list of credentials for a specific resourceType.
+This example shows how to retrieve a list of credentials for a specific `resourceType`.
 
 ### Example 3
 
@@ -52,7 +52,7 @@ This example shows how to retrieve a list of credentials for a specific resource
 Get-VCFCredential -resourceName sfo01-m01-esx01.sfo.rainpole.io
 ```
 
-This example shows how to retrieve the credential for a specific resourceName (FQDN).
+This example shows how to retrieve the credential for a specific `resourceName` (FQDN).
 
 ### Example 4
 
@@ -66,7 +66,7 @@ This example shows how to retrieve the credential using the unique ID of the cre
 
 ### -resourceName
 
-specifies the resource name of the credential.
+Specifies the resource name of the credential.
 
 ```yaml
 Type: String

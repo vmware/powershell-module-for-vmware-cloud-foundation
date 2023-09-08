@@ -12,7 +12,7 @@ Set-VCFCluster [-id] <String> [[-json] <String>] [-markForDeletion] [<CommonPara
 
 ## Description
 
-The Set-VCFCluster cmdlet can be used to expand or compact a cluster by adding or removing a host(s). A cluster can also be marked for deletion.
+The `Set-VCFCluster` cmdlet can be used to expand or compact a cluster by adding or removing a host(s). A cluster can also be marked for deletion.
 
 ???+ info
 
@@ -93,7 +93,7 @@ Accept wildcard characters: False
 
 ### -markForDeletion
 
-Specifies that the cluster should be marked for deletion.
+Specifies the cluster is to be marked for deletion.
 
 ```yaml
 Type: SwitchParameter

@@ -12,7 +12,7 @@ Set-VCFCredential [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Set-VCFCredential cmdlet updates or rotates a credential.
+The `Set-VCFCredential` cmdlet updates or rotates a credential.
 
 ???+ info
 

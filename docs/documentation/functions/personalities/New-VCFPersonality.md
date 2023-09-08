@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Adds a new vSphere Lifecycle Manager personality/image in the SDDC Manager inventory from an existing vLCM image based cluster.
+Adds a vSphere Lifecycle Manager personality/image in the SDDC Manager inventory from an existing vLCM image based cluster.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ New-VCFPersonality [-name] <String> [-vCenterId] <String> [-clusterId] <String> 
 
 ## Description
 
-The New-VCFPersonality creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory from an existing vLCM cluster.
+The `New-VCFPersonality` creates a new vSphere Lifecycle Manager personalities/image in the SDDC Manager inventory from an existing vLCM cluster.
 
 ## Examples
 

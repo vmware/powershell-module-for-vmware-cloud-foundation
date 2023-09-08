@@ -12,7 +12,7 @@ Set-VCFDepotCredential -username <String> -password <String> [-vxrail] [<CommonP
 
 ## Description
 
-Updates the configuration for the depot of the connected SDDC Manager.
+The `Set-VCFDepotCredential` cmdlets updates the configuration for the depot of the connected SDDC Manager.
 
 ## Examples
 

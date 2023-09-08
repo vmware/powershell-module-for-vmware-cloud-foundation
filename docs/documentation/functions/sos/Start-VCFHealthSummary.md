@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Start Health Summary checks.
+Starts the Health Summary checks.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Start-VCFHealthSummary [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Start-VCFHealthSummary cmdlet is used to start the Health Summary checks.
+The `Start-VCFHealthSummary` cmdlet starts the Health Summary checks.
 
 ## Examples
 
@@ -22,7 +22,7 @@ The Start-VCFHealthSummary cmdlet is used to start the Health Summary checks.
 Start-VCFHealthSummary -json (Get-Content -Raw .\samples\sos\healthSummarySpec.json)
 ```
 
-This example starts the Health Summary checks using the JSON specification file.
+This example shows how to start the Health Summary checks using the JSON specification file.
 
 ???+ example "Sample JSON: Start Health Summary"
 
