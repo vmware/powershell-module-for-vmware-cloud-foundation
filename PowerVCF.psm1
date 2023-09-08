@@ -6,12 +6,9 @@
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# NOTE
-# This PowerShell module should be considered entirely experimental. It is still in development & not tested beyond lab
-# scenarios. It is recommended you don't use it for any production environment without testing extensively!
-
-# Enable communication with self signed certs when using Powershell Core. If you require all communications to be secure
-# and do not wish to allow communication with self-signed certificates remove lines 22-39 before importing the module.
+# Enable communication with self-signed certu=ificates when using Powershell Core. If you require all communications
+# to be secure and do not wish to allow communication with self-signed certificates, remove lines 17-36 before
+# importing the module.
 
 if ($PSEdition -eq 'Core') {
     $PSDefaultParameterValues.Add("Invoke-RestMethod:SkipCertificateCheck", $true)
@@ -38,23 +35,35 @@ if ($PSEdition -eq 'Desktop') {
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
 
-#Region APIs for managing VCF tokens and initial connections
+#Region APIs for managing Tokens and Initial Connections
 Function Request-VCFToken {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager and requests API access & refresh tokens
+        Requests an authentication token from SDDC Manager.
 
         .DESCRIPTION
-        The Request-VCFToken cmdlet connects to the specified SDDC Manager and requests API access & refresh tokens.
-        It is required once per session before running all other cmdlets
+        The Request-VCFToken cmdlet connects to the specified SDDC Manager and requests API access and refresh tokens.
+        It is required once per session before running all other cmdlets.
 
         .EXAMPLE
         Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMw@re1!
-        This example shows how to connect to SDDC Manager to request API access & refresh tokens
+        This example shows how to connect to SDDC Manager to request API access and refresh tokens.
 
         .EXAMPLE
         Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password VMw@re1!VMw@re1!
-        This example shows how to connect to SDDC Manager using local account admin@local
+        This example shows how to connect to SDDC Manager using local account admin@local.
+
+        .PARAMETER fqdn
+        The fully qualified domain name of the SDDC Manager instance.
+
+        .PARAMETER username
+        The username to authenticate to the SDDC Manager instance.
+
+        .PARAMETER password
+        The password to authenticate to the SDDC Manager instance.
+
+        .PARAMETER skipCertificateCheck
+        Switch to skip certificate check when connecting to the SDDC Manager instance.
     #>
 
     Param (
@@ -104,8 +113,7 @@ public static class Placeholder {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body -SkipCertificateCheck # PS Core has -SkipCertificateCheck implemented
             $Global:accessToken = $response.accessToken
             $Global:refreshToken = $response.refreshToken.id
-        }
-        else {
+        } else {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -body $body
             $Global:accessToken = $response.accessToken
             $Global:refreshToken = $response.refreshToken.id
@@ -113,8 +121,7 @@ public static class Placeholder {
         if ($response.accessToken) {
             Write-Output "Successfully Requested New API Token From SDDC Manager: $sddcManager"
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -123,15 +130,27 @@ Export-ModuleMember -Function Request-VCFToken
 Function Connect-CloudBuilder {
     <#
         .SYNOPSIS
-        Connects to the specified Cloud Builder and stores the credentials in a base64 string
+        Requests an authentication token from a VMware Cloud Builder instance.
 
         .DESCRIPTION
-        The Connect-CloudBuilder cmdlet connects to the specified Cloud Builder and stores the credentials
-        in a base64 string. It is required once per session before running all other cmdlets
+        The Connect-CloudBuilder cmdlet connects to the specified VMware Cloud Builder instance and stores the
+        credentials in a base64 string.
 
         .EXAMPLE
         Connect-CloudBuilder -fqdn sfo-cb01.sfo.rainpole.io -username admin -password VMware1!
-        This example shows how to connect to the Cloud Builder applaince
+        This example shows how to connect to the VMware Cloud Builder instance.
+
+        .PARAMETER fqdn
+        The fully qualified domain name of the VMware Cloud Builder instance.
+
+        .PARAMETER username
+        The username to authenticate to the VMware Cloud Builder instance.
+
+        .PARAMETER password
+        The password to authenticate to the VMware Cloud Builder instance.
+
+        .PARAMETER skipCertificateCheck
+        Switch to skip certificate check when connecting to the VMware Cloud Builder instance.
     #>
 
     Param (
@@ -181,20 +200,18 @@ public static class Placeholder {
         # Checking authentication with VMware Cloud Builder
         if ($PSEdition -eq 'Core') {
             $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck # PS Core has -SkipCertificateCheck implemented
-        }
-        else {
+        } else {
             $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
         }
         if ($response.StatusCode -eq 200) {
             Write-Output "Successfully connected to the Cloud Builder Appliance: $cloudBuilder"
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
 Export-ModuleMember -Function Connect-CloudBuilder
-#EndRegion APIs for managing VCF tokens and initial connections
+#EndRegion APIs for managing Tokens and Initial Connections
 
 
 #Region APIs for managing Application Virtual Networks
@@ -226,8 +243,8 @@ Function Get-VCFApplicationVirtualNetwork {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if (-not $PsBoundParameters.ContainsKey("regionType") -and (-not $PsBoundParameters.ContainsKey("id"))) {
             $uri = "https://$sddcManager/v1/avns"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -274,8 +291,8 @@ Function Add-VCFApplicationVirtualNetwork {
     
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/avns/validations"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
@@ -315,8 +332,8 @@ Function Get-VCFBackupConfiguration {
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/backup-configuration"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.backupLocations
@@ -348,8 +365,8 @@ Function Set-VCFBackupConfiguration {
     
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/backup-configuration"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
         $response
@@ -374,8 +391,8 @@ Function Start-VCFBackup {
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         # this body is fixed for SDDC Manager backups. not worth having it stored on file
         $ConfigJson = '{"elements" : [{"resourceType" : "SDDC_MANAGER"}]}'
         $uri = "https://$sddcManager/v1/backups/tasks"
@@ -477,8 +494,8 @@ Function Get-VCFBundle {
         This example gets the details of a specific bundle by its id
 
         .EXAMPLE
-        Get-VCFBundle | Where {$_.description -Match "vRealize"}
-        This example lists all bundles that match vRealize in the description field
+        Get-VCFBundle | Where {$_.description -Match "NSX"}
+        This example lists all bundles that match NSX in the description field
     #>
 
     Param (
@@ -486,8 +503,8 @@ Function Get-VCFBundle {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/bundles/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -524,8 +541,8 @@ Function Request-VCFBundle {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/bundles/$id"
         $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers	-ContentType application/json -body $body
@@ -561,8 +578,8 @@ Function Start-VCFBundleUpload {
  
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/bundles"
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers	-ContentType application/json -body $jsonBody
         $response
@@ -592,8 +609,8 @@ Function Get-VCFCeip {
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/ceip"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
@@ -627,8 +644,8 @@ Function Set-VCFCeip {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/ceip"
         $json = '{"status": "' + $ceipSetting + '"}'
         $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $json
@@ -673,8 +690,8 @@ Function Get-VCFCertificateAuthority {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("caType")) {
             $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -710,8 +727,8 @@ Function Remove-VCFCertificateAuthority {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         $response
@@ -743,8 +760,8 @@ Function Set-VCFMicrosoftCA {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $json = '{"microsoftCertificateAuthoritySpec": {"secret": "' + $password + '","serverUrl": "' + $serverUrl + '","username": "' + $username + '","templateName": "' + $templateName + '"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
@@ -778,8 +795,8 @@ Function Set-VCFOpenSSLCA {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $json = '{"openSSLCertificateAuthoritySpec": {"commonName": "' + $commonName + '","organization": "' + $organization + '","organizationUnit": "' + $organizationUnit + '","locality": "' + $locality + '","state": "' + $state + '","country": "' + $country + '"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
         Invoke-RestMethod -Method PUT -URI $uri -ContentType application/json -headers $headers -body $json # No response from API
@@ -812,8 +829,8 @@ Function Get-VCFCertificateCSR {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
@@ -847,8 +864,8 @@ Function Request-VCFCertificateCSR {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
         $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $jsonBody
         $response
@@ -890,8 +907,8 @@ Function Get-VCFCertificate {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("resources")) {
             $uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -934,8 +951,8 @@ Function Request-VCFCertificate {
     if ($PsBoundParameters.ContainsKey("json")) {
 	    Try {
             $jsonBody = validateJsonInput -json $json
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
             $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
@@ -969,8 +986,8 @@ Function Set-VCFCertificate {
     if ($PsBoundParameters.ContainsKey("json")) {
 	    Try {
             $jsonBody = validateJsonInput -json $json
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
             $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
@@ -1014,8 +1031,8 @@ Function Get-VCFCluster {
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vdses
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
     Try {
         if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
             $uri = "https://$sddcManager/v1/clusters"
@@ -1068,8 +1085,8 @@ Function New-VCFCluster {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         # Validate the provided JSON input specification file
         $response = Validate-VCFClusterSpec -json $jsonBody
         # the validation API does not currently support polling with a task ID
@@ -1125,8 +1142,8 @@ Function Set-VCFCluster {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
             Throw "You must include either -json or -markForDeletion"
         }
@@ -1138,7 +1155,7 @@ Function Set-VCFCluster {
             # Submit the job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Try {
-                    Write-Output "`Task validation completed successfully. Invoking cluster task on SDDC Manager"
+                    Write-Output "Task validation completed successfully. Invoking cluster task on SDDC Manager"
                     $uri = "https://$sddcManager/v1/clusters/$id/"
                     $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers -ContentType application/json -body $jsonBody
                     $response
@@ -1181,8 +1198,8 @@ Function Remove-VCFCluster {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
     Try {
         $uri = "https://$sddcManager/v1/clusters/$id"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
@@ -1212,8 +1229,8 @@ Function Get-VCFClusterValidation {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/clusters/validations/$id"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
@@ -1265,8 +1282,8 @@ Function Get-VCFCredential {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("resourceName")) {
             $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1315,8 +1332,8 @@ Function Set-VCFCredential {
     
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/credentials"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $jsonBody
         $response
@@ -1422,7 +1439,7 @@ Function Set-VCFCredentialAutoRotatePolicy {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Set-VcfCredentialAutoRotatePolicy
+Export-ModuleMember -Function Set-VCFCredentialAutoRotatePolicy
 
 Function Get-VCFCredentialTask {
     <#
@@ -1458,8 +1475,8 @@ Function Get-VCFCredentialTask {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/credentials/tasks/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1510,8 +1527,8 @@ Function Stop-VCFCredentialTask {
     else {
         Throw "task id to be cancelled is not provided"
     }
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
     Try {
         $response = Invoke-RestMethod -Method DELETE -URI $uri -ContentType application/json -headers $headers
         $response
@@ -1547,8 +1564,8 @@ Function Restart-VCFCredentialTask {
     Catch {
         Throw "Task id not provided"
     }
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
     Try {
         $response = Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $jsonBody
         $response
@@ -1592,8 +1609,8 @@ Function Get-VCFCredentialExpiry {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/credentials/ui?includeExpiryOnly=true"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         if ($PsBoundParameters.ContainsKey("resourceName")) {
@@ -1644,8 +1661,8 @@ Function Get-VCFDepotCredential {
     )
 
     Try {
-        createHeader # Calls the createHeader function to set Accept and Authorization headers
-        checkVCFToken # Calls the checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/settings/depot"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         if ($PsBoundParameters.ContainsKey('vxrail')) {
@@ -1685,8 +1702,8 @@ Function Set-VCFDepotCredential {
     )
 
     Try {
-        createHeader # Calls the createHeader function to set Accept and Authorization headers
-        checkVCFToken # Calls the checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/settings/depot"
         if ($PsBoundParameters.ContainsKey('vxrail')) {
             if (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
@@ -1714,6 +1731,7 @@ Function Set-VCFDepotCredential {
 Export-ModuleMember -Function Set-VCFDepotCredential
 
 #EndRegion APIs for managing Depot Settings
+
 
 #Region APIs for managing Domains
 
@@ -1749,8 +1767,8 @@ Function Get-VCFWorkloadDomain {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("name")) {
             $uri = "https://$sddcManager/v1/domains"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -1797,8 +1815,8 @@ Function New-VCFWorkloadDomain {
 
     Try {
         $jsonBody = validateJsonInput -json $json        
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $response = Validate-WorkloadDomainSpec -json $jsonBody # Validate the provided JSON input specification file # the validation API does not currently support polling with a task ID
         Start-Sleep 5
         # Submit the job only if the JSON validation task completed with executionStatus=COMPLETED & resultStatus=SUCCEEDED
@@ -1837,8 +1855,8 @@ Function Set-VCFWorkloadDomain {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
     Try {
         $uri = "https://$sddcManager/v1/domains/$id"
         $body = '{"markForDeletion": true}'
@@ -1868,8 +1886,8 @@ Function Remove-VCFWorkloadDomain {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
     )
 
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
     Try {
         $uri = "https://$sddcManager/v1/domains/$id"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
@@ -1904,8 +1922,8 @@ Function Get-VCFFederation {
     #>
 
     Try {
-        createHeader # Calls createHeader function to set the Accept and Authorization headers
-        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $msgEndOfSupport = "Multi-instance management is not supported in 4.4.0 and later."
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
@@ -1950,8 +1968,8 @@ Function Set-VCFFederation {
     )
     
     Try {
-        createHeader # Calls createHeader function to set the Accept and Authorization headers
-        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
@@ -1989,8 +2007,8 @@ Function Remove-VCFFederation {
 
     
     Try {
-        createHeader # Calls createHeader function to set the Accept and Authorization headers
-        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
@@ -2048,391 +2066,7 @@ Export-ModuleMember -Function Remove-VCFFederation
 #EndRegion APIs for managing Federation
 
 
-#Region APIs for managing FIPS
-
-Function Get-VCFFipsMode {
-    <#
-        .SYNOPSIS
-        Returns the status for FIPS mode.
-
-        .DESCRIPTION
-        The Get-VCFFipsMode cmdlet returns the status for FIPS mode on the VMware Cloud Foundation instance.
-
-        .EXAMPLE
-        Get-VCFFipsMode
-        This example returns the status for FIPS mode on the VMware Cloud Foundation instance.
-    #>
-
-    Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge '4.3.0') {
-            createHeader # Call createHeader function to set the Accept & Authorization headers.
-            checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
-            $uri = "https://$sddcManager/v1/system/security/fips"
-            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
-            $response
-        }
-        else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFFipsMode
-
-#EndRegion APIs for managing FIPS
-
-#Region APIs for managing Hosts
-
-Function Get-VCFHost {
-    <#
-        .SYNOPSIS
-        Connects to the specified SDDC Manager and retrieves a list of hosts.
-
-        .DESCRIPTION
-        The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.
-        VCF Hosts are defined by status
-        - ASSIGNED - Hosts that are assigned to a Workload domain
-        - UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
-        - UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used for other domain tasks after completion of cleanup operation
-
-        .EXAMPLE
-        Get-VCFHost
-        This example shows how to get all hosts regardless of status
-
-        .EXAMPLE
-        Get-VCFHost -Status ASSIGNED
-        This example shows how to get all hosts with a specific status
-
-        .EXAMPLE
-        Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
-        This example shows how to get a host by id
-
-        .EXAMPLE
-        Get-VCFHost -fqdn sfo01-m01-esx01.sfo.rainpole.io
-        This example shows how to get a host by fqdn
-    #>
-
-    [CmdletBinding(DefaultParametersetname = "Default")]
-    Param (
-        [Parameter (Mandatory = $false, ParameterSetName = "fqdn")] [ValidateNotNullOrEmpty()] [String]$fqdn,
-        [Parameter (Mandatory = $false, ParameterSetName = "status")] [ValidateSet('ASSIGNED', 'UNASSIGNED_USEABLE', 'UNASSIGNED_UNUSEABLE', IgnoreCase = $false)] [String]$Status,
-        [Parameter (Mandatory = $false, ParameterSetName = "id")] [ValidateNotNullOrEmpty()] [String]$id
-    )
-
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-    Try {
-
-        $uri = "https://$sddcManager/v1/hosts"
-
-        Switch ( $PSCmdlet.ParameterSetName ) {
-            "id" {
-                #Add id to uri
-                $uri += "/$id"
-            }
-            "status" {
-                #Add status to uri
-                $uri += "?status=$status"
-            }
-        }
-
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-
-        Switch ( $PSCmdlet.ParameterSetName ) {
-            "id" {
-                #When there is a id, it is directly the result...
-                $response
-            }
-            "fqdn" {
-                #When there is a fqdn, search on response
-                $response.elements | Where-Object { $_.fqdn -eq $fqdn }
-            }
-            Default {
-                $response.elements
-            }
-        }
-
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFHost
-
-Function New-VCFCommissionedHost {
-    <#
-        .SYNOPSIS
-        Connects to the specified SDDC Manager and commissions a list of hosts
-
-        .DESCRIPTION
-        The New-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts
-        Host list spec is provided in a JSON file.
-
-        .EXAMPLE
-        New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json
-        This example shows how to commission a list of hosts based on the details provided in the JSON file
-
-        .EXAMPLE
-        New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
-        This example shows how to validate the JSON spec before starting the workflow
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
-    )
-
-    if ($MyInvocation.InvocationName -eq "Commission-VCFHost") { Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity." }
-
-    Try {
-        $jsonBody = validateJsonInput -json $json        
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ( -Not $PsBoundParameters.ContainsKey("validate")) {
-            $response = Validate-CommissionHostSpec -json $jsonBody # Validate the provided JSON input specification file
-            $taskId = $response.id # Get the task id from the validation function
-            Do {
-                # Keep checking until executionStatus is not IN_PROGRESS
-                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
-                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-            }
-            While ($response.executionStatus -eq "IN_PROGRESS")
-            # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
-            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Write-Output "Task validation completed successfully. Invoking host(s) commissioning on SDDC Manager"
-                $uri = "https://$sddcManager/v1/hosts/"
-                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
-                Return $response
-            }
-            else {
-                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
-            }
-        }
-        elseif ($PsBoundParameters.ContainsKey("validate")) {
-            $response = Validate-CommissionHostSpec -json $jsonBody # Validate the provided JSON input specification file
-            $taskId = $response.id # Get the task id from the validation function
-            Do {
-                # Keep checking until executionStatus is not IN_PROGRESS
-                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
-                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
-            }
-            While ($response.executionStatus -eq "IN_PROGRESS")
-            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Write-Output "Task validation completed successfully"
-                Return $response
-            }
-            else {
-                Write-Error "`n The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
-            }
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-New-Alias -name Commission-VCFHost -Value New-VCFCommissionedHost
-Export-ModuleMember -Alias Commission-VCFHost -Function New-VCFCommissionedHost
-
-Function Remove-VCFCommissionedHost {
-    <#
-        .SYNOPSIS
-        Connects to the specified SDDC Manager and decommissions a list of hosts. Host list is provided in a JSON file.
-
-        .DESCRIPTION
-        The Remove-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and decommissions a list of hosts.
-
-        .EXAMPLE
-        Remove-VCFCommissionedHost -json .\Host\decommissionHostSpec.json
-        This example shows how to decommission a set of hosts based on the details provided in the JSON file.
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
-    )
-
-    If ($MyInvocation.InvocationName -eq "Decommission-VCFHost") { Write-Warning "Decommission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Remove-VCFCommissionedHost. Please refactor to Remove-VCFCommissionedHost at earliest opportunity." }
-
-    Try {
-        $jsonBody = validateJsonInput -json $json        
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/hosts"
-        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $jsonBody
-        $response
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-New-Alias -name Decommission-VCFHost -value Remove-VCFCommissionedHost
-Export-ModuleMember -Alias Decommission-VCFHost -Function Remove-VCFCommissionedHost
-
-#EndRegion APIs for managing Hosts
-
-
-#Region APIs for managing License Keys
-
-Function Get-VCFLicenseKey {
-    <#
-        .SYNOPSIS
-        Connects to the specified SDDC Manager and retrieves a list of License keys
-
-        .DESCRIPTION
-        The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys
-
-        .EXAMPLE
-        Get-VCFLicenseKey
-        This example shows how to get a list of all License keys
-
-        .EXAMPLE
-        Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-        This example shows how to get a specified License key
-
-        .EXAMPLE
-        Get-VCFLicenseKey -productType VCENTER
-        This example shows how to get a License Key by product type
-        Supported Product Types: SDDC_MANAGER, VCENTER, VSAN, ESXI, NSXT
-
-        .EXAMPLE
-        Get-VCFLicenseKey -status EXPIRED
-        This example shows how to get a License by status
-        Supported Status Types: EXPIRED, ACTIVE, NEVER_EXPIRES
-    #>
-
-    Param (
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$key,
-        [Parameter (Mandatory = $false)] [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER")] [String]$productType,
-        [Parameter (Mandatory = $false)] [ValidateSet("EXPIRED", "ACTIVE", "NEVER_EXPIRES")] [String]$status
-    )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if ($PsBoundParameters.ContainsKey("key")) {
-            $uri = "https://$sddcManager/v1/license-keys/$key"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
-        }
-        if ($PsBoundParameters.ContainsKey("productType")) {
-            $uri = "https://$sddcManager/v1/license-keys?productType=$productType"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
-        if ($PsBoundParameters.ContainsKey("status")) {
-            $uri = "https://$sddcManager/v1/license-keys?licenseKeyStatus=$status"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
-        if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status"))) {
-            $uri = "https://$sddcManager/v1/license-keys"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFLicenseKey
-
-Function New-VCFLicenseKey {
-    <#
-        .SYNOPSIS
-        Connects to the specified SDDC Manager and adds a new License Key.
-
-        .DESCRIPTION
-        The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
-
-        .EXAMPLE
-        New-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" -productType VCENTER -description "vCenter License"
-        This example shows how to add a new License key to SDDC Manager
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key,
-        [Parameter (Mandatory = $true)] [ValidateSet("VCENTER", "VSAN", "ESXI", "WCP", "NSXT", "NSXV","SDDC_MANAGER", "HORIZON_VIEW")] [String]$productType,
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$description
-    )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $jsonBody = '{ "key" : "' + $key + '", "productType" : "' + $productType + '", "description" : "' + $description + '" }'
-        $uri = "https://$sddcManager/v1/license-keys"
-        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody # This API does not return a response
-        Get-VCFLicenseKey -key $key
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function New-VCFLicenseKey
-
-Function Remove-VCFLicenseKey {
-    <#
-        .SYNOPSIS
-        Connects to the specified SDDC Manager and deletes a license key.
-
-        .DESCRIPTION
-        The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager and deletes a License Key.
-        A license Key can only be removed if it is not in use.
-
-        .EXAMPLE
-        Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
-        This example shows how to delete a License Key
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key
-    )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/license-keys/$key"
-        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Remove-VCFLicenseKey
-
-Function Get-VCFLicenseMode {
-    <#
-        .SYNOPSIS
-        Connects to the specified SDDC Manager and retrieves the current license mode
-
-        .DESCRIPTION
-        The Get-VCFLicenseMode cmdlet connects to the specified SDDC Manager and retrieves the current license mode
-
-        .EXAMPLE
-        Get-VCFLicenseMode
-        This example shows how to retrieve the current license mode
-    #>
-
-    Param (
-    )
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            $uri = "https://$sddcManager/v1/licensing-info"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFLicenseMode
-#EndRegion APIs for managing License Keys
-
-
-#Region APIs for managing Members of the Federation
+#Region APIs for managing Federation Members
 
 Function Get-VCFFederationMember {
     <#
@@ -2448,8 +2082,8 @@ Function Get-VCFFederationMember {
     #>
     
     Try {
-        createHeader # Calls createHeader function to set the Accept and Authorization headers
-        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
@@ -2502,8 +2136,8 @@ Function New-VCFFederationInvite {
     )
 
     Try {
-        createHeader # Calls createHeader function to set the Accept and Authorization headers
-        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
@@ -2569,8 +2203,8 @@ Function Join-VCFFederation {
     )
 
     Try {
-        createHeader # Calls createHeader function to set the Accept and Authorization headers
-        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
@@ -2621,58 +2255,392 @@ Function Join-VCFFederation {
 }
 Export-ModuleMember -Function Join-VCFFederation
 
-#EndRegion APIs for managing Members of the Federation
+#EndRegion APIs for managing Federation Members
 
 
-#Region APIs for managing NSX-T Clusters
+#Region APIs for managing FIPS
 
-Function Get-VCFNsxtCluster {
+Function Get-VCFFipsMode {
     <#
         .SYNOPSIS
-        Gets a list of NSX-T Clusters
+        Returns the status for FIPS mode.
 
         .DESCRIPTION
-        The Get-VCFNsxtCluster cmdlet retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
+        The Get-VCFFipsMode cmdlet returns the status for FIPS mode on the VMware Cloud Foundation instance.
 
         .EXAMPLE
-        Get-VCFNsxtCluster
-        This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
-
-        .EXAMPLE
-        Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
-        This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
-        using the ID
-
-        .EXAMPLE
-        Get-VCFNsxtCluster | select vipfqdn
-        This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
+        Get-VCFFipsMode
+        This example returns the status for FIPS mode on the VMware Cloud Foundation instance.
     #>
 
-    Param (
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
-    )
-
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
-            $uri = "https://$sddcManager/v1/nsxt-clusters"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-            $response.elements
-        }
-        if ($PsBoundParameters.ContainsKey("id")) {
-            $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
-            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge '4.3.0') {
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            $uri = "https://$sddcManager/v1/system/security/fips"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
+        }
+        else {
+            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
     }
     Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFNsxtCluster
+Export-ModuleMember -Function Get-VCFFipsMode
 
-#EndRegion APIs for managing NSX-T Clusters
+#EndRegion APIs for managing FIPS
+
+
+#Region APIs for managing Hosts
+
+Function Get-VCFHost {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves a list of hosts.
+
+        .DESCRIPTION
+        The Get-VCFHost cmdlet connects to the specified SDDC Manager and retrieves a list of hosts.
+        VCF Hosts are defined by status
+        - ASSIGNED - Hosts that are assigned to a Workload domain
+        - UNASSIGNED_USEABLE - Hosts that are available to be assigned to a Workload Domain
+        - UNASSIGNED_UNUSEABLE - Hosts that are currently not assigned to any domain and can be used for other domain tasks after completion of cleanup operation
+
+        .EXAMPLE
+        Get-VCFHost
+        This example shows how to get all hosts regardless of status
+
+        .EXAMPLE
+        Get-VCFHost -Status ASSIGNED
+        This example shows how to get all hosts with a specific status
+
+        .EXAMPLE
+        Get-VCFHost -id edc4f372-aab5-4906-b6d8-9b96d3113304
+        This example shows how to get a host by id
+
+        .EXAMPLE
+        Get-VCFHost -fqdn sfo01-m01-esx01.sfo.rainpole.io
+        This example shows how to get a host by fqdn
+    #>
+
+    [CmdletBinding(DefaultParametersetname = "Default")]
+    Param (
+        [Parameter (Mandatory = $false, ParameterSetName = "fqdn")] [ValidateNotNullOrEmpty()] [String]$fqdn,
+        [Parameter (Mandatory = $false, ParameterSetName = "status")] [ValidateSet('ASSIGNED', 'UNASSIGNED_USEABLE', 'UNASSIGNED_UNUSEABLE', IgnoreCase = $false)] [String]$Status,
+        [Parameter (Mandatory = $false, ParameterSetName = "id")] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
+    Try {
+
+        $uri = "https://$sddcManager/v1/hosts"
+
+        Switch ( $PSCmdlet.ParameterSetName ) {
+            "id" {
+                #Add id to uri
+                $uri += "/$id"
+            }
+            "status" {
+                #Add status to uri
+                $uri += "?status=$status"
+            }
+        }
+
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+
+        Switch ( $PSCmdlet.ParameterSetName ) {
+            "id" {
+                #When there is a id, it is directly the result...
+                $response
+            }
+            "fqdn" {
+                #When there is a fqdn, search on response
+                $response.elements | Where-Object { $_.fqdn -eq $fqdn }
+            }
+            Default {
+                $response.elements
+            }
+        }
+
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFHost
+
+Function New-VCFCommissionedHost {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and commissions a list of hosts
+
+        .DESCRIPTION
+        The New-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and commissions a list of hosts
+        Host list spec is provided in a JSON file.
+
+        .EXAMPLE
+        New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json
+        This example shows how to commission a list of hosts based on the details provided in the JSON file
+
+        .EXAMPLE
+        New-VCFCommissionedHost -json .\Host\commissionHosts\commissionHostSpec.json -validate
+        This example shows how to validate the JSON spec before starting the workflow
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
+    )
+
+    if ($MyInvocation.InvocationName -eq "Commission-VCFHost") { Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity." }
+
+    Try {
+        $jsonBody = validateJsonInput -json $json        
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        if ( -Not $PsBoundParameters.ContainsKey("validate")) {
+            $response = Validate-CommissionHostSpec -json $jsonBody # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS")
+            # Submit the commissiong job only if the JSON validation task finished with executionStatus=COMPLETED & resultStatus=SUCCEEDED
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Output "Task validation completed successfully. Invoking host(s) commissioning on SDDC Manager"
+                $uri = "https://$sddcManager/v1/hosts/"
+                $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+                Return $response
+            }
+            else {
+                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+            }
+        }
+        elseif ($PsBoundParameters.ContainsKey("validate")) {
+            $response = Validate-CommissionHostSpec -json $jsonBody # Validate the provided JSON input specification file
+            $taskId = $response.id # Get the task id from the validation function
+            Do {
+                # Keep checking until executionStatus is not IN_PROGRESS
+                $uri = "https://$sddcManager/v1/hosts/validations/$taskId"
+                $response = Invoke-RestMethod -Method GET -URI $uri -Headers $headers -ContentType application/json
+            }
+            While ($response.executionStatus -eq "IN_PROGRESS")
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Output "Task validation completed successfully"
+                Return $response
+            }
+            else {
+                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+            }
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+New-Alias -name Commission-VCFHost -Value New-VCFCommissionedHost
+Export-ModuleMember -Alias Commission-VCFHost -Function New-VCFCommissionedHost
+
+Function Remove-VCFCommissionedHost {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and decommissions a list of hosts. Host list is provided in a JSON file.
+
+        .DESCRIPTION
+        The Remove-VCFCommissionedHost cmdlet connects to the specified SDDC Manager and decommissions a list of hosts.
+
+        .EXAMPLE
+        Remove-VCFCommissionedHost -json .\Host\decommissionHostSpec.json
+        This example shows how to decommission a set of hosts based on the details provided in the JSON file.
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    If ($MyInvocation.InvocationName -eq "Decommission-VCFHost") { Write-Warning "Decommission-VCFHost is deprecated and will be removed in a future release of PowerVCF. Automatically redirecting to Remove-VCFCommissionedHost. Please refactor to Remove-VCFCommissionedHost at earliest opportunity." }
+
+    Try {
+        $jsonBody = validateJsonInput -json $json        
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        $uri = "https://$sddcManager/v1/hosts"
+        $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+        $response
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+New-Alias -name Decommission-VCFHost -value Remove-VCFCommissionedHost
+Export-ModuleMember -Alias Decommission-VCFHost -Function Remove-VCFCommissionedHost
+
+#EndRegion APIs for managing Hosts
+
+
+#Region APIs for managing License Keys
+
+Function Get-VCFLicenseKey {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves a list of License keys
+
+        .DESCRIPTION
+        The Get-VCFLicenseKey cmdlet connects to the specified SDDC Manager and retrieves a list of License keys
+
+        .EXAMPLE
+        Get-VCFLicenseKey
+        This example shows how to get a list of all License keys
+
+        .EXAMPLE
+        Get-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+        This example shows how to get a specified License key
+
+        .EXAMPLE
+        Get-VCFLicenseKey -productType VCENTER
+        This example shows how to get a License Key by product type
+        Supported Product Types: SDDC_MANAGER, VCENTER, VSAN, ESXI, NSXT
+
+        .EXAMPLE
+        Get-VCFLicenseKey -status EXPIRED
+        This example shows how to get a License by status
+        Supported Status Types: EXPIRED, ACTIVE, NEVER_EXPIRES
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$key,
+        [Parameter (Mandatory = $false)] [ValidateSet("VCENTER", "VSAN", "ESXI", "NSXT", "SDDC_MANAGER")] [String]$productType,
+        [Parameter (Mandatory = $false)] [ValidateSet("EXPIRED", "ACTIVE", "NEVER_EXPIRES")] [String]$status
+    )
+
+    Try {
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        if ($PsBoundParameters.ContainsKey("key")) {
+            $uri = "https://$sddcManager/v1/license-keys/$key"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+        if ($PsBoundParameters.ContainsKey("productType")) {
+            $uri = "https://$sddcManager/v1/license-keys?productType=$productType"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("status")) {
+            $uri = "https://$sddcManager/v1/license-keys?licenseKeyStatus=$status"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ( -not $PsBoundParameters.ContainsKey("key") -and ( -not $PsBoundParameters.ContainsKey("productType")) -and ( -not $PsBoundParameters.ContainsKey("status"))) {
+            $uri = "https://$sddcManager/v1/license-keys"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFLicenseKey
+
+Function New-VCFLicenseKey {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and adds a new License Key.
+
+        .DESCRIPTION
+        The New-VCFLicenseKey cmdlet connects to the specified SDDC Manager and adds a new License Key.
+
+        .EXAMPLE
+        New-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA" -productType VCENTER -description "vCenter License"
+        This example shows how to add a new License key to SDDC Manager
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key,
+        [Parameter (Mandatory = $true)] [ValidateSet("VCENTER", "VSAN", "ESXI", "WCP", "NSXT", "NSXV","SDDC_MANAGER", "HORIZON_VIEW")] [String]$productType,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$description
+    )
+
+    Try {
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        $jsonBody = '{ "key" : "' + $key + '", "productType" : "' + $productType + '", "description" : "' + $description + '" }'
+        $uri = "https://$sddcManager/v1/license-keys"
+        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody # This API does not return a response
+        Get-VCFLicenseKey -key $key
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function New-VCFLicenseKey
+
+Function Remove-VCFLicenseKey {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and deletes a license key.
+
+        .DESCRIPTION
+        The Remove-VCFLicenseKey cmdlet connects to the specified SDDC Manager and deletes a License Key.
+        A license Key can only be removed if it is not in use.
+
+        .EXAMPLE
+        Remove-VCFLicenseKey -key "AAAAA-AAAAA-AAAAA-AAAAA-AAAAA"
+        This example shows how to delete a License Key
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$key
+    )
+
+    Try {
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        $uri = "https://$sddcManager/v1/license-keys/$key"
+        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Remove-VCFLicenseKey
+
+Function Get-VCFLicenseMode {
+    <#
+        .SYNOPSIS
+        Connects to the specified SDDC Manager and retrieves the current license mode
+
+        .DESCRIPTION
+        The Get-VCFLicenseMode cmdlet connects to the specified SDDC Manager and retrieves the current license mode
+
+        .EXAMPLE
+        Get-VCFLicenseMode
+        This example shows how to retrieve the current license mode
+    #>
+
+    Param (
+    )
+
+    Try {
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+            $uri = "https://$sddcManager/v1/licensing-info"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFLicenseMode
+#EndRegion APIs for managing License Keys
 
 
 #Region APIs for managing Network Pools
@@ -2704,8 +2672,8 @@ Function Get-VCFNetworkPool {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
             $uri = "https://$sddcManager/v1/network-pools"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -2748,8 +2716,8 @@ Function New-VCFNetworkPool {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/network-pools"
         Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
         # This API does not return a response body. Sending GET to validate the Network Pool creation was successful
@@ -2781,8 +2749,8 @@ Function Remove-VCFNetworkPool {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/network-pools/$id"
         Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response
     }
@@ -2816,8 +2784,8 @@ Function Get-VCFNetworkIPPool {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("id") -and $PsBoundParameters.ContainsKey("networkId")) {
             $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -2857,8 +2825,8 @@ Function Add-VCFNetworkIPPool {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
         $body = '{"end": "' + $ipEnd + '","start": "' + $ipStart + '"}'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
@@ -2892,8 +2860,8 @@ Function Remove-VCFNetworkIPPool {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid/ip-pools"
         $body = '{"end": "' + $ipEnd + '","start": "' + $ipStart + '"}'
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json -body $body
@@ -2908,7 +2876,58 @@ Export-ModuleMember -Function Remove-VCFNetworkIPPool
 #EndRegion APIs for managing Network Pools
 
 
-#Region APIs for managing NSX-T Edge Clusters
+#Region APIs for managing NSX Managers
+
+Function Get-VCFNsxtCluster {
+    <#
+        .SYNOPSIS
+        Gets a list of NSX-T Clusters
+
+        .DESCRIPTION
+        The Get-VCFNsxtCluster cmdlet retrieves a list of NSX-T Clusters managed by the connected SDDC Manager
+
+        .EXAMPLE
+        Get-VCFNsxtCluster
+        This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager
+
+        .EXAMPLE
+        Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
+        This example shows how to return the details for a specic NSX-T Clusters managed by the connected SDDC Manager
+        using the ID
+
+        .EXAMPLE
+        Get-VCFNsxtCluster | select vipfqdn
+        This example shows how to get the list of NSX-T Clusters managed by the connected SDDC Manager but only return the vipfqdn
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
+            $uri = "https://$sddcManager/v1/nsxt-clusters"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response.elements
+        }
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/nsxt-clusters/$id"
+            $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+            $response
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFNsxtCluster
+
+#EndRegion APIs for managing NSX Managers
+
+
+#Region APIs for managing NSX Edges
 
 Function Get-VCFEdgeCluster {
     <#
@@ -2932,8 +2951,8 @@ Function Get-VCFEdgeCluster {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/edge-clusters"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -2975,8 +2994,8 @@ Function New-VCFEdgeCluster {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -Not $PsBoundParameters.ContainsKey("validate")) {
             $response = Validate-EdgeClusterSpec -json $jsonBody # Validate the provided JSON input specification file
             $taskId = $response.id # Get the task id from the validation function
@@ -3021,7 +3040,7 @@ Function New-VCFEdgeCluster {
 }
 Export-ModuleMember -Function New-VCFEdgeCluster
 
-#EndRegion APIs for managing NSX-T Edge Clusters
+#EndRegion APIs for managing NSX Edgess
 
 
 #Region APIs for managing PSCs
@@ -3048,8 +3067,8 @@ Function Get-VCFPSC {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/pscs"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3094,8 +3113,8 @@ Function Get-VCFPersonality {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/personalities"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -3143,8 +3162,8 @@ Function New-VCFPersonality {
     }' 
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
             $uri = "https://$sddcManager/v1/personalities"
             $response = Invoke-RestMethod -Method POST -ContentType application/json  -URI $uri -headers $headers -body $body
             $response
@@ -3178,8 +3197,8 @@ Function Get-VCFFederationTask {
     )
 
     Try {
-        createHeader # Calls createHeader function to set the Accept and Authorization headers
-        checkVCFToken # Calls checkVCFToken function to validate the access token and refresh, if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'     
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
@@ -3270,8 +3289,8 @@ Function Get-VCFRelease {
 
     Try {
         $vcfVersion = Get-VCFManager -version
-        createHeader # Call createHeader function to set the Accept & Authorization headers.
-        checkVCFToken # Call checkVCFToken function to validate the access token and refresh, if necessary.
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
 
         if ($vcfVersion -ge '4.1.0' -and (-not $PsBoundParameters.ContainsKey('domainId')) -and (-not $PsBoundParameters.ContainsKey('versionEquals')) -and (-not $PsBoundParameters.ContainsKey('versionGreaterThan')) -and (-not $PsBoundParameters.ContainsKey('vxRailVersionEquals')) -and (-not $PsBoundParameters.ContainsKey('vxRailVersionGreaterThan')) -and (-not $PsBoundParameters.ContainsKey('applicableForVersion')) -and (-not $PsBoundParameters.ContainsKey('applicableForVxRailVersion')) -and (-not $PsBoundParameters.ContainsKey('futureReleases'))) {
             $uri = "https://$sddcManager/v1/releases"
@@ -3589,252 +3608,6 @@ Export-ModuleMember -Function Restart-CloudBuilderSDDCValidation
 #EndRegion APIs for managing SDDC (Cloud Builder)
 
 
-#Region APIs for managing SOS
-
-Function Get-VCFHealthSummaryTask {
-    <#
-        .SYNOPSIS
-        Get Health Summary tasks
-
-        .DESCRIPTION
-        The Get-VCFHealthSummaryTask cmdlet retrieves the Health Summary tasks
-
-        .EXAMPLE
-        Get-VCFHealthSummaryTask
-        This example gets all Health Summary tasks
-
-        .EXAMPLE
-        Get-VCFHealthSummaryTask -id <task_id>
-        This example gets the Health Summary task by id
-    #>
-
-    Param (
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
-    )
-
-    Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge "4.4.0") {
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            if ($PsBoundParameters.ContainsKey("id")) {
-                $uri = "https://$sddcManager/v1/system/health-summary/$id"
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-                $response
-            }
-            else {
-                $uri = "https://$sddcManager/v1/system/health-summary"
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-                $response.elements
-            }
-        }
-        else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFHealthSummaryTask
-
-Function Request-VCFHealthSummaryBundle {
-    <#
-        .SYNOPSIS
-        Download Health Summary bundle
-
-        .DESCRIPTION
-        The Request-VCFHealthSummaryBundle cmdlet downloads the Health Summary bundle
-
-        .EXAMPLE
-        Request-VCFHealthSummaryBundle -id <id>
-        This example downloads a Health Summary bundle
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
-    )
-
-    Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge "4.4.0") {
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            $vcfHeaders = @{"Accept" = "application/octet-stream" }
-            $vcfHeaders.Add("ContentType", "application/octet-stream")
-            $vcfHeaders.Add("Authorization", "Bearer $accessToken")
-            $uri = "https://$sddcManager/v1/system/health-summary/$id/data"
-            Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "health-summary-$id.tar"
-        }
-        else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Request-VCFHealthSummaryBundle
-
-Function Start-VCFHealthSummary {
-    <#
-        .SYNOPSIS
-        Start Health Summary checks
-
-        .DESCRIPTION
-        The Start-VCFHealthSummary cmdlet is used to start the Health Summary checks
-
-        .EXAMPLE
-        Start-VCFHealthSummary -json .\SampleJSON\SOS\systemHealthChecks.json
-        This example starts the Health Summary checks using the json file
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
-    )
-
-    Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge "4.4.0") {
-            $jsonBody = validateJsonInput -json $json
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            $uri = "https://$sddcManager/v1/system/health-summary"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
-            $response
-        }
-        else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Start-VCFHealthSummary
-
-Function Get-VCFSupportBundleTask {
-    <#
-        .SYNOPSIS
-        Get Support Bundle tasks
-
-        .DESCRIPTION
-        The Get-VCFSupportBundleTask cmdlet retrieves the Support Bundle tasks
-
-        .EXAMPLE
-        Get-VCFSupportBundleTask
-        This example gets all Support Bundle tasks
-
-        .EXAMPLE
-        Get-VCFSupportBundleTask -id <task_id>
-        This example gets the Support Bundle task by id
-    #>
-
-    Param (
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
-    )
-
-    Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge "4.4.0") {
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            if ($PsBoundParameters.ContainsKey("id")) {
-                $uri = "https://$sddcManager/v1/system/support-bundles/$id"
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-                $response
-            }
-            else {
-                $uri = "https://$sddcManager/v1/system/support-bundles"
-                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-                $response.elements
-            }
-        }
-        else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFSupportBundleTask
-
-Function Request-VCFSupportBundle {
-    <#
-        .SYNOPSIS
-        Download the Support Bundle
-
-        .DESCRIPTION
-        The Request-VCFSupportBundle cmdlet downloads the Support Bundle
-
-        .EXAMPLE
-        Request-VCFSupportBundle -id <id>
-        This example downloads the Support Bundle based on the id
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
-    )
-
-    Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge "4.4.0") {
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            $vcfHeaders = @{"Accept" = "application/octet-stream" }
-            $vcfHeaders.Add("Authorization", "Bearer $accessToken")
-            $uri = "https://$sddcManager/v1/system/support-bundles/$id/data"
-            Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "support-bundle-$id.tar"
-        }
-        else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Request-VCFSupportBundle
-
-Function Start-VCFSupportBundle {
-    <#
-        .SYNOPSIS
-        Start Support Bundle generation
-
-        .DESCRIPTION
-        The Start-VCFSupportBundle cmdlet is used to start the Support Bundle generation
-
-        .EXAMPLE
-        Start-VCFSupportBundle -json .\SampleJSON\SOS\supportBundle.json
-        This example starts the Support Bundle generation using the json file
-    #>
-
-    Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
-    )
-
-    Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge "4.4.0") {
-            $jsonBody = validateJsonInput -json $json
-            createHeader # Calls createHeader function to set Accept & Authorization
-            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-            $uri = "https://$sddcManager/v1/system/support-bundles"
-            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
-            $response
-        }
-        else { 
-            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
-        }
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Start-VCFSupportBundle
-
-#EndRegion APIs for managing SOS
-
-
 #Region APIs for managing SDDC Manager
 
 Function Get-VCFManager {
@@ -3875,8 +3648,8 @@ Function Get-VCFManager {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
 
         $patternVersion = '^(\d+\.\d+\.\d+\.\d+)'
         $patternBuild = '(\d+)$'
@@ -3944,6 +3717,252 @@ Export-ModuleMember -Function Get-VCFManager
 #EndRegion APIs for managing SDDC Manager
 
 
+#Region APIs for managing SOS
+
+Function Get-VCFHealthSummaryTask {
+    <#
+        .SYNOPSIS
+        Get Health Summary tasks
+
+        .DESCRIPTION
+        The Get-VCFHealthSummaryTask cmdlet retrieves the Health Summary tasks
+
+        .EXAMPLE
+        Get-VCFHealthSummaryTask
+        This example gets all Health Summary tasks
+
+        .EXAMPLE
+        Get-VCFHealthSummaryTask -id <task_id>
+        This example gets the Health Summary task by id
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge "4.4.0") {
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            if ($PsBoundParameters.ContainsKey("id")) {
+                $uri = "https://$sddcManager/v1/system/health-summary/$id"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response
+            }
+            else {
+                $uri = "https://$sddcManager/v1/system/health-summary"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response.elements
+            }
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFHealthSummaryTask
+
+Function Request-VCFHealthSummaryBundle {
+    <#
+        .SYNOPSIS
+        Download Health Summary bundle
+
+        .DESCRIPTION
+        The Request-VCFHealthSummaryBundle cmdlet downloads the Health Summary bundle
+
+        .EXAMPLE
+        Request-VCFHealthSummaryBundle -id <id>
+        This example downloads a Health Summary bundle
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge "4.4.0") {
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            $vcfHeaders = @{"Accept" = "application/octet-stream" }
+            $vcfHeaders.Add("ContentType", "application/octet-stream")
+            $vcfHeaders.Add("Authorization", "Bearer $accessToken")
+            $uri = "https://$sddcManager/v1/system/health-summary/$id/data"
+            Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "health-summary-$id.tar"
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Request-VCFHealthSummaryBundle
+
+Function Start-VCFHealthSummary {
+    <#
+        .SYNOPSIS
+        Start Health Summary checks
+
+        .DESCRIPTION
+        The Start-VCFHealthSummary cmdlet is used to start the Health Summary checks
+
+        .EXAMPLE
+        Start-VCFHealthSummary -json .\SampleJSON\SOS\systemHealthChecks.json
+        This example starts the Health Summary checks using the json file
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge "4.4.0") {
+            $jsonBody = validateJsonInput -json $json
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            $uri = "https://$sddcManager/v1/system/health-summary"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+            $response
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Start-VCFHealthSummary
+
+Function Get-VCFSupportBundleTask {
+    <#
+        .SYNOPSIS
+        Get Support Bundle tasks
+
+        .DESCRIPTION
+        The Get-VCFSupportBundleTask cmdlet retrieves the Support Bundle tasks
+
+        .EXAMPLE
+        Get-VCFSupportBundleTask
+        This example gets all Support Bundle tasks
+
+        .EXAMPLE
+        Get-VCFSupportBundleTask -id <task_id>
+        This example gets the Support Bundle task by id
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge "4.4.0") {
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            if ($PsBoundParameters.ContainsKey("id")) {
+                $uri = "https://$sddcManager/v1/system/support-bundles/$id"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response
+            }
+            else {
+                $uri = "https://$sddcManager/v1/system/support-bundles"
+                $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+                $response.elements
+            }
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFSupportBundleTask
+
+Function Request-VCFSupportBundle {
+    <#
+        .SYNOPSIS
+        Download the Support Bundle
+
+        .DESCRIPTION
+        The Request-VCFSupportBundle cmdlet downloads the Support Bundle
+
+        .EXAMPLE
+        Request-VCFSupportBundle -id <id>
+        This example downloads the Support Bundle based on the id
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge "4.4.0") {
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            $vcfHeaders = @{"Accept" = "application/octet-stream" }
+            $vcfHeaders.Add("Authorization", "Bearer $accessToken")
+            $uri = "https://$sddcManager/v1/system/support-bundles/$id/data"
+            Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "support-bundle-$id.tar"
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Request-VCFSupportBundle
+
+Function Start-VCFSupportBundle {
+    <#
+        .SYNOPSIS
+        Start Support Bundle generation
+
+        .DESCRIPTION
+        The Start-VCFSupportBundle cmdlet is used to start the Support Bundle generation
+
+        .EXAMPLE
+        Start-VCFSupportBundle -json .\SampleJSON\SOS\supportBundle.json
+        This example starts the Support Bundle generation using the json file
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    Try {
+        $vcfVersion = Get-VCFManager -version
+        if ($vcfVersion -ge "4.4.0") {
+            $jsonBody = validateJsonInput -json $json
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            $uri = "https://$sddcManager/v1/system/support-bundles"
+            $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
+            $response
+        }
+        else { 
+            Write-Warning "API is only valid with VMware Cloud Foundation 4.4.0 or later."
+        }
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Start-VCFSupportBundle
+
+#EndRegion APIs for managing SOS
+
+
 #Region APIs for managing System Prechecks
 
 Function Start-VCFSystemPrecheck {
@@ -3965,8 +3984,8 @@ Function Start-VCFSystemPrecheck {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/prechecks"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $jsonBody
         $response
@@ -3995,8 +4014,8 @@ Function Get-VCFSystemPrecheckTask {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
         $response
@@ -4039,8 +4058,8 @@ Function Get-VCFTask {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -not $PsBoundParameters.ContainsKey("id") -and ( -not $PsBoundParameters.ContainsKey("status"))) {
             $uri = "https://$sddcManager/v1/tasks/"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -4089,8 +4108,8 @@ Function Restart-VCFTask {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/tasks/$id"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
     }
@@ -4103,13 +4122,12 @@ Export-ModuleMember -Function Restart-VCFTask
 #EndRegion APIs for managing Tasks
 
 
-#Region APIs for managing Access and Refresh Token
+#Region APIs for managing Access and Refresh Token (Not Exported)
 Function checkVCFToken {
     if (!$accessToken) {
         Write-Error "API Access Token Required. Request an Access Token by running Request-VCFToken"
         Break
-    }
-    else {
+    } else {
         $expiryDetails = Get-JWTDetail $accessToken
         if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
             Write-Output "API Access Token Expired. Requesting a new access token with current refresh token"
@@ -4201,7 +4219,7 @@ Function Get-JWTDetail {
     Return $decodedToken
 }
 
-#EndRegion APIs for managing Access and Refresh Token
+#EndRegion APIs for managing Access and Refresh Token (Not Exported)
 
 
 #Region APIs for managing Upgradables
@@ -4221,8 +4239,8 @@ Function Get-VCFUpgradable {
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/upgradables"
         $response = Invoke-RestMethod -Method GET -URI $uri -ContentType application/json -headers $headers
         $response.elements
@@ -4256,8 +4274,8 @@ Function Get-VCFUpgrade {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/upgrades"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -4299,8 +4317,8 @@ Function Start-VCFUpgrade {
 
     Try {
     $jsonBody = validateJsonInput -json $json
-    createHeader # Calls createHeader function to set Accept & Authorization
-    checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+    createHeader # Set the Accept and Authorization headers.
+    checkVCFToken # Validate the access token and refresh, if necessary.
     $uri = "https://$sddcManager/v1/upgrades"
     
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
@@ -4320,30 +4338,36 @@ Export-ModuleMember -Function Start-VCFUpgrade
 Function Get-VCFUser {
     <#
         .SYNOPSIS
-        Get all Users
+        Retrieves a list of users, groups, and service users.
 
         .DESCRIPTION
-        The Get-VCFUser cmdlet gets a list of users, groups and service users in SDDC Manager
+        The Get-VCFUser cmdlet retrieves a list of users, groups, and service users from SDDC Manager.
 
         .EXAMPLE
         Get-VCFUser
-        This example list all users, groups and service users in SDDC Manager
+        This example shows how to retrieve a list of users, groups, and service users from SDDC Manager.
 
         .EXAMPLE
         Get-VCFUser -type USER
-        This example list all users in SDDC Manager
+        This example shows how to retrieve a list of users from SDDC Manager.
 
         .EXAMPLE
         Get-VCFUser -type GROUP
-        This example list all groups in SDDC Manager
+        This example shows how to retrieve a list of groups from SDDC Manager.
 
         .EXAMPLE
         Get-VCFUser -type SERVICE
-        This example list all service users in SDDC Manager
+        This example shows how to retrieve a list of service users from SDDC Manager.
 
         .EXAMPLE
         Get-VCFUser -domain rainpole.io
-        This example list all users and groups based on the authentication domain provided in SDDC Manager
+        This example shows how to retrieve a list of users, groups, and service users from an authentication domain.
+
+        .PARAMETER type
+        Specifies the type of user to retrieve. One of: USER, GROUP, SERVICE.
+
+        .PARAMETER domain
+        Specifies the authentication domain to retrieve users from.
     #>
 
     Param (
@@ -4352,21 +4376,18 @@ Function Get-VCFUser {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/users"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         if ($PsBoundParameters.ContainsKey("type")) {
             $response.elements | Where-Object { $_.type -eq $type }
-        }
-        elseif ($PsBoundParameters.ContainsKey("domain")) {
+        } elseif ($PsBoundParameters.ContainsKey("domain")) {
             $response.elements | Where-Object { $_.domain -eq $domain }
-        }
-        else {
+        } else {
             $response.elements
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -4375,14 +4396,20 @@ Export-ModuleMember -Function Get-VCFUser
 Function New-VCFUser {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager and adds a new user.
+        Adds a new user.
 
         .DESCRIPTION
-        The New-VCFUser cmdlet connects to the specified SDDC Manager and adds a new user with a specified role.
+        The New-VCFUser cmdlet adds a new user to SDDC Manager with a specified role.
 
         .EXAMPLE
         New-VCFUser -user vcf-admin@rainpole.io -role ADMIN
-        This example shows how to add a new user with a specified role
+        This example shows how to add a new user with a specified role.
+
+        .PARAMETER user
+        Specifies the name of the user.
+
+        .PARAMETER role
+        Specifies the role for the user. One of: ADMIN, OPERATOR, VIEWER.
     #>
 
     Param (
@@ -4391,10 +4418,10 @@ Function New-VCFUser {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/users"
-        #Get the Role ID
+        # Get the Role ID
         $roleID = Get-VCFRole | Where-object { $_.name -eq $role } | Select-Object -ExpandProperty id
         $domain = $user.split('@')
         $body = '[ {
@@ -4407,8 +4434,7 @@ Function New-VCFUser {
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -4417,14 +4443,20 @@ Export-ModuleMember -Function New-VCFUser
 Function New-VCFServiceUser {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager and adds a service user.
+        Adds a service user.
 
         .DESCRIPTION
-        The New-VCFServiceUser cmdlet connects adds a service user.
+        The New-VCFServiceUser cmdlet adds a service user to SDDC Manager with a specified role.
 
         .EXAMPLE
-        PS C:\> New-VCFServiceUser -user svc-user@rainpole.io -role ADMIN
-        This example shows how to add a service user with role ADMIN
+        New-VCFServiceUser -user svc-user@rainpole.io -role ADMIN
+        This example shows how to add a service user with a specified role.
+
+        .PARAMETER user
+        Specifies the name of the service user.
+
+        .PARAMETER role
+        Specifies the role for the service user. One of: ADMIN, OPERATOR, VIEWER.
     #>
 
     Param (
@@ -4433,8 +4465,8 @@ Function New-VCFServiceUser {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/users"
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object { $_.name -eq $role } | Select-Object -ExpandProperty id
@@ -4447,8 +4479,7 @@ Function New-VCFServiceUser {
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -4457,24 +4488,23 @@ Export-ModuleMember -Function New-VCFServiceUser
 Function Get-VCFRole {
     <#
         .SYNOPSIS
-        Get all roles
+        Retrieves a list of roles.
 
         .DESCRIPTION
-        The Get-VCFRole cmdlet gets a list of roles in SDDC Manager
+        The Get-VCFRole cmdlet retrieves a list of roles from SDDC Manager.
 
         .EXAMPLE
         Get-VCFRole
-        This example list all roles in SDDC Manager
+        This example shows how to retrieve a list of roles from SDDC Manager.
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/roles"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -4483,14 +4513,17 @@ Export-ModuleMember -Function Get-VCFRole
 Function Remove-VCFUser {
     <#
         .SYNOPSIS
-        Deletes a user from SDDC Manager
+        Removes a user.
 
         .DESCRIPTION
-        The Remove-VCFUser cmdlet connects to the specified SDDC Manager and deletes a user
+        The Remove-VCFUser cmdlet removes a user from SDDC Manager.
 
         .EXAMPLE
         Remove-VCFUser -id c769fcc5-fb61-4d05-aa40-9c7786163fb5
-        This example shows how to delete a user
+        This example shows how to remove a user from SDDC Manager.
+
+        .PARAMETER id
+        Specifies the unique ID of the user to remove.
     #>
 
     Param (
@@ -4498,13 +4531,12 @@ Function Remove-VCFUser {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/users/$id"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers -ContentType application/json
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -4513,14 +4545,23 @@ Export-ModuleMember -Function Remove-VCFUser
 Function New-VCFGroup {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager and adds a new group
+        Adds a new group with a specified role.
 
         .DESCRIPTION
-        The New-VCFGroup cmdlet connects to the specified SDDC Manager and adds a new group with a specified role
+        The New-VCFGroup cmdlet adds a new group with a specified role to SDDC Manager.
 
         .EXAMPLE
         New-VCFGroup -group ug-vcf-group -domain rainpole.io -role ADMIN
-        This example shows how to add a new group with a specified role
+        This example shows how to add a new group with a specified role.
+
+        .PARAMETER group
+        Specifies the name of the group.
+
+        .PARAMETER domain
+        Specifies the authentication domain for the group.
+
+        .PARAMETER role
+        Specifies the role for the group in the SDDC Manager. One of: ADMIN, OPERATOR, VIEWER.
     #>
 
     Param (
@@ -4530,8 +4571,8 @@ Function New-VCFGroup {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/users"
         #Get the Role ID
         $roleID = Get-VCFRole | Where-object { $_.name -eq $role } | Select-Object -ExpandProperty id
@@ -4546,8 +4587,7 @@ Function New-VCFGroup {
         }]'
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $body
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
@@ -4580,8 +4620,8 @@ Function Get-VCFService {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/vcf-services/$id"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -4602,12 +4642,7 @@ Export-ModuleMember -Function Get-VCFService
 #EndRegion APIs for managing VCF Services
 
 
-#Region APIs for managing Version Alias Configuration
-# for future implementation
-#EndRegion APIs for managing Version Alias Configuration
-
-
-#Region APIs for managing DNS NTP Configuration
+#Region APIs for managing DNS and NTP
 
 Function Get-VCFConfigurationDNS {
     <#
@@ -4623,8 +4658,8 @@ Function Get-VCFConfigurationDNS {
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/dns-configuration"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.dnsServers
@@ -4654,8 +4689,8 @@ Function Get-VCFConfigurationDNSValidation {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/dns-configuration/validations/$id"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
@@ -4694,8 +4729,8 @@ Function Set-VCFConfigurationDNS {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/system/dns-configuration/validations"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
@@ -4728,8 +4763,8 @@ Function Get-VCFConfigurationNTP {
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/ntp-configuration"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.ntpServers
@@ -4759,8 +4794,8 @@ Function Get-VCFConfigurationNTPValidation {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/ntp-configuration/validations/$id"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response
@@ -4799,8 +4834,8 @@ Function Set-VCFConfigurationNTP {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/system/ntp-configuration/validations"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
@@ -4818,18 +4853,20 @@ Function Set-VCFConfigurationNTP {
 }
 Export-ModuleMember -Function Set-VCFConfigurationNTP
 
-#EndRegion APIs for managing Proxy Configuration
+#EndRegion APIs for managing DNS and NTP
 
-Function Get-VcfProxy {
+#Region APIs for managing Proxy Configuration
+
+Function Get-VCFProxy {
     <#
         .SYNOPSIS
         Gets the proxy configuration for the SDDC Manager.
 
         .DESCRIPTION
-        The Get-VcfProxy cmdlet retrieves the proxy configuration of the SDDC Manager.
+        The Get-VCFProxy cmdlet retrieves the proxy configuration of the SDDC Manager.
 
         .EXAMPLE
-        Get-VcfProxy
+        Get-VCFProxy
         This example shows how to get the proxy configuration of the SDDC Manager.
     #>
 
@@ -4849,23 +4886,23 @@ Function Get-VcfProxy {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VcfProxy
+Export-ModuleMember -Function Get-VCFProxy
 
-Function Set-VcfProxy {
+Function Set-VCFProxy {
     <#
         .SYNOPSIS
         Sets the proxy configuration for the SDDC Manager.
 
         .DESCRIPTION
-        The Set-VcfProxy cmdlet sets the proxy configuration of the SDDC Manager.
+        The Set-VCFProxy cmdlet sets the proxy configuration of the SDDC Manager.
         Note: This cmdlet will not clear the proxy configuration.
 
         .EXAMPLE
-        Set-VcfProxy -status ENABLED -proxyHost proxy.rainpole.io -proxyPort 3128
+        Set-VCFProxy -status ENABLED -proxyHost proxy.rainpole.io -proxyPort 3128
         This example shows how to enable the proxy configuration of the SDDC Manager.
 
         .EXAMPLE
-        Set-VcfProxy -status DISABLED
+        Set-VCFProxy -status DISABLED
         This example shows how to disable the proxy configuration of the SDDC Manager.
 
         .PARAMETER status
@@ -4936,11 +4973,11 @@ Function Set-VcfProxy {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Set-VcfProxy
+Export-ModuleMember -Function Set-VCFProxy
 
-#Region APIs for managing Proxy Configuration
+#EndRegion APIs for managing Proxy Configuration
 
-#Region APIs for managing vCenters
+#Region APIs for managing vCenter Server
 
 Function Get-VCFvCenter {
     <#
@@ -4975,8 +5012,8 @@ Function Get-VCFvCenter {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if (-not $PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("domainId"))) {
             $uri = "https://$sddcManager/v1/vcenters"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
@@ -4999,52 +5036,58 @@ Function Get-VCFvCenter {
 }
 Export-ModuleMember -Function Get-VCFvCenter
 
-#EndRegion APIs for managing vCenters
+#EndRegion APIs for managing vCenter Server
 
 
-#Region APIs for managing vRealize Suite Lifecycle Manager
+#Region APIs for managing Aria Suite Lifecycle
 
-Function Get-VCFvRSLCM {
+Function Get-VCFVrslcm {
     <#
         .SYNOPSIS
-        Get the existing vRealize Suite Lifecycle Manager
+        Retrieves information about Aria Suite Lifecycle deployment in VMware Cloud Foundation mode.
 
         .DESCRIPTION
-        The Get-VCFvRSLCM cmdlet gets the complete information about the existing vRealize Suite Lifecycle Manager.
+        The Get-VCFVrslcm cmdlet retrieves information about Aria Suite Lifecycke deployment in VMware Cloud Foundation mode.
 
         .EXAMPLE
-        Get-VCFvRSLCM
-        This example list all details concerning the vRealize Suite Lifecycle Manager
+        Get-VCFVrslcm
+        This example shows how to retrieve information about Aria Suite Lifecycle deployment in VMware Cloud Foundation mode.
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrslcms"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFvRSLCM
+New-Alias -Name Get-VCFAriaLifecycle -Value Get-VCFVrslcm
+Export-ModuleMember -Function Get-VCFVrslcm -Alias Get-VCFAriaLifecycle
 
-Function New-VCFvRSLCM {
+Function New-VCFVrslcm {
     <#
         .SYNOPSIS
-        Deploy vRealize Suite Lifecycle Manager
+        Deploys Aria Suite Lifecycle in the management domain in VMware Cloud Foundation mode.
 
         .DESCRIPTION
-        The New-VCFvRSLCM cmdlet deploys vRealize Suite Lifecycle Manager to the specified network.
+        The New-VCFVrslcm cmdlet deploys Aria Suite Lifecycle in the management domain in VMware Cloud Foundation mode.
 
         .EXAMPLE
-        New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json
-        This example deploys vRealize Suite Lifecycle Manager using a supplied json file
+        New-VCFVrslcm -json .\samples\deployAriaLifecycleAvnVlanSpec.json
+        This example shows how to deploy Aria Suite Lifecycle using a JSON specification file.
 
         .EXAMPLE
-        New-VCFvRSLCM -json .\SampleJson\vRealize\New-VCFvRSLCM-AVN.json -validate
-        This example performs validation of vRealize Suite Lifecycle Manager using a supplied json file
+        New-VCFVrslcm -json .\samples\deployAriaLifecycleAvnVlanSpec.json -validate
+        This example shows how to validate a JSON specification file.
+
+        .PARAMETER json
+        Specifies the JSON specification file to be used.
+
+        .PARAMETER validate
+        Specifies that the JSON specification should be validated.
     #>
 
     Param (
@@ -5054,99 +5097,101 @@ Function New-VCFvRSLCM {
 
     Try {
         $jsonBody = validateJsonInput -json $json
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         
         if ( -not $PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/vrslcms"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
-        }
-        elseif ($PsBoundParameters.ContainsKey("validate")) {
+        } elseif ($PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/vrslcms/validations"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function New-VCFvRSLCM
+New-Alias -Name New-VCFAriaLifecycle -Value New-VCFVrslcm
+Export-ModuleMember -Function New-VCFVrslcm -Alias New-VCFAriaLifecycle
 
-Function Remove-VCFvRSLCM {
+Function Remove-VCFVrslcm {
     <#
         .SYNOPSIS
-        Remove a failed vRealize Suite Lifecycle Manager deployment
+        Removes a failed Aria Suite Lifecycle deployment.
 
         .DESCRIPTION
-        The Remove-VCFvRSLCM cmdlet removes a failed vRealize Suite Lifecycle Manager deployment. Not applicable
-        to a successful vRealize Suite Lifecycle Manager deployment.
+        The Remove-VCFVrslcm cmdlet removes a failed Aria Suite Lifecycle deployment in VMware Cloud Foundation mode.
 
         .EXAMPLE
-        Remove-VCFvRSLCM
-        This example removes a failed vRealize Suite Lifecycle Manager deployment
+        Remove-VCFVrslcm
+        This example shows how to remove a failed Aria Suite Lifecycle deployment.
     #>
 
     Try {
-        createHeader # Call createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method DELETE -URI $uri -headers $headers
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Remove-VCFvRSLCM
+New-Alias -Name Remove-VCFAriaLifecycle -Value Remove-VCFVrslcm
+Export-ModuleMember -Function Remove-VCFVrslcm -Alias Remove-VCFAriaLifecycle
 
-Function Reset-VCFvRSLCM {
+Function Reset-VCFVrslcm {
     <#
         .SYNOPSIS
-        Redeploy vRealize Suite Lifecycle Manager
+        Redeploys Aria Suite Lifecycle in the management domain in VMware Cloud Foundation mode.
 
         .DESCRIPTION
-        The Reset-VCFvRSLCM cmdlet redeploys the existing vRealize Suite Lifecycle Manager
+        The Reset-VCFVrslcm cmdlet redeploys Aria Suite Lifecycle in the management domain in VMware Cloud Foundation
+        mode.
 
         .EXAMPLE
-        Reset-VCFvRSLCM
-        This example redeploys the vRealize Suite Lifecycle Manager
+        Reset-VCFVrslcm
+        This example shows how to redeploy Aria Suite Lifecycle in the management domain in VMware Cloud Foundation mode.
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method PATCH -URI $uri -headers $headers
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Reset-VCFvRSLCM
+New-Alias -Name Reset-VCFAriaLifecycle -Value Reset-VCFVrslcm
+Export-ModuleMember -Function Reset-VCFVrslcm -Alias Reset-VCFAriaLifecycle
 
-#EndRegion APIs for managing vRealize Suite Lifecycle Manager
+#EndRegion APIs for managing Aria Suite Lifecycle
 
 
-#Region APIs for managing vRealize Operations Manager
+#Region APIs for managing Aria Operations
 
-Function Get-VCFvROPS {
+Function Get-VCFVrops {
     <#
         .SYNOPSIS
-        Get the existing vRealize Operations Manager
+        Retrieves information about Aria Operations deployment in VMware Cloud Foundation mode.
 
         .DESCRIPTION
-        The Get-VCFvROPs cmdlet gets the complete information about the existing vRealize Operations Manager.
+        The Get-VCFVrops cmdlet retrieves information about Aria Operations deployment in VMware Cloud Foundation mode.
 
         .EXAMPLE
-        Get-VCFvROPs
-        This example list all details concerning the vRealize Operations Manager
+        Get-VCFVrops
+        This example shows how to retrieve information about Aria Operations deployment in VMware Cloud Foundation mode.
 
         .EXAMPLE
-        Get-VCFvROPs -domains
-        This example lists all workload domains connected to vRealize Operations Manager
+        Get-VCFVrops -domains
+        This example shows how to retrieve information workload domains connected to Aria Operations.
+
+        .PARAMETER domains
+        Specifies to list the connected workload domains.
     #>
 
     Param (
@@ -5154,66 +5199,73 @@ Function Get-VCFvROPS {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("domains")) {
             $uri = "https://$sddcManager/v1/vrops/domains"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
-        }
-        else {
+        } else {
             $uri = "https://$sddcManager/v1/vropses"
             $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
             $response.elements
         }
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFvROPS
+New-Alias -Name Get-VCFAriaOperations -Value Get-VCFVrops
+Export-ModuleMember -Function Get-VCFVrops -Alias Get-VCFAriaOperations
 
-Function Get-VCFvROPSConnection {
+Function Get-VCFVropsConnection {
     <#
         .SYNOPSIS
-        Get connection status of VI Workload Domains to vRealize Operations Manager
+        Retrieves the connection status for all workload domain connected to an Aria Operations deployment
+        in VMware Cloud Foundation mode.
 
         .DESCRIPTION
-        The Get-VCFvROPSConnection cmdlet gets the connection status for all VI Workload Domains to vRealize Operations Manager
+        The Get-VCFVropsConnection cmdlet retrieves the connection status for all workload domain connected
+        to an Aria Operations deployment in VMware Cloud Foundation mode.
 
         .EXAMPLE
-        Get-VCFvROPSConnection
-        This example gets the connection status of all VI Workload Domains to vRealize Operations Manager
+        Get-VCFVropsConnection
+        This example shows how to retrieve the connection status for all workload domain connected to a Aria Operations deployment in VMware Cloud Foundation mode.
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # See access token and refresh, if necessary.t the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrops/domains"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers 
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFvROPSConnection
+New-Alias -Name Get-VCFAriaOperationsConnection -Value Get-VCFVropsConnection
+Export-ModuleMember -Function Get-VCFVropsConnection -Alias Get-VCFAriaOperationsConnection
 
-Function Set-VCFvROPSConnection {
+Function Set-VCFVropsConnection {
     <#
         .SYNOPSIS
-        Connect or disconnect Workload Domains to vRealize Operations Manager
+        Connects or disconnects workload domains to Aria Operations.
 
         .DESCRIPTION
-        The Set-VCFvROPs cmdlet connects or disconnects Workload Domains to vRealize Operations Manager.
+        The Set-VCFVrops cmdlet connects or disconnects workload domains to Aria Operations.
 
         .EXAMPLE
-        Set-VCFvROPs -domainId <domain-id> -status ENABLED
-        This example connects a Workload Domain to vRealize Operations Manager
+        Set-VCFVrops -domainId <domain-id> -status ENABLED
+        This example shows how to connect a workload domain to Aria Operations.
 
         .EXAMPLE
-        Set-VCFvROPs -domainId <domain-id> -status DISABLED
-        This example disconnects a Workload Domain from vRealize Operations Manager
+        Set-VCFVrops -domainId <domain-id> -status DISABLED
+        This example shows how to disconnect a workload domain from Aria Operations.
+
+        .PARAMETER domainId
+        Specifies the unique ID of the workload domain.
+
+        .PARAMETER status
+        Specifies the status. One of: ENABLED, DISABLED.
     #>
 
     Param (
@@ -5222,153 +5274,97 @@ Function Set-VCFvROPSConnection {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $body = '{"domainId": "' + $domainId + '","status": "' + $status + '"}'
         $uri = "https://$sddcManager/v1/vrops/domains"
         $response = Invoke-RestMethod -Method PUT -URI $uri -headers $headers -body $body -ContentType application/json
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Set-VCFvROPSConnection
+New-Alias -Name Set-VCFAriaOperationsConnection -Value Set-VCFVropsConnection
+Export-ModuleMember -Function Set-VCFVropsConnection -Alias Set-VCFAriaOperationsConnection
 
-#EndRegion APIs for managing vRealize Operations Manager
+#EndRegion APIs for managing Aria Operations
 
 
-#Region APIs for managing Workspace ONE Access
+#Region APIs for managing Aria Operations for Logs
 
-Function Get-VCFWSA {
+Function Get-VCFVrli {
     <#
         .SYNOPSIS
-        Get the existing Workspace ONE Access
+        Retrieves information about Aria Operations for Logs deployment in VMware Cloud Foundation mode.
 
         .DESCRIPTION
-        The Get-VCFWSA cmdlet gets the complete information about the existing Workspace ONE Access.
+        Retrieves information about Aria Operations for Logs deployment in VMware Cloud Foundation mode.
 
         .EXAMPLE
-        Get-VCFWSA
-        This example list all details concerning Workspace ONE Access
+        Get-VCFVrli
+        This example shows how to retrieve information about Aria Operations for Logs deployment in VMware Cloud Foundation mode.
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/wsas"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFWSA
-
-#EndRegion APIs for managing Workspace ONE Access
-
-
-#Region APIs for managing vRealize Automation
-
-Function Get-VCFvRA {
-    <#
-        .SYNOPSIS
-        Get the existing vRealize Automation
-
-        .DESCRIPTION
-        The Get-VCFvRA cmdlet gets the complete information about the existing vRealize Automation.
-
-        .EXAMPLE
-        Get-VCFvRA
-        This example list all details concerning the vRealize Automation
-    #>
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
-        $uri = "https://$sddcManager/v1/vras"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
-        $response.elements
-    }
-    Catch {
-        ResponseException -object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFvRA
-
-#EndRegion APIs for managing vRealize Automation
-
-
-#Region APIs for managing vRealize Log Insight
-
-Function Get-VCFvRLI {
-    <#
-        .SYNOPSIS
-        Get the existing vRealize Log Insight
-
-        .DESCRIPTION
-        The Get-VCFvRLI cmdlet gets the complete information about the existing vRealize Log Insight.
-
-        .EXAMPLE
-        Get-VCFvRLI
-        This example list all details concerning the vRealize Log Insight
-    #>
-
-    Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrlis"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFvRLI
+New-Alias -Name Get-VCFAriaOperationsLogs -Value Get-VCFVrli
+Export-ModuleMember -Function Get-VCFVrli -Alias Get-VCFAriaOperationsLogs
 
-Function Get-VCFvRLIConnection {
+Function Get-VCFVrliConnection {
     <#
         .SYNOPSIS
-        Get connection status of VI Workload Domains to vRealize Log Insight
+        Retrieves the connection status for all workload domain connections to Aria Operations for Logs.
 
         .DESCRIPTION
-        The Get-VCFvRLIConnection cmdlet gets the connection status for all VI Workload Domains to vRealize Log Insight
+        The Get-VCFVrliConnection cmdlet retrieves the connection status for all workload domain connections to Aria Operations for Logs.
 
         .EXAMPLE
-        Get-VCFvRLIConnection
-        This example gets the connection status of all VI Workload Domains to vRealize Log Insight
+        Get-VCFVrliConnection
+        This example shows how to retrieve the connection status for all workload domain connections to Aria Operations for Logs.
     #>
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrli/domains"
         $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers 
         $response.elements
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Get-VCFvRLIConnection
+New-Alias -Name Get-VCFAriaOperationsLogsConnection -Value Get-VCFVrliConnection
+Export-ModuleMember -Function Get-VCFVrliConnection -Alias Get-VCFAriaOperationsLogsConnection
 
-Function Set-VCFvRLIConnection {
+Function Set-VCFVrliConnection {
     <#
         .SYNOPSIS
-        Connect or disconnect Workload Domains to vRealize Log Insight
+        Connects or disconnects workload domains to Aria Operations for Logs.
 
         .DESCRIPTION
-        The Set-VCFvRLIConnection cmdlet connects or disconnects Workload Domains to vRealize Log Insight
+        The Set-VCFVrliConnection cmdlet connects or disconnects workload domains to Aria Operations for Logs.
 
         .EXAMPLE
-        Set-VCFvRLIConnection -domainId <domain-id> -status ENABLED
-        This example connects a Workload Domain to vRealize Log Insight
+        Set-VCFVrliConnection -domainId <domain-id> -status ENABLED
+        This example shows how to connect a workload domain to Aria Operations for Logs.
 
         .EXAMPLE
-        Set-VCFvRLIConnection -domainId <domain-id> -status DISABLED
-        This example disconnects a Workload Domain from vRealize Log Insight
+        Set-VCFVrliConnection -domainId <domain-id> -status DISABLED
+        This example shows how to disconnect a workload domain from Aria Operations for Logs.
+
+        .PARAMETER domainId
+        Specifies the unique ID of the workload domain.
+
+        .PARAMETER status
+        Specifies the status. One of: ENABLED, DISABLED.
     #>
 
     Param (
@@ -5377,20 +5373,81 @@ Function Set-VCFvRLIConnection {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $json = '{"domainId": "' + $domainId + '","status": "' + $status + '"}'
         $uri = "https://$sddcManager/v1/vrli/domains"
         $response = Invoke-RestMethod -Method 'PUT' -URI $uri -headers $headers -body $json -ContentType application/json
         $response
-    }
-    Catch {
+    } Catch {
         ResponseException -object $_
     }
 }
-Export-ModuleMember -Function Set-VCFvRLIConnection
+New-Alias -Name Set-VCFAriaOperationsLogsConnection -Value Set-VCFVrliConnection
+Export-ModuleMember -Function Set-VCFVrliConnection -Alias Set-VCFAriaOperationsLogsConnection
 
-#EndRegion APIs for managing vRealize Log Insight
+#EndRegion APIs for managing Aria Operations for Logs
+
+
+#Region APIs for managing Aria Automation
+
+Function Get-VCFVra {
+    <#
+        .SYNOPSIS
+        Retrieves information about an Aria Automation deployment in VMware Cloud Foundation mode.
+
+        .DESCRIPTION
+        The Get-VCFVra cmdlet retrieves information about an Aria Automation deployment in VMware Cloud Foundation mode.
+
+        .EXAMPLE
+        Get-VCFVra
+        This example shows how to retrieve information about an Aria Automation deployment in VMware Cloud Foundation mode.
+    #>
+
+    Try {
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        $uri = "https://$sddcManager/v1/vras"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    } Catch {
+        ResponseException -object $_
+    }
+}
+New-Alias -Name Get-VCFAriaAutomation -Value Get-VCFVra
+Export-ModuleMember -Function Get-VCFVra -Alias Get-VCFAriaAutomation
+
+#EndRegion APIs for managing Aria Automation
+
+
+#Region APIs for managing Workspace ONE Access
+
+Function Get-VCFWsa {
+    <#
+        .SYNOPSIS
+        Retrieves information about Workspace ONE Access deployment in VMware Cloud Foundation mode.
+
+        .DESCRIPTION
+        The Get-VCFWsa cmdlet retrieves information about Workspace ONE Access deployment in VMware Cloud Foundation mode.
+
+        .EXAMPLE
+        Get-VCFWsa
+        This example shows how to retrieve information about Workspace ONE Access deployment in VMware Cloud Foundation mode.
+    #>
+
+    Try {
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        $uri = "https://$sddcManager/v1/wsas"
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
+        $response.elements
+    } Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFWsa
+
+#EndRegion APIs for managing Workspace ONE Access
 
 
 #Region APIs for managing Validations
@@ -5403,8 +5460,8 @@ Function Validate-CommissionHostSpec {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/hosts/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
         Return $response
@@ -5421,8 +5478,8 @@ Function Validate-WorkloadDomainSpec {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/domains/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
         Return $response
@@ -5438,8 +5495,8 @@ Function Validate-VCFClusterSpec {
         [Parameter (Mandatory = $true)] [object]$json
     )
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/clusters/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     }
@@ -5457,8 +5514,8 @@ Function Validate-VCFUpdateClusterSpec {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     }
@@ -5475,8 +5532,8 @@ Function Validate-EdgeClusterSpec {
     )
 
     Try {
-        createHeader # Calls createHeader function to set Accept & Authorization
-        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/edge-clusters/validations"
         $response = Invoke-RestMethod -Method POST -URI $uri -ContentType application/json -headers $headers -body $json
     }
@@ -5585,7 +5642,7 @@ Export-ModuleMember -Function Invoke-VCFCommand
 #EndRegion SoS Operations
 
 
-#Region Utility Functions (not exported)
+#Region Utility Functions (Not Exported)
 
 Function ResponseException {
     Param (
@@ -5642,7 +5699,7 @@ Function Resolve-PSModule {
         # If module is not imported, check if available on disk and try to import
         if (Get-Module -ListAvailable | Where-Object { $_.Name -eq $moduleName }) {
             Try {
-                Write-Output "`n Module $moduleName not loaded, importing now please wait..."
+                Write-Output "Module $moduleName not loaded, importing now please wait..."
                 Import-Module $moduleName
                 Write-Output "Module $moduleName imported successfully."
                 $searchResult = "IMPORTED"
@@ -5729,7 +5786,7 @@ Function validateJsonInput {
         }
     }
 }
-#EndRegion Utility Functions (not exported)
+#EndRegion Utility Functions (Not Exported)
 
 
 #Region Useful Script Functions

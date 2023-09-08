@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Adds a new user to SDDC Manager.
+Adds a new user.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ New-VCFUser [-user] <String> [-role] <String> [<CommonParameters>]
 
 ## Description
 
-The New-VCFUser cmdlet adds a new user to SDDC Manager with a specified role.
+The `New-VCFUser` cmdlet adds a new user to SDDC Manager with a specified role.
 
 ## Examples
 

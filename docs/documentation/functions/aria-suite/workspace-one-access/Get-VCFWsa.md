@@ -1,4 +1,4 @@
-# Get-VCFWSA
+# Get-VCFWsa
 
 ## Synopsis
 
@@ -7,19 +7,19 @@ Retrieves information about Workspace ONE Access deployment in VMware Cloud Foun
 ## Syntax
 
 ```powershell
-Get-VCFWSA
+Get-VCFWsa
 ```
 
 ## Description
 
-The Get-VCFWSA cmdlet retrieves information about Workspace ONE Access deployment in VMware Cloud Foundation mode.
+The `Get-VCFWsa` cmdlet retrieves information about Workspace ONE Access deployment in VMware Cloud Foundation mode.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Get-VCFWSA
+Get-VCFWsa
 ```
 
 This example shows how to retrieve information about Workspace ONE Access deployment in VMware Cloud Foundation mode.

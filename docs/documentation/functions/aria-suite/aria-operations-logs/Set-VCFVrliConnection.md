@@ -1,36 +1,40 @@
-# Set-VCFvROPSConnection
+# Set-VCFVrliConnection
+
+## Alias
+
+`Set-VCFAriaOperationsLogsConnection`
 
 ## Synopsis
 
-Connects or disconnects workload domains to VMware Aria Operations, formerly vRealize Operations.
+Connects or disconnects workload domains to Aria Operations for Logs.
 
 ## Syntax
 
 ```powershell
-Set-VCFvROPSConnection [-domainId] <String> [-status] <String> [<CommonParameters>]
+Set-VCFVrliConnection [-domainId] <String> [-status] <String> [<CommonParameters>]
 ```
 
 ## Description
 
-The Set-VCFvROPs cmdlet connects or disconnects workload domains to VMware Aria Operations.
+The `Set-VCFVrliConnection` cmdlet connects or disconnects workload domains to Aria Operations for Logs.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Set-VCFvROPs -domainId 44d23b12-76b6-4453-95f6-1dcaa837081f -status ENABLED
+Set-VCFVrli -domainId 44d23b12-76b6-4453-95f6-1dcaa837081f -status ENABLED
 ```
 
-This example shows how to connect a workload domain to VMware Aria Operations.
+This example shows how to connect a workload domain to Aria Operations for Logs.
 
 ### Example 2
 
 ```powershell
-Set-VCFvROPs -domainId 44d23b12-76b6-4453-95f6-1dcaa837081f -status DISABLED
+Set-VCFVrli -domainId 44d23b12-76b6-4453-95f6-1dcaa837081f -status DISABLED
 ```
 
-This example shows how to disconnect a workload domain from VMware Aria Operations.
+This example shows how to disconnect a workload domain from Aria Operations for Logs.
 
 ## Parameters
 

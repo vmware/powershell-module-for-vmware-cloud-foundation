@@ -1,4 +1,4 @@
-# Set-VcfProxy
+# Set-VCFProxy
 
 ## Synopsis
 
@@ -7,12 +7,12 @@ Sets the proxy configuration for the SDDC Manager.
 ## Syntax
 
 ```powershell
-Set-VcfProxy -status <String> [-proxyHost <String>] [-proxyPort <Int32>] [<Common Parameters>]
+Set-VCFProxy -status <String> [-proxyHost <String>] [-proxyPort <Int32>] [<Common Parameters>]
 ```
 
 ## Description
 
-The `Set-VcfProxy` cmdlet sets the proxy configuration of the SDDC Manager.
+The `Set-VCFProxy` cmdlet sets the proxy configuration of the SDDC Manager.
 
 ???+ note
 
@@ -23,7 +23,7 @@ The `Set-VcfProxy` cmdlet sets the proxy configuration of the SDDC Manager.
 ### Example 1
 
 ```powershell
-Set-VcfProxy -status ENABLED -proxyHost proxy.rainpole.io -proxyPort 3128
+Set-VCFProxy -status ENABLED -proxyHost proxy.rainpole.io -proxyPort 3128
 ```
 
 This example shows how to enable the proxy configuration of the SDDC Manager.
@@ -31,7 +31,7 @@ This example shows how to enable the proxy configuration of the SDDC Manager.
 ### Example 2
 
 ```powershell
-Set-VcfProxy -status DISABLED
+Set-VCFProxy -status DISABLED
 ```
 
 This example shows how to disable the proxy configuration of the SDDC Manager.

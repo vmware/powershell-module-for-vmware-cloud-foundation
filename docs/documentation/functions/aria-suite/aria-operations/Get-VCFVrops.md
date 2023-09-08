@@ -1,36 +1,40 @@
-# Get-VCFvROPS
+# Get-VCFVrops
+
+## Alias
+
+`Get-VCFAriaOperations`
 
 ## Synopsis
 
-Retrieves information about VMware Aria Operations, formerly vRealize Operations, deployment in VMware Cloud Foundation mode.
+Retrieves information about Aria Operations deployment in VMware Cloud Foundation mode.
 
 ## Syntax
 
 ```powershell
-Get-VCFvROPS [-domains] [<CommonParameters>]
+Get-VCFVrops [-domains] [<CommonParameters>]
 ```
 
 ## Description
 
-The Get-VCFvROPs cmdlet retrieves information about VMware Aria Operations deployment in VMware Cloud Foundation mode.
+The `Get-VCFVrops` cmdlet retrieves information about Aria Operations deployment in VMware Cloud Foundation mode.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Get-VCFvROPs
+Get-VCFVrops
 ```
 
-This example shows how to retrieve information about VMware Aria Operations deployment in VMware Cloud Foundation mode.
+This example shows how to retrieve information about Aria Operations deployment in VMware Cloud Foundation mode.
 
 ### Example 2
 
 ```powershell
-Get-VCFvROPs -domains
+Get-VCFVrops -domains
 ```
 
-This example shows how to retrieve information workload domains connected to VMware Aria Operations.
+This example shows how to retrieve information workload domains connected to Aria Operations.
 
 ## Parameters
 

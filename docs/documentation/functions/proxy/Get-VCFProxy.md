@@ -1,4 +1,4 @@
-# Get-VcfProxy
+# Get-VCFProxy
 
 ## Synopsis
 
@@ -7,19 +7,19 @@ Gets the proxy configuration for the SDDC Manager.
 ## Syntax
 
 ```powershell
-Get-VcfProxy
+Get-VCFProxy
 ```
 
 ## Description
 
-The `Get-VcfProxy` cmdlet retrieves the proxy configuration of the SDDC Manager.
+The `Get-VCFProxy` cmdlet retrieves the proxy configuration of the SDDC Manager.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Get-VcfProxy
+Get-VCFProxy
 ```
 
 This example shows how to get the proxy configuration of the SDDC Manager.

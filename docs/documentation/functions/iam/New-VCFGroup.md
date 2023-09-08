@@ -12,7 +12,7 @@ New-VCFGroup [-group] <String> [-domain] <String> [-role] <String> [<CommonParam
 
 ## Description
 
-The New-VCFGroup cmdlet adds a new group with a specified role to SDDC Manager.
+The `New-VCFGroup` cmdlet adds a new group with a specified role to SDDC Manager.
 
 ## Examples
 
@@ -60,7 +60,7 @@ Accept wildcard characters: False
 
 ### -role
 
-Specifies the role for the group in the SDDC Manager. One of: ADMIN, OPERATOR, VIEWER..
+Specifies the role for the group in the SDDC Manager. One of: ADMIN, OPERATOR, VIEWER.
 
 ```yaml
 Type: String

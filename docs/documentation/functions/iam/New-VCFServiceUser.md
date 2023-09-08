@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Adds a service user to SDDC Manager.
+Adds a service user.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ New-VCFServiceUser [-user] <String> [-role] <String> [<CommonParameters>]
 
 ## Description
 
-The New-VCFServiceUser cmdlet adds a service user to SDDC Manager with a specified role.
+The `New-VCFServiceUser` cmdlet adds a service user to SDDC Manager with a specified role.
 
 ## Examples
 

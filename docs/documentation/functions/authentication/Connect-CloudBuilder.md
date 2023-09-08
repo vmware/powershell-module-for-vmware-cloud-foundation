@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Request an authentication token from a VMware Cloud Builder instance.
+Requests an authentication token from a VMware Cloud Builder instance.
 
 ## Syntax
 
@@ -12,8 +12,7 @@ Connect-CloudBuilder [-fqdn] <String> [[-username] <String>] [[-password] <Strin
 
 ## Description
 
-The Connect-CloudBuilder cmdlet connects to the specified VMware Cloud Builder instance and stores the credentials
-in a base64 string.
+The `Connect-CloudBuilder` cmdlet connects to the specified VMware Cloud Builder instance and stores the credentials in a base64 string.
 
 ???+ note
 
@@ -33,7 +32,7 @@ This example shows how to connect to the VMware Cloud Builder instance.
 
 ### -fqdn
 
-Specifies the fully qualified domain name or IP address of the VMware Cloud Builder instance.
+The fully qualified domain name of the VMware Cloud Builder instance.
 
 ```yaml
 Type: String
@@ -49,7 +48,7 @@ Accept wildcard characters: False
 
 ### -username
 
-Specifies the username to connect to the VMware Cloud Builder instance (admin).
+The username to authenticate to the VMware Cloud Builder instance.
 
 ```yaml
 Type: String
@@ -65,7 +64,7 @@ Accept wildcard characters: False
 
 ### -password
 
-Specifies the password for the user to connect to the VMware Cloud Builder instance (admin).
+The password to authenticate to the VMware Cloud Builder instance.
 
 ```yaml
 Type: String
@@ -81,7 +80,7 @@ Accept wildcard characters: False
 
 ### -skipCertificateCheck
 
-Specifies whether to skip the certificate check for the VMware Cloud Builder instance.
+Switch to skip certificate check when connecting to the VMware Cloud Builder instance.
 
 ```yaml
 Type: SwitchParameter

@@ -12,7 +12,7 @@ Get-VCFRole
 
 ## Description
 
-The Get-VCFRole cmdlet retrieves a list of roles from SDDC Manager.
+The `Get-VCFRole` cmdlet retrieves a list of roles from SDDC Manager.
 
 ## Examples
 
