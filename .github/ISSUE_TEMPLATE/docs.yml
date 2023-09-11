@@ -1,12 +1,9 @@
 ---
 name: Documentation
 description: Found a typo or something that needs clarification?
-title: '[DOCS] REPLACE WITH SHORT DESCRIPTION'
-labels:
-  - documentation
-  - needs-review
-assignees:
-  - tenthirtyam
+title: 'Please add a short decsription.'
+labels: ["documentation", "needs-review"]
+projects: ["vmware/22"]
 body:
   - type: markdown
     attributes:
