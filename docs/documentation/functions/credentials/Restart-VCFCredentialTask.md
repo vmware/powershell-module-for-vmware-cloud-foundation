@@ -12,14 +12,14 @@ Restart-VCFCredentialTask [-id] <String> [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Restart-VCFCredentialTask cmdlet restarts a failed rotate/update password task. You can restart a failed rotate/update password task by unique ID and JSON specification file.
+The `Restart-VCFCredentialTask` cmdlet restarts a failed rotate/update password task. You can restart a failed rotate/update password task by unique ID and JSON specification file.
 
 ## Examples
 
 ### Example 1
 
 ```powershell
-Restart-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\Credential\updateCredentialSpec.json
+Restart-VCFCredentialTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -json .\samples\credentials\updateCredentialSpec.json
 ```
 
 This example shows how to update passwords of a resource type using a JSON specification file.

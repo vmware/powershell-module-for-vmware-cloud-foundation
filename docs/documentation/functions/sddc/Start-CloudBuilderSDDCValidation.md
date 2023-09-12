@@ -12,7 +12,7 @@ Start-CloudBuilderSDDCValidation [-json] <String> [[-validation] <String>] [<Com
 
 ## Description
 
-The Start-CloudBuilderSDDCValidation cmdlet starts the validation of a management domain JSON specification file on VMware Cloud Builder.
+The `Start-CloudBuilderSDDCValidation` cmdlet starts the validation of a management domain JSON specification file on VMware Cloud Builder.
 
 ## Examples
 

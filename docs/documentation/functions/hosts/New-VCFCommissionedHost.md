@@ -12,7 +12,7 @@ New-VCFCommissionedHost [-json] <String> [-validate] [<CommonParameters>]
 
 ## Description
 
-The New-VCFCommissionedHost cmdlet commissions a list of ESXi hosts.
+The `New-VCFCommissionedHost` cmdlet commissions a list of ESXi hosts.
 
 ## Examples
 
@@ -58,7 +58,7 @@ Accept wildcard characters: False
 
 ### -validate
 
-Specifies that the JSON specification should be validated.
+Specifies to validate the JSON specification file.
 
 ```yaml
 Type: SwitchParameter

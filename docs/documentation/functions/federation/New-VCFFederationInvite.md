@@ -12,7 +12,7 @@ New-VCFFederationInvite [-inviteeFqdn] <String> [-inviteeRole] <String> [<Common
 
 ## Description
 
-The New-VCFFederationInvite cmdlet invites a member to join an existing federation controller.
+The `New-VCFFederationInvite` cmdlet invites a member to join an existing federation controller.
 
 ???+ warning
 

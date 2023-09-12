@@ -1,8 +1,12 @@
 # New-VCFEdgeCluster
 
+## Aliases
+
+`New-NSXEdgeCluster`
+
 ## Synopsis
 
-Creates an NSX Edge Cluster managed by SDDC Manager.
+Creates an NSX Edge cluster managed by SDDC Manager.
 
 ## Syntax
 
@@ -12,7 +16,7 @@ New-VCFEdgeCluster [-json] <String> [-validate] [<CommonParameters>]
 
 ## Description
 
-The New-VCFEdgeCluster cmdlet creates an NSX Edge Cluster managed by SDDC Manager.
+The `New-VCFEdgeCluster` cmdlet creates an NSX Edge cluster managed by SDDC Manager.
 
 ## Examples
 
@@ -22,9 +26,9 @@ The New-VCFEdgeCluster cmdlet creates an NSX Edge Cluster managed by SDDC Manage
 New-VCFEdgeCluster -json (Get-Content -Raw .\samples\nsx\nsx-edge-clusters\edgeClusterSpec.json)
 ```
 
-This example shows how to create an NSX Edge Cluster using a JSON specification file.
+This example shows how to create an NSX Edge cluster using a JSON specification file.
 
-???+ example "Sample JSON: NSX Edge Cluster"
+???+ example "Sample JSON: NSX Edge cluster"
 
     ```json
     --8<-- "./samples/nsx/nsx-edge-clusters/edgeClusterSpec.json"
@@ -36,7 +40,7 @@ This example shows how to create an NSX Edge Cluster using a JSON specification 
 New-VCFEdgeCluster -json (Get-Content -Raw .\samples\nsx\nsx-edge-clusters\edgeClusterSpec.json) -validate
 ```
 
-This example shows how to validate the NSX Edge Cluster JSON specification file.
+This example shows how to validate the NSX Edge cluster JSON specification file.
 
 ## Parameters
 
@@ -58,7 +62,7 @@ Accept wildcard characters: False
 
 ### -validate
 
-Specifies that the JSON specification should be validated.
+Specifies to validate the JSON specification file.
 
 ```yaml
 Type: SwitchParameter

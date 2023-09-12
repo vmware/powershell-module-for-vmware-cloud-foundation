@@ -12,7 +12,7 @@ Restart-CloudBuilderSDDCValidation [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Restart-CloudBuilderSDDCValidation cmdlet retries a failed management domain validation task on VMware Cloud Builder.
+The `Restart-CloudBuilderSDDCValidation` cmdlet retries a failed management domain validation task on VMware Cloud Builder.
 
 ## Examples
 
@@ -28,7 +28,7 @@ This example shows how to retry a validation on VMware Cloud Builder based on th
 
 ### -id
 
-Specifies the unique ID of the Management Domain validation task
+Specifies the unique ID of the management domain validation task
 
 ```yaml
 Type: String

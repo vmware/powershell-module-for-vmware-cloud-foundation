@@ -12,7 +12,7 @@ Get-VCFHealthSummaryTask [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFHealthSummaryTask cmdlet retrieves the Health Summary tasks.
+The `Get-VCFHealthSummaryTask` cmdlet retrieves the Health Summary tasks.
 
 ## Examples
 

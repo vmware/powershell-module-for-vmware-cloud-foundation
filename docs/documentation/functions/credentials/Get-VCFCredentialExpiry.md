@@ -12,7 +12,7 @@ Get-VCFCredentialExpiry [[-resourceName] <String>] [[-resourceType] <String>] [[
 
 ## Description
 
-The Get-VCFCredentialExpiry cmdlet retrieves the password expiry details of credentials. You can retrieve the password expiry details of credentials by resource name, resource type, or user ID.
+The `Get-VCFCredentialExpiry` cmdlet retrieves the password expiry details of credentials. You can retrieve the password expiry details of credentials by resource name, resource type, or user ID.
 
 ## Examples
 
@@ -68,7 +68,7 @@ Accept wildcard characters: False
 
 ### -resourceType
 
-Specifies the type of the resource.
+Specifies the type of the resource. One of: VCENTER, PSC, ESXI, BACKUP, NSXT_MANAGER, NSXT_EDGE, VRSLCM, WSA, VROPS, VRLI, VRA.
 
 ```yaml
 Type: String

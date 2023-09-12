@@ -12,7 +12,7 @@ Set-VCFFederation [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The Set-VCFFederation cmdlet bootstraps the creation of a federation in SDDC Manager.
+The `Set-VCFFederation` cmdlet bootstraps the creation of a federation in SDDC Manager.
 
 ???+ warning
 

@@ -12,7 +12,7 @@ Get-VCFManager [[-id] <String>] [[-domainId] <String>] [-version <Switch>] [-bui
 
 ## Description
 
-The Get-VCFManager cmdlet retrieves a list of SDDC Managers.
+The `Get-VCFManager` cmdlet retrieves a list of SDDC Managers.
 
 ## Examples
 

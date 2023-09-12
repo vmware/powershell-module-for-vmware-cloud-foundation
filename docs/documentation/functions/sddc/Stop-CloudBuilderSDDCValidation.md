@@ -12,7 +12,7 @@ Stop-CloudBuilderSDDCValidation [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Stop-CloudBuilderSDDCValidation cmdlet stops the in-progress validation of a management domain JSON specification file on VMware Cloud Builder.
+The `Stop-CloudBuilderSDDCValidation` cmdlet stops the in-progress validation of a management domain JSON specification file on VMware Cloud Builder.
 
 ## Examples
 

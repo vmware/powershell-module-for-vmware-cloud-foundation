@@ -12,7 +12,7 @@ Get-VCFPersonality [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFPersonality cmdlet gets the vSphere Lifecycle Manager personalities which are available via depot access.
+The `Get-VCFPersonality` cmdlet gets the vSphere Lifecycle Manager personalities which are available via depot access.
 
 ## Examples
 

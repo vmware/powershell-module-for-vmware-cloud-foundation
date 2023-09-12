@@ -12,7 +12,7 @@ New-VCFNetworkPool [-json] <String> [<CommonParameters>]
 
 ## Description
 
-The New-VCFNetworkPool cmdlet adds a network pool.
+The `New-VCFNetworkPool` cmdlet adds a network pool.
 
 ## Examples
 

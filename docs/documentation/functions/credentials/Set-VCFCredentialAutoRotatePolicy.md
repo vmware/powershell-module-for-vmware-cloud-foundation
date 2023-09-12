@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Connects to the specified SDDC Manager and updates a credential auto rotate policy.
+Updates a credential auto rotate policy.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Set-VCFCredentialAutoRotatePolicy [-resourceName] <String> [-resourceType] <Stri
 
 ## Description
 
-The `Set-VCFCredentialAutoRotatePolicy` cmdlet connects to the specified SDDC Manager and updates the auto rotate policy for a credential. Credentials can be be set to auto rotate using system generated password(s).
+The `Set-VCFCredentialAutoRotatePolicy` cmdlet updates the auto rotate policy for a credential. Credentials can be be set to auto rotate using system generated password(s).
 
 ## Examples
 
@@ -52,7 +52,7 @@ Accept wildcard characters: False
 
 ### -resourceType
 
-The type of the resource for which the credential auto rotate policy is to be set. One amoung: VCENTER, PSC, ESXI, BACKUP, NSXT_MANAGER, NSXT_EDGE, VRSLCM, WSA, VROPS, VRLI, VRA.
+The type of the resource for which the credential auto rotate policy is to be set. One of: VCENTER, PSC, ESXI, BACKUP, NSXT_MANAGER, NSXT_EDGE, VRSLCM, WSA, VROPS, VRLI, VRA.
 
 ```yaml
 Type: String
@@ -69,7 +69,7 @@ Accept wildcard characters: False
 
 ### -credentialType
 
-The type of the credential for which the auto rotate policy is to be set. One among: SSH, API, SSO, AUDIT.
+The type of the credential for which the auto rotate policy is to be set. One of: SSH, API, SSO, AUDIT.
 
 ```yaml
 Type: String

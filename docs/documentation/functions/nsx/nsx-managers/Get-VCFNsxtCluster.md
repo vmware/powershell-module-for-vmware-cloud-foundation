@@ -1,5 +1,9 @@
 # Get-VCFNsxtCluster
 
+## Aliases
+
+`Get-VCFNsxManagerCluster`
+
 ## Synopsis
 
 Retrieves a list of NSX Managers managed by SDDC Manager.
@@ -12,7 +16,7 @@ Get-VCFNsxtCluster [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFNsxtCluster cmdlet retrieves a list of NSX Managers managed by SDDC Manager.
+The `Get-VCFNsxtCluster` cmdlet retrieves a list of NSX Manager clusters managed by SDDC Manager.
 
 ## Examples
 
@@ -22,7 +26,7 @@ The Get-VCFNsxtCluster cmdlet retrieves a list of NSX Managers managed by SDDC M
 Get-VCFNsxtCluster
 ```
 
-This example shows how to retrieve the list of NSX Managers managed by SDDC Manager.
+This example shows how to retrieve the list of NSX Manager clusters managed by SDDC Manager.
 
 ### Example 2
 
@@ -30,21 +34,21 @@ This example shows how to retrieve the list of NSX Managers managed by SDDC Mana
 Get-VCFNsxtCluster -id d189a789-dbf2-46c0-a2de-107cde9f7d24
 ```
 
-This example shows how to retrieve the NSX Manager managed by SDDC Manager by unique ID.
+This example shows how to retrieve the NSX Manager cluster managed by SDDC Manager by unique ID.
 
 ### Example 3
 
 ```powershell
-Get-VCFNsxtCluster | select vipfqdn
+Get-VCFNsxtCluster | Select vipfqdn
 ```
 
-This example shows how to retrieve the NSX Manager managed by SDDC Manager and select the VIP FQDN.
+This example shows how to retrieve the NSX Manager clusters managed by SDDC Manager and select the VIP FQDN.
 
 ## Parameters
 
 ### -id
 
-Specifies the unique ID of the NSX Manager.
+Specifies the unique ID of the NSX Manager cluster.
 
 ```yaml
 Type: String

@@ -12,10 +12,11 @@ Invoke-VCFCommand [[-vcfPassword] <String>] [[-rootPassword] <String>] [-sosOpti
 
 ## Description
 
-The Invoke-VCFCommand cmdlet connects to the specified SDDC Manager via SSH using vcf user and subsequently
-execute elevated SOS commands using the root account.
-Both vcf and root password are mandatory parameters.
-If passwords are not passed as parameters it will prompt for them.
+The `Invoke-VCFCommand` cmdlet connects to the specified SDDC Manager over SSH using the `vcf` user and subsequently run elevated SOS commands using the `root` account.
+
+???+ note "Note"
+
+    The `Invoke-VCFCommand` cmdlet requires the `POSH-SSH` module to be installed.
 
 ## Examples
 
@@ -25,7 +26,7 @@ If passwords are not passed as parameters it will prompt for them.
 Invoke-VCFCommand -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health
 ```
 
-This example will execute and display the output of "/opt/vmware/sddc-support/sos --general-health".
+This example will run and display the output of "/opt/vmware/sddc-support/sos --general-health".
 
 ### Example 2
 
@@ -33,7 +34,7 @@ This example will execute and display the output of "/opt/vmware/sddc-support/so
 Invoke-VCFCommand -sosOption general-health
 ```
 
-This example will ask for vcf and root password to the user and then execute and display the output of "/opt/vmware/sddc-support/sos --general-health".
+This example will ask for vcf and root password to the user and then run and display the output of "/opt/vmware/sddc-support/sos --general-health".
 
 ## Parameters
 

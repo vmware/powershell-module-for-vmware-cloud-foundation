@@ -12,8 +12,7 @@ Get-VCFConfigurationNTPValidation [-id] <String> [<CommonParameters>]
 
 ## Description
 
-The Get-VCFConfigurationNTPValidation cmdlet retrieves the status of the validation of the NTP configuration.
-JSON.
+The `Get-VCFConfigurationNTPValidation` cmdlet retrieves the status of the validation of the NTP configuration.
 
 ## Examples
 

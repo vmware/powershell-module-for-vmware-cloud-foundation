@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Adds an IP Pool to the an existing network of a network pool.
+Adds an IP pool to the an existing network of a network pool.
 
 ## Syntax
 
@@ -12,7 +12,7 @@ Add-VCFNetworkIPPool [-id] <String> [-networkid] <String> [-ipStart] <String> [-
 
 ## Description
 
-The Add-VCFNetworkIPPool cmdlet adds an IP Pool to an existing Network of a network pool.
+The `Add-VCFNetworkIPPool` cmdlet adds an IP pool to an existing network of a network pool.
 
 ## Examples
 
@@ -22,7 +22,7 @@ The Add-VCFNetworkIPPool cmdlet adds an IP Pool to an existing Network of a netw
 Add-VCFNetworkIPPool -id 917bcf8f-93e8-4b84-9627-471899c05f52 -networkid c2197368-5b7c-4003-80e5-ff9d3caef795 -ipStart 192.168.110.61 -ipEnd 192.168.110.64
 ```
 
-This example shows how create an IP Pool on the existing network of a network pool using the unique ID of the network pool, the unique ID of the network, and the start and end IP addresses for the new IP range.
+This example shows how create an IP pool on the existing network of a network pool using the unique ID of the network pool, the unique ID of the network, and the start and end IP addresses for the new IP range.
 
 ## Parameters
 
@@ -44,7 +44,7 @@ Accept wildcard characters: False
 
 ### -networkid
 
-Specifies the unique ID of the target IP Pool.
+Specifies the unique ID of the target network.
 
 ```yaml
 Type: String
@@ -60,7 +60,7 @@ Accept wildcard characters: False
 
 ### -ipStart
 
-Specifies the start IP for the new IP range.
+Specifies the start IP address for the new IP range.
 
 ```yaml
 Type: String
@@ -76,7 +76,7 @@ Accept wildcard characters: False
 
 ### -ipEnd
 
-Specifies the end IP for the new IP range.
+Specifies the end IP address for the new IP range.
 
 ```yaml
 Type: String

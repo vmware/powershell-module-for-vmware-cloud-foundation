@@ -12,7 +12,7 @@ Get-VCFService [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFService cmdlet retrieves the list of services running on SDDC Manager.
+The `Get-VCFService` cmdlet retrieves the list of services running on SDDC Manager.
 
 ## Examples
 

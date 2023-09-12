@@ -12,7 +12,7 @@ Get-VCFCredentialTask [[-id] <String>] [-resourceCredentials] [[-status] <String
 
 ## Description
 
-The Get-VCFCredentialTask cmdlet retrieves a list of credential tasks in reverse chronological order. You can retrieve the credential tasks by unique ID, status, or resource credentials.
+The `Get-VCFCredentialTask` cmdlet retrieves a list of credential tasks in reverse chronological order. You can retrieve the credential tasks by unique ID, status, or resource credentials.
 
 ## Examples
 
@@ -68,7 +68,7 @@ Accept wildcard characters: False
 
 ### -resourceCredentials
 
-Specifies the status of the credential task. One of: SUCCESSFUL, FAILED, USER_CANCELLED.
+Specifies the status of the credential task.
 
 ```yaml
 Type: SwitchParameter
@@ -84,7 +84,7 @@ Accept wildcard characters: False
 
 ### -status
 
-Specifies the status of the credential task.
+Specifies the status of the credential task. One of: SUCCESSFUL, FAILED, USER_CANCELLED.
 
 ```yaml
 Type: String

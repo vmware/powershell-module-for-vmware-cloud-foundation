@@ -12,7 +12,7 @@ Get-VCFNetworkIPPool [-id] <String> [[-networkId] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFNetworkIPPool cmdlet retrieves a list of all networks of a network pool.
+The `Get-VCFNetworkIPPool` cmdlet retrieves a list of all networks of a network pool.
 
 ## Examples
 

@@ -12,7 +12,7 @@ Get-VCFSupportBundleTask [[-id] <String>] [<CommonParameters>]
 
 ## Description
 
-The Get-VCFSupportBundleTask cmdlet retrieves the support bundle tasks.
+The `Get-VCFSupportBundleTask` cmdlet retrieves the support bundle tasks.
 
 ## Examples
 
@@ -29,7 +29,7 @@ This example shows how to retrieve the support bundle tasks.
 ```powershell
 ```
 
-This example shows how to retrieve the support bundle tasks based on the id.
+This example shows how to retrieve the support bundle tasks based on the unique ID.
 
 ## Parameters
 
