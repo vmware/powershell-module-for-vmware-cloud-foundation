@@ -5,13 +5,27 @@
 > Released: Unreleased
 
 - Updated `Request-VCFToken` cmdlet for better error handling.
+- Enhanced `Get-VCFCluster` cmdlet to return associated vSphere Distributed Switches.
 - Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager version in `x.y.z` format.
 - Enhanced `Get-VCFManager` cmdlet to return the SDDC Manager build in `xxxxxxx` format.
 - Added `Set-VCFCredentialAutoRotate` cmdlet to configure or disable credential auto-rotation for a credential managed by SDDC Manager.
-- Fixed `validateJsonInput` function to prevent it from truncating directly passed JSON content.
 - Added `Get-VCFProxy` cmdlet to retrieve the proxy configuration for the SDDC Manager.
 - Added `Set-VCFProxy` cmdlet to configure the proxy configuration for the SDDC Manager.
-- Enhanced `Get-VCFCluster` cmdlet to return associated vSphere Distributed Switches.
+- Added cmdlet aliases:
+  - Added `Get-VCFNsxManagerCluster` for `Get-VCFNsxtCluster`.
+  - Added `Get-VCFNsxEdgeCluster` for `Get-VCFEdgeCluster`.
+  - Added `Get-VCFAriaLifecycle` for `Get-VCFVrslcm`.
+  - Added `New-VCFAriaLifecycle` for `New-VCFVrslcm`.
+  - Added `Remove-VCFAriaLifecycle` for `Remove-VCFVrslcm`.
+  - Added `Reset-VCFAriaLifecycle` for `Reset-VCFVrslcm`.
+  - Added `Get-VCFAriaOperations` for `Get-VCFVrops`.
+  - Added `Get-VCFAriaOperationsConnection` for `Get-VCFVropsConnection`.
+  - Added `Set-VCFAriaOperationsConnection` for `Set-VCFVropsConnection`.
+  - Added `Get-VCFAriaOperationsLogs` for `Get-VCFVrli`.
+  - Added `Get-VCFAriaOperationsLogsConnection` for `Get-VCFVrliConnection`.
+  - Added `Set-VCFAriaOperationsLogsConnection` for `Set-VCFVrliConnection`.
+  - Added `Get-VCFAriaAutomation` for `Get-VCFVra`.
+- Fixed `validateJsonInput` function to prevent it from truncating directly passed JSON content.
 
 ## v2.3.0
 
