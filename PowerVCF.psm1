@@ -5690,6 +5690,348 @@ Export-ModuleMember -Function Get-VCFWsa
 #EndRegion APIs for managing Workspace ONE Access
 
 
+#Region APIs for managing Identity Providers
+
+function Get-VCFIdentityProviders {
+    <#
+    .SYNOPSIS
+    Get a list of all identity providers or a specific one by ID.
+    .DESCRIPTION
+    The Get-VCFIdentityProviders cmdlet retrieves the configured identity providers of the connected SDDC Manager.
+    .EXAMPLE
+    Get-VCFIdentityProviders
+    This example shows how to retrieve the identity providers configured for the connected SDDC Manager
+    .EXAMPLE
+    Get-VCFIdentityProviders -id 3e250ddd-07ec-4923-a161-ab6e9aa588181
+    This example gets the detailAs of an identity provider by its id.
+    #>
+    
+    param(
+    [Parameter(Mandatory = $false)] [string]$id
+    )
+    try {
+        createHeader # Calls createHeader function to set Accept & Authorization
+        checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+        if ($PsBoundParameters.ContainsKey("id")) {
+            $uri = "https://$sddcManager/v1/identity-providers/$id"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response
+        }
+        else {
+            $uri = "https://$sddcManager/v1/identity-providers"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $response
+        }
+    } catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFIdentityProviders
+
+function Get-VCFIdentityProviderIdByType {
+    <#
+    .SYNOPSIS
+    Get the ID of a VCF identity provider for a specific type.
+    .DESCRIPTION
+    The Get-VCFIdentityProviderIdByType cmdlet retrieves the ID of an identity provider by specifying "Embedded" or "Microsoft ADFS".
+    .EXAMPLE
+    Get-VCFIdentityProviderIdByType -type Embedded
+    This example shows how to get the ID of an embedded identity provider.
+    .EXAMPLE
+    Get-VCFIdentityProviderIdByType -type "Microsoft ADFS"
+    This example shows how to get the ID of an external identity provider.
+    #>
+    
+    param(
+    [Parameter(Mandatory = $true)][ValidateSet("Embedded","Microsoft ADFS")] [string]$type
+    )
+    Try {
+        $response = Get-VCFIdentityProviders
+        foreach ($item in $response.elements) {
+            if ($item.type -eq $type) {
+                return $item.id
+            }
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFIdentityProviderIdByType
+
+function Remove-VCFIdentityProvider {
+    <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager & deletes an identity provider.
+    .DESCRIPTION
+    The Remove-VCFIdentityProvider cmdlet is used to delete an identity provider by specifying its type as "Embedded" or "Microsoft ADFS".
+    .EXAMPLE
+    Remove-VCFIdentityProvider -type Embedded -domainName sfo.rainpole.io.
+    This example shows how to delete an embedded identity provider with a specific domain name.
+    .EXAMPLE
+    Remove-VCFIdentityProvider -type "Microsoft ADFS".
+    This example shows how to delete an external identity provider.
+    #>
+
+    param(
+    [Parameter(Mandatory = $true)][ValidateSet("Embedded","Microsoft ADFS")] [string]$type,
+    [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$domainName
+    )
+    Try {
+        if ($type -eq "Embedded") {
+            $id = (Get-VCFIdentityProviderIdByType -Type $type)
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
+            Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response
+        }
+        elseif ($type -eq "Microsoft ADFS") {
+            $id = (Get-VCFIdentityProviderIdByType -Type $type)
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/identity-providers/$id"
+            Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Remove-VCFIdentityProvider
+
+function New-VCFIdentityProvider {
+    <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and configures an identity provider.
+    .DESCRIPTION
+    The New-VCFIdentityProvider cmdlet connects to the specified SDDC Manager and configures an embedded or external identity provider from a JSON spec.
+    .EXAMPLE
+    New-VCFIdentityProvider -type Embedded -json .\embeddedIDPSpec.json
+    This example shows how to configure an embedded identity provider from the JSON spec.
+    .EXAMPLE
+    New-VCFIdentityProvider -type "Microsoft ADFS" -json .\externalIDPSpec.json
+    This example shows how to configure "Microsoft ADFS" identity provider from the JSON spec.
+    #>
+
+    param(
+    [Parameter(Mandatory = $true)][ValidateSet("Embedded","Microsoft ADFS")] [string]$type,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$json
+    )
+    Try {
+        if ($type -eq "Embedded") {
+            $jsonBody = validateJsonInput -json $json
+            $id = (Get-VCFIdentityProviderIdByType -Type Embedded)
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources"
+            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
+            $response
+        }
+        elseif ($type -eq "Microsoft ADFS") {
+            $jsonBody = validateJsonInput -json $json
+            $json
+            createHeader # Calls createHeader function to set Accept & Authorization
+            checkVCFToken # Calls the CheckVCFToken function to validate the access token and refresh if necessary
+            $uri = "https://$sddcManager/v1/identity-providers"
+            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $json
+            $response
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function New-VCFIdentityProvider
+
+function Add-VCFEmbeddedIdentitySource {
+    <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and adds an embedded identity source.
+    .DESCRIPTION
+    The Add-EmbeddedIdentitySource cmdlet connects to the specified SDDC Manager and adds an embedded identity source.
+    .EXAMPLE
+    Add-EmbeddedIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldaps://sfo-ad01.sfo.rainpole.io:636 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io"  -ldapsCert F:\certificates\Root64.cer
+    This example shows how to add an Active Directory over LDAP server as identity source using ldaps protocol with CA certificate.  
+    .EXAMPLE
+    Add-EmbeddedIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldaps://sfo-ad01.sfo.rainpole.io:636 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io"  -ldapsCert F:\certificates\Root64.cer,F:\certificates\cert1.cer
+    This example shows how to add an Active Directory over LDAP server as identity source using ldaps protocol with CA certificates.  
+    .EXAMPLE
+    Add-EmbeddedIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldap://sfo-ad01.sfo.rainpole.io:389 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io"
+    This example shows how to add an Active Directory over LDAP server as identity source using ldap protocol. 
+    #>
+
+    param(
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$name,
+    [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$domainAlias = " ",
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$domainName,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$username,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$password,
+    [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] $ldapsCert,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$usersBaseDn,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$groupsBaseDn,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$primaryLdapServerURL,
+    [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$secondaryLdapServerURL
+    )
+    Try {
+        $serverEndpointsArray = $primaryLdapServerURL
+        $primaryLdapProtocol = ($primaryLdapServerURL).split(":")[0]
+        if ($PsBoundParameters.ContainsKey("secondaryLdapServerURL")) {
+            $secondaryLdapProtocol = ($secondaryLdapServerURL).split(":")[0]
+            $serverEndpointsArray = "$primaryLdapServerURL","$secondaryLdapServerURL"
+        }
+        else {
+            $secondaryLdapProtocol = "False"
+        }
+        if (($primaryLdapProtocol -eq "ldaps") -or ($secondaryLdapProtocol -eq "ldaps")) {
+            if ($PsBoundParameters.ContainsKey("ldapsCert")) {
+                if ($ldapsCert.count -gt 1) {
+                    $ldapsCertList = ""
+                    foreach ($certfile in $ldapsCert.split(",")) {
+                        $ldapsCertValue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($certfile))
+                        $ldapsCertList += "$ldapsCertValue,"
+                    }
+                    $ldapsCertArray = ($ldapsCertList.TrimEnd(',')).split(",")
+                }
+                else {
+                    $ldapsCertArray = [Convert]::ToBase64String([IO.File]::ReadAllBytes($ldapsCert))
+                }
+            }
+            else {
+                Write-Error ("ldaps protocol is specified but ldapsCert file is not provided.Exiting...")
+                break
+            }
+        }
+        else {
+            $ldapsCertArray = @()
+        }
+        $ldapObject = [pscustomobject]@{
+            "name" = "$name"
+            "ldap" = [pscustomobject]@{
+                "domainAlias" = "$domainAlias"
+                "domainName" = "$domainName"
+                "password" = "$password"
+                "type" = "ActiveDirectory"
+                "username" = "$username"
+                "sourceDetails" = [pscustomobject]@{
+                    "ldapsCert" = @($ldapsCertArray)
+                    "serverEndpoints" = @($serverEndpointsArray)
+                    "groupsBaseDn" = "$groupsBaseDn"
+                    "usersBaseDn" = "$usersBaseDn" }
+            }
+        }
+        $json = $ldapObject | ConvertTo-Json -Depth 6
+        New-VCFIdentityProvider -Type Embedded -json $json
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Add-VCFEmbeddedIdentitySource
+
+function Add-VCFExternalIdentitySource {
+    <#
+    .SYNOPSIS
+    Connects to the specified SDDC Manager and adds an external identity source.
+    .DESCRIPTION
+    The Add-ExternalIdentitySource cmdlet connects to the specified SDDC Manager and adds an external identity source.
+    .EXAMPLE
+    Add-ExternalIdentitySource -name "ADFS01" -username "svc-vcf-ca@rainpole.io" -password VMw@re123! -groupsBaseDn "OU=Security Groups,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=rainpole,DC=io" -primaryLdapServerURL "ldaps://rpl-dc01.rainpole.io:636" -clientId "d49b72f6-ec04-41bb-bad6-aad368af2fe5" -clientSecret "HFEH59piO3NfzbFp9O5rGskCVEdBQ_aM8dTPo8wer" -discoveryEndpoint "https://rpl-dc01.rainpole.io/adfs/.well-known/openid-configuration" -adfsCert F:\platformtools\certificates\Root64.cer -ldapsCert F:\platformtools\certificates\RootCA\Root64.cer
+    This example shows how to add Active Directory Federation Services (AD FS) as an external identity provider using ldaps protocol with LDAPS CA certificate.  
+    .EXAMPLE
+    Add-ExternalIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldap://sfo-ad01.sfo.rainpole.io:389 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io"
+    This example shows how to add Active Directory Federation Services (AD FS) as an external identity provider using ldap protocol.
+    #>
+    
+    param(
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$name,
+    [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] $adfsCert,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$username,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$password,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$groupsBaseDn,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$usersBaseDn,
+    [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] $ldapsCert,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$clientId,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$clientSecret,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$discoveryEndpoint,
+    [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$primaryLdapServerURL,
+    [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$secondaryLdapServerURL
+    )
+    Try {
+        if ($PsBoundParameters.ContainsKey("adfsCert")) {
+            if ($adfsCert.count -gt 1) {
+                $adfsCertList = ""
+                foreach ($adfscertfile in $adfsCert.split(",")) {
+                    $adfsCertValue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($adfscertfile))
+                    $adfsCertList += "$adfsCertValue,"
+                }
+                $adfsCertList = $adfsCertList.TrimEnd(',')
+                $adfsCertArray = $adfsCertList.split(",")
+            }
+            else {
+                $adfsCertValue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($adfsCert))
+                $adfsCertArray += $adfsCertValue
+            }
+        }
+        else {
+            $adfsCertArray = @()
+        }
+        $serverEndpointsArray = $primaryLdapServerURL
+        $primaryLdapProtocol = ($primaryLdapServerURL).split(":")[0]
+        if ($PsBoundParameters.ContainsKey("secondaryLdapServerURL")) {
+            $secondaryLdapProtocol = ($secondaryLdapServerURL).split(":")[0]
+            $serverEndpointsArray = "$primaryLdapServerURL","$secondaryLdapServerURL"
+        }
+        else {
+            $secondaryLdapProtocol = "False"
+        }
+        if (($primaryLdapProtocol -eq "ldaps") -or ($secondaryLdapProtocol -eq "ldaps")) {
+            if ($PsBoundParameters.ContainsKey("ldapsCert")) {
+                if ($ldapsCert.count -gt 1) {
+                    $ldapCertlist = ""
+                    foreach ($cert in $ldapsCert.split(",")) {
+                        $ldapCertvalue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($cert))
+                        $ldapCertlist += "$ldapCertvalue,"
+                    }
+                    $ldapCertarray = ($ldapCertlist.TrimEnd(',')).split(",")
+                }
+                else {
+                    $ldapCertarray = [Convert]::ToBase64String([IO.File]::ReadAllBytes($ldapsCert))
+                }
+            }
+            else {
+                Write-Error ("ldaps is specified but ldapsCert is not provided.Exiting...")
+                break
+            }
+        }
+        else {
+            $ldapCertarray = @() }
+        $ldapObject = [pscustomobject]@{
+            "name" = "$name"
+            "type" = "AD_FS"
+            "certChain" = @($adfsCertArray)
+            "ldap" = [pscustomobject]@{
+                "username" = "$username"
+                "password" = "$password"
+                "sourceDetails" = [pscustomobject]@{
+                    "certChain" = @($ldapCertarray)
+                    "serverEndpoints" = @($serverEndpointsArray)
+                    "groupsBaseDn" = "$groupsBaseDn"
+                    "usersBaseDn" = "$usersBaseDn" }
+            }
+            "oidc" = [pscustomobject]@{
+                "clientId" = "$clientId"
+                "clientSecret" = "$clientSecret"
+                "discoveryEndpoint" = "$discoveryEndpoint"
+            }
+        }
+        $json = $ldapObject | ConvertTo-Json -Depth 6
+        $json
+        $response = New-VCFIdentityProvider -Type "Microsoft ADFS" -json $json
+        $response
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Add-VCFExternalIdentitySource
+
+#EndRegion APIs for managing Identity Providers
+
 #Region APIs for managing Validations (Not Exported)
 
 # The following functions are not exported since they are used internally by the cmdlets that manage the validations.
