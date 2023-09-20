@@ -6182,8 +6182,7 @@ Function Update-VCFIdentityProvider {
                 $id = (Get-VCFIdentityProviderIdByType -Type "Microsoft ADFS")
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
-            $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
-            $response  # This API does not return a response.
+            Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody # This API does not return a response.
          } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
