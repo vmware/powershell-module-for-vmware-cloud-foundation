@@ -35,6 +35,12 @@ if ($PSEdition -eq 'Desktop') {
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
 
+#Region Global Variables
+
+Set-Variable -Name msgVcfApiNotSupported -Value "This API is not supported on this version of VMware Cloud Foundation:" -Scope Global
+
+#EndRegion Global Variables
+
 #Region APIs for managing Tokens and Initial Connections
 Function Request-VCFToken {
     <#
@@ -5718,7 +5724,7 @@ Function Get-VCFIdentityProvider {
     )
 
     Try {
-         if ((Get-VCFManager -version) -ge '4.5.0') {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($PsBoundParameters.ContainsKey("id")) {
@@ -5729,7 +5735,7 @@ Function Get-VCFIdentityProvider {
                 (Invoke-RestMethod -Method GET -Uri $uri -Headers $headers).elements
             }
         } else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+            Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
     } Catch {
         ResponseException -Object $_
@@ -5766,8 +5772,7 @@ Function Remove-VCFIdentityProvider {
     )
 
     Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge '4.5.0') {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
@@ -5779,7 +5784,7 @@ Function Remove-VCFIdentityProvider {
             }
             Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response.
         } else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+            Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
     } Catch {
         ResponseException -Object $_
@@ -5830,7 +5835,7 @@ Function New-VCFIdentityProvider {
             }
             Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
         } else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+            Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
     } Catch {
         ResponseException -Object $_
@@ -6128,7 +6133,7 @@ Function Update-VCFIdentityProvider {
     )
 
     Try {
-         if ((Get-VCFManager -version) -ge '4.5.0') {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
@@ -6141,8 +6146,8 @@ Function Update-VCFIdentityProvider {
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody # This API does not return a response.
-         } else {
-            Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
+        } else {
+            Write-Warning $msgVcfApiNotSupported $(Get-VCFManager -version)
         }
     } Catch {
         ResponseException -Object $_
