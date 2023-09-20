@@ -11,7 +11,7 @@
 - Added `Set-VCFCredentialAutoRotate` cmdlet to configure or disable credential auto-rotation for a credential managed by SDDC Manager.
 - Added `Get-VCFProxy` cmdlet to retrieve the proxy configuration for the SDDC Manager.
 - Added `Set-VCFProxy` cmdlet to configure the proxy configuration for the SDDC Manager.
-- Added `Get-VCFIdentityProviders` and `Get-VCFIdentityProviderIdByType` cmdlets to retrieve the identity provider configuration.
+- Added `Get-VCFIdentityProvider` and `Get-VCFIdentityProviderIdByType` cmdlets to retrieve the identity provider configuration.
 - Added `Remove-VCFIdentityProvider` cmdlet to delete an identity provider.
 - Added `New-VCFIdentityProvider` cmdlet to configure an embedded or external identity provider.
 - Added `Add-VCFEmbeddedIdentitySource` cmdlet to add an embedded identity source.

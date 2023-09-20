@@ -5692,21 +5692,21 @@ Export-ModuleMember -Function Get-VCFWsa
 
 #Region APIs for managing Identity Providers
 
-Function Get-VCFIdentityProviders {
+Function Get-VCFIdentityProvider {
     <#
         .SYNOPSIS
         Retrieves a list of all identity providers or the details of a specific identity provider.
 
         .DESCRIPTION
-        The Get-VCFIdentityProviders cmdlet retrieves a list of all identity providers or the details of a specific
+        The Get-VCFIdentityProvider cmdlet retrieves a list of all identity providers or the details of a specific
         identity provider.
 
         .EXAMPLE
-        Get-VCFIdentityProviders
+        Get-VCFIdentityProvider
         This example shows how to retrieve the details of all identity providers.
 
         .EXAMPLE
-        Get-VCFIdentityProviders -id 3e250ddd-07ec-4923-a161-ab6e9aa588181
+        Get-VCFIdentityProvider -id 3e250ddd-07ec-4923-a161-ab6e9aa588181
         This example shows how to retrieve the details of a specific identity provider.
 
         .PARAMETER id
@@ -5718,17 +5718,16 @@ Function Get-VCFIdentityProviders {
     )
 
     Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge '4.5.0') {
+         if ((Get-VCFManager -version) -ge '4.5.0') {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($PsBoundParameters.ContainsKey("id")) {
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
+                Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             } else {
                 $uri = "https://$sddcManager/v1/identity-providers"
+                (Invoke-RestMethod -Method GET -Uri $uri -Headers $headers).elements
             }
-            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
-            $response
         } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
@@ -5736,44 +5735,7 @@ Function Get-VCFIdentityProviders {
         ResponseException -Object $_
     }
 }
-Export-ModuleMember -Function Get-VCFIdentityProviders
-
-Function Get-VCFIdentityProviderIdByType {
-    <#
-        .SYNOPSIS
-        Retrieves the ID of an identity provider based on its type.
-
-        .DESCRIPTION
-        The Get-VCFIdentityProviderIdByType cmdlet retrieves the ID of an identity provider based on its type.
-
-        .EXAMPLE
-        Get-VCFIdentityProviderIdByType -type Embedded
-        This example shows how to retrieve the ID of an embedded identity provider.
-
-        .EXAMPLE
-        Get-VCFIdentityProviderIdByType -type "Microsoft ADFS"
-        This example shows how to retrieve the ID of an external identity provider.
-
-        .PARAMETER type
-        Specifies the type of the identity provider. One of: Embedded, Microsoft ADFS.
-    #>
-
-    Param (
-        [Parameter(Mandatory = $true)][ValidateSet("Embedded","Microsoft ADFS")] [string]$type
-    )
-
-    Try {
-        $response = Get-VCFIdentityProviders
-        foreach ($item in $response.elements) {
-            if ($item.type -eq $type) {
-                return $item.id
-            }
-        }
-    } Catch {
-        ResponseException -Object $_
-    }
-}
-Export-ModuleMember -Function Get-VCFIdentityProviderIdByType
+Export-ModuleMember -Function Get-VCFIdentityProvider
 
 Function Remove-VCFIdentityProvider {
     <#
@@ -5799,8 +5761,8 @@ Function Remove-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter(Mandatory = $true)][ValidateSet("Embedded","Microsoft ADFS")] [string]$type,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$domainName
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
     Try {
@@ -5809,10 +5771,10 @@ Function Remove-VCFIdentityProvider {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
-                $id = (Get-VCFIdentityProviderIdByType -Type $type)
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
             } elseif ($type -eq "Microsoft ADFS") {
-                $id = (Get-VCFIdentityProviderIdByType -Type $type)
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response.
@@ -5850,25 +5812,23 @@ Function New-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [string]$type,
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [string]$json
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge '4.5.0') {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProviderIdByType -Type Embedded)
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources"
             } elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
                 $uri = "https://$sddcManager/v1/identity-providers"
             }
-            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
-            $response
+            Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
         } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
@@ -5930,16 +5890,16 @@ Function Add-VCFEmbeddedIdentitySource {
     #>
 
     Param(
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$name,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$domainAlias,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$domainName,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$username,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$password,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] $ldapsCert,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$usersBaseDn,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$groupsBaseDn,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$primaryLdapServerURL,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$secondaryLdapServerURL
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainAlias,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $ldapsCert,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$usersBaseDn,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$groupsBaseDn,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$primaryLdapServerURL,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$secondaryLdapServerURL
     )
 
     Try {
@@ -6049,18 +6009,18 @@ Function Add-VCFExternalIdentitySource {
     #>
 
     Param(
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$name,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] $adfsCert,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$username,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$password,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$usersBaseDn,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$groupsBaseDn,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] $ldapsCert,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$clientId,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$clientSecret,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$discoveryEndpoint,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$primaryLdapServerURL,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$secondaryLdapServerURL
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $adfsCert,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$usersBaseDn,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$groupsBaseDn,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $ldapsCert,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$clientId,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$clientSecret,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$discoveryEndpoint,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$primaryLdapServerURL,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$secondaryLdapServerURL
     )
 
     Try {
@@ -6128,8 +6088,7 @@ Function Add-VCFExternalIdentitySource {
         }
         }
         $json = $ldapObject | ConvertTo-Json -Depth 6
-        $response = New-VCFIdentityProvider -Type "Microsoft ADFS" -json $json
-        $response
+        New-VCFIdentityProvider -Type "Microsoft ADFS" -json $json
     } Catch {
         ResponseException -Object $_
     }
@@ -6163,23 +6122,22 @@ Function Update-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter(Mandatory = $true)][ValidateSet("Embedded","Microsoft ADFS")] [string]$type,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$domainName,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$json
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     Try {
-        $vcfVersion = Get-VCFManager -version
-        if ($vcfVersion -ge '4.5.0') {
+         if ((Get-VCFManager -version) -ge '4.5.0') {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProviderIdByType -Type Embedded)
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
             } elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProviderIdByType -Type "Microsoft ADFS")
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody # This API does not return a response.
@@ -6237,19 +6195,19 @@ Function Update-VCFEmbeddedIdentitySource {
     #>
 
     Param (
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$name,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$domainName,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$username,
-        [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] [string]$password,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] $ldapsCert,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$usersBaseDn,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$groupsBaseDn,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$primaryLdapServerURL,
-        [Parameter(Mandatory = $false)][ValidateNotNullOrEmpty()] [string]$secondaryLdapServerURL
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $ldapsCert,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$usersBaseDn,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$groupsBaseDn,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$primaryLdapServerURL,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$secondaryLdapServerURL
     )
 
     Try {
-        $currentconfig = (Get-VCFIdentityProviders).elements.identitySources |
+        $currentconfig = (Get-VCFIdentityProvider).identitySources |
         ForEach-Object { if ($_.ldap.domainName -eq $domainName) { $_ } }
         if ($currentconfig) {
             if ($PsBoundParameters.ContainsKey("name")) {
