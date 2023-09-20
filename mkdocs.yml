@@ -222,8 +222,7 @@ nav:
   - Identity Providers:
       - documentation/functions/idp/Add-VCFEmbeddedIdentitySource.md
       - documentation/functions/idp/Add-VCFExternalIdentitySource.md
-      - documentation/functions/idp/Get-VCFIdentityProviderIdByType.md
-      - documentation/functions/idp/Get-VCFIdentityProviders.md
+      - documentation/functions/idp/Get-VCFIdentityProvider.md
       - documentation/functions/idp/New-VCFIdentityProvider.md
       - documentation/functions/idp/Remove-VCFIdentityProvider.md
       - documentation/functions/idp/Update-VCFEmbeddedIdentitySource.md
