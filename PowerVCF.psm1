@@ -35,6 +35,12 @@ if ($PSEdition -eq 'Desktop') {
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
 
+#Region Global Variables
+
+Set-Variable -Name msgVcfApiNotSupported -Value "This API is not supported on this version of VMware Cloud Foundation:" -Scope Global
+
+#EndRegion Global Variables
+
 #Region APIs for managing Tokens and Initial Connections
 Function Request-VCFToken {
     <#
@@ -98,7 +104,7 @@ public static class Placeholder {
     }
 }
 "@
-} 
+}
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
@@ -185,7 +191,7 @@ public static class Placeholder {
     }
 }
 "@
-} 
+}
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
@@ -299,7 +305,7 @@ Function Add-VCFApplicationVirtualNetwork {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
-    
+
     Try {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
@@ -372,7 +378,7 @@ Function Set-VCFBackupConfiguration {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
-    
+
     Try {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
@@ -588,7 +594,7 @@ Function Start-VCFBundleUpload {
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
- 
+
     Try {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
@@ -941,7 +947,7 @@ Function Get-VCFCertificate {
         .EXAMPLE
         Get-VCFCertificate -domainName sfo-m01 | Select issuedTo
         TThis example shows how to retrieve the latest generated certificate(s) for a workload domain and select the issuedTo property.
-       
+
         .EXAMPLE
         Get-VCFCertificate -domainName sfo-m01 -resources
         This example shows how to retrieve the latest generated certificate(s) for a workload domain and retrieve the certificates for all resources in the workload domain.
@@ -1105,7 +1111,7 @@ Function Get-VCFCluster {
         }
         if ($PsBoundParameters.ContainsKey("id")) {
             if ($PsBoundParameters.ContainsKey("vdses")) {
-                $uri = "https://$sddcManager/v1/clusters/$id/vdses" 
+                $uri = "https://$sddcManager/v1/clusters/$id/vdses"
             } else {
                 $uri = "https://$sddcManager/v1/clusters/$id"
             }
@@ -1122,7 +1128,7 @@ Function Get-VCFCluster {
                 $response
             } else {
                 $response.elements | Where-Object { $_.name -eq $name }
-            }            
+            }
         }
     } Catch {
         ResponseException -object $_
@@ -1222,7 +1228,7 @@ Function Set-VCFCluster {
         if ( -not $PsBoundParameters.ContainsKey("json") -and ( -not $PsBoundParameters.ContainsKey("markForDeletion"))) {
             Throw "You must include either -json or -markForDeletion"
         }
-        
+
             $jsonBody = validateJsonInput -json $json   # validate input file and format
             $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # validate the JSON provided meets the cluster specifications format
             # the validation API does not currently support polling with a task ID
@@ -1242,7 +1248,7 @@ Function Set-VCFCluster {
             else {
                 Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
             }
-        
+
         if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
             $jsonBody = '{"markForDeletion": true}'
             $uri = "https://$sddcManager/v1/clusters/$id/"
@@ -1415,7 +1421,7 @@ Function Set-VCFCredential {
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
-    
+
     Try {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
@@ -1435,7 +1441,7 @@ Function Set-VCFCredentialAutoRotatePolicy {
         Updates a credential auto rotate policy.
 
         .DESCRIPTION
-        The Set-VCFCredentialAutoRotatePolicy cmdlet updates the auto rotate policy for a credential. 
+        The Set-VCFCredentialAutoRotatePolicy cmdlet updates the auto rotate policy for a credential.
         Credentials can be be set to auto rotate using system generated password(s).
 
         .EXAMPLE
@@ -1459,7 +1465,7 @@ Function Set-VCFCredentialAutoRotatePolicy {
         The username of the credential for which the auto rotate policy is to be set.
 
         .PARAMETER autoRotate
-        Enable or disable the auto rotate policy. 
+        Enable or disable the auto rotate policy.
 
         .PARAMETER frequencyInDays
         The frequency in days for the auto rotate policy. This parameter is required only if the autoRotate parameter is set to ENABLED.
@@ -1559,7 +1565,7 @@ Function Get-VCFCredentialTask {
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$resourceCredentials,
         [Parameter (Mandatory = $false)] [ValidateSet("SUCCESSFUL", "FAILED", "USER_CANCELLED")] [String]$status
-        
+
     )
 
     Try {
@@ -1927,7 +1933,7 @@ Function New-VCFWorkloadDomain {
     )
 
     Try {
-        $jsonBody = validateJsonInput -json $json        
+        $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $response = Validate-WorkloadDomainSpec -json $jsonBody # Validate the JSON specification file. # the validation API does not currently support polling with a task ID
@@ -1974,7 +1980,7 @@ Function Set-VCFWorkloadDomain {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/domains/$id"
         $body = '{"markForDeletion": true}'
-        Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body # This API does not return a response
+        Invoke-RestMethod -Method PATCH -URI $uri -ContentType application/json -headers $headers -body $body # This API does not return a response.
     } Catch {
         ResponseException -object $_
     }
@@ -1987,7 +1993,7 @@ Function Remove-VCFWorkloadDomain {
         Removes a workload domain.
 
         .DESCRIPTION
-        The Remove-VCFWorkloadDomain cmdlet removes a workload domain from the SDDC Manager. 
+        The Remove-VCFWorkloadDomain cmdlet removes a workload domain from the SDDC Manager.
         You can specify the workload domain by unique ID.
         Before a workload domain can be deleted it must first be marked for deletion.
 
@@ -2080,7 +2086,7 @@ Function Set-VCFFederation {
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
-    
+
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
@@ -2117,7 +2123,7 @@ Function Remove-VCFFederation {
         Remove-VCFFederation
         This example shows how to remove a federation from SDDC Manager.
     #>
-    
+
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
@@ -2191,7 +2197,7 @@ Function Get-VCFFederationMember {
         Get-VCFFederationMember
         This example shows how to retrieve the information about the members of a federation from SDDC Manager.
     #>
-    
+
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
@@ -2387,7 +2393,7 @@ Function Get-VCFFederationTask {
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
-        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'     
+        $msgEndOfSupport = 'Multi-instance management is not supported in 4.4.0 and later.'
         $vcfVersion = Get-VCFManager -version
         if ($vcfVersion -ge '4.4.0') {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion. $msgEndOfSupport"
@@ -2494,7 +2500,7 @@ Function Get-VCFHost {
         [Parameter (Mandatory = $false, ParameterSetName = "status")] [ValidateSet('ASSIGNED', 'UNASSIGNED_USEABLE', 'UNASSIGNED_UNUSEABLE', IgnoreCase = $false)] [String]$Status,
         [Parameter (Mandatory = $false, ParameterSetName = "id")] [ValidateNotNullOrEmpty()] [String]$id
     )
- 
+
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
@@ -2562,7 +2568,7 @@ Function New-VCFCommissionedHost {
     }
 
     Try {
-        $jsonBody = validateJsonInput -json $json        
+        $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -Not $PsBoundParameters.ContainsKey("validate")) {
@@ -2629,7 +2635,7 @@ Function Remove-VCFCommissionedHost {
     }
 
     Try {
-        $jsonBody = validateJsonInput -json $json        
+        $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/hosts"
@@ -2749,7 +2755,7 @@ Function New-VCFLicenseKey {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $jsonBody = '{ "key" : "' + $key + '", "productType" : "' + $productType + '", "description" : "' + $description + '" }'
         $uri = "https://$sddcManager/v1/license-keys"
-        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody # This API does not return a response
+        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody # This API does not return a response.
         Get-VCFLicenseKey -key $key
     } Catch {
         ResponseException -object $_
@@ -2782,7 +2788,7 @@ Function Remove-VCFLicenseKey {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/license-keys/$key"
-        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response.
+        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response..
     } Catch {
         ResponseException -object $_
     }
@@ -2899,12 +2905,12 @@ Function New-VCFNetworkPool {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
-        $uri = "https://$sddcManager/v1/network-pools"  
-        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody # This API does not return a response body.
+        $uri = "https://$sddcManager/v1/network-pools"
+        Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody # This API does not return a response.
         # Sending GET to validate the Network Pool creation was successful
         $validate = $jsonBody | ConvertFrom-Json
         $poolName = $validate.name
-        Get-VCFNetworkPool -name $poolName 
+        Get-VCFNetworkPool -name $poolName
     } Catch {
         ResponseException -object $_
     }
@@ -2935,7 +2941,7 @@ Function Remove-VCFNetworkPool {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/network-pools/$id"
-        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response.
+        Invoke-RestMethod -Method DELETE -URI $uri -headers $headers # This API does not return a response..
     } Catch {
         ResponseException -object $_
     }
@@ -3335,7 +3341,7 @@ Function New-VCFPersonality {
         "clusterId" : "'+ $clusterId + '"
   },
   "name" : "'+ $name + '"
-    }' 
+    }'
 
     Try {
         createHeader # Set the Accept and Authorization headers.
@@ -4024,7 +4030,7 @@ Function Get-VCFHealthSummaryTask {
                 $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
                 $response.elements
             }
-        } else { 
+        } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
     } Catch {
@@ -4062,7 +4068,7 @@ Function Request-VCFHealthSummaryBundle {
             $vcfHeaders.Add("Authorization", "Bearer $accessToken")
             $uri = "https://$sddcManager/v1/system/health-summary/$id/data"
             Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "health-summary-$id.tar"
-        } else { 
+        } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
     } Catch {
@@ -4100,7 +4106,7 @@ Function Start-VCFHealthSummary {
             $uri = "https://$sddcManager/v1/system/health-summary"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
-        } else { 
+        } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
     } Catch {
@@ -4147,7 +4153,7 @@ Function Get-VCFSupportBundleTask {
                 $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
                 $response.elements
             }
-        } else { 
+        } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
     } Catch {
@@ -4184,7 +4190,7 @@ Function Request-VCFSupportBundle {
             $vcfHeaders.Add("Authorization", "Bearer $accessToken")
             $uri = "https://$sddcManager/v1/system/support-bundles/$id/data"
             Invoke-RestMethod -Method GET -URI $uri -headers $vcfHeaders -OutFile "support-bundle-$id.tar"
-        } else { 
+        } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
     } Catch {
@@ -4222,7 +4228,7 @@ Function Start-VCFSupportBundle {
             $uri = "https://$sddcManager/v1/system/support-bundles"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
             $response
-        } else { 
+        } else {
             Write-Warning "This API is not supported on this version of VMware Cloud Foundation: $vcfVersion."
         }
     } Catch {
@@ -4464,7 +4470,7 @@ Function Get-JWTDetail {
     Foreach ($i in 0..1) {
         $data = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
         Switch ($data.Length % 4) {
-            0 { break }
+            0 { Break }
             2 { $data += '==' }
             3 { $data += '=' }
         }
@@ -4478,7 +4484,7 @@ Function Get-JWTDetail {
     Foreach ($i in 0..2) {
         $sig = $token.Split('.')[$i].Replace('-', '+').Replace('_', '/')
         Switch ($sig.Length % 4) {
-            0 { break }
+            0 { Break }
             2 { $sig += '==' }
             3 { $sig += '=' }
         }
@@ -4600,7 +4606,7 @@ Function Start-VCFUpgrade {
     createHeader # Set the Accept and Authorization headers.
     checkVCFToken # Validate the access token and refresh, if necessary.
     $uri = "https://$sddcManager/v1/upgrades"
-    
+
         $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
         $response
     } Catch {
@@ -5090,7 +5096,7 @@ Function Set-VCFConfigurationNTP {
 }
 Export-ModuleMember -Function Set-VCFConfigurationNTP
 
-#EndRegion APIs for managing DNS and NTP 
+#EndRegion APIs for managing DNS and NTP
 
 
 #Region APIs for managing Proxy Configuration
@@ -5339,7 +5345,7 @@ Function New-VCFVrslcm {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
-        
+
         if ( -not $PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/vrslcms"
             $response = Invoke-RestMethod -Method POST -URI $uri -headers $headers -ContentType application/json -body $jsonBody
@@ -5476,7 +5482,7 @@ Function Get-VCFVropsConnection {
         createHeader # See access token and refresh, if necessary.t the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrops/domains"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
     } Catch {
         ResponseException -object $_
@@ -5575,7 +5581,7 @@ Function Get-VCFVrliConnection {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/vrli/domains"
-        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers 
+        $response = Invoke-RestMethod -Method GET -URI $uri -headers $headers
         $response.elements
     } Catch {
         ResponseException -object $_
@@ -5689,6 +5695,575 @@ Export-ModuleMember -Function Get-VCFWsa
 
 #EndRegion APIs for managing Workspace ONE Access
 
+
+#Region APIs for managing Identity Providers
+
+Function Get-VCFIdentityProvider {
+    <#
+        .SYNOPSIS
+        Retrieves a list of all identity providers or the details of a specific identity provider.
+
+        .DESCRIPTION
+        The Get-VCFIdentityProvider cmdlet retrieves a list of all identity providers or the details of a specific
+        identity provider.
+
+        .EXAMPLE
+        Get-VCFIdentityProvider
+        This example shows how to retrieve the details of all identity providers.
+
+        .EXAMPLE
+        Get-VCFIdentityProvider -id 3e250ddd-07ec-4923-a161-ab6e9aa588181
+        This example shows how to retrieve the details of a specific identity provider.
+
+        .PARAMETER id
+        Specifies the unique ID of the identity provider.
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+    )
+
+    Try {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            if ($PsBoundParameters.ContainsKey("id")) {
+                $uri = "https://$sddcManager/v1/identity-providers/$id"
+                Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            } else {
+                $uri = "https://$sddcManager/v1/identity-providers"
+                (Invoke-RestMethod -Method GET -Uri $uri -Headers $headers).elements
+            }
+        } else {
+            Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Get-VCFIdentityProvider
+
+Function Remove-VCFIdentityProvider {
+    <#
+        .SYNOPSIS
+        Removes an identity provider.
+
+        .DESCRIPTION
+        The Remove-VCFIdentityProvider cmdlet removes an identity provider.
+
+        .EXAMPLE
+        Remove-VCFIdentityProvider -type Embedded -domainName sfo.rainpole.io.
+        This example shows how to remove an embedded identity provider with a specific domain name.
+
+        .EXAMPLE
+        Remove-VCFIdentityProvider -type "Microsoft ADFS".
+        This example shows how to remove an external identity provider.
+
+        .PARAMETER type
+        Specifies the type of the identity provider. One of: Embedded, Microsoft ADFS.
+
+        .PARAMETER domainName
+        Specifies the domain name of the identity provider.
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName
+    )
+
+    Try {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            if ($type -eq "Embedded") {
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
+            } elseif ($type -eq "Microsoft ADFS") {
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $uri = "https://$sddcManager/v1/identity-providers/$id"
+            }
+            Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response.
+        } else {
+            Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Remove-VCFIdentityProvider
+
+Function New-VCFIdentityProvider {
+    <#
+        .SYNOPSIS
+        Configures an identity provider.
+
+        .DESCRIPTION
+        The New-VCFIdentityProvider cmdlet configures an embedded or external identity provider from a
+        JSON specification file.
+
+        .EXAMPLE
+        New-VCFIdentityProvider -type Embedded -json .\samples\idp\embeddedIdpSpec.json
+        This example shows how to configure an embedded identity provider from the JSON specification file.
+
+        .EXAMPLE
+        New-VCFIdentityProvider -type "Microsoft ADFS" -json .\samples\idp\externalIdpSpec.json
+        This example shows how to configure an external identity provider from the JSON specification file.
+
+        .PARAMETER type
+        Specifies the type of the identity provider. One of: Embedded, Microsoft ADFS.
+
+        .PARAMETER json
+        Specifies the JSON specification file to be used.
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    Try {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            if ($type -eq "Embedded") {
+                $jsonBody = validateJsonInput -json $json
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources"
+            } elseif ($type -eq "Microsoft ADFS") {
+                $jsonBody = validateJsonInput -json $json
+                $uri = "https://$sddcManager/v1/identity-providers"
+            }
+            Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody
+        } else {
+            Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function New-VCFIdentityProvider
+
+Function Add-VCFEmbeddedIdentitySource {
+    <#
+        .SYNOPSIS
+        Adds an embedded identity source.
+
+        .DESCRIPTION
+        The Add-VCFEmbeddedIdentitySource cmdlet adds an embedded identity source.
+
+        .EXAMPLE
+        Add-VCFEmbeddedIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldaps://sfo-ad01.sfo.rainpole.io:636 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io" -ldapsCert F:\certificates\Root64.cer
+        This example shows how to add an Active Directory over LDAP server as identity source using LDAPS protocol with Certificate Authority signed certificate.
+
+        .EXAMPLE
+        Add-VCFEmbeddedIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldaps://sfo-ad01.sfo.rainpole.io:636 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io" -ldapsCert F:\certificates\Root64.cer,F:\certificates\cert1.cer
+        This example shows how to add an Active Directory over LDAP server as identity source using ldaps protocol with Certificate Authority signed certificates.
+
+        .EXAMPLE
+        Add-VCFEmbeddedIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldap://sfo-ad01.sfo.rainpole.io:389 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io"
+        This example shows how to add an Active Directory over LDAP server as identity source using LDAP protocol.
+
+        .PARAMETER name
+        Specifies the name of the identity provider.
+
+        .PARAMETER domainAlias
+        Specifies the domain alias.
+
+        .PARAMETER domainName
+        Specifies the domain name.
+
+        .PARAMETER username
+        Specifies the username.
+
+        .PARAMETER password
+        Specifies the password.
+
+        .PARAMETER ldapsCert
+        Specifies the LDAPS certificate file.
+
+        .PARAMETER usersBaseDn
+        Specifies the base distinguished name (DN) for users.
+
+        .PARAMETER groupsBaseDn
+        Specifies the base distinguished name (DN) for groups.
+
+        .PARAMETER primaryLdapServerURL
+        Specifies the primary LDAP server URL.
+
+        .PARAMETER secondaryLdapServerURL
+        Specifies the secondary LDAP server URL.
+    #>
+
+    Param(
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainAlias,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $ldapsCert,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$usersBaseDn,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$groupsBaseDn,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$primaryLdapServerURL,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$secondaryLdapServerURL
+    )
+
+    Try {
+        $serverEndpointsArray = $primaryLdapServerURL
+        $primaryLdapProtocol = ($primaryLdapServerURL).split(":")[0]
+        if ($PsBoundParameters.ContainsKey("secondaryLdapServerURL")) {
+            $secondaryLdapProtocol = ($secondaryLdapServerURL).split(":")[0]
+            $serverEndpointsArray = "$primaryLdapServerURL","$secondaryLdapServerURL"
+        } else {
+            $secondaryLdapProtocol = "False"
+        }
+        if (($primaryLdapProtocol -eq "ldaps") -or ($secondaryLdapProtocol -eq "ldaps")) {
+            if ($PsBoundParameters.ContainsKey("ldapsCert")) {
+                if ($ldapsCert.count -gt 1) {
+                    $ldapsCertList = ""
+                    foreach ($certfile in $ldapsCert.split(",")) {
+                        $ldapsCertValue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($certfile))
+                        $ldapsCertList += "$ldapsCertValue,"
+                    }
+                    $ldapsCertArray = ($ldapsCertList.TrimEnd(',')).split(",")
+                } else {
+                    $ldapsCertArray = [Convert]::ToBase64String([IO.File]::ReadAllBytes($ldapsCert))
+                }
+            } else {
+                Write-Error ("LDAPS protocol is specified but ldapsCert file is not provided.")
+                Break
+            }
+        } else {
+            $ldapsCertArray = @()
+        }
+        $ldapObject = [pscustomobject]@{
+            "name" = "$name"
+            "ldap" = [pscustomobject]@{
+                "domainName" = "$domainName"
+                "password" = "$password"
+                "type" = "ActiveDirectory"
+                "username" = "$username"
+                "sourceDetails" = [pscustomobject]@{
+                    "certChain" = @($ldapsCertArray)
+                    "serverEndpoints" = @($serverEndpointsArray)
+                    "groupsBaseDn" = "$groupsBaseDn"
+                    "usersBaseDn" = "$usersBaseDn" }
+            }
+        }
+        if ($PsBoundParameters.ContainsKey("domainAlias")) {
+            $ldapObject.ldap | Add-Member -Type NoteProperty -Name domainAlias -Value "$domainAlias"
+        }
+        $json = $ldapObject | ConvertTo-Json -Depth 6
+        New-VCFIdentityProvider -Type Embedded -json $json
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Add-VCFEmbeddedIdentitySource
+
+Function Add-VCFExternalIdentitySource {
+    <#
+        .SYNOPSIS
+        Adds an external identity source.
+
+        .DESCRIPTION
+        The Add-VCFExternalIdentitySource cmdlet adds an external identity source.
+
+        .EXAMPLE
+        Add-VCFExternalIdentitySource -name "ADFS01" -username "svc-vcf-ca@rainpole.io" -password VMw@re123! -usersBaseDn "OU=Security Users,DC=rainpole,DC=io" -groupsBaseDn "OU=Security Groups,DC=rainpole,DC=io" -primaryLdapServerURL "ldaps://rpl-dc01.rainpole.io:636" -clientId "d49b72f6-ec04-41bb-bad6-aad368af2fe5" -clientSecret "HFEH59piO3NfzbFp9O5rGskCVEdBQ_aM8dTPo8wer" -discoveryEndpoint "https://rpl-dc01.rainpole.io/adfs/.well-known/openid-configuration" -adfsCert F:\certificates\adfsroot.cer -ldapsCert F:\certificates\ldapscert1.cer
+        This example shows how to add Active Directory Federation Services (AD FS) as an external identity provider using LDAPS protocol with Certificate Authority signed certificate.
+
+        .EXAMPLE
+        Add-VCFExternalIdentitySource -name "SFO01" -domainName "sfo.rainpole.io" -primaryLdapServerURL ldap://sfo-ad01.sfo.rainpole.io:389 -username "svc-vsphere-ad@sfo.rainpole.io" -password "VMw@re123!" -usersBaseDn "OU=Security Users,DC=sfo,DC=rainpole,DC=io" -groupsBaseDn "OU=Security Groups,DC=sfo,DC=rainpole,DC=io"
+        This example shows how to add Active Directory Federation Services (AD FS) as an external identity provider using LDAP protocol.
+
+        .PARAMETER name
+        Specifies the name of the identity provider.
+
+        .PARAMETER adfsCert
+        Specifies the certificate file for the Active Directory Federation Services (AD FS) server.
+
+        .PARAMETER username
+        Specifies the username for the Active Directory Federation Services (AD FS) server.
+
+        .PARAMETER password
+        Specifies the password for the Active Directory Federation Services (AD FS) server.
+
+        .PARAMETER usersBaseDn
+        Specifies the base distinguished name (DN) for the users.
+
+        .PARAMETER groupsBaseDn
+        Specifies the base distinguished name (DN) for the groups.
+
+        .PARAMETER ldapsCert
+        Specifies the certificate file for the LDAP server.
+
+        .PARAMETER clientId
+        Specifies the client ID for the Active Directory Federation Services (AD FS) server.
+
+        .PARAMETER clientSecret
+        Specifies the client secret for the Active Directory Federation Services (AD FS) server.
+
+        .PARAMETER discoveryEndpoint
+        Specifies the discovery endpoint for the Active Directory Federation Services (AD FS) server.
+
+        .PARAMETER primaryLdapServerURL
+        Specifies the primary LDAP server URL.
+
+        .PARAMETER secondaryLdapServerURL
+        Specifies the secondary LDAP server URL.
+    #>
+
+    Param(
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $adfsCert,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$usersBaseDn,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$groupsBaseDn,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $ldapsCert,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$clientId,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$clientSecret,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$discoveryEndpoint,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$primaryLdapServerURL,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$secondaryLdapServerURL
+    )
+
+    Try {
+        if ($PsBoundParameters.ContainsKey("adfsCert")) {
+            if ($adfsCert.count -gt 1) {
+                $adfsCertList = ""
+                foreach ($adfscertfile in $adfsCert.split(",")) {
+                    $adfsCertValue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($adfscertfile))
+                    $adfsCertList += "$adfsCertValue,"
+                }
+                $adfsCertList = $adfsCertList.TrimEnd(',')
+                $adfsCertArray = $adfsCertList.split(",")
+            } else {
+                $adfsCertValue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($adfsCert))
+                $adfsCertArray += $adfsCertValue
+            }
+        } else {
+            $adfsCertArray = @()
+        }
+        $serverEndpointsArray = $primaryLdapServerURL
+        $primaryLdapProtocol = ($primaryLdapServerURL).split(":")[0]
+        if ($PsBoundParameters.ContainsKey("secondaryLdapServerURL")) {
+            $secondaryLdapProtocol = ($secondaryLdapServerURL).split(":")[0]
+            $serverEndpointsArray = "$primaryLdapServerURL","$secondaryLdapServerURL"
+        } else {
+            $secondaryLdapProtocol = "False"
+        }
+        if (($primaryLdapProtocol -eq "ldaps") -or ($secondaryLdapProtocol -eq "ldaps")) {
+            if ($PsBoundParameters.ContainsKey("ldapsCert")) {
+                if ($ldapsCert.count -gt 1) {
+                    $ldapCertlist = ""
+                    foreach ($cert in $ldapsCert.split(",")) {
+                        $ldapCertvalue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($cert))
+                        $ldapCertlist += "$ldapCertvalue,"
+                    }
+                    $ldapCertarray = ($ldapCertlist.TrimEnd(',')).split(",")
+                } else {
+                    $ldapCertarray = [Convert]::ToBase64String([IO.File]::ReadAllBytes($ldapsCert))
+                }
+            } else {
+                Write-Error ("LDAPS protocol is specified but ldapsCert file is not provided.")
+                Break
+            }
+        } else {
+            $ldapCertarray = @()
+        }
+        $ldapObject = [pscustomobject]@{
+        "name" = "$name"
+        "type" = "AD_FS"
+        "certChain" = @($adfsCertArray)
+        "ldap" = [pscustomobject]@{
+            "username" = "$username"
+            "password" = "$password"
+            "sourceDetails" = [pscustomobject]@{
+                "certChain" = @($ldapCertarray)
+                "serverEndpoints" = @($serverEndpointsArray)
+                "groupsBaseDn" = "$groupsBaseDn"
+                "usersBaseDn" = "$usersBaseDn"
+            }
+        }
+        "oidc" = [pscustomobject]@{
+            "clientId" = "$clientId"
+            "clientSecret" = "$clientSecret"
+            "discoveryEndpoint" = "$discoveryEndpoint"
+        }
+        }
+        $json = $ldapObject | ConvertTo-Json -Depth 6
+        New-VCFIdentityProvider -Type "Microsoft ADFS" -json $json
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Add-VCFExternalIdentitySource
+
+Function Update-VCFIdentityProvider {
+    <#
+        .SYNOPSIS
+        Updates an identity provider.
+
+        .DESCRIPTION
+        The Update-VCFIdentityProvider cmdlet updates the configuration of an embedded or external identity provider from a JSON specification file.
+
+        .EXAMPLE
+        Update-VCFIdentityProvider -type Embedded -domainName sfo.rainpole.io -json .\samples\idp\embeddedIdpSpec.json
+        This example shows how to update the configuration of an embedded identity provider from the JSON specification file for a specific domain name.
+
+        .EXAMPLE
+        Update-VCFIdentityProvider -type "Microsoft ADFS" -json .\samples\idp\externalIdpSpec.json
+        This example shows how to update the configuration of "Microsoft ADFS" identity provider from the JSON specification file.
+
+        .PARAMETER type
+        Specifies the type of the identity provider. One of: Embedded, Microsoft ADFS.
+
+        .PARAMETER domainName
+        Specifies the domain name of the identity provider.
+
+        .PARAMETER json
+        Specifies the JSON specification file to be used.
+    #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+    )
+
+    Try {
+        if ((Get-VCFManager -version) -ge '4.5.0') {
+            createHeader # Set the Accept and Authorization headers.
+            checkVCFToken # Validate the access token and refresh, if necessary.
+            if ($type -eq "Embedded") {
+                $jsonBody = validateJsonInput -json $json
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
+            } elseif ($type -eq "Microsoft ADFS") {
+                $jsonBody = validateJsonInput -json $json
+                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $uri = "https://$sddcManager/v1/identity-providers/$id"
+            }
+            Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType application/json -Body $jsonBody # This API does not return a response.
+        } else {
+            Write-Warning $msgVcfApiNotSupported $(Get-VCFManager -version)
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Update-VCFIdentityProvider
+
+Function Update-VCFEmbeddedIdentitySource {
+    <#
+        .SYNOPSIS
+        Updates an embedded identity source.
+
+        .DESCRIPTION
+        The Update-VCFEmbeddedIdentitySource cmdlet updates an embedded identity source.
+
+        .EXAMPLE
+        Update-VCFEmbeddedIdentitySource -domainName sfo.rainpole.io -password VMw@re123! -primaryLdapServerURL ldaps://sfo-ad01.sfo.rainpole.io:636 -ldapsCert F:\certificates\Root64.cer
+        This example shows how to update an existing Active Directory over LDAP server using LDAPS protocol with Certificate Authority signed certificate.
+
+        .EXAMPLE
+        Update-VCFEmbeddedIdentitySource -domainName sfo.rainpole.io -password VMw@re123! -secondaryLdapServerURL ldap://sfo-ad01.sfo.rainpole.io:389
+        This example shows how to update an existing Active Directory server over LDAP with a secondary LDAP server.
+
+        .PARAMETER name
+        Specifies the name of the identity provider.
+
+        .PARAMETER domainName
+        Specifies the domain name of the identity provider.
+
+        .PARAMETER username
+        Specifies the username for the identity provider.
+
+        .PARAMETER password
+        Specifies the password for the identity provider.
+
+        .PARAMETER ldapsCert
+        Specifies the LDAPS certificate file.
+
+        .PARAMETER usersBaseDn
+        Specifies the base distinguished name (DN) for users.
+
+        .PARAMETER groupsBaseDn
+        Specifies the base distinguished name (DN) for groups.
+
+        .PARAMETER primaryLdapServerURL
+        Specifies the primary LDAP server URL.
+
+        .PARAMETER secondaryLdapServerURL
+        Specifies the secondary LDAP server URL.
+    #>
+
+    Param (
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$domainName,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$username,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$password,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] $ldapsCert,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$usersBaseDn,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$groupsBaseDn,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$primaryLdapServerURL,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$secondaryLdapServerURL
+    )
+
+    Try {
+        $currentconfig = (Get-VCFIdentityProvider).identitySources |
+        ForEach-Object { if ($_.ldap.domainName -eq $domainName) { $_ } }
+        if ($currentconfig) {
+            if ($PsBoundParameters.ContainsKey("name")) {
+                $currentconfig.Name = $name
+            }
+            if ($PsBoundParameters.ContainsKey("username")) {
+                $currentconfig.ldap.username = $username
+            }
+            if ($PsBoundParameters.ContainsKey("usersBaseDn")) {
+                $currentconfig.ldap.sourceDetails.usersBaseDn =$usersBaseDn
+            }
+            if ($PsBoundParameters.ContainsKey("groupsBaseDn")) {
+                $currentconfig.ldap.sourceDetails.groupsBaseDn = $groupsBaseDn
+            }
+            if ($PsBoundParameters.ContainsKey("primaryLdapServerURL")) {
+                ($currentconfig.ldap.sourceDetails.serverEndpoints)[0] = $primaryLdapServerURL
+            }
+            if ($PsBoundParameters.ContainsKey("secondaryLdapServerURL")) {
+                if (($currentconfig.ldap.sourceDetails.serverEndpoints)[1]) {
+                    ($currentconfig.ldap.sourceDetails.serverEndpoints)[1] = $secondaryLdapServerURL
+                } else {
+                    $currentconfig.ldap.sourceDetails.serverEndpoints += $secondaryLdapServerURL
+                }
+            }
+            if ($PsBoundParameters.ContainsKey("ldapsCert")) {
+                if ($ldapsCert.count -gt 1) {
+                    $ldapsCertList = ""
+                    foreach ($cert in $ldapsCert.split(",")) {
+                        $ldapsCertValue = [Convert]::ToBase64String([IO.File]::ReadAllBytes($cert))
+                        $ldapsCertList += "$ldapsCertValue,"
+                    }
+                    $ldapsCertArray = ($ldapsCertList.TrimEnd(',')).split(",")
+                } else {
+                    $ldapsCertArray = [Convert]::ToBase64String([IO.File]::ReadAllBytes($ldapsCert))
+                }
+                $currentconfig.ldap.sourceDetails.certChain = @($ldapsCertArray)
+            }
+            $currentconfig.ldap | Add-Member -Type NoteProperty -Name password -Value $password
+            $json = $currentconfig | ConvertTo-Json -Depth 6
+            Update-VCFIdentityProvider -Type Embedded -DomainName $domainName -json $json
+        } else {
+            Write-Error "Domain $domainName does not exist or is not accessible."
+            Break
+        }
+    } Catch {
+        ResponseException -Object $_
+    }
+}
+Export-ModuleMember -Function Update-VCFEmbeddedIdentitySource
+
+#EndRegion APIs for managing Identity Providers
 
 #Region APIs for managing Validations (Not Exported)
 
@@ -5962,17 +6537,17 @@ Function Resolve-PSModule {
 }
 
 Function validateJsonInput {
-    
+
     Param (
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
     # Check if the file path is valid. If not, evaluate if the variable was passed as JSON string.
     if (!(Test-Path $json)) {
-        
+
         # File path invalid.
         # Check if the JSON was passed directly as string by converting to an object.
-        
+
         Try {
             $jsonPSobject = ConvertFrom-Json $json -ErrorAction Stop;
             $jsonValid = $true;
@@ -5980,7 +6555,7 @@ Function validateJsonInput {
             $jsonValid = $false;
             $ConfigJson = $json # Load the raw and wrong JSON content for function return.
         }
-    
+
         if ($jsonValid) {
             # JSON parameter was passed as a string. Convert back from object to JSON.
             # The validity of the JSON string format has been already validated by the ConvertFrom-Json cmdlet.
@@ -5991,12 +6566,12 @@ Function validateJsonInput {
             ResponseException -object $_
             $ConfigJson # Return an unvalidated JSON before throwing.
             Throw "The provided JSON parameter couldn't be validated as file path nor as JSON string. Please check the file path or JSON string formatting again."
-        }  
+        }
     } else {
         # JSON parameter was passed as file path.
         # Reads the file content and loads it.
         $ConfigJson = (Get-Content -Raw $json)
-        
+
         # Validate the JSON string format.
         Try {
             $jsonPSobject = ConvertFrom-Json  $ConfigJson -ErrorAction Stop;
@@ -6050,9 +6625,9 @@ Function Write-LogMessage {
 
     Write-Host -NoNewline -ForegroundColor White " [$timestamp]"
     if ($Skipnewline) {
-        Write-Host -NoNewline -ForegroundColor $Colour " $type $Message"        
+        Write-Host -NoNewline -ForegroundColor $Colour " $type $Message"
     } else {
-        Write-Host -ForegroundColor $colour " $Type $Message" 
+        Write-Host -ForegroundColor $colour " $Type $Message"
     }
     $logContent = '[' + $timeStamp + '] ' + $Type + ' ' + $Message
     Add-Content -Path $logFile $logContent
