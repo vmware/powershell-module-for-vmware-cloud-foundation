@@ -1,8 +1,8 @@
 # Release History
 
-## v2.4.0 2023-10-02
+## v2.4.0
 
-> Released: Unreleased
+> Released: 2023-10-02
 
 - Updated `Request-VCFToken` cmdlet for better error handling.
 - Enhanced `Get-VCFCluster` cmdlet to return associated vSphere Distributed Switches.
