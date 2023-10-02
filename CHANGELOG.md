@@ -1,6 +1,8 @@
 # Release History
 
-## v2.4.0 (Unreleased)
+## v2.4.0
+
+> Released: 2023-10-02
 
 > Released: Unreleased
 
