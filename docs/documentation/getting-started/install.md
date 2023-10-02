@@ -1,8 +1,8 @@
 # Installing the Module
 
-Verify that your system has a [supported edition and version](/powershell-module-for-vmware-cloud-foundation/#powershell) of PowerShell installed.
+Verify that your system has a supported edition and version of PowerShell installed.
 
-Install the PowerShell [module dependencies](/powershell-module-for-vmware-cloud-foundation/#module-dependencies) from the PowerShell Gallery by running the following commands:
+Install the PowerShell module dependencies from the PowerShell Gallery by running the following commands:
 
 ```powershell
 --8<-- "./docs/snippets/install-module.ps1"
