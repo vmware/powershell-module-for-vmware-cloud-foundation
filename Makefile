@@ -12,3 +12,6 @@ docs-serve-live:
 	mkdocs serve --livereload -w ./
 docs-build:
 	mkdocs build
+docs-uninstall:
+	pip uninstall mkdocs-material mkdocs -y
+	pip uninstall --requirement docs/requirements.txt -y
