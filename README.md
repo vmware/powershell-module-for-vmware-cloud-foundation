@@ -1,8 +1,10 @@
+<!-- markdownlint-disable first-line-h1 no-inline-html -->
+
 <img src=".github/icon-400px.svg" alt="A PowerShell Module for VMware Cloud Foundation" width="150"></br></br>
 
 # PowerVCF: A PowerShell Module for VMware Cloud Foundation
 
-[<img src="https://img.shields.io/badge/Documentation-Read-blue?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Documenation">][docs-module]&nbsp;&nbsp;
+[<img src="https://img.shields.io/badge/Documentation-Read-blue?style=for-the-badge&logo=readthedocs&logoColor=white" alt="Documentation">][docs-module]&nbsp;&nbsp;
 [<img src="https://img.shields.io/badge/Changelog-Read-blue?style=for-the-badge&logo=github&logoColor=white" alt="CHANGELOG" >][changelog]
 
 [<img src="https://img.shields.io/powershellgallery/v/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell Gallery">][psgallery-module]&nbsp;&nbsp;
@@ -10,7 +12,7 @@
 
 ## Overview
 
-`PowerVCF` is an open source PowerShell Module for interacting with the [VMware Cloud Foundatiоn][docs-vmware-cloud-foundation] public API.
+`PowerVCF` is an open source PowerShell Module for interacting with the [VMware Cloud Foundation][docs-vmware-cloud-foundation] public API.
 
 ## Documentation
 
@@ -24,19 +26,17 @@ For more detailed information, refer to the [contribution guidelines][contributi
 
 ## Support
 
-This PowerShell module is not supported by VMware Support Services.
+While this module is not supported by VMware Support Services, it is supported by the project maintainers and its community of users.
 
-We welcome you to use the GitHub [issues][gh-issues] tracker to report bugs or suggest features and enhancements.
+Use the GitHub [issues][gh-issues] to report bugs or suggest features and enhancements. Issues are monitored by the maintainers and are prioritized based on criticality and community [reactions][gh-reactions].
 
-When filing an issue, please check existing open, or recently closed, issues to make sure someone else hasn't already reported the issue.
-
-Please try to include as much information as you can. Details like these are incredibly useful:
+Before filing an issue, please search the issues and use the reactions feature to add votes to matching issues. Please include as much information as you can. Details like these are incredibly useful in helping the us evaluate and prioritize any changes:
 
 - A reproducible test case or series of steps.
 - Any modifications you've made relevant to the bug.
 - Anything unusual about your environment or deployment.
 
-You can also start a discussion on the [discussions][gh-discussions] area to ask questions or share ideas.
+You can also start a discussion on the GitHub [discussions][gh-discussions] area to ask questions or share ideas.
 
 ## License
 
@@ -58,5 +58,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 [docs-vmware-cloud-foundation]: https://docs.vmware.com/en/VMware-Cloud-Foundation
 [gh-discussions]: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/discussions
 [gh-issues]: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/issues
+[gh-reactions]: https://blog.github.com/2016-03-10-add-reactions-to-pull-requests-issues-and-comments/
 [psgallery-module]: https://www.powershellgallery.com/packages/PowerVCF
 [vmware-cla-dco]: https://cla.vmware.com/dco
