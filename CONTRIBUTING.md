@@ -86,7 +86,6 @@ Ref: #123
 
 See [GitHub flavored markdown syntax][gh-markdown] for referencing issues, pull requests, and commits.
 
-
 ### Rebasing the Pull Request with Upstream
 
 When your branch gets out of sync with the upstream `develop` branch, use the following to update:
@@ -120,7 +119,6 @@ git push --force-with-lease origin feat/add-x
 ```
 
 Be sure to add a comment to the pull request indicating your new changes are ready to review. GitHub does not generate a notification when you `git push`.
-
 
 ## Licensing
 

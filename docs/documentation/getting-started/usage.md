@@ -38,8 +38,8 @@ Sample Output:
 id                  : 323cb515-fd80-4fef-b512-79c48e8aa0ee
 esxiVersion         : 8.0.1-21360543
 fqdn                : sfo01-w01-esx01.sfo.rainpole.io
-hardwareVendor      : VMware, Inc.
-hardwareModel       : VMware Virtual Platform
+hardwareVendor      : Dell
+hardwareModel       : PowerEdge
 isPrimary           : False
 ipAddresses         : {@{ipAddress=172.16.31.104; type=MANAGEMENT}, 
                        @{ipAddress=172.16.33.101; type=VSAN},

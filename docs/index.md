@@ -50,7 +50,7 @@ The following table lists the required PowerShell module dependencies for this m
 
 PowerShell Module                                    | Version   | Publisher     | Reference
 -----------------------------------------------------|-----------|---------------|---------------------------------------------------------------------------
-[VMware.PowerCLI][psgallery-module-powercli]         | >= 12.3.0 | VMware, Inc.  | :fontawesome-solid-book: &nbsp; [Documentation][developer-module-powercli]
+[VMware.PowerCLI][psgallery-module-powercli]         | >= 12.3.0 | Broadcom      | :fontawesome-solid-book: &nbsp; [Documentation][developer-module-powercli]
 
 ## Related Projects
 
