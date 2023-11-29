@@ -2,7 +2,7 @@
 site_name: PowerVCF
 site_description: PowerShell Module for VMware Cloud Foundation
 site_url: https://vmware.github.io/powershell-module-for-vmware-cloud-foundation
-site_author: VMware, Inc.
+site_author: Broadcom
 docs_dir: docs
 site_dir: .site
 use_directory_urls: true
@@ -12,7 +12,9 @@ repo_url: https://github.com/vmware/powershell-module-for-vmware-cloud-foundatio
 edit_uri: blob/main/docs/
 
 # Copyright
-copyright: Copyright &copy; 2023 - VMware, Inc.
+copyright: |
+  Copyright &copy; 2023 Broadcom. All Rights Reserved.<br/>
+  The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.<br/><br/>
 
 # Configuration
 theme:

@@ -1,5 +1,5 @@
-# PowerShell module for VMware Cloud Foundation
-# Contributions are welcome. https://github.com/vmware/powershell-module-for-vmware-cloud-foundation/blob/main/CONTRIBUTING.md
+# Copyright 2023 Broadcom. All Rights Reserved.
+# SPDX-License-Identifier: BSD-2
 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
 # WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
