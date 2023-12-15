@@ -1,5 +1,11 @@
 # Release History
 
+## v2.4.1
+
+> Released: 2023-12-15
+
+- Updated the module's internal `checkVCFToken` function to ensure and expired token can be refresh when using PowerShell 7.
+
 ## v2.4.0
 
 > Released: 2023-10-02

@@ -4401,6 +4401,7 @@ Function checkVCFToken {
         if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
             Write-Output "API Access Token Expired. Requesting a new access token with current refresh token."
             $headers = @{"Accept" = "application/json" }
+            $headers.Add("Content-Type", "application/json")
             $uri = "https://$sddcManager/v1/tokens/access-token/refresh"
             $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -Body $refreshToken
             $Global:accessToken = $response
