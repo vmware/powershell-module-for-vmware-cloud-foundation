@@ -1,0 +1,22 @@
+---
+chore:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".ci/**/*"
+          - ".github/**/*"
+          - ".gitignore"
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "Makefile"
+          - "**/*.md"
+          - "mkdocs.yml"
+github-actions:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/workflows/**/*"
+needs-review:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**"
