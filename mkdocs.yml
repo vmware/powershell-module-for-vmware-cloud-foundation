@@ -13,7 +13,7 @@ edit_uri: blob/main/docs/
 
 # Copyright
 copyright: |
-  Copyright &copy; 2023 Broadcom. All Rights Reserved.<br/>
+  Copyright &copy; 2005-2023 Broadcom. All Rights Reserved.<br/>
   The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.<br/><br/>
 
 # Configuration
@@ -89,8 +89,6 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/powervcf
     - icon: fontawesome/solid/book
       link: https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html
     - icon: fontawesome/solid/code
