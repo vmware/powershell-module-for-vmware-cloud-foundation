@@ -1,5 +1,11 @@
 # Release History
 
+## v2.5.0
+
+> Released: Unreleased 
+
+- Updated `Get-VCFSystemPrecheckTask` cmdlet with optional parameter `failureOnly`.
+
 ## v2.4.1
 
 > Released: 2023-12-15

@@ -4261,27 +4261,49 @@ Function Get-VCFSystemPrecheckTask {
         Retrieves the status of a system level precheck task.
 
         .DESCRIPTION
-        The Get-VCFSystemPrecheckTask mdlet retrieves the status of a system level precheck task that can be polled
+        The Get-VCFSystemPrecheckTask cmdlet retrieves the status of a system level precheck task that can be polled
         and monitored.
 
         .EXAMPLE
         Get-VCFSystemPrecheckTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d
         This example shows how to retrieve the status of a system level precheck task by unique ID.
 
+        .EXAMPLE
+        Get-VCFSystemPrecheckTask -id 4d661acc-2be6-491d-9256-ba3c78020e5d -failureOnly
+        This example shows how to retrieve only failed subtasks from the system level precheck task by unique ID.
+
         .PARAMETER id
         Specifies the unique ID of the system level precheck task.
+
+        .PARAMETER failureOnly
+        Specifies to return only the failed subtasks.
+      
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$failureOnly
     )
 
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
-        $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers -ContentType 'application/json'
-        $response
+    
+        Do {
+            # Keep checking until status is not IN_PROGRESS
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers -ContentType 'application/json'
+            Start-Sleep -Seconds 2
+        } While ($response.status -eq "IN_PROGRESS")
+        
+        if ($response.status -eq "FAILED" -and $PsBoundParameters.ContainsKey("failureOnly")) {
+            $failed_task = $response.subTasks | Where-Object { $_.status -eq "FAILED" }
+            $failed_subtask = $failed_task.stages | Where-Object { $_.status -eq "FAILED" }
+            $failed_subtask
+        } else {
+            $response
+        }
+        
     } Catch {
         ResponseException -object $_
     }
