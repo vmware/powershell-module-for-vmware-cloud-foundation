@@ -5,6 +5,8 @@
 > Released: Unreleased 
 
 - Updated `Get-VCFSystemPrecheckTask` cmdlet with optional parameter `failureOnly`.
+- Updated `Get-VCFPersonality` cmdlet with optional parameter `name`.
+
 
 ## v2.4.1
 

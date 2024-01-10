@@ -3265,18 +3265,24 @@ Function Get-VCFPersonality {
         Get-VCFPersonality -id b4e3b2c4-31e8-4816-b1c5-801e848bef09
         This example shows how to retrieve a vSphere Lifecycle Manager personality by unique ID.
 
+        .EXAMPLE
+        Get-VCFPersonality -name vSphere-8.0U1
+        This example shows how to retrieve a vSphere Lifecycle Manager personality by name.
+
         .PARAMETER id
         Specifies the unique ID of the vSphere Lifecycle Manager personality.
     #>
 
     Param (
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name
     )
 
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
-        if ( -not $PsBoundParameters.ContainsKey("id")) {
+
+        if ((-Not $PsBoundParameters.ContainsKey('id')) -and (-Not $PsBoundParameters.ContainsKey('name'))) {
             $uri = "https://$sddcManager/v1/personalities"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
@@ -3285,7 +3291,18 @@ Function Get-VCFPersonality {
             $uri = "https://$sddcManager/v1/personalities/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        }
+        }    
+       if  ($PsBoundParameters.ContainsKey("name")) {
+            $uri ="https://$sddcManager/v1/personalities?personalityName=$name"
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            # depending on the composition of the image, the response body may or may not contain elements
+            if (!$response.elements) {
+                $response
+            } else {
+                $response.elements
+            }     
+       }    
+ 
     } Catch {
         ResponseException -object $_
     }
