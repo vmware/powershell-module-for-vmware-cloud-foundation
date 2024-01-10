@@ -19,7 +19,7 @@ if ($PSEdition -eq 'Desktop') {
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
     If (!("TrustAllCertificatePolicy" -as [type])) {
-    add-type @"
+        add-type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
     public class TrustAllCertificatePolicy : ICertificatePolicy {
@@ -31,7 +31,7 @@ if ($PSEdition -eq 'Desktop') {
         }
     }
 "@
-}
+    }
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
 
@@ -106,7 +106,7 @@ public static class Placeholder {
     }
 }
 "@
-}
+        }
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
@@ -121,7 +121,8 @@ public static class Placeholder {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -Body $body -SkipCertificateCheck # PS Core has -SkipCertificateCheck implemented
             $Global:accessToken = $response.accessToken
             $Global:refreshToken = $response.refreshToken.id
-        } else {
+        }
+        else {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -Body $body
             $Global:accessToken = $response.accessToken
             $Global:refreshToken = $response.refreshToken.id
@@ -129,7 +130,8 @@ public static class Placeholder {
         if ($response.accessToken) {
             Write-Output "Successfully Requested New API Token From SDDC Manager: $sddcManager"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -193,7 +195,7 @@ public static class Placeholder {
     }
 }
 "@
-}
+        }
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
@@ -208,13 +210,15 @@ public static class Placeholder {
         # Checking authentication with VMware Cloud Builder
         if ($PSEdition -eq 'Core') {
             $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers -SkipCertificateCheck # PS Core has -SkipCertificateCheck implemented
-        } else {
+        }
+        else {
             $response = Invoke-WebRequest -Method GET -Uri $uri -Headers $headers
         }
         if ($response.StatusCode -eq 200) {
             Write-Output "Successfully connected to the Cloud Builder Appliance: $cloudBuilder"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -274,7 +278,8 @@ Function Get-VCFApplicationVirtualNetwork {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -316,12 +321,14 @@ Function Add-VCFApplicationVirtualNetwork {
             $uri = "https://$sddcManager/v1/avns/validations"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/avns"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -354,7 +361,8 @@ Function Get-VCFBackupConfiguration {
         $uri = "https://$sddcManager/v1/system/backup-configuration"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.backupLocations
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -388,7 +396,8 @@ Function Set-VCFBackupConfiguration {
         $uri = "https://$sddcManager/v1/system/backup-configuration"
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -414,7 +423,8 @@ Function Start-VCFBackup {
         $uri = "https://$sddcManager/v1/backups/tasks"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $ConfigJson
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -450,7 +460,8 @@ Function Start-VCFRestore {
         $uri = "https://$sddcManager/v1/restores/tasks"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $ConfigJson
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -483,7 +494,8 @@ Function Get-VCFRestoreTask {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -533,12 +545,14 @@ Function Get-VCFBundle {
             $uri = "https://$sddcManager/v1/bundles/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/bundles"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -571,7 +585,8 @@ Function Request-VCFBundle {
         $body = '{"bundleDownloadSpec": {"downloadNow": true}}'
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers	-ContentType 'application/json' -Body $body
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -604,7 +619,8 @@ Function Start-VCFBundleUpload {
         $uri = "https://$sddcManager/v1/bundles"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -636,7 +652,8 @@ Function Get-VCFCeip {
         $uri = "https://$sddcManager/v1/system/ceip"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -674,7 +691,8 @@ Function Set-VCFCeip {
         $json = '{"status": "' + $ceipSetting + '"}'
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -720,12 +738,14 @@ Function Get-VCFCertificateAuthority {
             $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/certificate-authorities"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -757,7 +777,8 @@ Function Remove-VCFCertificateAuthority {
         $uri = "https://$sddcManager/v1/certificate-authorities/$caType"
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -801,7 +822,8 @@ Function Set-VCFMicrosoftCa {
         $json = '{"microsoftCertificateAuthoritySpec": {"secret": "' + $password + '","serverUrl": "' + $serverUrl + '","username": "' + $username + '","templateName": "' + $templateName + '"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
         Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json # This API does not return a response.
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -853,7 +875,8 @@ Function Set-VCFOpensslCa {
         $json = '{"openSSLCertificateAuthoritySpec": {"commonName": "' + $commonName + '","organization": "' + $organization + '","organizationUnit": "' + $organizationUnit + '","locality": "' + $locality + '","state": "' + $state + '","country": "' + $country + '"}}'
         $uri = "https://$sddcManager/v1/certificate-authorities"
         Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json # This API does not return a response.
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -889,7 +912,8 @@ Function Get-VCFCertificateCsr {
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -924,7 +948,8 @@ Function Request-VCFCertificateCsr {
         $uri = "https://$sddcManager/v1/domains/$domainName/csrs"
         $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -973,12 +998,14 @@ Function Get-VCFCertificate {
             $uri = "https://$sddcManager/v1/domains/$domainName/resource-certificates"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1016,7 +1043,8 @@ Function Request-VCFCertificate {
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
             $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } Catch {
+        }
+        Catch {
             ResponseException -object $_
         }
     }
@@ -1048,14 +1076,15 @@ Function Set-VCFCertificate {
     )
 
     if ($PsBoundParameters.ContainsKey("json")) {
-	    Try {
+        Try {
             $jsonBody = validateJsonInput -json $json
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             $uri = "https://$sddcManager/v1/domains/$domainName/certificates"
             $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } Catch {
+        }
+        Catch {
             ResponseException -object $_
         }
     }
@@ -1114,7 +1143,8 @@ Function Get-VCFCluster {
         if ($PsBoundParameters.ContainsKey("id")) {
             if ($PsBoundParameters.ContainsKey("vdses")) {
                 $uri = "https://$sddcManager/v1/clusters/$id/vdses"
-            } else {
+            }
+            else {
                 $uri = "https://$sddcManager/v1/clusters/$id"
             }
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
@@ -1128,11 +1158,13 @@ Function Get-VCFCluster {
                 $uri = "https://$sddcManager/v1/clusters/$id/vdses"
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
                 $response
-            } else {
+            }
+            else {
                 $response.elements | Where-Object { $_.name -eq $name }
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1181,7 +1213,8 @@ Function New-VCFCluster {
         else {
             Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1231,32 +1264,33 @@ Function Set-VCFCluster {
             Throw "You must include either -json or -markForDeletion"
         }
 
-            $jsonBody = validateJsonInput -json $json   # validate input file and format
-            $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # validate the JSON provided meets the cluster specifications format
-            # the validation API does not currently support polling with a task ID
-            Start-Sleep -Seconds 5
-            # Submit the job only if the JSON validation task finished with executionStatus of COMPLETED and resultStatus of SUCCEEDED.
-            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Try {
-                    Write-Output "Task validation completed successfully. Invoking cluster task on SDDC Manager"
-                    $uri = "https://$sddcManager/v1/clusters/$id/"
-                    $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
-                    $response
-                }
-                Catch {
-                    ResponseException -object $_
-                }
+        $jsonBody = validateJsonInput -json $json   # validate input file and format
+        $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # validate the JSON provided meets the cluster specifications format
+        # the validation API does not currently support polling with a task ID
+        Start-Sleep -Seconds 5
+        # Submit the job only if the JSON validation task finished with executionStatus of COMPLETED and resultStatus of SUCCEEDED.
+        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+            Try {
+                Write-Output "Task validation completed successfully. Invoking cluster task on SDDC Manager"
+                $uri = "https://$sddcManager/v1/clusters/$id/"
+                $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
+                $response
             }
-            else {
-                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+            Catch {
+                ResponseException -object $_
             }
+        }
+        else {
+            Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+        }
 
         if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
             $jsonBody = '{"markForDeletion": true}'
             $uri = "https://$sddcManager/v1/clusters/$id/"
             $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1289,7 +1323,8 @@ Function Remove-VCFCluster {
         $uri = "https://$sddcManager/v1/clusters/$id"
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1321,7 +1356,8 @@ Function Get-VCFClusterValidation {
         $uri = "https://$sddcManager/v1/clusters/validations/$id"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1380,20 +1416,24 @@ Function Get-VCFCredential {
             $uri = "https://$sddcManager/v1/credentials?resourceName=$resourceName"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ($PsBoundParameters.ContainsKey("id")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/credentials/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
             $uri = "https://$sddcManager/v1/credentials?resourceType=$resourceType"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/credentials"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1431,7 +1471,8 @@ Function Set-VCFCredential {
         $uri = "https://$sddcManager/v1/credentials"
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1503,7 +1544,8 @@ Function Set-VCFCredentialAutoRotatePolicy {
                 frequencyInDays        = $frequencyInDays
                 enableAutoRotatePolicy = $true
             }
-        } else {
+        }
+        else {
             $autoRotatePolicy = @{
                 enableAutoRotatePolicy = $false
             }
@@ -1522,7 +1564,8 @@ Function Set-VCFCredentialAutoRotatePolicy {
         if ($task.Status -eq 'FAILED') {
             Throw "The credential task ($($task.id)) failed with an error."
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1577,20 +1620,24 @@ Function Get-VCFCredentialTask {
             $uri = "https://$sddcManager/v1/credentials/tasks/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } elseif ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("resourceCredentials"))) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("id") -and ($PsBoundParameters.ContainsKey("resourceCredentials"))) {
             $uri = "https://$sddcManager/v1/credentials/tasks/$id/resource-credentials"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } elseif ($PsBoundParameters.ContainsKey("status")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("status")) {
             $uri = "https://$sddcManager/v1/credentials/tasks"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements | Where-Object { $_.status -eq $status }
-        } elseif ( -not $PsBoundParameters.ContainsKey("id")) {
+        }
+        elseif ( -not $PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/credentials/tasks"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1622,12 +1669,14 @@ Function Stop-VCFCredentialTask {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-        } else {
+        }
+        else {
             Throw "The unique ID of the credential task must be provided."
         }
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers -ContentType 'application/json'
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1664,12 +1713,14 @@ Function Restart-VCFCredentialTask {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$sddcManager/v1/credentials/tasks/$id"
-        } else {
+        }
+        else {
             Throw "The unique ID of the credential task must be provided."
         }
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1722,15 +1773,19 @@ Function Get-VCFCredentialExpiry {
         $uri = "https://$sddcManager/v1/credentials/ui?includeExpiryOnly=true"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         if ($PsBoundParameters.ContainsKey("resourceName")) {
-            $response.elements | Where-Object {$_.resource.resourceName -eq $resourceName}
-        } elseif ($PsBoundParameters.ContainsKey("id")) {
-            $response.elements | Where-Object {$_.id -eq $id}
-        } elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
-            $response.elements | Where-Object {$_.resource.resourceType -eq $resourceType}
-        } else {
+            $response.elements | Where-Object { $_.resource.resourceName -eq $resourceName }
+        }
+        elseif ($PsBoundParameters.ContainsKey("id")) {
+            $response.elements | Where-Object { $_.id -eq $id }
+        }
+        elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
+            $response.elements | Where-Object { $_.resource.resourceType -eq $resourceType }
+        }
+        else {
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1772,10 +1827,12 @@ Function Get-VCFDepotCredential {
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         if ($PsBoundParameters.ContainsKey('vxrail')) {
             $response.dellEmcSupportAccount
-        } else {
+        }
+        else {
             $response.vmwareAccount
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1821,19 +1878,22 @@ Function Set-VCFDepotCredential {
             if (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
                 Throw 'You must enter a username and password for Dell EMC Support.'
             }
-        } elseif (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
+        }
+        elseif (-not $PsBoundParameters.ContainsKey('username') -and (-not $PsBoundParameters.ContainsKey('password'))) {
             Throw 'You must enter a username and password for VMware Customer Connect.'
         }
 
         if ($PsBoundParameters.ContainsKey('vxrail')) {
             $ConfigJson = '{"dellEmcSupportAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
-        } else {
+        }
+        else {
             $ConfigJson = '{"vmwareAccount": {"username": "' + $username + '","password": "' + $password + '"}}'
         }
 
         $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $ConfigJson
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1908,7 +1968,8 @@ Function Get-VCFWorkloadDomain {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1946,11 +2007,13 @@ Function New-VCFWorkloadDomain {
             $uri = "https://$sddcManager/v1/domains"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             Return $response
-        } else {
+        }
+        else {
             Write-Error "The validation task commpleted the run with the following problems:"
             Write-Error $response.validationChecks.errorResponse.message
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -1983,7 +2046,8 @@ Function Set-VCFWorkloadDomain {
         $uri = "https://$sddcManager/v1/domains/$id"
         $body = '{"markForDeletion": true}'
         Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $body # This API does not return a response.
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2017,7 +2081,8 @@ Function Remove-VCFWorkloadDomain {
         $uri = "https://$sddcManager/v1/domains/$id"
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2050,18 +2115,21 @@ Function Get-VCFFederation {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ((Get-VCFManager -version) -ge '4.4.0') {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
-        } elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
             Write-Warning "$msgVcfApiDeprecated $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } else {
+        }
+        else {
             Write-Output "$msgVcfApiNotAvailable $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2092,18 +2160,21 @@ Function Set-VCFFederation {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ((Get-VCFManager -version) -ge '4.4.0') {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
-        } elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
             Write-Warning "$msgVcfApiDeprecated $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json
             $response
-        } else {
+        }
+        else {
             Write-Output "$msgVcfApiNotAvailable $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation"
             $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2127,7 +2198,8 @@ Function Remove-VCFFederation {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ((Get-VCFManager -version) -ge '4.4.0') {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
-        } elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
             Write-Warning "$msgVcfApiDeprecated $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation"
             # Verify that the connected SDDC Manager is a controller and the only one present in the federation
@@ -2148,7 +2220,8 @@ Function Remove-VCFFederation {
             }
             $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
             $response
-        } else {
+        }
+        else {
             Write-Output "$msgVcfApiNotAvailable $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation"
             # Verify that the connected SDDC Manager is a controller and the only one present in the federation
@@ -2170,7 +2243,8 @@ Function Remove-VCFFederation {
             $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2199,26 +2273,31 @@ Function Get-VCFFederationMember {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ((Get-VCFManager -version) -ge '4.4.0') {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
-        } elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
             Write-Warning "$msgVcfApiDeprecated $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation/members"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             if (!$response.federationName) {
                 Throw 'Failed to get members. No Federation found.'
-            } else {
+            }
+            else {
                 $response.memberDetail
             }
-        } else {
+        }
+        else {
             Write-Output "$msgVcfApiNotAvailable $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation/members"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             if (!$response.federationName) {
                 Throw 'Failed to get members. No Federation found.'
-            } else {
+            }
+            else {
                 $response.memberDetail
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2250,13 +2329,15 @@ Function New-VCFFederationInvite {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ((Get-VCFManager -version) -ge '4.4.0') {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
-        } elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
             Write-Warning "$msgVcfApiDeprecated $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
             $sddcMemberRole = Get-VCFFederationMember
             if ($sddcMemberRole.memberDetail.role -ne "CONTROLLER" -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
                 Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
-            } else {
+            }
+            else {
                 $inviteeDetails = @{
                     inviteeRole = $inviteeRole
                     inviteeFqdn = $inviteeFqdn
@@ -2266,13 +2347,15 @@ Function New-VCFFederationInvite {
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -Body $ConfigJson -ContentType 'application/json'
                 $response
             }
-        } else {
+        }
+        else {
             Write-Warning "This API is not available in the latest versions of VMware Cloud Foundation."
             $uri = "https://$sddcManager/v1/sddc-federation/membership-tokens"
             $sddcMemberRole = Get-VCFFederationMember
             if ($sddcMemberRole.memberDetail.role -ne 'CONTROLLER' -and $sddcMemberRole.memberDetail.fqdn -ne $sddcManager) {
                 Throw "$sddcManager is not the Federation controller. Invitatons to join Federation can only be sent from the Federation controller."
-            } else {
+            }
+            else {
                 $inviteeDetails = @{
                     inviteeRole = $inviteeRole
                     inviteeFqdn = $inviteeFqdn
@@ -2282,7 +2365,8 @@ Function New-VCFFederationInvite {
                 $response
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2313,10 +2397,12 @@ Function Join-VCFFederation {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ((Get-VCFManager -version) -ge '4.4.0') {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
-        } elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
             if (!(Test-Path $json)) {
                 Throw "The JSON specification file was not found: $json"
-            } else {
+            }
+            else {
                 Write-Warning "$msgVcfApiDeprecated $(Get-VCFManager -version)"
                 $ConfigJson = (Get-Content -Raw $json) # Reads the JSON specification file contents into the variable.
                 $uri = "https://$sddcManager/v1/sddc-federation/members"
@@ -2331,10 +2417,12 @@ Function Join-VCFFederation {
                 } While ($response.status -eq "IN_PROGRESS")
                 $response
             }
-        } else {
+        }
+        else {
             if (!(Test-Path $json)) {
                 Throw 'JSON File Not Found'
-            } else {
+            }
+            else {
                 $ConfigJson = (Get-Content -Raw $json) # Reads the JSON specification file contents into the variable.
                 $uri = "https://$sddcManager/v1/sddc-federation/members"
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $ConfigJson
@@ -2349,7 +2437,8 @@ Function Join-VCFFederation {
                 $response
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2385,18 +2474,21 @@ Function Get-VCFFederationTask {
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ((Get-VCFManager -version) -ge '4.4.0') {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
-        } elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.3.0' -and (Get-VCFManager -version) -lt '4.4.0') {
             Write-Warning "$msgVcfApiDeprecated $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } else {
+        }
+        else {
             Write-Output "$msgVcfApiNotAvailable $(Get-VCFManager -version)"
             $uri = "https://$sddcManager/v1/sddc-federation/tasks/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2427,10 +2519,12 @@ Function Get-VCFFipsMode {
             $uri = "https://$sddcManager/v1/system/security/fips"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2519,7 +2613,8 @@ Function Get-VCFHost {
                 $response.elements
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2572,10 +2667,12 @@ Function New-VCFCommissionedHost {
                 $uri = "https://$sddcManager/v1/hosts/"
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
                 Return $response
-            } else {
+            }
+            else {
                 Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
             }
-        } elseif ($PsBoundParameters.ContainsKey("validate")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("validate")) {
             $response = Validate-CommissionHostSpec -json $jsonBody # Validate the JSON specification file.
             $taskId = $response.id # Get the task id from the validation function.
             Do {
@@ -2586,11 +2683,13 @@ Function New-VCFCommissionedHost {
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Write-Output "Task validation completed successfully."
                 Return $response
-            } else {
+            }
+            else {
                 Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2628,7 +2727,8 @@ Function Remove-VCFCommissionedHost {
         $uri = "https://$sddcManager/v1/hosts"
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2703,7 +2803,8 @@ Function Get-VCFLicenseKey {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2744,7 +2845,8 @@ Function New-VCFLicenseKey {
         $uri = "https://$sddcManager/v1/license-keys"
         Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody # This API does not return a response.
         Get-VCFLicenseKey -key $key
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2776,7 +2878,8 @@ Function Remove-VCFLicenseKey {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/license-keys/$key"
         Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response..
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2801,7 +2904,8 @@ Function Get-VCFLicenseMode {
         $uri = "https://$sddcManager/v1/licensing-info"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2862,7 +2966,8 @@ Function Get-VCFNetworkPool {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements | Where-Object { $_.name -eq $name }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2898,7 +3003,8 @@ Function New-VCFNetworkPool {
         $validate = $jsonBody | ConvertFrom-Json
         $poolName = $validate.name
         Get-VCFNetworkPool -name $poolName
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2929,7 +3035,8 @@ Function Remove-VCFNetworkPool {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/network-pools/$id"
         Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response..
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -2970,12 +3077,14 @@ Function Get-VCFNetworkIPPool {
             $uri = "https://$sddcManager/v1/network-pools/$id/networks/$networkid"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/network-pools/$id/networks"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3020,7 +3129,8 @@ Function Add-VCFNetworkIPPool {
         $body = '{"end": "' + $ipEnd + '","start": "' + $ipStart + '"}'
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $body
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3065,7 +3175,8 @@ Function Remove-VCFNetworkIPPool {
         $body = '{"end": "' + $ipEnd + '","start": "' + $ipStart + '"}'
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers -ContentType 'application/json' -Body $body
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3117,7 +3228,8 @@ Function Get-VCFNsxtCluster {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3166,7 +3278,8 @@ Function Get-VCFEdgeCluster {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3219,10 +3332,12 @@ Function New-VCFEdgeCluster {
                 $uri = "https://$sddcManager/v1/edge-clusters"
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
                 Return $response
-            } else {
+            }
+            else {
                 Write-Error "The validation task commpleted the run with the following error: $($response.validationChecks.errorResponse.message)"
             }
-        } elseif ($PsBoundParameters.ContainsKey("validate")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("validate")) {
             $response = Validate-EdgeClusterSpec -json $jsonBody # Validate the JSON specification file.
             $taskId = $response.id # Get the task id from the validation function.
             Do {
@@ -3233,11 +3348,13 @@ Function New-VCFEdgeCluster {
             if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
                 Write-Output "Task validation completed successfully."
                 Return $response
-            } else {
+            }
+            else {
                 Write-Error "The validation task commpleted the run with the following errors: $($response.validationChecks.errorResponse.message)"
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3353,7 +3470,8 @@ Function New-VCFPersonality {
         $uri = "https://$sddcManager/v1/personalities"
         $response = Invoke-RestMethod -Method POST -ContentType 'application/json'  -Uri $uri -Headers $headers -Body $body
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3401,7 +3519,8 @@ Function Get-VCFPSC {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3504,42 +3623,52 @@ Function Get-VCFRelease {
             $uri = "https://$sddcManager/v1/releases"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('domainId')) -and (-not $PsBoundParameters.ContainsKey('futureReleases'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('domainId')) -and (-not $PsBoundParameters.ContainsKey('futureReleases'))) {
             $uri = "https://$sddcManager/v1/releases?domainId=$domainId"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionEquals'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionEquals'))) {
             $uri = "https://$sddcManager/v1/releases?versionEq=$versionEquals"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionGreaterThan'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('versionGreaterThan'))) {
             $uri = "https://$sddcManager/v1/releases?versionGt=$versionGreaterThan"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('applicableForVersion'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.1.0' -and ($PsBoundParameters.ContainsKey('applicableForVersion'))) {
             $uri = "https://$sddcManager/v1/releases?applicableForVersion=$applicableForVersion"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionEquals'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionEquals'))) {
             $uri = "https://$sddcManager/v1/releases?vxRailVersionEq=$vxRailVersionEquals"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionGreaterThan'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('vxRailVersionGreaterThan'))) {
             $uri = "https://$sddcManager/v1/releases?vxRailVersionGt=$vxRailVersionGreaterThan"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('applicableForVxRailVersion'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('applicableForVxRailVersion'))) {
             $uri = "https://$sddcManager/v1/releases?applicableForVxRailVersion=$applicableForVxRailVersion"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('futureReleases')) -and ($PsBoundParameters.ContainsKey('domainId'))) {
+        }
+        elseif ((Get-VCFManager -version) -ge '4.4.0' -and ($PsBoundParameters.ContainsKey('futureReleases')) -and ($PsBoundParameters.ContainsKey('domainId'))) {
             $uri = "https://$sddcManager/v1/releases?getFutureReleases=true&domainId=$domainId"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3580,12 +3709,14 @@ Function Get-CloudBuilderSDDC {
             $uri = "https://$cloudBuilder/v1/sddcs"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ($PsBoundParameters.ContainsKey("id")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3617,7 +3748,8 @@ Function Start-CloudBuilderSDDC {
         $uri = "https://$cloudBuilder/v1/sddcs"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3659,12 +3791,14 @@ Function Restart-CloudBuilderSDDC {
             $uri = "https://$cloudBuilder/v1/sddcs/$id"
             $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } elseif ($PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("json"))) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("id") -and (-not $PsBoundParameters.ContainsKey("json"))) {
             $uri = "https://$cloudBuilder/v1/sddcs/$id"
             $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3701,12 +3835,14 @@ Function Get-CloudBuilderSDDCValidation {
             $uri = "https://$cloudBuilder/v1/sddcs/validations"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } elseif ($PsBoundParameters.ContainsKey("id")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("id")) {
             $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3753,7 +3889,8 @@ Function Start-CloudBuilderSDDCValidation {
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3785,7 +3922,8 @@ Function Stop-CloudBuilderSDDCValidation {
         $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3817,7 +3955,8 @@ Function Restart-CloudBuilderSDDCValidation {
         $uri = "https://$cloudBuilder/v1/sddcs/validations/$id"
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3886,7 +4025,8 @@ Function Get-VCFManager {
         if ($PsBoundParameters.ContainsKey('version') -and ($PsBoundParameters.ContainsKey('build')) ) {
             Write-Error 'You can only specify one of the following parameters: version, build.'
             Break
-        } else {
+        }
+        else {
             if ($PsBoundParameters.ContainsKey('id')) {
                 $uri = "https://$sddcManager/v1/sddc-managers/$id"
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
@@ -3895,11 +4035,13 @@ Function Get-VCFManager {
                     $matches = [regex]::Match($vcfVersion, $patternVersion)
                     $versionNumber = $matches.Groups[1].Value
                     $versionNumber
-                } elseif ($PsBoundParameters.ContainsKey('build')) {
+                }
+                elseif ($PsBoundParameters.ContainsKey('build')) {
                     $matches = [regex]::Match($vcfVersion, $patternBuild)
                     $buildNumber = $matches.Groups[1].Value
                     $buildNumber
-                } else {
+                }
+                else {
                     $response
                 }
             }
@@ -3911,11 +4053,13 @@ Function Get-VCFManager {
                     $matches = [regex]::Match($vcfVersion, $patternVersion)
                     $versionNumber = $matches.Groups[1].Value
                     $versionNumber
-                } elseif ($PsBoundParameters.ContainsKey('build')) {
+                }
+                elseif ($PsBoundParameters.ContainsKey('build')) {
                     $matches = [regex]::Match($vcfVersion, $patternBuild)
                     $buildNumber = $matches.Groups[1].Value
                     $buildNumber
-                } else {
+                }
+                else {
                     $response.elements
                 }
             }
@@ -3927,16 +4071,19 @@ Function Get-VCFManager {
                     $matches = [regex]::Match($vcfVersion, $patternVersion)
                     $versionNumber = $matches.Groups[1].Value
                     $versionNumber
-                } elseif ($PsBoundParameters.ContainsKey('build')) {
+                }
+                elseif ($PsBoundParameters.ContainsKey('build')) {
                     $matches = [regex]::Match($vcfVersion, $patternBuild)
                     $buildNumber = $matches.Groups[1].Value
                     $buildNumber
-                } else {
+                }
+                else {
                     $response.elements
                 }
             }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -3984,7 +4131,8 @@ Function Get-VCFService {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4027,15 +4175,18 @@ Function Get-VCFHealthSummaryTask {
                 $uri = "https://$sddcManager/v1/system/health-summary/$id"
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
                 $response
-            } else {
+            }
+            else {
                 $uri = "https://$sddcManager/v1/system/health-summary"
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
                 $response.elements
             }
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4069,10 +4220,12 @@ Function Request-VCFHealthSummaryBundle {
             $vcfHeaders.Add("Authorization", "Bearer $accessToken")
             $uri = "https://$sddcManager/v1/system/health-summary/$id/data"
             Invoke-RestMethod -Method GET -Uri $uri -Headers $vcfHeaders -OutFile "health-summary-$id.tar"
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4106,10 +4259,12 @@ Function Start-VCFHealthSummary {
             $uri = "https://$sddcManager/v1/system/health-summary"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4147,15 +4302,18 @@ Function Get-VCFSupportBundleTask {
                 $uri = "https://$sddcManager/v1/system/support-bundles/$id"
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
                 $response
-            } else {
+            }
+            else {
                 $uri = "https://$sddcManager/v1/system/support-bundles"
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
                 $response.elements
             }
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4188,10 +4346,12 @@ Function Request-VCFSupportBundle {
             $vcfHeaders.Add("Authorization", "Bearer $accessToken")
             $uri = "https://$sddcManager/v1/system/support-bundles/$id/data"
             Invoke-RestMethod -Method GET -Uri $uri -Headers $vcfHeaders -OutFile "support-bundle-$id.tar"
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4225,10 +4385,12 @@ Function Start-VCFSupportBundle {
             $uri = "https://$sddcManager/v1/system/support-bundles"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4266,7 +4428,8 @@ Function Start-VCFSystemPrecheck {
         $uri = "https://$sddcManager/v1/system/prechecks"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4317,11 +4480,13 @@ Function Get-VCFSystemPrecheckTask {
             $failed_task = $response.subTasks | Where-Object { $_.status -eq "FAILED" }
             $failed_subtask = $failed_task.stages | Where-Object { $_.status -eq "FAILED" }
             $failed_subtask
-        } else {
+        }
+        else {
             $response
         }
         
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4376,20 +4541,24 @@ Function Get-VCFTask {
             $uri = "https://$sddcManager/v1/tasks/$id"
             Try {
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
-            } Catch {
+            }
+            Catch {
                 if ($_.Exception.Message -eq "The remote server returned an error: (404) Not Found.") {
                     Write-Error "Task with ID $id not found."
-                } else {
+                }
+                else {
                     ResponseException -object $_
                 }
             }
             $response
-        } elseif ($PsBoundParameters.ContainsKey("status")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("status")) {
             $uri = "https://$sddcManager/v1/tasks/"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements | Where-Object { $_.status -eq $status }
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4420,7 +4589,8 @@ Function Restart-VCFTask {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/tasks/$id"
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4435,7 +4605,8 @@ Function checkVCFToken {
     if (!$accessToken) {
         Write-Error "API Access Token Required. Request an Access Token by running Request-VCFToken"
         Break
-    } else {
+    }
+    else {
         $expiryDetails = Get-JWTDetail $accessToken
         if ($expiryDetails.timeToExpiry.Hours -eq 0 -and $expiryDetails.timeToExpiry.Minutes -lt 2) {
             Write-Output "API Access Token Expired. Requesting a new access token with current refresh token."
@@ -4552,7 +4723,8 @@ Function Get-VCFUpgradable {
         $uri = "https://$sddcManager/v1/system/upgradables"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers -ContentType 'application/json'
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4593,7 +4765,8 @@ Function Get-VCFUpgrade {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4622,14 +4795,15 @@ Function Start-VCFUpgrade {
     )
 
     Try {
-    $jsonBody = validateJsonInput -json $json
-    createHeader # Set the Accept and Authorization headers.
-    checkVCFToken # Validate the access token and refresh, if necessary.
-    $uri = "https://$sddcManager/v1/upgrades"
+        $jsonBody = validateJsonInput -json $json
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        $uri = "https://$sddcManager/v1/upgrades"
 
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4687,12 +4861,15 @@ Function Get-VCFUser {
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         if ($PsBoundParameters.ContainsKey("type")) {
             $response.elements | Where-Object { $_.type -eq $type }
-        } elseif ($PsBoundParameters.ContainsKey("domain")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("domain")) {
             $response.elements | Where-Object { $_.domain -eq $domain }
-        } else {
+        }
+        else {
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4739,7 +4916,8 @@ Function New-VCFUser {
         }]'
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $body
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4784,7 +4962,8 @@ Function New-VCFServiceUser {
         }]'
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $body
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4809,7 +4988,8 @@ Function Get-VCFRole {
         $uri = "https://$sddcManager/v1/roles"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4841,7 +5021,8 @@ Function Remove-VCFUser {
         $uri = "https://$sddcManager/v1/users/$id"
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers -ContentType 'application/json'
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4891,7 +5072,8 @@ Function New-VCFGroup {
         }]'
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $body
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4921,7 +5103,8 @@ Function Get-VCFConfigurationDNS {
         $uri = "https://$sddcManager/v1/system/dns-configuration"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.dnsServers
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -4954,7 +5137,8 @@ Function Get-VCFConfigurationDNSValidation {
         $uri = "https://$sddcManager/v1/system/dns-configuration/validations/$id"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5000,12 +5184,14 @@ Function Set-VCFConfigurationDNS {
             $uri = "https://$sddcManager/v1/system/dns-configuration/validations"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/system/dns-configuration"
             $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5030,7 +5216,8 @@ Function Get-VCFConfigurationNTP {
         $uri = "https://$sddcManager/v1/system/ntp-configuration"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.ntpServers
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5062,7 +5249,8 @@ Function Get-VCFConfigurationNTPValidation {
         $uri = "https://$sddcManager/v1/system/ntp-configuration/validations/$id"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5110,7 +5298,8 @@ Function Set-VCFConfigurationNTP {
             $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5141,10 +5330,12 @@ Function Get-VCFProxy {
             $uri = "https://$sddcManager/v1/system/proxy-configuration"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers -ContentType 'application/json'
             $response
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5180,7 +5371,7 @@ Function Set-VCFProxy {
     Param (
         [Parameter (Mandatory = $true)] [ValidateSet("ENABLED", "DISABLED")] [ValidateNotNullOrEmpty()] [String]$status,
         [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [String]$proxyHost,
-        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [ValidateRange(1,65535)] [Int]$proxyPort
+        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [ValidateRange(1, 65535)] [Int]$proxyPort
     )
 
     Try {
@@ -5189,16 +5380,19 @@ Function Set-VCFProxy {
             if ($isEnabled -eq $false -and ($proxyHost -or $proxyPort)) {
                 Write-Warning "The proxy host and port should not be specified when disabling the proxy configuration."
                 Break
-            } elseif ($isEnabled -eq $true -and (!$proxyHost -or !$proxyPort)) {
+            }
+            elseif ($isEnabled -eq $true -and (!$proxyHost -or !$proxyPort)) {
                 Write-Error "The proxy host and port must be specified when enabling the proxy configuration."
                 Break
-            } elseif ($isEnabled -eq $true -and ($proxyHost -ne $null -and $proxyPort -ne $null)) {
+            }
+            elseif ($isEnabled -eq $true -and ($proxyHost -ne $null -and $proxyPort -ne $null)) {
                 if ($PSVersionTable.PSEdition -eq 'Core') {
                     $connection = Test-Connection -TargetName $proxyHost -TcpPort $proxyPort -Quiet
                     if (!$connection) {
                         Write-Error "The proxy host $proxyHost is not reachable on port TCP $proxyPort."
                     }
-                } elseif ($PSVersionTable.PSEdition -eq 'Desktop') {
+                }
+                elseif ($PSVersionTable.PSEdition -eq 'Desktop') {
                     $OriginalProgressPreference = $Global:ProgressPreference
                     $Global:ProgressPreference = 'SilentlyContinue'
                     $testConnection = Test-NetConnection -ComputerName $proxyHost -Port $proxyPort -WarningAction SilentlyContinue
@@ -5208,7 +5402,8 @@ Function Set-VCFProxy {
                         Write-Error "The proxy host $proxyHost is not reachable on port TCP $proxyPort."
                     }
                 }
-            } else {
+            }
+            else {
                 $connection = $true
             }
 
@@ -5226,10 +5421,12 @@ Function Set-VCFProxy {
                 $body = $body | ConvertTo-Json -Depth 4 -Compress
                 Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $body
             }
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5294,7 +5491,8 @@ Function Get-VCFvCenter {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5324,7 +5522,8 @@ Function Get-VCFVrslcm {
         $uri = "https://$sddcManager/v1/vrslcms"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5368,12 +5567,14 @@ Function New-VCFVrslcm {
             $uri = "https://$sddcManager/v1/vrslcms"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        } elseif ($PsBoundParameters.ContainsKey("validate")) {
+        }
+        elseif ($PsBoundParameters.ContainsKey("validate")) {
             $uri = "https://$sddcManager/v1/vrslcms/validations"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5399,7 +5600,8 @@ Function Remove-VCFVrslcm {
         $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5426,7 +5628,8 @@ Function Reset-VCFVrslcm {
         $uri = "https://$sddcManager/v1/vrslcm"
         $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5469,12 +5672,14 @@ Function Get-VCFVrops {
             $uri = "https://$sddcManager/v1/vrops/domains"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
-        } else {
+        }
+        else {
             $uri = "https://$sddcManager/v1/vropses"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response.elements
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5502,7 +5707,8 @@ Function Get-VCFVropsConnection {
         $uri = "https://$sddcManager/v1/vrops/domains"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5544,7 +5750,8 @@ Function Set-VCFVropsConnection {
         $uri = "https://$sddcManager/v1/vrops/domains"
         $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -Body $body -ContentType 'application/json'
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5575,7 +5782,8 @@ Function Get-VCFVrli {
         $uri = "https://$sddcManager/v1/vrlis"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5601,7 +5809,8 @@ Function Get-VCFVrliConnection {
         $uri = "https://$sddcManager/v1/vrli/domains"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5643,7 +5852,8 @@ Function Set-VCFVrliConnection {
         $uri = "https://$sddcManager/v1/vrli/domains"
         $response = Invoke-RestMethod -Method 'PUT' -Uri $uri -Headers $headers -Body $json -ContentType 'application/json'
         $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5674,7 +5884,8 @@ Function Get-VCFVra {
         $uri = "https://$sddcManager/v1/vras"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5705,7 +5916,8 @@ Function Get-VCFWsa {
         $uri = "https://$sddcManager/v1/wsas"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         $response.elements
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5748,14 +5960,17 @@ Function Get-VCFIdentityProvider {
             if ($PsBoundParameters.ContainsKey("id")) {
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
                 Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
-            } else {
+            }
+            else {
                 $uri = "https://$sddcManager/v1/identity-providers"
                 (Invoke-RestMethod -Method GET -Uri $uri -Headers $headers).elements
             }
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -Object $_
     }
 }
@@ -5785,7 +6000,7 @@ Function Remove-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
@@ -5794,17 +6009,20 @@ Function Remove-VCFIdentityProvider {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
-            } elseif ($type -eq "Microsoft ADFS") {
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+            }
+            elseif ($type -eq "Microsoft ADFS") {
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response.
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -Object $_
     }
 }
@@ -5835,7 +6053,7 @@ Function New-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
@@ -5845,17 +6063,20 @@ Function New-VCFIdentityProvider {
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources"
-            } elseif ($type -eq "Microsoft ADFS") {
+            }
+            elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
                 $uri = "https://$sddcManager/v1/identity-providers"
             }
             Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
-        } else {
+        }
+        else {
             Write-Warning "$msgVcfApiNotSupported $(Get-VCFManager -version)"
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -Object $_
     }
 }
@@ -5888,7 +6109,7 @@ Function Update-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
@@ -5899,18 +6120,21 @@ Function Update-VCFIdentityProvider {
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
-            } elseif ($type -eq "Microsoft ADFS") {
+            }
+            elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody # This API does not return a response.
-        } else {
+        }
+        else {
             Write-Warning $msgVcfApiNotSupported $(Get-VCFManager -version)
         }
-    } Catch {
+    }
+    Catch {
         ResponseException -Object $_
     }
 }
@@ -5937,7 +6161,8 @@ Function Validate-CommissionHostSpec {
         $uri = "https://$sddcManager/v1/hosts/validations"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json
         Return $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5954,7 +6179,8 @@ Function Validate-WorkloadDomainSpec {
         $uri = "https://$sddcManager/v1/domains/validations"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json
         Return $response
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
 }
@@ -5969,7 +6195,8 @@ Function Validate-VCFClusterSpec {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/clusters/validations"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
     Return $response
@@ -5987,7 +6214,8 @@ Function Validate-VCFUpdateClusterSpec {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/clusters/$clusterid/validations"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
     Return $response
@@ -6004,7 +6232,8 @@ Function Validate-EdgeClusterSpec {
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/edge-clusters/validations"
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $json
-    } Catch {
+    }
+    Catch {
         ResponseException -object $_
     }
     Return $response
@@ -6047,7 +6276,8 @@ Function Invoke-VCFCommand {
             Write-Output "Please provide the SDDC Manager vcf user password:"
             $vcfSecuredPassword = Read-Host -AsSecureString
             $vcfCred = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
-        } else {
+        }
+        else {
             # Convert the clear text input password to secure string.
             $vcfSecuredPassword = ConvertTo-SecureString $vcfPassword -AsPlainText -Force
             # Build credential object.
@@ -6058,7 +6288,8 @@ Function Invoke-VCFCommand {
             Write-Output "Please provide the root credential to run elevated commands in SDDC Manager:"
             $rootSecuredPassword = Read-Host -AsSecureString
             $rootCred = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
-        } else {
+        }
+        else {
             # Convert the clear text input password to secure string.
             $rootSecuredPassword = ConvertTo-SecureString $rootPassword -AsPlainText -Force
             # Build credential object.
@@ -6079,7 +6310,8 @@ Function Invoke-VCFCommand {
         # Create SSH session to SDDC Manager using vcf user. By default, SSH is disabled for the root account.
         Try {
             $sessionSSH = New-SSHSession -Computer $sddcManager -Credential $vcfCred -AcceptKey
-        } Catch {
+        }
+        Catch {
             $errorString = ResponseException; Write-Error $errorString
         }
         if ($sessionSSH.Connected -eq "True") {
@@ -6095,7 +6327,8 @@ Function Invoke-VCFCommand {
             # Destroy the connection previously established.
             Remove-SSHSession -SessionId $sessionSSH.SessionId | Out-Null
         }
-    } else {
+    }
+    else {
         Write-Error "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to run this cmdlet. Please install the module and try again."
     }
 }
@@ -6156,7 +6389,8 @@ Function Resolve-PSModule {
     # Check if module is imported into the current session.
     if (Get-Module -Name $moduleName) {
         $searchResult = "ALREADY_IMPORTED"
-    } else {
+    }
+    else {
         # If module is not imported, check if available on disk and try to import.
         if (Get-Module -ListAvailable | Where-Object { $_.Name -eq $moduleName }) {
             Try {
@@ -6164,10 +6398,12 @@ Function Resolve-PSModule {
                 Import-Module $moduleName
                 Write-Output "Module $moduleName imported successfully."
                 $searchResult = "IMPORTED"
-            } Catch {
+            }
+            Catch {
                 $searchResult = "IMPORT_FAILED"
             }
-        } else {
+        }
+        else {
             # If module is not imported & not available on disk, try the PowerShell Gallery then install and import.
             if (Find-Module -Name $moduleName | Where-Object { $_.Name -eq $moduleName }) {
                 Try {
@@ -6177,10 +6413,12 @@ Function Resolve-PSModule {
                     Import-Module $moduleName
                     Write-Output "Module $moduleName installed and imported"
                     $searchResult = "INSTALLED_IMPORTED"
-                } Catch {
+                }
+                Catch {
                     $searchResult = "INSTALLIMPORT_FAILED"
                 }
-            } else {
+            }
+            else {
                 # If module is not imported, not available, and not in the PowerShell Gallery then abort.
                 $searchResult = "NOTAVAILABLE"
             }
@@ -6204,7 +6442,8 @@ Function validateJsonInput {
         Try {
             $jsonPSobject = ConvertFrom-Json $json -ErrorAction Stop;
             $jsonValid = $true;
-        } Catch {
+        }
+        Catch {
             $jsonValid = $false;
             $ConfigJson = $json # Load the raw and wrong JSON content for function return.
         }
@@ -6215,12 +6454,14 @@ Function validateJsonInput {
             $ConfigJson = $json
             Write-Verbose "The JSON parameter was passed as a valid JSON string notation."
             $ConfigJson # Return validated JSON.
-        } else {
+        }
+        else {
             ResponseException -object $_
             $ConfigJson # Return an unvalidated JSON before throwing.
             Throw "The provided JSON parameter couldn't be validated as file path nor as JSON string. Please check the file path or JSON string formatting again."
         }
-    } else {
+    }
+    else {
         # JSON parameter was passed as file path.
         # Reads the file content and loads it.
         $ConfigJson = (Get-Content -Raw $json)
@@ -6229,7 +6470,8 @@ Function validateJsonInput {
         Try {
             $jsonPSobject = ConvertFrom-Json  $ConfigJson -ErrorAction Stop;
             $jsonValid = $true;
-        } Catch {
+        }
+        Catch {
             $jsonValid = $false;
         }
 
@@ -6237,7 +6479,8 @@ Function validateJsonInput {
             Write-Verbose "JSON file found. JSON string format was valid and content has been stored into a variable."
             Write-Verbose $ConfigJson
             $ConfigJson # Return validated JSON.
-        } else {
+        }
+        else {
             $ConfigJson # Return an unvalidated JSON before throwing.
             Throw "The provided JSON file path was valid; however, it could not be converted from JSON. Please check the formatting of the input."
         }
@@ -6279,7 +6522,8 @@ Function Write-LogMessage {
     Write-Host -NoNewline -ForegroundColor White " [$timestamp]"
     if ($Skipnewline) {
         Write-Host -NoNewline -ForegroundColor $Colour " $type $Message"
-    } else {
+    }
+    else {
         Write-Host -ForegroundColor $colour " $Type $Message"
     }
     $logContent = '[' + $timeStamp + '] ' + $Type + ' ' + $Message
@@ -6302,3 +6546,632 @@ Function Debug-CatchWriter {
 Export-ModuleMember -Function Debug-CatchWriter
 
 #EndRegion Useful Script Functions
+
+#Region JSON Generation Functions
+
+Function Export-VCFManagementDomainJsonSpec {
+    <#
+        .SYNOPSIS
+        Generates a JSON file from the VCF Planning & Preparation Workbook to perform a VCF bringup. Requires ImportExcel PowerShell module
+
+        .DESCRIPTION
+        The Export-VCFManagementDomainJsonSpec cmdlet Generates a JSON file from the VCF Planning & Preparation Workbook to perform a VCF bringup.
+
+        .EXAMPLE
+        Export-VCFManagementDomainJsonSpec -workbook vcf-pnp.xlsx -path ./
+        This example will open the Planning & Preparation workbook and extract the required data to create a bringup JSON.
+
+        #>
+
+    Param (
+        [Parameter (Mandatory = $true)] [String]$workbook,
+        [Parameter (Mandatory = $true)] [String]$path
+    )
+    # Check for the ImportExcel module and exit if not found
+    Try {
+        Write-Host " Importing ImportExcel Module"
+        Import-Module ImportExcel -WarningAction SilentlyContinue -ErrorAction Stop
+    }
+    Catch {
+        Write-Host " ImportExcel Module not found. Please install using 'Install-Module ImportExcel' and retry"
+        break
+    }
+
+    $Global:vcfVersion = @("v4.4.x", "v4.5.x", "v5.0.x", "v5.1.x")
+    Try {
+            
+        $module = "Management Domain JSON Spec"
+        Write-Host "Starting the Process of Generating the $module"
+        $pnpWorkbook = Open-ExcelPackage -Path $Workbook
+    
+        If ($pnpWorkbook.Workbook.Names["vcf_version"].Value -notin $vcfVersion) {
+            Write-Host "Planning and Preparation Workbook Provided Not Supported"
+            Break
+        }
+    
+        If ($pnpWorkbook.Workbook.Names["vcf_plus_result"].Value -eq "Included") {
+            $nsxtLicense = ""
+            $esxLicense = ""
+            $vsanLicense = ""
+            $vcenterLicense = ""
+        }
+        else {
+            $nsxtLicense = $pnpWorkbook.Workbook.Names["nsxt_license"].Value
+            $esxLicense = $pnpWorkbook.Workbook.Names["esx_std_license"].Value
+            $vsanLicense = $pnpWorkbook.Workbook.Names["vsan_license"].Value
+            $vcenterLicense = $pnpWorkbook.Workbook.Names["vc_license"].Value
+        }
+    
+        Write-Host "Generating the $module"
+    
+        # Check if management vm network is being used
+        if (!($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"]) -or $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"].Value -eq "Value Missing") {
+            $esxMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.split("/"))[1]
+            $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.split("/"))[1]
+        }
+        else {
+            $esxMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.split("/"))[1]
+            $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"].Value.split("/"))[1]   
+        }
+        
+        $esxManagmentMaskObject = ([IPAddress] ([Convert]::ToUInt64((("1" * $esxMgmtCidr) + ("0" * (32 - $esxMgmtCidr))), 2)))
+        $vmManagmentMaskObject = ([IPAddress] ([Convert]::ToUInt64((("1" * $vmMgmtCidr) + ("0" * (32 - $vmMgmtCidr))), 2)))
+    
+        $ntpServers = New-Object System.Collections.ArrayList
+        If ($pnpWorkbook.Workbook.Names["region_dns2_ip"].Value -eq "n/a") {
+            [Array]$ntpServers = $pnpWorkbook.Workbook.Names["region_dns1_ip"].Value
+        }
+        else {
+            [Array]$ntpServers = $pnpWorkbook.Workbook.Names["region_dns1_ip"].Value, $pnpWorkbook.Workbook.Names["region_dns2_ip"].Value
+        }
+    
+        $dnsObject = @()
+        $dnsObject += [pscustomobject]@{
+            'domain'              = $pnpWorkbook.Workbook.Names["region_ad_parent_fqdn"].Value
+            'subdomain'           = $pnpWorkbook.Workbook.Names["region_ad_child_fqdn"].Value
+            'nameserver'          = $pnpWorkbook.Workbook.Names["region_dns1_ip"].Value
+            'secondaryNameserver' = $pnpWorkbook.Workbook.Names["region_dns2_ip"].Value
+        }
+    
+        $rootUserObject = @()
+        $rootUserObject += [pscustomobject]@{
+            'username' = "root"
+            'password' = $pnpWorkbook.Workbook.Names["sddc_mgr_root_password"].Value
+        }
+    
+        $secondUserObject = @()
+        $secondUserObject += [pscustomobject]@{
+            'username' = "vcf"
+            'password' = $pnpWorkbook.Workbook.Names["sddc_mgr_vcf_password"].Value
+        }
+    
+        $restApiUserObject = @()
+        $restApiUserObject += [pscustomobject]@{
+            'username' = "admin"
+            'password' = $pnpWorkbook.Workbook.Names["sddc_mgr_admin_local_password"].Value
+        }
+    
+        $sddcManagerObject = @()
+        $sddcManagerObject += [pscustomobject]@{
+            'hostname'            = $pnpWorkbook.Workbook.Names["sddc_mgr_hostname"].Value
+            'ipAddress'           = $pnpWorkbook.Workbook.Names["sddc_mgr_ip"].Value
+            'netmask'             = $vmManagmentMaskObject.IPAddressToString
+            'localUserPassword'   = $pnpWorkbook.Workbook.Names["sddc_mgr_admin_local_password"].Value
+            rootUserCredentials   = ($rootUserObject | Select-Object -Skip 0)
+            restApiCredentials    = ($restApiUserObject | Select-Object -Skip 0)
+            secondUserCredentials = ($secondUserObject | Select-Object -Skip 0)
+        }
+    
+        $vmnics = New-Object System.Collections.ArrayList
+        [Array]$vmnics = $($pnpWorkbook.Workbook.Names["primary_vds_vmnics"].Value.Split(',')[0]), $($pnpWorkbook.Workbook.Names["primary_vds_vmnics"].Value.Split(',')[1])
+    
+        $networks = New-Object System.Collections.ArrayList
+        if ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_pg"].Value -eq "Value Missing") {
+            [Array]$networks = "MANAGEMENT", "VMOTION", "VSAN"
+        }
+        else {
+            [Array]$networks = "MANAGEMENT", "VMOTION", "VSAN", "VM_MANAGEMENT"
+        }
+    
+        $vmotionIpObject = @()
+        $vmotionIpObject += [pscustomobject]@{
+            'startIpAddress' = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_pool_start_ip"].Value
+            'endIpAddress'   = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_pool_end_ip"].Value
+        }
+    
+        $vsanIpObject = @()
+        $vsanIpObject += [pscustomobject]@{
+            'startIpAddress' = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_pool_start_ip"].Value
+            'endIpAddress'   = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_pool_end_ip"].Value
+        }
+    
+        $vmotionMtu = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_mtu"].Value -as [string]
+        $vsanMtu = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_mtu"].Value -as [string]
+        $dvsMtu = [INT]$pnpWorkbook.Workbook.Names["primary_vds_mtu"].Value
+    
+        $networkObject = @()
+        $networkObject += [pscustomobject]@{
+            'networkType'  = "MANAGEMENT"
+            'subnet'       = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value
+            'vlanId'       = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vlan"].Value -as [string]
+            'mtu'          = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_mtu"].Value -as [string]
+            'gateway'      = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_gateway_ip"].Value
+            'portGroupKey' = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_pg"].Value
+        }
+        $networkObject += [pscustomobject]@{
+            'networkType'          = "VMOTION"
+            'subnet'               = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_cidr"].Value
+            includeIpAddressRanges = $vmotionIpObject
+            'vlanId'               = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_vlan"].Value -as [string]
+            'mtu'                  = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_mtu"].Value -as [string]
+            'gateway'              = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_gateway_ip"].Value
+            'portGroupKey'         = $pnpWorkbook.Workbook.Names["mgmt_az1_vmotion_pg"].Value
+        }
+        $networkObject += [pscustomobject]@{
+            'networkType'          = "VSAN"
+            'subnet'               = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_cidr"].Value
+            includeIpAddressRanges = $vsanIpObject
+            'vlanId'               = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_vlan"].Value -as [string]
+            'mtu'                  = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_mtu"].Value -as [string]
+            'gateway'              = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_gateway_ip"].Value
+            'portGroupKey'         = $pnpWorkbook.Workbook.Names["mgmt_az1_vsan_pg"].Value
+        }
+        if ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_pg"].Value -ne "Value Missing") {
+            $networkObject += [pscustomobject]@{
+                'networkType'  = "VM_MANAGEMENT"
+                'subnet'       = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"].Value
+                'vlanId'       = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_vlan"].Value -as [string]
+                'mtu'          = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_mtu"].Value -as [string]
+                'gateway'      = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_gateway_ip"].Value
+                'portGroupKey' = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_pg"].Value
+            }
+        }
+    
+        $nsxtManagerObject = @()
+        $nsxtManagerObject += [pscustomobject]@{
+            'hostname' = $pnpWorkbook.Workbook.Names["mgmt_nsxt_mgra_hostname"].Value
+            'ip'       = $pnpWorkbook.Workbook.Names["mgmt_nsxt_mgra_ip"].Value
+        }
+        If ($singleNSXTManager -eq "N") {
+            $nsxtManagerObject += [pscustomobject]@{
+                'hostname' = $pnpWorkbook.Workbook.Names["mgmt_nsxt_mgrb_hostname"].Value
+                'ip'       = $pnpWorkbook.Workbook.Names["mgmt_nsxt_mgrb_ip"].Value
+            }
+            $nsxtManagerObject += [pscustomobject]@{
+                'hostname' = $pnpWorkbook.Workbook.Names["mgmt_nsxt_mgrc_hostname"].Value
+                'ip'       = $pnpWorkbook.Workbook.Names["mgmt_nsxt_mgrc_ip"].Value
+            }
+        }
+    
+        $vlanTransportZoneObject = @()
+        $vlanTransportZoneObject += [pscustomobject]@{
+            'zoneName'    = $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value + "-tz-vlan01"
+            'networkName' = "netName-vlan"
+        }
+    
+        $overlayTransportZoneObject = @()
+        $overlayTransportZoneObject += [pscustomobject]@{
+            'zoneName'    = $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value + "-tz-overlay01"
+            'networkName' = "netName-overlay"
+        }
+    
+        $edgeNode01interfaces = @()
+        $edgeNode01interfaces += [pscustomobject]@{
+            'name'          = $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value + "-uplink01-tor1"
+            'interfaceCidr' = $pnpWorkbook.Workbook.Names["mgmt_en1_edge_overlay_interface_ip_1_ip"].Value
+        }
+        $edgeNode01interfaces += [pscustomobject]@{
+            'name'          = $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value + "-uplink01-tor2"
+            'interfaceCidr' = $pnpWorkbook.Workbook.Names["mgmt_en1_edge_overlay_interface_ip_2_ip"].Value
+        }
+    
+        $edgeNode02interfaces = @()
+        $edgeNode02interfaces += [pscustomobject]@{
+            'name'          = $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value + "-uplink01-tor1"
+            'interfaceCidr' = $pnpWorkbook.Workbook.Names["mgmt_en2_edge_overlay_interface_ip_1_ip"].Value
+        }
+        $edgeNode02interfaces += [pscustomobject]@{
+            'name'          = $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value + "-uplink01-tor2"
+            'interfaceCidr' = $pnpWorkbook.Workbook.Names["mgmt_en2_edge_overlay_interface_ip_2_ip"].Value
+    
+        }
+            
+        $edgeNodeObject = @()
+        $edgeNodeObject += [pscustomobject]@{
+            'edgeNodeName'     = $pnpWorkbook.Workbook.Names["mgmt_en1_fqdn"].Value.Split(".")[0]
+            'edgeNodeHostname' = $pnpWorkbook.Workbook.Names["mgmt_en1_fqdn"].Value
+            'managementCidr'   = $pnpWorkbook.Workbook.Names["input_mgmt_en1_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.Split("/")[-1]
+            'edgeVtep1Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en1_edge_overlay_interface_ip_1_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
+            'edgeVtep2Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en1_edge_overlay_interface_ip_2_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
+            interfaces         = $edgeNode01interfaces
+        }        
+        $edgeNodeObject += [pscustomobject]@{
+            'edgeNodeName'     = $pnpWorkbook.Workbook.Names["mgmt_en2_fqdn"].Value.Split(".")[0]
+            'edgeNodeHostname' = $pnpWorkbook.Workbook.Names["mgmt_en2_fqdn"].Value
+            'managementCidr'   = $pnpWorkbook.Workbook.Names["input_mgmt_en2_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.Split("/")[-1]
+            'edgeVtep1Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en2_edge_overlay_interface_ip_1_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
+            'edgeVtep2Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en2_edge_overlay_interface_ip_2_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
+            interfaces         = $edgeNode02interfaces
+        }
+            
+        $edgeServicesObject = @()
+        $edgeServicesObject += [pscustomobject]@{
+            'tier0GatewayName' = $pnpWorkbook.Workbook.Names["mgmt_tier0_name"].Value
+            'tier1GatewayName' = $pnpWorkbook.Workbook.Names["mgmt_tier1_name"].Value
+        }
+    
+        $bgpNeighboursObject = @()
+        $bgpNeighboursObject += [pscustomobject]@{
+            'neighbourIp'      = $pnpWorkbook.Workbook.Names["input_mgmt_az1_tor1_peer_ip"].Value
+            'autonomousSystem' = $pnpWorkbook.Workbook.Names["input_mgmt_az1_tor1_peer_asn"].Value
+            'password'         = $pnpWorkbook.Workbook.Names["input_mgmt_az1_tor1_peer_bgp_password"].Value
+        }
+        $bgpNeighboursObject += [pscustomobject]@{
+            'neighbourIp'      = $pnpWorkbook.Workbook.Names["input_mgmt_az1_tor2_peer_ip"].Value
+            'autonomousSystem' = $pnpWorkbook.Workbook.Names["input_mgmt_az1_tor2_peer_asn"].Value
+            'password'         = $pnpWorkbook.Workbook.Names["input_mgmt_az1_tor2_peer_bgp_password"].Value
+        }
+    
+        $nsxtEdgeObject = @()
+        $nsxtEdgeObject += [pscustomobject]@{
+            'edgeClusterName'               = $pnpWorkbook.Workbook.Names["mgmt_ec_name"].Value
+            'edgeRootPassword'              = $pnpWorkbook.Workbook.Names["nsxt_en_root_password"].Value
+            'edgeAdminPassword'             = $pnpWorkbook.Workbook.Names["nsxt_en_admin_password"].Value
+            'edgeAuditPassword'             = $pnpWorkbook.Workbook.Names["nsxt_en_audit_password"].Value
+            'edgeFormFactor'                = $pnpWorkbook.Workbook.Names["mgmt_ec_formfactor"].Value 
+            'tier0ServicesHighAvailability' = "ACTIVE_ACTIVE"
+            'asn'                           = $pnpWorkbook.Workbook.Names["mgmt_en_asn"].Value
+            edgeServicesSpecs               = ($edgeServicesObject | Select-Object -Skip 0)
+            edgeNodeSpecs                   = $edgeNodeObject
+            bgpNeighbours                   = $bgpNeighboursObject
+        }
+            
+        $logicalSegmentsObject = @()
+        $logicalSegmentsObject += [pscustomobject]@{
+            'name'        = $pnpWorkbook.Workbook.Names["reg_seg01_name"].Value
+            'networkType' = "REGION_SPECIFIC"
+        }
+        $logicalSegmentsObject += [pscustomobject]@{
+            'name'        = $pnpWorkbook.Workbook.Names["xreg_seg01_name"].Value
+            'networkType' = "X_REGION"
+        }
+    
+        $nsxtObject = @()
+        $nsxtObject += [pscustomobject]@{
+            'nsxtManagerSize'                = $pnpWorkbook.Workbook.Names["mgmt_nsxt_mgr_formfactor"].Value.tolower()
+            nsxtManagers                     = $nsxtManagerObject
+            'rootNsxtManagerPassword'        = $pnpWorkbook.Workbook.Names["nsxt_lm_root_password"].Value
+            'nsxtAdminPassword'              = $pnpWorkbook.Workbook.Names["nsxt_lm_admin_password"].Value
+            'nsxtAuditPassword'              = $pnpWorkbook.Workbook.Names["nsxt_lm_audit_password"].Value
+            'rootLoginEnabledForNsxtManager' = "true"
+            'sshEnabledForNsxtManager'       = "true"
+            overLayTransportZone             = ($overlayTransportZoneObject | Select-Object -Skip 0)
+            vlanTransportZone                = ($vlanTransportZoneObject | Select-Object -Skip 0)
+            'vip'                            = $pnpWorkbook.Workbook.Names["mgmt_nsxt_vip_ip"].Value
+            'vipFqdn'                        = $pnpWorkbook.Workbook.Names["mgmt_nsxt_hostname"].Value
+            'nsxtLicense'                    = $nsxtLicense
+            'transportVlanId'                = $pnpWorkbook.Workbook.Names["mgmt_az1_host_overlay_vlan"].Value -as [int]
+        }
+    
+        $excelvsanDedup = $pnpWorkbook.Workbook.Names["mgmt_vsan_dedup"].Value
+        If ($excelvsanDedup -eq "No") {
+            $vsanDedup = $false
+        }
+        elseIf ($excelvsanDedup -eq "Yes") {
+            $vsanDedup = $true
+        }
+    
+        If ($pnpWorkbook.Workbook.Names["mgmt_principal_storage_chosen"].Value -eq "vSAN-ESA") {
+            $ESAenabledtrueobject = @()
+            $ESAenabledtrueobject += [pscustomobject]@{
+                'enabled' = "true"
+            }
+        }
+        else {
+            $ESAenabledtrueobject = @()
+            $ESAenabledtrueobject += [pscustomobject]@{
+                'enabled' = "false"
+            } 
+        }
+    
+        $vsanObject = @()
+        If ($pnpWorkbook.Workbook.Names["mgmt_principal_storage_chosen"].Value -eq "vSAN-ESA") {
+            $vsanObject += [pscustomobject]@{
+                'vsanName'      = "vsan-1"
+                'licenseFile'   = $vsanLicense
+                'vsanDedup'     = $vsanDedup
+                'datastoreName' = $pnpWorkbook.Workbook.Names["mgmt_vsan_datastore"].Value
+                esaConfig       = ($ESAenabledtrueobject | Select-Object -Skip 0)
+            }
+        }
+        else {
+            $vsanObject += [pscustomobject]@{
+                'vsanName'      = "vsan-1"
+                'licenseFile'   = $vsanLicense
+                'vsanDedup'     = $vsanDedup
+                'datastoreName' = $pnpWorkbook.Workbook.Names["mgmt_vsan_datastore"].Value
+            }
+        }
+        $niocObject = @()
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "VSAN"
+            'value'       = "HIGH"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "VMOTION"
+            'value'       = "LOW"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "VDP"
+            'value'       = "LOW"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "VIRTUALMACHINE"
+            'value'       = "HIGH"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "MANAGEMENT"
+            'value'       = "NORMAL"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "NFS"
+            'value'       = "LOW"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "HBR"
+            'value'       = "LOW"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "FAULTTOLERANCE"
+            'value'       = "LOW"
+        }
+        $niocObject += [pscustomobject]@{
+            'trafficType' = "ISCSI"
+            'value'       = "LOW"
+        }
+    
+        $dvsObject = @()
+        $dvsObject += [pscustomobject]@{
+            'mtu'      = $dvsMtu
+            niocSpecs  = $niocObject
+            'dvsName'  = $pnpWorkbook.Workbook.Names["primary_vds_name"].Value
+            'vmnics'   = $vmnics
+            'networks' = $networks
+        }
+    
+        $vmFolderObject = @()
+        $vmFOlderObject += [pscustomobject]@{
+            'MANAGEMENT' = $pnpWorkbook.Workbook.Names["mgmt_mgmt_vm_folder"].Value
+            'NETWORKING' = $pnpWorkbook.Workbook.Names["mgmt_nsx_vm_folder"].Value
+            'EDGENODES'  = $pnpWorkbook.Workbook.Names["mgmt_edge_vm_folder"].Value
+        }
+    
+        If (($pnpWorkbook.Workbook.Names["mgmt_evc_mode"].Value -eq "n/a") -or ($pnpWorkbook.Workbook.Names["mgmt_evc_mode"].Value -eq $null)) {
+            $evcMode = ""
+        }
+        else {
+            $evcMode = $pnpWorkbook.Workbook.Names["mgmt_evc_mode"].Value
+        }
+    
+        $resourcePoolObject = @()
+        $resourcePoolObject += [pscustomobject]@{
+            'type'                        = "management"
+            'name'                        = $pnpWorkbook.Workbook.Names["mgmt_mgmt_rp"].Value
+            'cpuSharesLevel'              = "high"
+            'cpuSharesValue'              = "0" -as [int]
+            'cpuLimit'                    = "-1" -as [int]
+            'cpuReservationExpandable'    = $true
+            'cpuReservationPercentage'    = "0" -as [int]
+            'memorySharesLevel'           = "normal"
+            'memorySharesValue'           = "0" -as [int]
+            'memoryLimit'                 = "-1" -as [int]
+            'memoryReservationExpandable' = $true
+            'memoryReservationPercentage' = "0" -as [int]
+        }
+        $resourcePoolObject += [pscustomobject]@{
+            'type'                        = "network"
+            'name'                        = $pnpWorkbook.Workbook.Names["mgmt_nsx_rp"].Value
+            'cpuSharesLevel'              = "high"
+            'cpuSharesValue'              = "0" -as [int]
+            'cpuLimit'                    = "-1" -as [int]
+            'cpuReservationExpandable'    = $true
+            'cpuReservationPercentage'    = "0" -as [int]
+            'memorySharesLevel'           = "normal"
+            'memorySharesValue'           = "0" -as [int]
+            'memoryLimit'                 = "-1" -as [int]
+            'memoryReservationExpandable' = $true
+            'memoryReservationPercentage' = "0" -as [int]
+        }
+        $resourcePoolObject += [pscustomobject]@{
+            'type'                        = "compute"
+            'name'                        = $pnpWorkbook.Workbook.Names["mgmt_user_edge_rp"].Value
+            'cpuSharesLevel'              = "normal"
+            'cpuSharesValue'              = "0" -as [int]
+            'cpuLimit'                    = "-1" -as [int]
+            'cpuReservationExpandable'    = $true
+            'cpuReservationPercentage'    = "0" -as [int]
+            'memorySharesLevel'           = "normal"
+            'memorySharesValue'           = "0" -as [int]
+            'memoryLimit'                 = "-1" -as [int]
+            'memoryReservationExpandable' = $true
+            'memoryReservationPercentage' = "0" -as [int]
+        }
+        $resourcePoolObject += [pscustomobject]@{
+            'type'                        = "compute"
+            'name'                        = $pnpWorkbook.Workbook.Names["mgmt_user_vm_rp"].Value
+            'cpuSharesLevel'              = "normal"
+            'cpuSharesValue'              = "0" -as [int]
+            'cpuLimit'                    = "-1" -as [int]
+            'cpuReservationExpandable'    = $true
+            'cpuReservationPercentage'    = "0" -as [int]
+            'memorySharesLevel'           = "normal"
+            'memorySharesValue'           = "0" -as [int]
+            'memoryLimit'                 = "-1" -as [int]
+            'memoryReservationExpandable' = $true
+            'memoryReservationPercentage' = "0" -as [int]
+        }
+    
+        If ($pnpWorkbook.Workbook.Names["mgmt_consolidated_result"].Value -eq "Included") {
+            $clusterObject = @()
+            $clusterObject += [pscustomobject]@{
+                vmFolders         = ($vmFolderObject | Select-Object -Skip 0)
+                'clusterName'     = $pnpWorkbook.Workbook.Names["mgmt_cluster"].Value
+                'clusterEvcMode'  = $evcMode
+                resourcePoolSpecs = $resourcePoolObject
+            }
+        }
+        else {
+            $clusterObject = @()
+            $clusterObject += [pscustomobject]@{
+                vmFolders        = ($vmFolderObject | Select-Object -Skip 0)
+                'clusterName'    = $pnpWorkbook.Workbook.Names["mgmt_cluster"].Value
+                'clusterEvcMode' = $evcMode
+            }
+        }
+    
+        $ssoObject = @()
+        $ssoObject += [pscustomobject]@{
+            'ssoDomain' = 'vsphere.local'
+        }
+    
+        $pscObject = @()
+        $pscObject += [pscustomobject]@{
+            pscSsoSpec             = ($ssoObject | Select-Object -Skip 0)
+            'adminUserSsoPassword' = $pnpWorkbook.Workbook.Names["administrator_vsphere_local_password"].Value
+        }
+    
+        $vcenterObject = @()
+        $vcenterObject += [pscustomobject]@{
+            'vcenterIp'           = $pnpWorkbook.Workbook.Names["mgmt_vc_ip"].Value
+            'vcenterHostname'     = $pnpWorkbook.Workbook.Names["mgmt_vc_hostname"].Value
+            'licenseFile'         = $vcenterLicense
+            'rootVcenterPassword' = $pnpWorkbook.Workbook.Names["vcenter_root_password"].Value
+            'vmSize'              = $pnpWorkbook.Workbook.Names["mgmt_vc_size"].Value.tolower()
+        }
+    
+        $hostCredentialsObject = @()
+        $hostCredentialsObject += [pscustomobject]@{
+            'username' = 'root'
+            'password' = $pnpWorkbook.Workbook.Names["esxi_root_password"].Value
+        }
+    
+        $ipAddressPrivate01Object = @()
+        $ipAddressPrivate01Object += [pscustomobject]@{
+            'subnet'    = $esxManagmentMaskObject.IPAddressToString
+            'ipAddress' = $pnpWorkbook.Workbook.Names["mgmt_az1_host1_mgmt_ip"].Value
+            'gateway'   = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_gateway_ip"].Value
+        }
+    
+        $ipAddressPrivate02Object = @()
+        $ipAddressPrivate02Object += [pscustomobject]@{
+            'subnet'    = $esxManagmentMaskObject.IPAddressToString
+            'ipAddress' = $pnpWorkbook.Workbook.Names["mgmt_az1_host2_mgmt_ip"].Value
+            'gateway'   = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_gateway_ip"].Value
+        }
+    
+        $ipAddressPrivate03Object = @()
+        $ipAddressPrivate03Object += [pscustomobject]@{
+            'subnet'    = $esxManagmentMaskObject.IPAddressToString
+            'ipAddress' = $pnpWorkbook.Workbook.Names["mgmt_az1_host3_mgmt_ip"].Value
+            'gateway'   = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_gateway_ip"].Value
+        }
+    
+        $ipAddressPrivate04Object = @()
+        $ipAddressPrivate04Object += [pscustomobject]@{
+            'subnet'    = $esxManagmentMaskObject.IPAddressToString
+            'ipAddress' = $pnpWorkbook.Workbook.Names["mgmt_az1_host4_mgmt_ip"].Value
+            'gateway'   = $pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_gateway_ip"].Value
+        }
+    
+        $HostObject = @()
+        $HostObject += [pscustomobject]@{
+            'hostname'       = $pnpWorkbook.Workbook.Names["mgmt_az1_host1_hostname"].Value
+            'vSwitch'        = $pnpWorkbook.Workbook.Names["mgmt_vss_switch"].Value
+            'association'    = $pnpWorkbook.Workbook.Names["mgmt_datacenter"].Value
+            credentials      = ($hostCredentialsObject | Select-Object -Skip 0)
+            ipAddressPrivate = ($ipAddressPrivate01Object | Select-Object -Skip 0)
+        }
+        $HostObject += [pscustomobject]@{
+            'hostname'       = $pnpWorkbook.Workbook.Names["mgmt_az1_host2_hostname"].Value
+            'vSwitch'        = $pnpWorkbook.Workbook.Names["mgmt_vss_switch"].Value
+            'association'    = $pnpWorkbook.Workbook.Names["mgmt_datacenter"].Value
+            credentials      = ($hostCredentialsObject | Select-Object -Skip 0)
+            ipAddressPrivate = ($ipAddressPrivate02Object | Select-Object -Skip 0)
+        }
+        $HostObject += [pscustomobject]@{
+            'hostname'       = $pnpWorkbook.Workbook.Names["mgmt_az1_host3_hostname"].Value
+            'vSwitch'        = $pnpWorkbook.Workbook.Names["mgmt_vss_switch"].Value
+            'association'    = $pnpWorkbook.Workbook.Names["mgmt_datacenter"].Value
+            credentials      = ($hostCredentialsObject | Select-Object -Skip 0)
+            ipAddressPrivate = ($ipAddressPrivate03Object | Select-Object -Skip 0)
+        }
+        $HostObject += [pscustomobject]@{
+            'hostname'       = $pnpWorkbook.Workbook.Names["mgmt_az1_host4_hostname"].Value
+            'vSwitch'        = $pnpWorkbook.Workbook.Names["mgmt_vss_switch"].Value
+            'association'    = $pnpWorkbook.Workbook.Names["mgmt_datacenter"].Value
+            credentials      = ($hostCredentialsObject | Select-Object -Skip 0)
+            ipAddressPrivate = ($ipAddressPrivate04Object | Select-Object -Skip 0)
+        }
+    
+        $excluded = New-Object System.Collections.ArrayList
+        [Array]$excluded = "NSX-V"
+    
+        $ceipState = $pnpWorkbook.Workbook.Names["mgmt_ceip_status"].Value
+        If ($ceipState -eq "Yes") {
+            $ceipEnabled = "$true"
+        }
+        else {
+            $ceipEnabled = "$false"
+        }
+    
+        $fipsState = $pnpWorkbook.Workbook.Names["mgmt_fips_status"].Value
+        If ($fipsState -eq "Yes") {
+            $fipsEnabled = "$true"
+        }
+        else {
+            $fipsEnabled = "$false"
+        }
+            
+        $managementDomainObject = New-Object -TypeName psobject
+        $managementDomainObject | Add-Member -notepropertyname 'taskName' -notepropertyvalue "workflowconfig/workflowspec-ems.json"
+        $managementDomainObject | Add-Member -notepropertyname 'sddcId' -notepropertyvalue $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value
+        $managementDomainObject | Add-Member -notepropertyname 'ceipEnabled' -notepropertyvalue $ceipEnabled
+        $managementDomainObject | Add-Member -notepropertyname 'fipsEnabled' -notepropertyvalue $fipsEnabled
+        $managementDomainObject | Add-Member -notepropertyname 'managementPoolName' -notepropertyvalue $pnpWorkbook.Workbook.Names["mgmt_az1_pool_name"].Value
+        $managementDomainObject | Add-Member -notepropertyname 'skipEsxThumbprintValidation' -notepropertyvalue $true
+        $managementDomainObject | Add-Member -notepropertyname 'esxLicense' -notepropertyvalue $esxLicense
+        $managementDomainObject | Add-Member -notepropertyname 'excludedComponents' -notepropertyvalue $excluded
+        $managementDomainObject | Add-Member -notepropertyname 'ntpServers' -notepropertyvalue $ntpServers
+        $managementDomainObject | Add-Member -notepropertyname 'dnsSpec' -notepropertyvalue ($dnsObject | Select-Object -Skip 0)
+        $managementDomainObject | Add-Member -notepropertyname 'sddcManagerSpec' -notepropertyvalue ($sddcManagerObject | Select-Object -Skip 0)
+        $managementDomainObject | Add-Member -notepropertyname 'networkSpecs' -notepropertyvalue $networkObject
+        $managementDomainObject | Add-Member -notepropertyname 'nsxtSpec' -notepropertyvalue ($nsxtObject | Select-Object -Skip 0)
+        $managementDomainObject | Add-Member -notepropertyname 'vsanSpec' -notepropertyvalue ($vsanObject | Select-Object -Skip 0)
+        $managementDomainObject | Add-Member -notepropertyname 'dvsSpecs' -notepropertyvalue $dvsObject
+        $managementDomainObject | Add-Member -notepropertyname 'clusterSpec' -notepropertyvalue ($clusterObject | Select-Object -Skip 0)
+        $managementDomainObject | Add-Member -notepropertyname 'pscSpecs' -notepropertyvalue $pscObject
+        $managementDomainObject | Add-Member -notepropertyname 'vcenterSpec' -notepropertyvalue ($vcenterObject | Select-Object -Skip 0)
+        $managementDomainObject | Add-Member -notepropertyname 'hostSpecs' -notepropertyvalue $hostObject
+        If ($pnpWorkbook.Workbook.Names["vcf_version"].Value -gt "v5.0.x") {
+            If ($pnpWorkbook.Workbook.Names["vcf_plus_chosen"].Value -eq "Included") {
+                $managementDomainObject | Add-Member -notepropertyname 'subscriptionLicensing' -notepropertyvalue "True"
+            }
+            else {
+                $managementDomainObject | Add-Member -notepropertyname 'subscriptionLicensing' -notepropertyvalue "False"
+            }
+        }
+    
+        Write-Host "Exporting the $module to $($path)$($pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value)-domainSpec.json"
+        $managementDomainObject | ConvertTo-Json -Depth 12 | Out-File -Encoding UTF8 -FilePath $path"$($pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value)-domainSpec.json"
+        Write-Host "Closing the Excel Workbook: $workbook"
+        Close-ExcelPackage $pnpWorkbook -NoSave -ErrorAction SilentlyContinue
+        Write-Host "Completed the Process of Generating the $module"
+    }
+    Catch {
+        ResponseException -object $_
+    }
+}
+Export-ModuleMember -Function Export-VCFManagementDomainJsonSpec
+
+
+#EndRegion JSON Generation Functions
