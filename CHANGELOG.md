@@ -6,7 +6,7 @@
 
 - Updated `Get-VCFSystemPrecheckTask` cmdlet with optional parameter `failureOnly`.
 - Updated `Get-VCFPersonality` cmdlet with optional parameter `name`.
-
+- Updated `Get-VCFTask` cmdlet with optional parameter `monitorStatus`
 
 ## v2.4.1
 
