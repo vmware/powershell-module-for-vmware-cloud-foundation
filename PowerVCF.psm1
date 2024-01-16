@@ -1,4 +1,4 @@
-# Copyright 2023-2024 Broadcom. All Rights Reserved.
+# Copyright 2023 Broadcom. All Rights Reserved.
 # SPDX-License-Identifier: BSD-2
 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
@@ -3291,8 +3291,8 @@ Function Get-VCFPersonality {
             $uri = "https://$sddcManager/v1/personalities/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        }   
-        if ($PsBoundParameters.ContainsKey("name")) {
+        }    
+       if  ($PsBoundParameters.ContainsKey("name")) {
             $uri ="https://$sddcManager/v1/personalities?personalityName=$name"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             # depending on the composition of the image, the response body may or may not contain elements
@@ -4352,15 +4352,8 @@ Function Get-VCFTask {
         Get-VCFTask -status SUCCESSFUL
         This example shows how to retrieve all tasks with a specific status.
 
-        .EXAMPLE
-        Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a -monitorStatus
-        This example shows how to actively monitor a task until it completes.
-
         .PARAMETER id
         Specifies the unique ID of the task.
-
-        .PARAMETER monitorStatus
-        Specifies the option to actively monitor a task until it completes
 
         .PARAMETER status
         Specifies the status of the task. One of: SUCCESSFUL, FAILED.
@@ -4368,7 +4361,6 @@ Function Get-VCFTask {
 
     Param (
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$monitorStatus,
         [Parameter (Mandatory = $false)] [ValidateSet("SUCCESSFUL", "FAILED")] [String]$status
     )
 
@@ -4392,18 +4384,6 @@ Function Get-VCFTask {
                 }
             }
             $response
-            if ($PsBoundParameters.ContainsKey("monitorStatus")) {
-                $pollCount = 0
-                While ($response.status -eq "IN_PROGRESS") {
-                    Write-Host "Task still in state IN_PROGRESS.  Will re-poll in 30 seconds"
-                    Start-Sleep -Seconds 30
-                    $pollCount++
-                }
-                # return the updated task status if and only if the status has changed
-                if (($response.status -ne "IN_PROGRESS") -and $($pollCount) )  {
-                    $response
-                }
-            }
         } elseif ($PsBoundParameters.ContainsKey("status")) {
             $uri = "https://$sddcManager/v1/tasks/"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
