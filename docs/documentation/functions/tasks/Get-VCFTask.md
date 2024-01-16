@@ -7,7 +7,7 @@ Retrieves a list of tasks.
 ## Syntax
 
 ```powershell
-Get-VCFTask [[-id] <String>] [[-status] <String>] [-monitorStatus] [<CommonParameters>]
+Get-VCFTask [[-id] <String>] [[-status] <String>] [<CommonParameters>]
 ```
 
 ## Description
@@ -40,14 +40,6 @@ Get-VCFTask -status SUCCESSFUL
 
 This example shows how to retrieve all tasks with a specific status.
 
-### Example 4
-
-```powershell
-Get-VCFTask -id 7e1c2eee-3177-4e3b-84db-bfebc83f386a -monitorStatus
-```
-
-This example shows how to actively monitor the progress of a task until it completes.
-
 ## Parameters
 
 ### -id
@@ -77,22 +69,6 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -monitorStatus
-
-Specifies the option to monitor a task's progress.
-
-```yaml
-Type: Switch
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
