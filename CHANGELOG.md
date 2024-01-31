@@ -2,11 +2,11 @@
 
 ## v2.5.0
 
-> Released: Unreleased 
+> Released: Unreleased
 
 - Updated `Get-VCFSystemPrecheckTask` cmdlet with optional parameter `failureOnly`.
 - Updated `Get-VCFPersonality` cmdlet with optional parameter `name`.
-
+- Enhanced `New-VCFCommissionedHost` cmdlet with ability to use the host commition JSON specification provided by the SDDC Manager UI.
 
 ## v2.4.1
 
