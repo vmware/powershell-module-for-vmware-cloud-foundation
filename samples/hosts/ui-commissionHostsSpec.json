@@ -1,0 +1,32 @@
+ {
+    "hostsSpec": [
+        {
+            "hostfqdn": "sfo01-w01-esx01.sfo.rainpole.io",
+            "username": "root",
+            "storageType": "VSAN",
+            "password": "VMw@re1!",
+            "networkPoolName": "sfo-w01-np01"
+        },
+        {
+            "hostfqdn": "sfo01-w01-esx02.sfo.rainpole.io",
+            "username": "root",
+            "storageType": "VSAN",
+            "password": "VMw@re1!",
+            "networkPoolName": "sfo-w01-np01"
+        },
+        {
+            "hostfqdn": "sfo01-w01-esx03.sfo.rainpole.io",
+            "username": "root",
+            "storageType": "VSAN",
+            "password": "VMw@re1!",
+            "networkPoolName": "sfo-w01-np01"
+        },
+        {
+            "hostfqdn": "sfo01-w01-esx04.sfo.rainpole.io",
+            "username": "root",
+            "storageType": "VSAN",
+            "password": "VMw@re1!",
+            "networkPoolName": "sfo-w01-np01"
+        }
+    ]
+}

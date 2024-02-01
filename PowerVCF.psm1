@@ -1,4 +1,4 @@
-# Copyright 2023 Broadcom. All Rights Reserved.
+# Copyright 2023-2024 Broadcom. All Rights Reserved.
 # SPDX-License-Identifier: BSD-2
 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
@@ -2553,9 +2553,36 @@ Function New-VCFCommissionedHost {
     if ($MyInvocation.InvocationName -eq "Commission-VCFHost") {
         Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity."
     }
-
+    $json_content = $json
+    $json_content = $json_content | ConvertFrom-Json
+    
+    # If the sample JSON payload from the SDDC Manager UO is used, transform to API specification.
+    if ($json.contains("hostfqdn")) {
+        $newjson_content = @()
+        foreach ($jsoninfo in $json_content.hostsSpec) { 
+            $fqdn = $jsoninfo.hostfqdn
+            $networkPoolName = $jsoninfo.networkPoolName
+            $password = $jsoninfo.password
+            $username = $jsoninfo.username
+            $storageType = $jsoninfo.storageType
+            $networkId = Get-VCFNetworkPool -name $networkPoolName
+            $newjson_content += New-Object PSObject -Property @{
+                'fqdn'            = $fqdn
+                'networkPoolId'   = $networkId.id
+                'networkPoolName' = $networkPoolName
+                'password'        = $password
+                'storageType'     = $storageType
+                'username'        = $username
+            }
+        }   
+        $jsonvalidation = ConvertTo-Json @($newjson_content) 
+        $jsonBody = validateJsonInput -json $jsonvalidation
+    } else {
+        # If the JSON payload is already in the API specification, validate.
+        $jsonBody = validateJsonInput -json $json       
+    }
+    
     Try {
-        $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         if ( -Not $PsBoundParameters.ContainsKey("validate")) {
