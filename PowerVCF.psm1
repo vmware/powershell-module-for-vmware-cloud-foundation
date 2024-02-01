@@ -19,7 +19,7 @@ if ($PSEdition -eq 'Desktop') {
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
 
     If (!("TrustAllCertificatePolicy" -as [type])) {
-    add-type @"
+        add-type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
     public class TrustAllCertificatePolicy : ICertificatePolicy {
@@ -31,7 +31,7 @@ if ($PSEdition -eq 'Desktop') {
         }
     }
 "@
-}
+    }
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertificatePolicy
 }
 
@@ -106,7 +106,7 @@ public static class Placeholder {
     }
 }
 "@
-}
+        }
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
@@ -193,7 +193,7 @@ public static class Placeholder {
     }
 }
 "@
-}
+        }
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = [placeholder]::GetDelegate()
     }
 
@@ -1048,7 +1048,7 @@ Function Set-VCFCertificate {
     )
 
     if ($PsBoundParameters.ContainsKey("json")) {
-	    Try {
+        Try {
             $jsonBody = validateJsonInput -json $json
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
@@ -1173,12 +1173,10 @@ Function New-VCFCluster {
                 $uri = "https://$sddcManager/v1/clusters"
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
                 $response
-            }
-            Catch {
+            } Catch {
                 ResponseException -object $_
             }
-        }
-        else {
+        } else {
             Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
         }
     } Catch {
@@ -1231,25 +1229,23 @@ Function Set-VCFCluster {
             Throw "You must include either -json or -markForDeletion"
         }
 
-            $jsonBody = validateJsonInput -json $json   # validate input file and format
-            $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # validate the JSON provided meets the cluster specifications format
-            # the validation API does not currently support polling with a task ID
-            Start-Sleep -Seconds 5
-            # Submit the job only if the JSON validation task finished with executionStatus of COMPLETED and resultStatus of SUCCEEDED.
-            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-                Try {
-                    Write-Output "Task validation completed successfully. Invoking cluster task on SDDC Manager"
-                    $uri = "https://$sddcManager/v1/clusters/$id/"
-                    $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
-                    $response
-                }
-                Catch {
-                    ResponseException -object $_
-                }
+        $jsonBody = validateJsonInput -json $json   # validate input file and format
+        $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # validate the JSON provided meets the cluster specifications format
+        # the validation API does not currently support polling with a task ID
+        Start-Sleep -Seconds 5
+        # Submit the job only if the JSON validation task finished with executionStatus of COMPLETED and resultStatus of SUCCEEDED.
+        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+            Try {
+                Write-Output "Task validation completed successfully. Invoking cluster task on SDDC Manager"
+                $uri = "https://$sddcManager/v1/clusters/$id/"
+                $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
+                $response
+            } Catch {
+                ResponseException -object $_
             }
-            else {
-                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
-            }
+        } else {
+            Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+        }
 
         if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
             $jsonBody = '{"markForDeletion": true}'
@@ -1931,24 +1927,36 @@ Function New-VCFWorkloadDomain {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
 
     Try {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
-        $response = Validate-WorkloadDomainSpec -json $jsonBody # Validate the JSON specification file. # the validation API does not currently support polling with a task ID
-        Start-Sleep -Seconds 5
-        # Submit the job only if the JSON validation task completed with an executionStatus of COMPLETED and a resultStatus of SUCCEEDED.
-        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-            Write-Output "Task validation completed successfully. Invoking Workload Domain Creation on SDDC Manager"
-            $uri = "https://$sddcManager/v1/domains"
-            $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
-            Return $response
-        } else {
-            Write-Error "The validation task commpleted the run with the following problems:"
-            Write-Error $response.validationChecks.errorResponse.message
+
+        if ( -Not $PsBoundParameters.ContainsKey("validate")) {
+            Do {
+                $response = Validate-WorkloadDomainSpec -json $jsonBody # Validate the JSON specification file. # the validation API does not currently support polling with a task ID
+            }
+            Until ($response.executionStatus -eq "COMPLETED")
+            # Submit the job only if the JSON validation task completed with an executionStatus of COMPLETED and a resultStatus of SUCCEEDED.
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Write-Output "Task validation completed successfully. Invoking Workload Domain Creation on SDDC Manager"
+                $uri = "https://$sddcManager/v1/domains"
+                $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
+                Return $response
+            } else {
+                Write-Error "The validation task commpleted the run with the following problems:"
+                Write-Output $response.validationChecks.errorResponse.message
+            }
+        } elseif ($PsBoundParameters.ContainsKey("validate")) {
+            Do {
+                $response = Validate-WorkloadDomainSpec -json $jsonBody # Validate the JSON specification file. # the validation API does not currently support polling with a task ID
+            }
+            Until ($response.executionStatus -eq "COMPLETED")
+            Return $response.validationChecks
         }
     } Catch {
         ResponseException -object $_
@@ -2600,7 +2608,8 @@ Function New-VCFCommissionedHost {
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
                 Return $response
             } else {
-                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+                Write-Error "The validation task commpleted the run with the following problems:"
+                Write-Output $response.validationChecks.errorResponse
             }
         } elseif ($PsBoundParameters.ContainsKey("validate")) {
             $response = Validate-CommissionHostSpec -json $jsonBody # Validate the JSON specification file.
@@ -2614,7 +2623,8 @@ Function New-VCFCommissionedHost {
                 Write-Output "Task validation completed successfully."
                 Return $response
             } else {
-                Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+                Write-Error "The validation task commpleted the run with the following problems:" 
+                Write-Output $response.validationChecks.errorResponse
             }
         }
     } Catch {
@@ -3319,8 +3329,8 @@ Function Get-VCFPersonality {
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
         }    
-       if  ($PsBoundParameters.ContainsKey("name")) {
-            $uri ="https://$sddcManager/v1/personalities?personalityName=$name"
+        if ($PsBoundParameters.ContainsKey("name")) {
+            $uri = "https://$sddcManager/v1/personalities?personalityName=$name"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             # depending on the composition of the image, the response body may or may not contain elements
             if (!$response.elements) {
@@ -3328,8 +3338,7 @@ Function Get-VCFPersonality {
             } else {
                 $response.elements
             }     
-       }    
- 
+        }    
     } Catch {
         ResponseException -object $_
     }
@@ -4649,10 +4658,10 @@ Function Start-VCFUpgrade {
     )
 
     Try {
-    $jsonBody = validateJsonInput -json $json
-    createHeader # Set the Accept and Authorization headers.
-    checkVCFToken # Validate the access token and refresh, if necessary.
-    $uri = "https://$sddcManager/v1/upgrades"
+        $jsonBody = validateJsonInput -json $json
+        createHeader # Set the Accept and Authorization headers.
+        checkVCFToken # Validate the access token and refresh, if necessary.
+        $uri = "https://$sddcManager/v1/upgrades"
 
         $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
         $response
@@ -5131,8 +5140,7 @@ Function Set-VCFConfigurationNTP {
             $uri = "https://$sddcManager/v1/system/ntp-configuration/validations"
             $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
-        }
-        else {
+        } else {
             $uri = "https://$sddcManager/v1/system/ntp-configuration"
             $response = Invoke-RestMethod -Method PUT -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
             $response
