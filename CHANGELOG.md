@@ -6,10 +6,15 @@
 
 - Updated `Get-VCFSystemPrecheckTask` cmdlet with optional parameter `failureOnly`.
 - Updated `Get-VCFPersonality` cmdlet with optional parameter `name`.
-- Enhanced `New-VCFCommissionedHost` cmdlet with ability to use the host commition JSON specification provided by the SDDC Manager UI.
 - Updated `New-VCFWorkloadDomain` cmdlet with optional parameter `validate` to validate the JSON specification.
 - Enhanced `New-VCFWorkloadDomain` cmdlet to improve error handling.
 - Enhanced `New-VCFCommissionedHost` cmdlet to improve error handling.
+- Enhanced `New-VCFCommissionedHost` cmdlet with ability to use the host commission JSON specification provided by the SDDC Manager UI.
+- Removed the deprecated `Commission-VCFHost` alias from `New-VCFCommissionedHost`.
+- Removed the deprecated `Decommission-VCFHost` alias from `Remove-VCFCommissionedHost`.
+- Removed the deprecated `Get-VCFNsxManagerCluster` alias from `Get-VCFNsxtCluster`.
+- Removed the deprecated `Get-VCFNsxEdgeCluster` alias from `Get-VCFEdgeCluster`.
+- Removed the deprecated `New-VCFNsxEdgeCluster` alias from `New-VCFEdgeCluster`.
 
 ## v2.4.1
 
