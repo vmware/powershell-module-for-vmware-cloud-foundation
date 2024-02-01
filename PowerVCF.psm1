@@ -6042,96 +6042,91 @@ Function Validate-EdgeClusterSpec {
 #EndRegion APIs for managing Validations (Not Exported)
 
 
-#Region SoS Operations
+#Region Utility Functions (Exported)
 
 Function Invoke-VCFCommand {
     <#
         .SYNOPSIS
-        Connects to the specified SDDC Manager using SSH and invoke SSH commands (SoS).
+        Run a command on SDDC Manager.
 
         .DESCRIPTION
-        The Invoke-VCFCommand cmdlet connects to the specified SDDC Manager over SSH using vcf user and subsequently
-        run elevated SOS commands using the root account.
+        The Invoke-VCFCommand cmdlet runs a command within the SDDC Manager appliance.
 
         .EXAMPLE
-        Invoke-VCFCommand -vcfpassword VMware1! -rootPassword VMware1! -sosOption general-health
-        This example will run and display the output of "/opt/vmware/sddc-support/sos --general-health".
+        Invoke-VCFCommand -server sfo-vcf01.sfo.rainpole.io -user admin@local -pass VMw@re1!VMw@re1! -vmUser vcf -vmPass VMw@re1! -command "echo Hello World."
+        This example runs the command provided on the SDDC Manager appliance as the vcf user.
 
-        .EXAMPLE
-        Invoke-VCFCommand -sosOption general-health
-        This example will ask for vcf and root password to the user and then run and display the output of "/opt/vmware/sddc-support/sos --general-health".
+        .PARAMETER server
+        The fully qualified domain name of the SDDC Manager.
+
+        .PARAMETER user
+        The username to authenticate to the SDDC Manager.
+
+        .PARAMETER pass
+        The password to authenticate to the SDDC Manager.
+
+        .PARAMETER vmUser
+        The username to authenticate to the virtual machine.
+
+        .PARAMETER vmPass
+        The password to authenticate to the virtual machine.
+
+        .PARAMETER command
+        The command to run on the virtual machine.
     #>
 
     Param (
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String] $vcfPassword,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String] $rootPassword,
-        [Parameter (Mandatory = $true)] [ValidateSet("general-health", "compute-health", "ntp-health", "password-health", "get-vcf-summary", "get-inventory-info", "get-host-ips", "get-vcf-services-summary")] [String] $sosOption
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$server,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$user,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$pass,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$vmUser,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$vmPass,
+        [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$command
     )
 
-    $poshSSH = Resolve-PSModule -moduleName "Posh-SSH" # POSH module is required, if not present skipping
-    if ($poshSSH -eq "ALREADY_IMPORTED" -or $poshSSH -eq "IMPORTED" -or $poshSSH -eq "INSTALLED_IMPORTED") {
-        # Expected sudo prompt from SDDC Manager for elevated commands.
-        $sudoPrompt = "[sudo] password for vcf"
-        # Validate if the SDDC Manager vcf password parameter is passed. If not, prompt the user and then build vcfCreds PSCredential object.
-        if ( -not $PsBoundParameters.ContainsKey("vcfPassword") ) {
-            Write-Output "Please provide the SDDC Manager vcf user password:"
-            $vcfSecuredPassword = Read-Host -AsSecureString
-            $vcfCred = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
-        } else {
-            # Convert the clear text input password to secure string.
-            $vcfSecuredPassword = ConvertTo-SecureString $vcfPassword -AsPlainText -Force
-            # Build credential object.
-            $vcfCred = New-Object System.Management.Automation.PSCredential ('vcf', $vcfSecuredPassword)
-        }
-        # Validate if the SDDC Manager root password parameter is passed. If not, prompt the user and then build rootCreds PSCredential object.
-        if ( -not $PsBoundParameters.ContainsKey("rootPassword") ) {
-            Write-Output "Please provide the root credential to run elevated commands in SDDC Manager:"
-            $rootSecuredPassword = Read-Host -AsSecureString
-            $rootCred = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
-        } else {
-            # Convert the clear text input password to secure string.
-            $rootSecuredPassword = ConvertTo-SecureString $rootPassword -AsPlainText -Force
-            # Build credential object.
-            $rootCred = New-Object System.Management.Automation.PSCredential ('root', $rootSecuredPassword)
-        }
-        # Depending on the SoS command, there will be a different pattern to match at the end of the ssh stream output.
-        switch ($sosOption) {
-            "general-health" { $sosEndMessage = "For detailed report" }
-            "compute-health" { $sosEndMessage = "Health Check completed" }
-            "ntp-health" { $sosEndMessage = "For detailed report" }
-            "password-health" { $sosEndMessage = "completed" }
-            "get-inventory-info" { $sosEndMessage = "Health Check completed" }
-            "get-vcf-summary" { $sosEndMessage = "SOLUTIONS_MANAGER" }
-            "get-host-ips" { $sosEndMessage = "Health Check completed" }
-            "get-vcf-services-summary" { $sosEndMessage = "VCF SDDC Manager Uptime" }
-        }
+    $vcfWorkloadDomainDetails = Get-VCFWorkloadDomain | Where-Object { $_.type -eq "MANAGEMENT" }
+    $vcenterServerDetails = Get-VCFvCenter | Where-Object { $_.fqdn -eq $vcfWorkloadDomainDetails.vcenters.fqdn }
 
-        # Create SSH session to SDDC Manager using vcf user. By default, SSH is disabled for the root account.
-        Try {
-            $sessionSSH = New-SSHSession -Computer $sddcManager -Credential $vcfCred -AcceptKey
-        } Catch {
-            $errorString = ResponseException; Write-Error $errorString
+    if ($PSVersionTable.PSEdition -eq 'Core') {
+        if (!($status = Test-Connection -TargetName $vcfWorkloadDomainDetails.vcenters.fqdn -TcpPort 443 -Quiet)) {
+            Throw "Unable to connect to Management Domain vCenter Server ($vcfWorkloadDomainDetails.vcenters.fqdn)."
         }
-        if ($sessionSSH.Connected -eq "True") {
-            $stream = $SessionSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 1000)
-            # Build the SOS command to run.
-            $sshCommand = "sudo /opt/vmware/sddc-support/sos " + "--" + $sosOption
-            # Invoke the SSH stream command.
-            $outInvoke = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command $sshCommand -ExpectString $sudoPrompt -SecureAction $rootCred.Password
-            if ($outInvoke) {
-                Write-Output "Running the remote SoS command. Output will display when the the run is completed. This might take a while, please wait..."
-                $stream.Expect($sosEndMessage)
-            }
-            # Destroy the connection previously established.
-            Remove-SSHSession -SessionId $sessionSSH.SessionId | Out-Null
+    } elseif ($PSVersionTable.PSEdition -eq 'Desktop') {
+        $OriginalProgressPreference = $Global:ProgressPreference; $Global:ProgressPreference = 'SilentlyContinue'
+        if (!($status = Test-NetConnection -ComputerName $vcfWorkloadDomainDetails.vcenters.fqdn -Port 443 -WarningAction SilentlyContinue)) {
+            $Global:ProgressPreference = $OriginalProgressPreference
+            Throw "Unable to connect to Management Domain vCenter Server ($vcfWorkloadDomainDetails.vcenters.fqdn)."
         }
+        $Global:ProgressPreference = $OriginalProgressPreference
+    }
+
+    $vcfDetail = Get-VCFRelease -domainId $vcfWorkloadDomainDetails.id
+
+    if ( ($vcfDetail.version).Split("-")[0] -ge "4.5.0.0") {
+        $pscCredentialDetails = Get-VCFCredential | Where-Object { $_.resource.resourceType -eq "PSC" -and ($_.username).Split('@')[-1] -eq $vcfWorkloadDomainDetails.ssoName }
     } else {
-        Write-Error "PowerShell Module Posh-SSH staus is: $poshSSH. Posh-SSH is required to run this cmdlet. Please install the module and try again."
+        $pscCredentialDetails = Get-VCFCredential | Where-Object { $_.resource.resourceType -eq "PSC" }
+    }
+
+    Connect-VIServer -Server $vcenterServerDetails.fqdn -User $pscCredentialDetails.username -Password $pscCredentialDetails.password -WarningAction SilentlyContinue | Out-Null
+
+    if ($DefaultVIServer.Name -ne $vcenterServerDetails.fqdn) {
+        Throw "Unable to authenticate to Management Domain vCenter Server ($vcfWorkloadDomainDetails.vcenters.fqdn), check credentials and try again."
+    }
+
+    Try {
+        $output = Invoke-VMScript -VM ($server.Split(".")[0]) -ScriptText $command -GuestUser $vmUser -GuestPassword $vmPass -Server $vcenterServerDetails.fqdn
+        $output
+    } Catch {
+        throw "Error executing command: $_"
+    } Finally {
+        Disconnect-VIServer -Server $vcenterServerDetails.fqdn -Confirm:$false -WarningAction SilentlyContinue | Out-Null
     }
 }
 Export-ModuleMember -Function Invoke-VCFCommand
 
-#EndRegion SoS Operations
+
+#EndRegion Utility Functions (Exported)
 
 
 #Region Utility Functions (Not Exported)

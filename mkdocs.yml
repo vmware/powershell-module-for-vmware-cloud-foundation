@@ -278,7 +278,6 @@ nav:
       - documentation/functions/sos/Get-VCFHealthSummaryTask.md
       - documentation/functions/sos/Request-VCFHealthSummaryBundle.md
       - documentation/functions/sos/Start-VCFHealthSummary.md
-      - documentation/functions/sos/Invoke-VCFCommand.md
     - Support Bundles:
       - documentation/functions/sos/Get-VCFSupportBundleTask.md
       - documentation/functions/sos/Request-VCFSupportBundle.md
@@ -312,6 +311,8 @@ nav:
     - documentation/functions/aria-suite/aria-operations-logs/Set-VCFVrliConnection.md
   - Workspace ONE Access:
     - documentation/functions/aria-suite/workspace-one-access/Get-VCFWsa.md
+  - Other:
+    - documentation/functions/other/Invoke-VCFCommand.md
 - Community:
   - community/index.md
   - Contributing: community/contributing.md
