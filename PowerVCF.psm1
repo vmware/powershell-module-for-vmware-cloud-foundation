@@ -2558,9 +2558,6 @@ Function New-VCFCommissionedHost {
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$validate
     )
 
-    if ($MyInvocation.InvocationName -eq "Commission-VCFHost") {
-        Write-Warning "Commission-VCFHost is deprecated and will be removed in a future release. Automatically redirecting to New-VCFCommissionedHost. Please refactor to New-VCFCommissionedHost at earliest opportunity."
-    }
     $json_content = $json
     $json_content = $json_content | ConvertFrom-Json
     
@@ -2631,8 +2628,7 @@ Function New-VCFCommissionedHost {
         ResponseException -object $_
     }
 }
-New-Alias -name Commission-VCFHost -Value New-VCFCommissionedHost
-Export-ModuleMember -Alias Commission-VCFHost -Function New-VCFCommissionedHost
+Export-ModuleMember -Function New-VCFCommissionedHost
 
 Function Remove-VCFCommissionedHost {
     <#
@@ -2654,10 +2650,6 @@ Function Remove-VCFCommissionedHost {
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
-    if ($MyInvocation.InvocationName -eq "Decommission-VCFHost") {
-        Write-Warning "Decommission-VCFHost is deprecated and will be removed in a future release. Automatically redirecting to Remove-VCFCommissionedHost. Please refactor to Remove-VCFCommissionedHost at earliest opportunity."
-    }
-
     Try {
         $jsonBody = validateJsonInput -json $json
         createHeader # Set the Accept and Authorization headers.
@@ -2669,8 +2661,7 @@ Function Remove-VCFCommissionedHost {
         ResponseException -object $_
     }
 }
-New-Alias -name Decommission-VCFHost -value Remove-VCFCommissionedHost
-Export-ModuleMember -Alias Decommission-VCFHost -Function Remove-VCFCommissionedHost
+Export-ModuleMember -Function Remove-VCFCommissionedHost
 
 #EndRegion APIs for managing Hosts
 
@@ -3158,8 +3149,7 @@ Function Get-VCFNsxtCluster {
         ResponseException -object $_
     }
 }
-New-Alias -Name Get-VCFNsxManagerCluster -Value Get-VCFNsxtCluster
-Export-ModuleMember -Function Get-VCFNsxtCluster -Alias Get-VCFNsxManagerCluster
+Export-ModuleMember -Function Get-VCFNsxtCluster
 
 #EndRegion APIs for managing NSX Manager Clusters
 
@@ -3207,8 +3197,7 @@ Function Get-VCFEdgeCluster {
         ResponseException -object $_
     }
 }
-New-Alias -Name Get-VCFNsxEdgeCluster -Value Get-VCFEdgeCluster
-Export-ModuleMember -Function Get-VCFEdgeCluster -Alias Get-VCFNsxEdgeCluster
+Export-ModuleMember -Function Get-VCFEdgeCluster
 
 Function New-VCFEdgeCluster {
     <#
@@ -3278,8 +3267,7 @@ Function New-VCFEdgeCluster {
         ResponseException -object $_
     }
 }
-New-Alias -Name New-VCFNsxEdgeCluster -Value New-VCFEdgeCluster
-Export-ModuleMember -Function New-VCFEdgeCluster -Alias New-VCFNsxEdgeCluster
+Export-ModuleMember -Function New-VCFEdgeCluster
 
 #EndRegion APIs for managing NSX Edge Clusters
 
