@@ -1919,11 +1919,18 @@ Function New-VCFWorkloadDomain {
         The New-VCFWorkloadDomain cmdlet creates a workload domain from a JSON specification file.
 
         .EXAMPLE
-        New-VCFWorkloadDomain -json (Get-Content -Raw .\samples\domains\domainSpec.json)
+        New-VCFWorkloadDomain -json .\samples\domains\domainSpec.json
         This example shows how to create a workload domain from a JSON specification file.
+
+        .EXAMPLE
+        New-VCFWorkloadDomain -json .\samples\domains\domainSpec.json -validate
+        This example shows how to validate workload domain JSON specification file supplied.
 
         .PARAMETER json
         Specifies the JSON specification to be used.
+
+        .PARAMETER validate
+        Validate the JSON specification file.
     #>
 
     Param (
