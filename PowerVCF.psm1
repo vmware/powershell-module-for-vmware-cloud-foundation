@@ -6337,7 +6337,7 @@ Function Export-VCFManagementDomainJsonSpec {
         [Parameter (Mandatory = $true)] [String]$jsonPath
     )
     # Confirm the presence of ImportExcel module
-    If (!(Get-InstalledModule -name "ImportExcel"  -MinimumVersion 7.8.5 -ErrorAction SilentlyContinue)) {
+    if (!(Get-InstalledModule -name "ImportExcel"  -MinimumVersion 7.8.5 -ErrorAction SilentlyContinue)) {
         Write-Host " ImportExcel PowerShell module not found. Please install manually" -ForegroundColor Yellow
     } else {
         Write-Host " ImportExcel PowerShell module found" -ForegroundColor Green
