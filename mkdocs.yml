@@ -223,6 +223,8 @@ nav:
       - documentation/functions/idp/New-VCFIdentityProvider.md
       - documentation/functions/idp/Remove-VCFIdentityProvider.md
       - documentation/functions/idp/Update-VCFIdentityProvider.md
+  - JSON Export:
+      - documentation/functions/json-export/Export-VCFManagementDomainJsonSpec.md
   - Licenses:
     - documentation/functions/licenses/Get-VCFLicenseKey.md
     - documentation/functions/licenses/Get-VCFLicenseMode.md
