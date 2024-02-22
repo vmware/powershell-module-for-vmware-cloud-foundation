@@ -6340,18 +6340,18 @@ Function Export-VCFManagementDomainJsonSpec {
     if (!(Get-InstalledModule -name "ImportExcel"  -MinimumVersion 7.8.5 -ErrorAction SilentlyContinue)) {
         Write-Host " ImportExcel PowerShell module not found. Please install manually" -ForegroundColor Yellow
     } else {
-        Write-Host " ImportExcel PowerShell module found" -ForegroundColor Green
+        Write-Output " ImportExcel PowerShell module found" -ForegroundColor Green
     }
 
     $Global:vcfVersion = @("v4.3.x", "v4.4.x", "v4.5.x", "v5.0.x", "v5.1.x")
     Try {
         
         $module = "Management Domain JSON Spec"
-        Write-Host "Starting the Process of Generating the $module"
+        Write-Output "Starting the Process of Generating the $module"
         $pnpWorkbook = Open-ExcelPackage -Path $Workbook
 
         if ($pnpWorkbook.Workbook.Names["vcf_version"].Value -notin $vcfVersion) {
-            Write-Host "Planning and Preparation Workbook Provided Not Supported"
+            Write-Output "Planning and Preparation Workbook Provided Not Supported"
             Break
         }
 
@@ -6913,11 +6913,11 @@ Function Export-VCFManagementDomainJsonSpec {
             }
         }
 
-        Write-Host "Exporting the $module to $($path)$($pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value)-domainSpec.json"
+        Write-Output "Exporting the $module to $($path)$($pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value)-domainSpec.json"
         $managementDomainObject | ConvertTo-Json -Depth 12 | Out-File -Encoding UTF8 -FilePath $jsonPath"$($pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value)-domainSpec.json"
-        Write-Host "Closing the Excel Workbook: $workbook"
+        Write-Output "Closing the Excel Workbook: $workbook"
         Close-ExcelPackage $pnpWorkbook -NoSave -ErrorAction SilentlyContinue
-        Write-Host "Completed the Process of Generating the $module"
+        Write-Output "Completed the Process of Generating the $module"
     } Catch {
         ResponseException -object $_
     }
