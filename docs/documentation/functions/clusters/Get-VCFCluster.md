@@ -7,7 +7,7 @@ Retrieves a list of clusters.
 ## Syntax
 
 ```powershell
-Get-VCFCluster [[-name] <String>] [[-id] <String>] [[-vdses] <Switch> [<CommonParameters>]
+Get-VCFCluster [[-name] <String>] [[-id] <String>] [[-vdses] <Switch> [-checkImageCompliance] <Switch> [<CommonParameters>]
 ```
 
 ## Description
@@ -47,6 +47,14 @@ Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -vdses
 ```
 
 This example shows how to retrieve the vds data of a cluster by unique ID.
+
+### Example 5
+
+```powershell
+Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -checkImageCompliance
+```
+
+This example shows how to check a cluster's image compliance by unique ID.
 
 ## Parameters
 
@@ -93,6 +101,22 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -checkImageCompliance
+
+Specifies checking the image compliance for the cluster, if the cluster is vLCM baseline managed.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
