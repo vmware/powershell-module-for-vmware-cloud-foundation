@@ -1177,7 +1177,7 @@ Function New-VCFCluster {
                 ResponseException -object $_
             }
         } else {
-            Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+            Write-Error "The validation task completed the run with the following problems: $($response.validationChecks.errorResponse.message)"
         }
     } Catch {
         ResponseException -object $_
@@ -1244,7 +1244,7 @@ Function Set-VCFCluster {
                 ResponseException -object $_
             }
         } else {
-            Write-Error "The validation task commpleted the run with the following problems: $($response.validationChecks.errorResponse.message)"
+            Write-Error "The validation task completed the run with the following problems: $($response.validationChecks.errorResponse.message)"
         }
 
         if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
@@ -1955,7 +1955,7 @@ Function New-VCFWorkloadDomain {
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
                 Return $response
             } else {
-                Write-Error "The validation task commpleted the run with the following problems:"
+                Write-Error "The validation task completed the run with the following problems:"
                 Write-Output $response.validationChecks.errorResponse.message
             }
         } elseif ($PsBoundParameters.ContainsKey("validate")) {
@@ -2612,7 +2612,7 @@ Function New-VCFCommissionedHost {
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
                 Return $response
             } else {
-                Write-Error "The validation task commpleted the run with the following problems:"
+                Write-Error "The validation task completed the run with the following problems:"
                 Write-Output $response.validationChecks.errorResponse
             }
         } elseif ($PsBoundParameters.ContainsKey("validate")) {
@@ -2627,7 +2627,7 @@ Function New-VCFCommissionedHost {
                 Write-Output "Task validation completed successfully."
                 Return $response
             } else {
-                Write-Error "The validation task commpleted the run with the following problems:" 
+                Write-Error "The validation task completed the run with the following problems:" 
                 Write-Output $response.validationChecks.errorResponse
             }
         }
@@ -3253,7 +3253,7 @@ Function New-VCFEdgeCluster {
                 $response = Invoke-RestMethod -Method POST -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
                 Return $response
             } else {
-                Write-Error "The validation task commpleted the run with the following error: $($response.validationChecks.errorResponse.message)"
+                Write-Error "The validation task completed the run with the following error: $($response.validationChecks.errorResponse.message)"
             }
         } elseif ($PsBoundParameters.ContainsKey("validate")) {
             $response = Validate-EdgeClusterSpec -json $jsonBody # Validate the JSON specification file.
@@ -3267,7 +3267,7 @@ Function New-VCFEdgeCluster {
                 Write-Output "Task validation completed successfully."
                 Return $response
             } else {
-                Write-Error "The validation task commpleted the run with the following errors: $($response.validationChecks.errorResponse.message)"
+                Write-Error "The validation task completed the run with the following errors: $($response.validationChecks.errorResponse.message)"
             }
         }
     } Catch {
