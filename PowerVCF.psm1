@@ -1087,6 +1087,10 @@ Function Get-VCFCluster {
         Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2
         This example shows how to retrieve a cluster by unique ID.
 
+        .EXAMPLE
+        Get-VCFCluster -id 8423f92e-e4b9-46e7-92f7-befce4755ba2 -checkImageCompliance
+        This example shows how to check a cluster's image compliance by unique ID.
+
         .PARAMETER name
         Specifies the name of the cluster.
 
@@ -1095,42 +1099,45 @@ Function Get-VCFCluster {
 
         .PARAMETER vdses
         Specifies retrieving the vSphere Distributed Switches (VDS) for the cluster.
+
+        .PARAMETER checkImageCompliance
+        Specifies checking the image compliance for the cluster, if the cluster is vLCM baseline managed.
     #>
 
     Param (
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$name,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$id,
-        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vdses
+        [Parameter (Mandatory = $false, ParameterSetName = 'ByName')] [ValidateNotNullOrEmpty()] [String]$name,
+        [Parameter (Mandatory = $false, ParameterSetName = 'ById')] [ValidateNotNullOrEmpty()] [String]$id,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$vdses,
+        [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [Switch]$checkImageCompliance
     )
 
     createHeader # Set the Accept and Authorization headers.
     checkVCFToken # Validate the access token and refresh, if necessary.
     Try {
-        if ( -not $PsBoundParameters.ContainsKey("name") -and ( -not $PsBoundParameters.ContainsKey("id"))) {
-            $uri = "https://$sddcManager/v1/clusters"
-            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
-            $response.elements
-        }
+        $baseUri = "https://$sddcManager/v1/clusters"
+        $uri = $baseUri
         if ($PsBoundParameters.ContainsKey("id")) {
+            $uri += "/$id"
             if ($PsBoundParameters.ContainsKey("vdses")) {
-                $uri = "https://$sddcManager/v1/clusters/$id/vdses"
-            } else {
-                $uri = "https://$sddcManager/v1/clusters/$id"
+                $uri += "/vdses"
             }
-            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
-            $response
         }
+        $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         if ($PsBoundParameters.ContainsKey("name")) {
-            $uri = "https://$sddcManager/v1/clusters"
-            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+            $id = ($response.elements | Where-Object { $_.name -eq $name }).id
+            $uri = "$baseUri/$id"
             if ($PsBoundParameters.ContainsKey("vdses")) {
-                $id = ($response.elements | Where-Object { $_.name -eq $name }).id
-                $uri = "https://$sddcManager/v1/clusters/$id/vdses"
-                $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
-                $response
-            } else {
-                $response.elements | Where-Object { $_.name -eq $name }
+                $uri += "/vdses"
             }
+            $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
+        }
+        if ($PsBoundParameters.ContainsKey("checkImageCompliance") -and $response.isImageBased) {
+            Invoke-RestMethod -Method GET -Uri "$uri/image-compliance" -Headers $headers
+        } elseif ($PsBoundParameters.ContainsKey("checkImageCompliance")) {
+            Write-Error "The cluster $id is not vLCM baseline managed."
+            Break
+        } else {
+            $response
         }
     } Catch {
         ResponseException -object $_
@@ -1718,11 +1725,11 @@ Function Get-VCFCredentialExpiry {
         $uri = "https://$sddcManager/v1/credentials/ui?includeExpiryOnly=true"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         if ($PsBoundParameters.ContainsKey("resourceName")) {
-            $response.elements | Where-Object {$_.resource.resourceName -eq $resourceName}
+            $response.elements | Where-Object { $_.resource.resourceName -eq $resourceName }
         } elseif ($PsBoundParameters.ContainsKey("id")) {
-            $response.elements | Where-Object {$_.id -eq $id}
+            $response.elements | Where-Object { $_.id -eq $id }
         } elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
-            $response.elements | Where-Object {$_.resource.resourceType -eq $resourceType}
+            $response.elements | Where-Object { $_.resource.resourceType -eq $resourceType }
         } else {
             $response.elements
         }
@@ -2567,11 +2574,11 @@ Function New-VCFCommissionedHost {
 
     $json_content = $json
     $json_content = $json_content | ConvertFrom-Json
-    
+
     # If the sample JSON payload from the SDDC Manager UO is used, transform to API specification.
     if ($json.contains("hostfqdn")) {
         $newjson_content = @()
-        foreach ($jsoninfo in $json_content.hostsSpec) { 
+        foreach ($jsoninfo in $json_content.hostsSpec) {
             $fqdn = $jsoninfo.hostfqdn
             $networkPoolName = $jsoninfo.networkPoolName
             $password = $jsoninfo.password
@@ -2586,14 +2593,14 @@ Function New-VCFCommissionedHost {
                 'storageType'     = $storageType
                 'username'        = $username
             }
-        }   
-        $jsonvalidation = ConvertTo-Json @($newjson_content) 
+        }
+        $jsonvalidation = ConvertTo-Json @($newjson_content)
         $jsonBody = validateJsonInput -json $jsonvalidation
     } else {
         # If the JSON payload is already in the API specification, validate.
-        $jsonBody = validateJsonInput -json $json       
+        $jsonBody = validateJsonInput -json $json
     }
-    
+
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
@@ -2627,7 +2634,7 @@ Function New-VCFCommissionedHost {
                 Write-Output "Task validation completed successfully."
                 Return $response
             } else {
-                Write-Error "The validation task completed the run with the following problems:" 
+                Write-Error "The validation task completed the run with the following problems:"
                 Write-Output $response.validationChecks.errorResponse
             }
         }
@@ -3323,7 +3330,7 @@ Function Get-VCFPersonality {
             $uri = "https://$sddcManager/v1/personalities/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        }    
+        }
         if ($PsBoundParameters.ContainsKey("name")) {
             $uri = "https://$sddcManager/v1/personalities?personalityName=$name"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
@@ -3332,8 +3339,8 @@ Function Get-VCFPersonality {
                 $response
             } else {
                 $response.elements
-            }     
-        }    
+            }
+        }
     } Catch {
         ResponseException -object $_
     }
@@ -3382,7 +3389,7 @@ Function New-VCFPersonality {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/personalities"
-        $response = Invoke-RestMethod -Method POST -ContentType 'application/json'  -Uri $uri -Headers $headers -Body $body
+        $response = Invoke-RestMethod -Method POST -ContentType 'application/json' -Uri $uri -Headers $headers -Body $body
         $response
     } Catch {
         ResponseException -object $_
@@ -4325,7 +4332,7 @@ Function Get-VCFSystemPrecheckTask {
 
         .PARAMETER failureOnly
         Specifies to return only the failed subtasks.
-      
+
     #>
 
     Param (
@@ -4337,13 +4344,13 @@ Function Get-VCFSystemPrecheckTask {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
-    
+
         Do {
             # Keep checking until status is not IN_PROGRESS
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers -ContentType 'application/json'
             Start-Sleep -Seconds 2
         } While ($response.status -eq "IN_PROGRESS")
-        
+
         if ($response.status -eq "FAILED" -and $PsBoundParameters.ContainsKey("failureOnly")) {
             $failed_task = $response.subTasks | Where-Object { $_.status -eq "FAILED" }
             $failed_subtask = $failed_task.stages | Where-Object { $_.status -eq "FAILED" }
@@ -4351,7 +4358,7 @@ Function Get-VCFSystemPrecheckTask {
         } else {
             $response
         }
-        
+
     } Catch {
         ResponseException -object $_
     }
@@ -5210,7 +5217,7 @@ Function Set-VCFProxy {
     Param (
         [Parameter (Mandatory = $true)] [ValidateSet("ENABLED", "DISABLED")] [ValidateNotNullOrEmpty()] [String]$status,
         [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [String]$proxyHost,
-        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [ValidateRange(1,65535)] [Int]$proxyPort
+        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [ValidateRange(1, 65535)] [Int]$proxyPort
     )
 
     Try {
@@ -5815,7 +5822,7 @@ Function Remove-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
@@ -5824,10 +5831,10 @@ Function Remove-VCFIdentityProvider {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
             } elseif ($type -eq "Microsoft ADFS") {
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response.
@@ -5865,7 +5872,7 @@ Function New-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
@@ -5875,7 +5882,7 @@ Function New-VCFIdentityProvider {
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources"
             } elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
@@ -5918,7 +5925,7 @@ Function Update-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
@@ -5929,11 +5936,11 @@ Function Update-VCFIdentityProvider {
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
             } elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody # This API does not return a response.
@@ -6252,7 +6259,7 @@ Function validateJsonInput {
 
         # Validate the JSON string format.
         Try {
-            $jsonPSobject = ConvertFrom-Json  $ConfigJson -ErrorAction Stop;
+            $jsonPSobject = ConvertFrom-Json $ConfigJson -ErrorAction Stop;
             $jsonValid = $true;
         } Catch {
             $jsonValid = $false;
@@ -6337,7 +6344,7 @@ Function Export-VCFManagementDomainJsonSpec {
         [Parameter (Mandatory = $true)] [String]$jsonPath
     )
     # Confirm the presence of ImportExcel module
-    if (!(Get-InstalledModule -name "ImportExcel"  -MinimumVersion 7.8.5 -ErrorAction SilentlyContinue)) {
+    if (!(Get-InstalledModule -name "ImportExcel" -MinimumVersion 7.8.5 -ErrorAction SilentlyContinue)) {
         Write-Host " ImportExcel PowerShell module not found. Please install manually" -ForegroundColor Yellow
     } else {
         Write-Output " ImportExcel PowerShell module found" -ForegroundColor Green
@@ -6345,7 +6352,7 @@ Function Export-VCFManagementDomainJsonSpec {
 
     $Global:vcfVersion = @("v4.3.x", "v4.4.x", "v4.5.x", "v5.0.x", "v5.1.x")
     Try {
-        
+
         $module = "Management Domain JSON Spec"
         Write-Output "Starting the Process of Generating the $module"
         $pnpWorkbook = Open-ExcelPackage -Path $Workbook
@@ -6373,9 +6380,9 @@ Function Export-VCFManagementDomainJsonSpec {
             $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.split("/"))[1]
         } else {
             $esxMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.split("/"))[1]
-            $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"].Value.split("/"))[1]   
+            $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"].Value.split("/"))[1]
         }
-        
+
         $esxManagmentMaskObject = ([IPAddress] ([Convert]::ToUInt64((("1" * $esxMgmtCidr) + ("0" * (32 - $esxMgmtCidr))), 2)))
         $vmManagmentMaskObject = ([IPAddress] ([Convert]::ToUInt64((("1" * $vmMgmtCidr) + ("0" * (32 - $vmMgmtCidr))), 2)))
 
@@ -6535,7 +6542,7 @@ Function Export-VCFManagementDomainJsonSpec {
             'interfaceCidr' = $pnpWorkbook.Workbook.Names["mgmt_en2_edge_overlay_interface_ip_2_ip"].Value
 
         }
-        
+
         $edgeNodeObject = @()
         $edgeNodeObject += [pscustomobject]@{
             'edgeNodeName'     = $pnpWorkbook.Workbook.Names["mgmt_en1_fqdn"].Value.Split(".")[0]
@@ -6544,7 +6551,7 @@ Function Export-VCFManagementDomainJsonSpec {
             'edgeVtep1Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en1_edge_overlay_interface_ip_1_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
             'edgeVtep2Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en1_edge_overlay_interface_ip_2_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
             interfaces         = $edgeNode01interfaces
-        }        
+        }
         $edgeNodeObject += [pscustomobject]@{
             'edgeNodeName'     = $pnpWorkbook.Workbook.Names["mgmt_en2_fqdn"].Value.Split(".")[0]
             'edgeNodeHostname' = $pnpWorkbook.Workbook.Names["mgmt_en2_fqdn"].Value
@@ -6553,7 +6560,7 @@ Function Export-VCFManagementDomainJsonSpec {
             'edgeVtep2Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en2_edge_overlay_interface_ip_2_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
             interfaces         = $edgeNode02interfaces
         }
-        
+
         $edgeServicesObject = @()
         $edgeServicesObject += [pscustomobject]@{
             'tier0GatewayName' = $pnpWorkbook.Workbook.Names["mgmt_tier0_name"].Value
@@ -6578,14 +6585,14 @@ Function Export-VCFManagementDomainJsonSpec {
             'edgeRootPassword'              = $pnpWorkbook.Workbook.Names["nsxt_en_root_password"].Value
             'edgeAdminPassword'             = $pnpWorkbook.Workbook.Names["nsxt_en_admin_password"].Value
             'edgeAuditPassword'             = $pnpWorkbook.Workbook.Names["nsxt_en_audit_password"].Value
-            'edgeFormFactor'                = $pnpWorkbook.Workbook.Names["mgmt_ec_formfactor"].Value 
+            'edgeFormFactor'                = $pnpWorkbook.Workbook.Names["mgmt_ec_formfactor"].Value
             'tier0ServicesHighAvailability' = "ACTIVE_ACTIVE"
             'asn'                           = $pnpWorkbook.Workbook.Names["mgmt_en_asn"].Value
             edgeServicesSpecs               = ($edgeServicesObject | Select-Object -Skip 0)
             edgeNodeSpecs                   = $edgeNodeObject
             bgpNeighbours                   = $bgpNeighboursObject
         }
-        
+
         $logicalSegmentsObject = @()
         $logicalSegmentsObject += [pscustomobject]@{
             'name'        = $pnpWorkbook.Workbook.Names["reg_seg01_name"].Value
@@ -6629,7 +6636,7 @@ Function Export-VCFManagementDomainJsonSpec {
             $ESAenabledtrueobject = @()
             $ESAenabledtrueobject += [pscustomobject]@{
                 'enabled' = "false"
-            } 
+            }
         }
 
         $vsanObject = @()
@@ -6884,7 +6891,7 @@ Function Export-VCFManagementDomainJsonSpec {
         } else {
             $fipsEnabled = "$false"
         }
-        
+
         $managementDomainObject = New-Object -TypeName psobject
         $managementDomainObject | Add-Member -notepropertyname 'taskName' -notepropertyvalue "workflowconfig/workflowspec-ems.json"
         $managementDomainObject | Add-Member -notepropertyname 'sddcId' -notepropertyvalue $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value
