@@ -2,7 +2,7 @@
 
 ## Synopsis
 
-Generates a JSON file from the VMware Cloud Foundation Planning & Preparation Workbook to perform a VCF bringup. Requires the installation of ImportExcel Powershell module.
+Generates a JSON file from the VMware Cloud Foundation Planning & Preparation Workbook to perform a VMware Cloud Foundation Bring-up. Requires the installation of the ImportExcel Powershell module.
 
 ## Syntax
 

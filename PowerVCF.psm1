@@ -6330,24 +6330,45 @@ Export-ModuleMember -Function Debug-CatchWriter
 
 
 #Region JSON Export Functions
+
 Function Export-VCFManagementDomainJsonSpec {
+    <#
+        .SYNOPSIS
+        Generates a JSON file from the VMware Cloud Foundation Planning & Preparation Workbook to perform a VMware Cloud
+        Foundation Bring-up. Requires the installation of the ImportExcel Powershell module.
+
+        .DESCRIPTION
+        The Export-VCFManagementDomainJsonSpec cmdlet creates the JSON specification file using the Planning and Preparation workbook
+        to deploy a management domain.
+
+        .EXAMPLE
+        Export-VCFManagementDomainJsonSpec -workbook .\pnp-workbook.xlsx -jsonPath .\domainSpec.json
+        This example creates a JSON deployment specification for a Management Domain using the Planning and Preparation Workbook.
+
+        .PARAMETER workbook
+        The path to the Planning and Preparation Workbook (.xlsx) file.
+
+        .PARAMETER jsonFile
+        The fully qualified path to the JSON specification file.
+    #>
 
     Param (
         [Parameter (Mandatory = $true)] [String]$workbook,
         [Parameter (Mandatory = $true)] [String]$jsonPath
     )
+
     # Confirm the presence of ImportExcel module
-    if (!(Get-InstalledModule -name "ImportExcel"  -MinimumVersion 7.8.5 -ErrorAction SilentlyContinue)) {
-        Write-Host " ImportExcel PowerShell module not found. Please install manually" -ForegroundColor Yellow
+    if (!(Get-InstalledModule -name "ImportExcel" -MinimumVersion 7.8.5 -ErrorAction SilentlyContinue)) {
+        Write-Error "ImportExcel PowerShell Module Not Found. Please Install Manually"
     } else {
-        Write-Output " ImportExcel PowerShell module found" -ForegroundColor Green
+        Write-Output "ImportExcel PowerShell Module Found"
     }
 
     $Global:vcfVersion = @("v4.3.x", "v4.4.x", "v4.5.x", "v5.0.x", "v5.1.x")
     Try {
-        
         $module = "Management Domain JSON Spec"
         Write-Output "Starting the Process of Generating the $module"
+        Write-Output "Opening the Excel Workbook: $workbook"
         $pnpWorkbook = Open-ExcelPackage -Path $Workbook
 
         if ($pnpWorkbook.Workbook.Names["vcf_version"].Value -notin $vcfVersion) {
@@ -6923,4 +6944,5 @@ Function Export-VCFManagementDomainJsonSpec {
     }
 }
 Export-ModuleMember -Function Export-VCFManagementDomainJsonSpec
+
 #EndRegion JSON Export Functions
