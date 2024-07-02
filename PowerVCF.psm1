@@ -1229,22 +1229,24 @@ Function Set-VCFCluster {
             Throw "You must include either -json or -markForDeletion"
         }
 
-        $jsonBody = validateJsonInput -json $json   # validate input file and format
-        $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # validate the JSON provided meets the cluster specifications format
-        # the validation API does not currently support polling with a task ID
-        Start-Sleep -Seconds 5
-        # Submit the job only if the JSON validation task finished with executionStatus of COMPLETED and resultStatus of SUCCEEDED.
-        if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
-            Try {
-                Write-Output "Task validation completed successfully. Invoking cluster task on SDDC Manager"
-                $uri = "https://$sddcManager/v1/clusters/$id/"
-                $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
-                $response
-            } Catch {
-                ResponseException -object $_
+        if ($PsBoundParameters.ContainsKey("json")) {
+            $jsonBody = validateJsonInput -json $json # Validate input file and format.
+            $response = Validate-VCFUpdateClusterSpec -clusterid $id -json $jsonBody # Validate the JSON provided meets the cluster specifications format.
+            # The validation API does not currently support polling with a task ID.
+            Start-Sleep -Seconds 5
+            # Submit the job only if the JSON validation task finished with executionStatus of COMPLETED and resultStatus of SUCCEEDED.
+            if ($response.executionStatus -eq "COMPLETED" -and $response.resultStatus -eq "SUCCEEDED") {
+                Try {
+                    Write-Output "Task validation completed successfully. Invoking cluster task on SDDC Manager"
+                    $uri = "https://$sddcManager/v1/clusters/$id/"
+                    $response = Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody
+                    $response
+                } Catch {
+                    ResponseException -object $_
+                }
+            } else {
+                Write-Error "The validation task completed the run with the following problems: $($response.validationChecks.errorResponse.message)"
             }
-        } else {
-            Write-Error "The validation task completed the run with the following problems: $($response.validationChecks.errorResponse.message)"
         }
 
         if ($PsBoundParameters.ContainsKey("markForDeletion") -and ($PsBoundParameters.ContainsKey("id"))) {
@@ -1718,11 +1720,11 @@ Function Get-VCFCredentialExpiry {
         $uri = "https://$sddcManager/v1/credentials/ui?includeExpiryOnly=true"
         $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
         if ($PsBoundParameters.ContainsKey("resourceName")) {
-            $response.elements | Where-Object {$_.resource.resourceName -eq $resourceName}
+            $response.elements | Where-Object { $_.resource.resourceName -eq $resourceName }
         } elseif ($PsBoundParameters.ContainsKey("id")) {
-            $response.elements | Where-Object {$_.id -eq $id}
+            $response.elements | Where-Object { $_.id -eq $id }
         } elseif ($PsBoundParameters.ContainsKey("resourceType") ) {
-            $response.elements | Where-Object {$_.resource.resourceType -eq $resourceType}
+            $response.elements | Where-Object { $_.resource.resourceType -eq $resourceType }
         } else {
             $response.elements
         }
@@ -3382,7 +3384,7 @@ Function New-VCFPersonality {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/personalities"
-        $response = Invoke-RestMethod -Method POST -ContentType 'application/json'  -Uri $uri -Headers $headers -Body $body
+        $response = Invoke-RestMethod -Method POST -ContentType 'application/json' -Uri $uri -Headers $headers -Body $body
         $response
     } Catch {
         ResponseException -object $_
@@ -5210,7 +5212,7 @@ Function Set-VCFProxy {
     Param (
         [Parameter (Mandatory = $true)] [ValidateSet("ENABLED", "DISABLED")] [ValidateNotNullOrEmpty()] [String]$status,
         [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [String]$proxyHost,
-        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [ValidateRange(1,65535)] [Int]$proxyPort
+        [Parameter (Mandatory = $false, ParameterSetName = 'proxy')] [ValidateNotNullOrEmpty()] [ValidateRange(1, 65535)] [Int]$proxyPort
     )
 
     Try {
@@ -5815,7 +5817,7 @@ Function Remove-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName
     )
 
@@ -5824,10 +5826,10 @@ Function Remove-VCFIdentityProvider {
             createHeader # Set the Accept and Authorization headers.
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
             } elseif ($type -eq "Microsoft ADFS") {
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method DELETE -Uri $uri -Headers $headers # This API does not return a response.
@@ -5865,7 +5867,7 @@ Function New-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
 
@@ -5875,7 +5877,7 @@ Function New-VCFIdentityProvider {
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources"
             } elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
@@ -5918,7 +5920,7 @@ Function Update-VCFIdentityProvider {
     #>
 
     Param (
-        [Parameter (Mandatory = $true)] [ValidateSet("Embedded","Microsoft ADFS")] [String]$type,
+        [Parameter (Mandatory = $true)] [ValidateSet("Embedded", "Microsoft ADFS")] [String]$type,
         [Parameter (Mandatory = $false)] [ValidateNotNullOrEmpty()] [String]$domainName,
         [Parameter (Mandatory = $true)] [ValidateNotNullOrEmpty()] [String]$json
     )
@@ -5929,11 +5931,11 @@ Function Update-VCFIdentityProvider {
             checkVCFToken # Validate the access token and refresh, if necessary.
             if ($type -eq "Embedded") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id/identity-sources/$domainName"
             } elseif ($type -eq "Microsoft ADFS") {
                 $jsonBody = validateJsonInput -json $json
-                $id = (Get-VCFIdentityProvider | Where-Object {$_.type -eq $type}).id
+                $id = (Get-VCFIdentityProvider | Where-Object { $_.type -eq $type }).id
                 $uri = "https://$sddcManager/v1/identity-providers/$id"
             }
             Invoke-RestMethod -Method PATCH -Uri $uri -Headers $headers -ContentType 'application/json' -Body $jsonBody # This API does not return a response.
@@ -6252,7 +6254,7 @@ Function validateJsonInput {
 
         # Validate the JSON string format.
         Try {
-            $jsonPSobject = ConvertFrom-Json  $ConfigJson -ErrorAction Stop;
+            $jsonPSobject = ConvertFrom-Json $ConfigJson -ErrorAction Stop;
             $jsonValid = $true;
         } Catch {
             $jsonValid = $false;
