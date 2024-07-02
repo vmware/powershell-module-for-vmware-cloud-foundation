@@ -2567,11 +2567,11 @@ Function New-VCFCommissionedHost {
 
     $json_content = $json
     $json_content = $json_content | ConvertFrom-Json
-    
+
     # If the sample JSON payload from the SDDC Manager UO is used, transform to API specification.
     if ($json.contains("hostfqdn")) {
         $newjson_content = @()
-        foreach ($jsoninfo in $json_content.hostsSpec) { 
+        foreach ($jsoninfo in $json_content.hostsSpec) {
             $fqdn = $jsoninfo.hostfqdn
             $networkPoolName = $jsoninfo.networkPoolName
             $password = $jsoninfo.password
@@ -2586,14 +2586,14 @@ Function New-VCFCommissionedHost {
                 'storageType'     = $storageType
                 'username'        = $username
             }
-        }   
-        $jsonvalidation = ConvertTo-Json @($newjson_content) 
+        }
+        $jsonvalidation = ConvertTo-Json @($newjson_content)
         $jsonBody = validateJsonInput -json $jsonvalidation
     } else {
         # If the JSON payload is already in the API specification, validate.
-        $jsonBody = validateJsonInput -json $json       
+        $jsonBody = validateJsonInput -json $json
     }
-    
+
     Try {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
@@ -2627,7 +2627,7 @@ Function New-VCFCommissionedHost {
                 Write-Output "Task validation completed successfully."
                 Return $response
             } else {
-                Write-Error "The validation task completed the run with the following problems:" 
+                Write-Error "The validation task completed the run with the following problems:"
                 Write-Output $response.validationChecks.errorResponse
             }
         }
@@ -3323,7 +3323,7 @@ Function Get-VCFPersonality {
             $uri = "https://$sddcManager/v1/personalities/$id"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             $response
-        }    
+        }
         if ($PsBoundParameters.ContainsKey("name")) {
             $uri = "https://$sddcManager/v1/personalities?personalityName=$name"
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
@@ -3332,8 +3332,8 @@ Function Get-VCFPersonality {
                 $response
             } else {
                 $response.elements
-            }     
-        }    
+            }
+        }
     } Catch {
         ResponseException -object $_
     }
@@ -4325,7 +4325,7 @@ Function Get-VCFSystemPrecheckTask {
 
         .PARAMETER failureOnly
         Specifies to return only the failed subtasks.
-      
+
     #>
 
     Param (
@@ -4337,13 +4337,13 @@ Function Get-VCFSystemPrecheckTask {
         createHeader # Set the Accept and Authorization headers.
         checkVCFToken # Validate the access token and refresh, if necessary.
         $uri = "https://$sddcManager/v1/system/prechecks/tasks/$id"
-    
+
         Do {
             # Keep checking until status is not IN_PROGRESS
             $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers -ContentType 'application/json'
             Start-Sleep -Seconds 2
         } While ($response.status -eq "IN_PROGRESS")
-        
+
         if ($response.status -eq "FAILED" -and $PsBoundParameters.ContainsKey("failureOnly")) {
             $failed_task = $response.subTasks | Where-Object { $_.status -eq "FAILED" }
             $failed_subtask = $failed_task.stages | Where-Object { $_.status -eq "FAILED" }
@@ -4351,7 +4351,7 @@ Function Get-VCFSystemPrecheckTask {
         } else {
             $response
         }
-        
+
     } Catch {
         ResponseException -object $_
     }
@@ -4408,7 +4408,7 @@ Function Get-VCFTask {
             Try {
                 $response = Invoke-RestMethod -Method GET -Uri $uri -Headers $headers
             } Catch {
-                if ($_.Exception.Message -eq "The remote server returned an error: (404) Not Found.") {
+                if ($_.Exception.Message -eq "The remote server returned an error: (404) Not Found." -or $_.Exception.Message -eq "Response status code does not indicate success: 404 ().") {
                     Write-Error "Task with ID $id not found."
                 } else {
                     ResponseException -object $_
@@ -6394,9 +6394,9 @@ Function Export-VCFManagementDomainJsonSpec {
             $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.split("/"))[1]
         } else {
             $esxMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_cidr"].Value.split("/"))[1]
-            $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"].Value.split("/"))[1]   
+            $vmMgmtCidr = ($pnpWorkbook.Workbook.Names["mgmt_az1_mgmt_vm_cidr"].Value.split("/"))[1]
         }
-        
+
         $esxManagmentMaskObject = ([IPAddress] ([Convert]::ToUInt64((("1" * $esxMgmtCidr) + ("0" * (32 - $esxMgmtCidr))), 2)))
         $vmManagmentMaskObject = ([IPAddress] ([Convert]::ToUInt64((("1" * $vmMgmtCidr) + ("0" * (32 - $vmMgmtCidr))), 2)))
 
@@ -6556,7 +6556,7 @@ Function Export-VCFManagementDomainJsonSpec {
             'interfaceCidr' = $pnpWorkbook.Workbook.Names["mgmt_en2_edge_overlay_interface_ip_2_ip"].Value
 
         }
-        
+
         $edgeNodeObject = @()
         $edgeNodeObject += [pscustomobject]@{
             'edgeNodeName'     = $pnpWorkbook.Workbook.Names["mgmt_en1_fqdn"].Value.Split(".")[0]
@@ -6565,7 +6565,7 @@ Function Export-VCFManagementDomainJsonSpec {
             'edgeVtep1Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en1_edge_overlay_interface_ip_1_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
             'edgeVtep2Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en1_edge_overlay_interface_ip_2_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
             interfaces         = $edgeNode01interfaces
-        }        
+        }
         $edgeNodeObject += [pscustomobject]@{
             'edgeNodeName'     = $pnpWorkbook.Workbook.Names["mgmt_en2_fqdn"].Value.Split(".")[0]
             'edgeNodeHostname' = $pnpWorkbook.Workbook.Names["mgmt_en2_fqdn"].Value
@@ -6574,7 +6574,7 @@ Function Export-VCFManagementDomainJsonSpec {
             'edgeVtep2Cidr'    = $pnpWorkbook.Workbook.Names["input_mgmt_en2_edge_overlay_interface_ip_2_ip"].Value + "/" + $pnpWorkbook.Workbook.Names["input_mgmt_edge_overlay_cidr"].Value.Split("/")[-1]
             interfaces         = $edgeNode02interfaces
         }
-        
+
         $edgeServicesObject = @()
         $edgeServicesObject += [pscustomobject]@{
             'tier0GatewayName' = $pnpWorkbook.Workbook.Names["mgmt_tier0_name"].Value
@@ -6599,14 +6599,14 @@ Function Export-VCFManagementDomainJsonSpec {
             'edgeRootPassword'              = $pnpWorkbook.Workbook.Names["nsxt_en_root_password"].Value
             'edgeAdminPassword'             = $pnpWorkbook.Workbook.Names["nsxt_en_admin_password"].Value
             'edgeAuditPassword'             = $pnpWorkbook.Workbook.Names["nsxt_en_audit_password"].Value
-            'edgeFormFactor'                = $pnpWorkbook.Workbook.Names["mgmt_ec_formfactor"].Value 
+            'edgeFormFactor'                = $pnpWorkbook.Workbook.Names["mgmt_ec_formfactor"].Value
             'tier0ServicesHighAvailability' = "ACTIVE_ACTIVE"
             'asn'                           = $pnpWorkbook.Workbook.Names["mgmt_en_asn"].Value
             edgeServicesSpecs               = ($edgeServicesObject | Select-Object -Skip 0)
             edgeNodeSpecs                   = $edgeNodeObject
             bgpNeighbours                   = $bgpNeighboursObject
         }
-        
+
         $logicalSegmentsObject = @()
         $logicalSegmentsObject += [pscustomobject]@{
             'name'        = $pnpWorkbook.Workbook.Names["reg_seg01_name"].Value
@@ -6650,7 +6650,7 @@ Function Export-VCFManagementDomainJsonSpec {
             $ESAenabledtrueobject = @()
             $ESAenabledtrueobject += [pscustomobject]@{
                 'enabled' = "false"
-            } 
+            }
         }
 
         $vsanObject = @()
@@ -6905,7 +6905,7 @@ Function Export-VCFManagementDomainJsonSpec {
         } else {
             $fipsEnabled = "$false"
         }
-        
+
         $managementDomainObject = New-Object -TypeName psobject
         $managementDomainObject | Add-Member -notepropertyname 'taskName' -notepropertyvalue "workflowconfig/workflowspec-ems.json"
         $managementDomainObject | Add-Member -notepropertyname 'sddcId' -notepropertyvalue $pnpWorkbook.Workbook.Names["mgmt_sddc_domain"].Value

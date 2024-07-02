@@ -4,6 +4,7 @@
 
 > Released: Unreleased
 
+- Updated `Get-VCFTask` cmdlet with additional exception message to catch.
 - Updated `Get-VCFSystemPrecheckTask` cmdlet with optional parameter `failureOnly`.
 - Updated `Get-VCFPersonality` cmdlet with optional parameter `name`.
 - Updated `New-VCFWorkloadDomain` cmdlet with optional parameter `validate` to validate the JSON specification.
