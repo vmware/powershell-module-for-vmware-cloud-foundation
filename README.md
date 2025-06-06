@@ -14,9 +14,11 @@
 
 `PowerVCF` is an open source PowerShell Module for interacting with the [VMware Cloud Foundation][docs-vmware-cloud-foundation] public API.
 
+For details on specific VMware Cloud Foundation versions supported by this module, please refer to the [documentation][docs-module].
+
 ## Documentation
 
-Please refer to the [documentation][docs-module] for more information on how to use this module.
+For detailed instructions on using this module, refer to the [documentation][docs-module].
 
 ## Contributing
 
