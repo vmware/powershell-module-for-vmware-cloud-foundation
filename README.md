@@ -10,7 +10,11 @@
 [<img src="https://img.shields.io/powershellgallery/v/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell Gallery">][psgallery-module]&nbsp;&nbsp;
 <img src="https://img.shields.io/powershellgallery/dt/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell Gallery Downloads">
 
-## Overview
+## Project Archived
+
+The `PowerVCF` project has been archived and no further updates will be made.  Please transition to [VCF.PowerCLI 9.x](https://developer.broadcom.com/powercli) to automate against SDDC Manager"
+
+## Historical Overview
 
 `PowerVCF` is an open source PowerShell Module for interacting with the [VMware Cloud Foundation][docs-vmware-cloud-foundation] public API.
 
