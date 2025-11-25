@@ -10,13 +10,19 @@
 [<img src="https://img.shields.io/powershellgallery/v/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell Gallery">][psgallery-module]&nbsp;&nbsp;
 <img src="https://img.shields.io/powershellgallery/dt/PowerVCF?style=for-the-badge&logo=powershell&logoColor=white" alt="PowerShell Gallery Downloads">
 
-## Overview
+## Project Archived
+
+The `PowerVCF` project has been archived and no further updates will be made.  Please transition to [VCF.PowerCLI 9.x](https://developer.broadcom.com/powercli) to automate against SDDC Manager"
+
+## Historical Overview
 
 `PowerVCF` is an open source PowerShell Module for interacting with the [VMware Cloud Foundation][docs-vmware-cloud-foundation] public API.
 
+For details on specific VMware Cloud Foundation versions supported by this module, please refer to the [documentation][docs-module].
+
 ## Documentation
 
-Please refer to the [documentation][docs-module] for more information on how to use this module.
+For detailed instructions on using this module, refer to the [documentation][docs-module].
 
 ## Contributing
 
@@ -40,7 +46,7 @@ You can also start a discussion on the GitHub [discussions][gh-discussions] area
 
 ## License
 
-Copyright 2023 Broadcom. All Rights Reserved.
+Copyright 2023-2024 Broadcom. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 

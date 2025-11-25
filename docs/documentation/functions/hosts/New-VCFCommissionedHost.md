@@ -22,12 +22,18 @@ The `New-VCFCommissionedHost` cmdlet commissions a list of ESXi hosts.
 New-VCFCommissionedHost -json (Get-Content -Raw .\samples\hosts\commissionHostsSpec.json)
 ```
 
-This example shows how to commission a list of ESXi hosts using a JSON specification file.
+This example shows how to commission a list of ESXi hosts using a JSON specification files.
 
-???+ example "Sample JSON: Commission ESXi Host(s)"
+???+ example "Sample JSON: Commission ESXi Host(s) from SDDC Manager API JSON Spec"
 
     ```json
     --8<-- "./samples/hosts/commissionHostsSpec.json"
+    ```
+
+???+ example "Sample JSON: Commission ESXi Host(s) from the JSON Spec Provided by the SDDC Manager UI"
+
+    ```json
+    --8<-- "./samples/hosts/ui-commissionHostsSpec.json"
     ```
 
 ### Example 2
@@ -74,4 +80,4 @@ Accept wildcard characters: False
 
 ### Common Parameters
 
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: `-Debug`, `-ErrorAction`, `-ErrorVariable`, `-InformationAction`, `-InformationVariable`, `-OutVariable`, `-OutBuffer`, `-PipelineVariable`, `-Verbose`, `-WarningAction`, and `-WarningVariable`. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).

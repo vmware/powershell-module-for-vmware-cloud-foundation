@@ -7,7 +7,7 @@ Requests an authentication token from SDDC Manager.
 ## Syntax
 
 ```powershell
-Request-VCFToken [-fqdn] <String> [[-username] <String>] [[-password] <String>] [-skipCertificateCheck] [<CommonParameters>]
+Request-VCFToken [-fqdn] <String> [[-username] <String>] [[-password] <String>] [[-credential] <PSCredential>] [-skipCertificateCheck] [<CommonParameters>]
 ```
 
 ## Description
@@ -22,15 +22,41 @@ The `Request-VCFToken` cmdlet connects to the specified SDDC Manager and request
 Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username administrator@vsphere.local -password VMw@re1!
 ```
 
-This example shows how to connect to SDDC Manager to request API access and refresh tokens.
+This example shows how to connect to the specified SDDC Manager using a clear-text username and password.
 
 ### Example 2
 
 ```powershell
-Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password VMw@re1!VMw@re1!
+$secureString = Read-Host -AsSecureString 'Password'
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local -password $secureString
 ```
 
-This example shows how to connect to SDDC Manager using local account `admin@local`.
+This example shows how to connect to the specified SDDC Manager instance using a `SecureString` password.
+
+### Example 3
+
+```powershell
+$credential = Get-Credential
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -credential $credential
+```
+
+This example shows how to connect to the specified SDDC Manager instance using a PSCredential.
+
+### Example 4
+
+```powershell
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io -username admin@local
+```
+
+This example shows how to connect to the SDDC Manager instance where the user will be prompted for a password.
+
+### Example 5
+
+```powershell
+Request-VCFToken -fqdn sfo-vcf01.sfo.rainpole.io
+```
+
+This example shows how to connect to the specified SDDC Manager instance where the user will be prompted for a username and password.
 
 ## Parameters
 
@@ -40,7 +66,7 @@ The fully qualified domain name or IP Address of the SDDC Manager instance.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: PSCredentialSet, UserNameAndPasswordSet
 Aliases:
 
 Required: True
@@ -56,10 +82,10 @@ The username to authenticate to the SDDC Manager instance.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: UserNameAndPasswordSet
 Aliases:
 
-Required: False
+Required: True
 Position: 2
 Default value: None
 Accept pipeline input: False
@@ -68,15 +94,33 @@ Accept wildcard characters: False
 
 ### -password
 
-The password to authenticate to the SDDC Manager instance.
+The password to authenticate to the SDDC Manager instance. This parameter takes either a string or a `SecureString` value.
+
+If not specified, the user will be prompted for the `SecureString` value.
 
 ```yaml
 Type: String
-Parameter Sets: (All)
+Parameter Sets: UserNameAndPasswordSet
 Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -credential
+
+Specifies to authenticate to the SDDC Manager instance using a PSCredential object.
+
+```yaml
+Type: PSCredential
+Parameter Sets: PSCredentialSet
+Aliases:
+
+Required: True
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -100,4 +144,4 @@ Accept wildcard characters: False
 
 ### Common Parameters
 
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
+This cmdlet supports the common parameters: `-Debug`, `-ErrorAction`, `-ErrorVariable`, `-InformationAction`, `-InformationVariable`, `-OutVariable`, `-OutBuffer`, `-PipelineVariable`, `-Verbose`, `-WarningAction`, and `-WarningVariable`. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).

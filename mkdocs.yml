@@ -13,7 +13,7 @@ edit_uri: blob/main/docs/
 
 # Copyright
 copyright: |
-  Copyright &copy; 2023 Broadcom. All Rights Reserved.<br/>
+  Copyright &copy; 2005-2024 Broadcom. All Rights Reserved.<br/>
   The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.<br/><br/>
 
 # Configuration
@@ -23,7 +23,7 @@ theme:
   logo: assets/images/icon-white.svg
   icon:
     repo: fontawesome/brands/github
-  palette:  
+  palette:
   - media: "(prefers-color-scheme: light)"
     scheme: default
     primary: indigo
@@ -69,7 +69,6 @@ plugins:
     jinja_options:
       variable_start_string: "${{"
       variable_end_string: "}}"
-- git-authors
 - git-revision-date-localized:
     enabled: !ENV [CI, false]
     enable_creation_date: false
@@ -89,8 +88,6 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/vmware/powershell-module-for-vmware-cloud-foundation
-    - icon: fontawesome/brands/twitter
-      link: https://twitter.com/powervcf
     - icon: fontawesome/solid/book
       link: https://docs.vmware.com/en/VMware-Cloud-Foundation/index.html
     - icon: fontawesome/solid/code
@@ -105,8 +102,8 @@ markdown_extensions:
 - footnotes
 - md_in_html
 - pymdownx.emoji:
-    emoji_index: !!python/name:materialx.emoji.twemoji
-    emoji_generator: !!python/name:materialx.emoji.to_svg
+    emoji_index: !!python/name:material.extensions.emoji.twemoji
+    emoji_generator: !!python/name:material.extensions.emoji.to_svg
     options:
       custom_icons:
       - material/.icons
@@ -129,7 +126,7 @@ markdown_extensions:
 
 # Navigation
 nav:
-- Getting Started: 
+- Getting Started:
   - index.md
   - Installation: documentation/getting-started/install.md
   - Updating: documentation/getting-started/update.md
@@ -140,7 +137,7 @@ nav:
   - License: license.md
 - Reference:
   - documentation/index.md
-  - Application Virtual Networks: 
+  - Application Virtual Networks:
     - documentation/functions/avns/Add-VCFApplicationVirtualNetwork.md
     - documentation/functions/avns/Get-VCFApplicationVirtualNetwork.md
   - Authentication:
@@ -182,6 +179,13 @@ nav:
     - documentation/functions/clusters/New-VCFCluster.md
     - documentation/functions/clusters/Remove-VCFCluster.md
     - documentation/functions/clusters/Set-VCFCluster.md
+  - Compliance:
+    - documentation/functions/compliance/Get-VCFCompliance.md
+    - documentation/functions/compliance/Get-VCFComplianceConfiguration.md
+    - documentation/functions/compliance/Get-VCFComplianceHistory.md
+    - documentation/functions/compliance/Get-VCFComplianceStandard.md
+    - documentation/functions/compliance/Get-VCFComplianceTask.md
+    - documentation/functions/compliance/New-VCFCompliance.md
   - Credentials:
     - documentation/functions/credentials/Get-VCFCredential.md
     - documentation/functions/credentials/Get-VCFCredentialExpiry.md
@@ -226,6 +230,8 @@ nav:
       - documentation/functions/idp/New-VCFIdentityProvider.md
       - documentation/functions/idp/Remove-VCFIdentityProvider.md
       - documentation/functions/idp/Update-VCFIdentityProvider.md
+  - JSON Export:
+      - documentation/functions/json-export/Export-VCFManagementDomainJsonSpec.md
   - Licenses:
     - documentation/functions/licenses/Get-VCFLicenseKey.md
     - documentation/functions/licenses/Get-VCFLicenseMode.md
@@ -281,7 +287,6 @@ nav:
       - documentation/functions/sos/Get-VCFHealthSummaryTask.md
       - documentation/functions/sos/Request-VCFHealthSummaryBundle.md
       - documentation/functions/sos/Start-VCFHealthSummary.md
-      - documentation/functions/sos/Invoke-VCFCommand.md
     - Support Bundles:
       - documentation/functions/sos/Get-VCFSupportBundleTask.md
       - documentation/functions/sos/Request-VCFSupportBundle.md
@@ -315,6 +320,8 @@ nav:
     - documentation/functions/aria-suite/aria-operations-logs/Set-VCFVrliConnection.md
   - Workspace ONE Access:
     - documentation/functions/aria-suite/workspace-one-access/Get-VCFWsa.md
+  - Other:
+    - documentation/functions/other/Invoke-VCFCommand.md
 - Community:
   - community/index.md
   - Contributing: community/contributing.md

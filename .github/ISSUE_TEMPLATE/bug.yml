@@ -32,7 +32,10 @@ body:
     id: version-vcf
     attributes:
       label: VMware Cloud Foundation
-      description: Please provide the VMware Cloud Foundation version.
+      description: >
+        Please provide the VMware Cloud Foundation version.
+
+        For details on specific VMware Cloud Foundation versions supported by this module, please refer to the [documentation](https://vmware.github.io/powershell-module-for-vmware-cloud-foundation/).
     validations:
       required: true
   - type: input

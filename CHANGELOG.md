@@ -1,5 +1,33 @@
 # Release History
 
+## v2.5.0
+
+> Released: Unreleased
+
+- Added cmdlets for auditing PCI Compliance in VMware Cloud Foundation 5.2 and later.
+  - Added `Get-VCFCompliance` to retrieve a specific compliance audit result.
+  - Added `Get-VCFComplianceConfiguration` to retrieve a list of all compliance configurations along with their applicable resource types and versions.
+  - Added `Get-VCFComplianceHistory` to retrieve the history for all compliance audits that have been performed.
+  - Added `Get-VCFComplianceStandard` to retrieve a list of all compliance audit standards and versions that are supported.
+  - Added `Get-VCFCompliance` to retrieve a specific compliance audit result.
+  - Added `New-VCFCompliance` to run a new compliance audit.
+- Added `Export-VCFManagementDomainJsonSpec` to export the JSON specification required for bring-up from the Planning and Preparation workbook.
+- Enhanced the request headers to include `Content-Type` to ensure REST API calls do not error out.
+- Enhanced `ResponseException` function to accept optional `-Body` parameter to include the JSON payload for ease of debugging.
+- Enhanced `New-VCFWorkloadDomain` cmdlet to improve error handling.
+- Enhanced `New-VCFCommissionedHost` cmdlet to improve error handling.
+- Enhanced `New-VCFCommissionedHost` cmdlet with ability to use the host commission JSON specification provided by the SDDC Manager UI.
+- Updated `Get-VCFTask` cmdlet with additional exception message to catch.
+- Updated `Get-VCFSystemPrecheckTask` cmdlet with optional parameter `failureOnly`.
+- Updated `Get-VCFPersonality` cmdlet with optional parameter `name`.
+- Updated `New-VCFWorkloadDomain` cmdlet with optional parameter `validate` to validate the JSON specification.
+- Refactored `Invoke-VCFCommand` to run commands on SDDC Manager without the need for SSH across PowerShell editions and operating systems.
+- Removed deprecated `Commission-VCFHost` alias from `New-VCFCommissionedHost`.
+- Removed deprecated `Decommission-VCFHost` alias from `Remove-VCFCommissionedHost`.
+- Removed deprecated `Get-VCFNsxManagerCluster` alias from `Get-VCFNsxtCluster`.
+- Removed deprecated `Get-VCFNsxEdgeCluster` alias from `Get-VCFEdgeCluster`.
+- Removed deprecated `New-VCFNsxEdgeCluster` alias from `New-VCFEdgeCluster`.
+
 ## v2.4.1
 
 > Released: 2023-12-15
